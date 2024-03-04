@@ -19,13 +19,13 @@ public class EvolutionVariables {
 	 * Path to configuration variables directory for specific project based scripts
 	 */
 	public static final String PATH_TO_SCRIPT = 
-			SharedConfiguration.PROJECT_PATH + "/splsToMerge/configurationVariables/";
+			SharedConfiguration.PROJECT_PATH + "\\splsToMerge\\configurationVariables\\";
 	
 	/**
 	 * Path to general configuration variables directory
 	 */
 	public static final String PATH_TO_BASE_SCRIPT = 
-			SharedConfiguration.PROJECT_PATH + "/splsToMerge/configurationVariablesGeneral/";
+			SharedConfiguration.PROJECT_PATH + "\\splsToMerge\\configurationVariablesGeneral\\";
 	
 	/**
 	 * Script names with general variables
