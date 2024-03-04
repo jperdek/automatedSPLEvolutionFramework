@@ -11,31 +11,31 @@ Automated SPL evolution framework - evolving variability on code level: Applicat
 
 ## CONTENTS      
 
-  ### Automated SPL Evolution Framework  
-    - in folder /EvolutionSPLFramework  
-    - the framework for automated aspect-oriented knowledge-driven SPL evolution  
+### Automated SPL Evolution Framework  
+- in folder /EvolutionSPLFramework
+- the framework for automated aspect-oriented knowledge-driven SPL evolution  
       
-  ### Converter And Complexity Analysis API  
-    - in folder /ConverterAndComplexityAnalyzerAPI  
-    - the API to convert JavaScript/TypeScript code into AST and back  
-    - The API to evaluate code complexity metrics, including Halstead measures and LOC   
+### Converter And Complexity Analysis API  
+- in folder /ConverterAndComplexityAnalyzerAPI  
+- the API to convert JavaScript/TypeScript code into AST and back  
+- The API to evaluate code complexity metrics, including Halstead measures and LOC   
     
-  ### Fractal Dynamic Data Collector  
-    - in folder /fractalDynamicDataCollector  
-    - tools to extract various data representations of variability from code or process existing ones  
-    - supported data representations:  
-      - taking screenshots  
-      - getting logged values, groups of values  
-      - creating a graph according to the sequence of instantiated variable code objects  
-    
-  ### Diagrams and Visualization  
-    - in folder /diagramsAndVisualization  
-    - diagrams covering the essential components of the Automated SPL Evolution Framework  
-	     - a simple overview of the flow with a flowchart  
-       - activity diagram of the initialization and applicability of Automated SPL Evolution Framework to a particular base script and incorporation of functionality from other scripts  
-       - flowcharts of variation point divisioner and extractor with a focus on configuration artifacts  
-       - flowchart of the evolution core process  
-       - activity diagram of configured decisions in the evolution core process  
+### Fractal Dynamic Data Collector  
+- in folder /fractalDynamicDataCollector  
+- tools to extract various data representations of variability from code or process existing ones  
+- supported data representations:  
+  - taking screenshots  
+  - getting logged values, groups of values  
+  - creating a graph according to the sequence of instantiated variable code objects  
+
+### Diagrams and Visualization  
+- in folder /diagramsAndVisualization  
+- diagrams covering the essential components of the Automated SPL Evolution Framework  
+    - a simple overview of the flow with a flowchart  
+    - activity diagram of the initialization and applicability of Automated SPL Evolution Framework to a particular base script and incorporation of functionality from other scripts  
+    - flowcharts of variation point divisioner and extractor with a focus on configuration artifacts  
+    - flowchart of the evolution core process  
+    - activity diagram of configured decisions in the evolution core process  
 
       
 
