@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<title>Platno tutorial</title>
+		<link rel="stylesheet" href="css/platnoCSS.css"/>
+		<script src="js/typescript.js"></script>
+		<script src="js/platnoJS.js"></script>
+		<script src="js/common.js"></script>
+	</head>
+	<body>
+		<header>
+			<h1>Platno tutorial</h1>
+		</header>
+		
+		<canvas id="game" width="1600" height="1200">
+			Vas prehliadac nepodporuje platno.
+		</canvas>
+		
+		<script src="js/jquery-3.5.1.min.js"></script>
+		
+		
+		<script defer>
+		//#const tsCode = document.getElementsByTagName("script")[0].innerHTML;
+		//const jsCode = window.ts.transpile(tsCode);
+		//eval(jsCode);
+		const jsCode = window.ts.transpile(aaa1.replaceAll("export", "window.export"));
+		eval(jsCode);
+		const canvas = document.getElementById("game");
+		const context = canvas.getContext('2d');
+		const circleRadius = 5;
+		const numberIterations = 6;
+		const lineLength = 1000;
+		const thickness = 1;
+		const squareSideLength = lineLength / Math.pow(2, numberIterations);
+		const ankletMod = new AnkletMod(lineLength, circleRadius, thickness, squareSideLength);
+		
+		ankletMod.countLineLengthFrac(numberIterations + 1);
+		drawAnkletModMain(canvas, context, circleRadius, numberIterations, lineLength, thickness, squareSideLength, ankletMod);
+		</script>
+		
+	</body>
+</html>

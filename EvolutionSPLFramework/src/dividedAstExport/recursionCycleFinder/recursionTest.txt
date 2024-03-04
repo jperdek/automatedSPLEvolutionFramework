@@ -1,0 +1,60 @@
+function b() {
+    let c, d;
+}
+
+function m() {
+    m();
+}
+
+@wholeBlockMethod({"outsideGalleryLost": "true"})
+function a(param1, param2) {
+    b();
+    a();
+}
+
+function c(p) {
+    g();
+}
+
+function t() {
+    tt();
+}
+
+function tt() {
+    ttt();
+}
+
+function ttt() {
+    let nnnnn = 4;
+    t();
+    function tgtt() {
+    }
+}
+
+@wholeClass({"outsideGallery": "true"})
+class BB {
+	@variableDeclarationClass({"outsideGallery": "true"})
+    nnnnn = 4;
+	
+	@wholeClassMethod({"outsideGallery": "true"})
+    constructor(ccc: number, ddd: number) {
+        new BB(1, 2);
+    }
+
+    ffff(ggg) {
+        
+    }
+
+}
+
+
+class CC {
+	@wholeClassMethod({"outsideGallery": "true"})
+    constructor() {
+       ccc();
+    }
+
+    ccc() {
+        new CC();
+    }
+}

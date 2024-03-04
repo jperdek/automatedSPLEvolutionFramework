@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<title>Platno tutorial</title>
+		<link rel="stylesheet" href="css/platnoCSS.css"/>
+		<script src="js/platnoJS.js">
+		</script>
+		<script src="js/typescript.js"></script>
+	</head>
+	<body>
+		<header>
+			<h1>Platno tutorial</h1>
+		</header>
+		
+		<canvas id="game" width="1200" height="1200">
+			Vas prehliadac nepodporuje platno.
+		</canvas>
+		
+		<script defer>
+		//#const tsCode = document.getElementsByTagName("script")[0].innerHTML;
+		//const jsCode = window.ts.transpile(tsCode);
+		//eval(jsCode);
+		const jsCode = window.ts.transpile(aaa1.replaceAll("export", "window.export"));
+		eval(jsCode);
+		const canvas = document.getElementById("game");
+		const context = canvas.getContext('2d');
+		const initialX = 250;
+		const initialY = 250;
+		const numberIterations = 3;
+		const circleRadius = 2;
+		drawKoch(initialX, initialY, context, circleRadius, numberIterations);
+		</script>
+	</body>
+</html>
