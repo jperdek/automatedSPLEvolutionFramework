@@ -54,10 +54,12 @@ public class ExportLocation {
 	 */
 	public ExportLocation(ExportLocation exportLocation) {
 		if (exportLocation.getFileName().replace("\\", "/").indexOf('/') > -1) {
-			if (this.importPath == null || this.importPath.equals("")) {
-				this.importPath = exportLocation.getFileName();
-			}
-			this.fileName = exportLocation.getFileName().substring(exportLocation.getFileName().lastIndexOf('/') + 1);
+			this.fileName = exportLocation.getFileName();
+			this.importPath = exportLocation.getImportPath();
+			//if (this.importPath == null || this.importPath.equals("")) {
+			//	this.importPath = exportLocation.getFileName();
+			//}
+			//this.fileName = exportLocation.getFileName().substring(exportLocation.getFileName().lastIndexOf('/') + 1);
 		} else {	
 			this.fileName = exportLocation.getFileName();
 			this.importPath = exportLocation.getImportPath();

@@ -102,6 +102,32 @@ public class HTMLCanvasToTemplateInjector {
 	}
 	
 	/**
+	 * Checks Evolution Variables and Evolution Samples and provides absolute path to them
+	 * -if they should be imported to project then the they must be copied and path to them properly set
+	 *  
+	 * @param absoluteOrRelativeProjectPath
+	 * @return
+	 */
+	private String checkStaticScripts(String absoluteOrRelativeProjectPath) {
+		for (String libraryPath: EvolutionSamples.getAllEvolutionSamples(null)) {
+			if (absoluteOrRelativeProjectPath.replace("\\", "/").toLowerCase().contains(libraryPath.toLowerCase().replace("\\", "/"))
+					|| libraryPath.toLowerCase().replace("\\", "/").contains(
+							absoluteOrRelativeProjectPath.toLowerCase().replace("\\", "/"))) {
+				return libraryPath; 
+			}
+		}
+		
+		for (String libraryPath: EvolutionVariables.getAllEvolutionSamples(null)) {
+			if (absoluteOrRelativeProjectPath.replace("\\", "/").toLowerCase().contains(libraryPath.toLowerCase().replace("\\", "/"))
+					|| libraryPath.toLowerCase().replace("\\", "/").contains(
+							absoluteOrRelativeProjectPath.toLowerCase().replace("\\", "/"))) { 
+				return libraryPath;
+			}
+		}
+		return absoluteOrRelativeProjectPath;
+	}
+	
+	/**
 	 * Creates the import script with associated content
 	 * 
 	 * @param resource - the resource object with associated paths
@@ -110,6 +136,7 @@ public class HTMLCanvasToTemplateInjector {
 	private Element createImportScriptWithContent(Resource resource) {
 		String relativeImportPath = resource.getRelativePathFromProject();
 		Element scriptElement = new Element(Tag.valueOf("script"), "");
+		relativeImportPath = this.checkStaticScripts(relativeImportPath);
 		if (relativeImportPath.contains(":/") || relativeImportPath.contains(":\\")) {
 			relativeImportPath = "file:///" + relativeImportPath;
 		}
@@ -146,7 +173,7 @@ public class HTMLCanvasToTemplateInjector {
 		boolean isLibrary, isBaseScript, shouldBeExcluded;
 		for (Resource importResource: importResources) {
 			String absoluteOrRelativeProjectPath = importResource.getRelativePathFromProject();
-			
+
 			shouldBeExcluded = false;
 			for (String scriptToOmit: HTMLCanvasToTemplateInjector.scriptsToOmit) {
 				if (absoluteOrRelativeProjectPath.toLowerCase().contains(scriptToOmit.toLowerCase()) ||
@@ -157,30 +184,22 @@ public class HTMLCanvasToTemplateInjector {
 
 			isLibrary = false;
 			for (String libraryPath: EvolutionSamples.getAllEvolutionSamples(null)) {
-				System.out.println(libraryPath);
-				System.out.println(absoluteOrRelativeProjectPath);
 				if (absoluteOrRelativeProjectPath.replace("\\", "/").toLowerCase().contains(libraryPath.toLowerCase().replace("\\", "/"))
 						|| libraryPath.toLowerCase().replace("\\", "/").contains(
 								absoluteOrRelativeProjectPath.toLowerCase().replace("\\", "/"))) {
 					absoluteOrRelativeProjectPath = libraryPath; 
-					//importResource.setRelativeProjectPath(absoluteOrRelativeProjectPath);
-					System.out.println(libraryPath);
 					isLibrary = true; break; 
 				}
 			}
+			
 			for (String libraryPath: EvolutionVariables.getAllEvolutionSamples(null)) {
-				System.out.println(libraryPath);
-				System.out.println(absoluteOrRelativeProjectPath);
 				if (absoluteOrRelativeProjectPath.replace("\\", "/").toLowerCase().contains(libraryPath.toLowerCase().replace("\\", "/"))
 						|| libraryPath.toLowerCase().replace("\\", "/").contains(
 								absoluteOrRelativeProjectPath.toLowerCase().replace("\\", "/"))) { 
-					absoluteOrRelativeProjectPath = libraryPath; //change path to static configuration for all evolutions/steps/iterations 
-					System.out.println(libraryPath);
-					importResource.setRelativeProjectPath(libraryPath);
-					isLibrary = true; break;
+					absoluteOrRelativeProjectPath = libraryPath; 
+					isLibrary = true; break; 
 				}
 			}
-
 			if (absoluteOrRelativeProjectPath.contains("://") || absoluteOrRelativeProjectPath.contains(":\\")) {
 				pathToImportInProject = absoluteOrRelativeProjectPath;
 			} else {
