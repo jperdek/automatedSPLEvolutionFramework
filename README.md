@@ -73,17 +73,18 @@ Automated SPL evolution framework - evolving variability on code level: Applicat
 	- run each of 9 tests and verify outputs (each should return 200 status code)  
 
 
- ### b) FRAMEWORK FOR AUTOMATED SPL EVOLUTION  
+
+### b) FRAMEWORK FOR AUTOMATED SPL EVOLUTION  
 
  
-1b.) Switch to Automated Aspect-oriented Knowledge-driven SPL Evolution framework folder  
+1b.) Switch to the Automated Aspect-oriented Knowledge-driven SPL Evolution framework folder  
 	cd EvolutionSPLFramework 
 
 
 2b.) Open project with Eclipse (steps will follow Eclipse, but it can be launched from the command line)  
 	-open the project workspace inside the copied projects directory   
 	-File -> open project from file system -> directory > EvolutionSPLFramework -> finish   
-	-load used/associated libraries (if are not)   
+	-load used/associated libraries (if they are not)   
 		-left click on project name in Package Explorer -> properties -> Java Build Path -> libraries -> ModulePath -> add External Jars -> lib (+select all) -> open -> apply and close   
 	-add JRE library  
 		-left click on project name in Package Explorer -> properties -> Java Build Path -> libraries -> ModulePath -> add Library -> JRE system library -> next -> finish  (I used Java 18.0.1.1)
@@ -91,33 +92,28 @@ Automated SPL evolution framework - evolving variability on code level: Applicat
 		-left click on project name in Package Explorer -> properties -> Java Compiler -> Compiler compliance level > 18 or more > apply > apply and close  
 
 2b.) Set configuration variables to base and destination TypeScript scripts:  
-	in [./QualityChecker/src/scenarios/Scenario.java] change line [String pathToProjectTree = "file:///E:/aspects/canvasSPLforSPA/canvasSPLforSPA/src";] to your path ["file:///C:ABSOLUTE PATH TO YOUR/canvasSPLforSPA/canvasSPLforSPA/src"]  
-	in [./QualityChecker/src/SPLComplexityEvaluator.java] change line [String pathToProjectTree = "file:///E:/aspects/canvasSPLforSPA/canvasSPLforSPA/src";] to your path ["file:///C:ABSOLUTE PATH TO YOUR/canvasSPLforSPA/canvasSPLforSPA/src"]  
+	In [./EvolutionSPLFramework\src\evolutionSimulation\productAssetsInitialization.java] change:
+ 	- line [public static final String PROJECT_PATH = "E://aspects/automatedSPLEvolutionFramework/EvolutionSPLFramework";] to your path ["file:///C:ABSOLUTE PATH TO YOUR/EvolutionSPLFramework"]  
+  	- line [public static final String PATH_TO_EVOLUTION_DIRECTORY = "E://aspects/automatedSPLEvolutionFramework/EvolutionSPLFramework/evolutionDirectory";] to your path ["file:///C:ABSOLUTE PATH TO YOUR/EvolutionSPLFramework/evolutionDirectory"]
+  	- line [public final static String CANTO_SCRIPT_RESOURCE_LOCATION = "E://aspects/automatedSPLEvolutionFramework/EvolutionSPLFramework/resources/canto/canto-0.15.js";] to your path ["file:///C:ABSOLUTE PATH TO YOUR/EvolutionSPLFramework/resources/canto/canto-0.15.js"]  
 
+3b.) Configure evolution:
+	3.1b.) Manual configuration
+ 		-left click on one ./EvolutionSPLFramework/src/splEvolutionCore/SPLEvolutionCore.java
+   		-variable and decisions are described, some are still unimplemented
+   	
+    	3.2b.) Automated configuration
+ 		-create instance of ./EvolutionSPLFramework/src/evolutionSimulation/EvolutionCoreSettings.java and use it in evolution similarly as in ./EvolutionSPLFramework/src/evolutionSimulation/tests/EvolutionSimulationTest.java
 
-3b.) Run all forms:  
-	-left click on one ./QualityChecker/scenarions/TransformationForms.java -> run > TransformationForms.java    
-	launch of specific FORM can be done commenting this lines except demanded one in 
-		./QualityChecker/scenarions/TransformationForms.java [also to prevent file overwriting:  
-		TransformationForms.evaluateForm1();  
-		TransformationForms.evaluateForm2();  
-		TransformationForms.evaluateForm3();  
-		TransformationForms.evaluateForm4();  
-		TransformationForms.evaluateForm5();  
+4b.) Control and debug framework execution:  
+	- manage to debug information printed in the console from ./EvolutionSPLFramework/src/evolutionSimulation/DebugInformation.java   
+ 	- manage CantoJS extension from ./EvolutionSPLFramework/src/evolutionSimulation/CanvasBasedApplicationConfiguration.java   
+  	- manage the configuration of divisioning process and recognition of your own annotations and markers from ./EvolutionSPLFramework/src/divisioner/VariationPointDivisionConfiguration.java  
+ 
+5b.) Run test evolution iteration:  
+	- left click on one ./EvolutionSPLFramework/src/evolutionSimulation/tests/EvolutionSimulationTest.java -> run > EvolutionSimulationTest.java      
 
+6b.) See results/SPL products/derived products in:  
+	- open ./EvolutionSPLFramework/evolutionDirectory and launch one of the index.html files from SPL project directories inside
+ 	- if logging is set to true, then it will take a few seconds more  
 
-4b.) See results in:  
-	-evaluated differences in CSV located in: ./QualityChecker (such as generalAGGREGATETYPHONE.csv) 
-	-generated files in two forms (BEFORE and AFTER in file name) in: ./QualityChecker/fileComparison [FOR THIS CASE THEY WILL OVERWRITTEN, but this is useful for Scenarios - this functionality is intended for  comparison]  
-
-
-5b.) Run specific scenario (1-7):   
-	-left click on one ./QualityChecker/scenarions/scenario1.java-scenario7.java -> run > scenario1.java    
-
-
-6b.) See results in:  
-	-generated files in two forms (AFTER AND BEFORE) in: ./QualityChecker/fileComparison  
-	-evaluated differences in CSV located in ./QualityChecker (such as generalAGGREGATETYPHONE.csv)    
-
-
-7b.) Erase or move created files to launch new scenario according to steps 5-6  
