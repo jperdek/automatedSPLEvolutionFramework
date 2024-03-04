@@ -1,0 +1,2 @@
+https://github.com/alexisbcook/ResNetCAM-keras
+https://keras.io/api/applications/inceptionresnetv2/

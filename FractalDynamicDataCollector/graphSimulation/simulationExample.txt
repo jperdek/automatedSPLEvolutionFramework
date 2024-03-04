@@ -1,0 +1,60 @@
+//https://stackoverflow.com/questions/49698496/how-to-get-the-parent-function-name-of-the-function-being-called
+
+var functions = {
+
+  coolfunction1: {
+    add: function() {
+
+    },
+    delete: function() {
+
+    },
+    save: function() {
+
+    }
+  },
+
+  coolfunction2: {
+    add: function() {
+
+      console.log("a is invoked");
+
+    },
+    delete: function() {
+
+    },
+    save: function() {
+
+    }
+  }
+
+};
+
+Object.keys(functions).forEach(t =>
+  Object.keys(functions[t]).forEach(t2 => {
+    var func = functions[t][t2];
+    Object.defineProperty(functions[t], t2, {
+      get: function() {
+        console.log(t);
+        //func();
+        return func;
+      }
+    });
+  })
+);
+
+functions.coolfunction2.add();
+functions.coolfunction2.add();
+functions.coolfunction1.add();
+
+
+//https://stackoverflow.com/questions/11279441/return-all-of-the-functions-that-are-defined-in-a-javascript-file
+function getAllFunctions(){ 
+        var allfunctions=[];
+          for ( var i in window) {
+        if((typeof window[i]).toString()=="function"){
+            allfunctions.push(window[i].name);
+          }
+       }
+    }
+getAllFunctions();

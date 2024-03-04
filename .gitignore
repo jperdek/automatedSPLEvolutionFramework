@@ -1,11 +1,11 @@
 /.metadata/
 /misc/ASTAnalysis/.idea
 /misc/ASTAnalysis/venv
-/converterAndComplexityAnalyzerAPI/node_modules
-/fractalDynamicDataCollector/vips-dev-8.12
-/fractalDynamicDataCollector/.idea
-/fractalDynamicDataCollector/generated_dataset_vp_data
-/fractalDynamicDataCollector/generated_dataset_vp_graph_data
-/fractalDynamicDataCollector/generated_dataset
+/ConverterAndComplexityAnalyzerAPI/node_modules
+/FractalDynamicDataCollector/vips-dev-8.12
+/FractalDynamicDataCollector/.idea
+/FractalDynamicDataCollector/generated_dataset_vp_data
+/FractalDynamicDataCollector/generated_dataset_vp_graph_data
+/FractalDynamicDataCollector/generated_dataset
 .Rproj.user
 /EvolutionSPLFramework/evolutionDirectory/*
