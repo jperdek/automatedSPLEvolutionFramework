@@ -57,10 +57,9 @@ Automated SPL evolution framework - evolving variability on code level: Applicat
 
 - 3a.) Substitute the following files from installed libraries (if skipped or set improperly, then Babel will have problems processing some decorators)  
 	```
-        cp ./changed defaults/BabelParser.js ./node_modules/@typhonjs/babel-parser/dist/BabelParser.js   
+	cp ./changed defaults/BabelParser.js ./node_modules/@typhonjs/babel-parser/dist/BabelParser.js   
 	cp ./changed defaults/eslint-patches.js ./node_modules/eslintcc/source/lib/eslint-patches.js   
 	```
- 
 	or  
   	```
 	copy "changedDefaults\BabelParser.js" "node_modules\@typhonjs\babel-parser\dist\BabelParser.js"  
@@ -104,8 +103,7 @@ Automated SPL evolution framework - evolving variability on code level: Applicat
 	- 4.1b.) Manual configuration
  		-left click on one ./EvolutionSPLFramework/src/splEvolutionCore/SPLEvolutionCore.java
    		-variable and decisions are described, some are still unimplemented
-   	
-    	- 4.2b.) Automated configuration
+   - 4.2b.) Automated configuration
  		-create instance of ./EvolutionSPLFramework/src/evolutionSimulation/EvolutionCoreSettings.java and use it in evolution similarly as in ./EvolutionSPLFramework/src/evolutionSimulation/tests/EvolutionSimulationTest.java
 
 - 5b.) Control and debug framework execution:  
