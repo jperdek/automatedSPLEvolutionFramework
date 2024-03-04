@@ -1,7 +1,7 @@
 # Automated SPL Evolution Framework  
 Automated SPL evolution framework - evolving variability on code level: Application on fractals  
 
-## Capabilities  
+## CAPABILITIES 
    - to focus and select a suitable variation point for a particular evolution activity  
    - choose from existing variation points beneficially and wisely (negative variability)  
    - to create code constructs from a particular context related to positive variability and ensure their execution   
