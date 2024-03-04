@@ -60,4 +60,11 @@ public class Resource {
 	 * true if the resource is currently evolved base script otherwise false
 	 */
 	public boolean isBase() { return this.isBase; }
+	
+	/**
+	 * Sets relative path to the project in case of static scripts shared across the evolution
+	 * 
+	 * @param relativePathFromProject - the relative path to the project in case of static scripts shared across the evolution
+	 */
+	public void setRelativeProjectPath(String relativePathFromProject) { this.relativePathFromProject = relativePathFromProject; }
 }

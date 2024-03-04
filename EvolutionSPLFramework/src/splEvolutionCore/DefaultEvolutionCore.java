@@ -12,6 +12,7 @@ import codeContext.processors.NotFoundVariableDeclaration;
 import codeContext.processors.export.exportedFileUnits.FileExportsUnits;
 import dividedAstExport.InvalidSystemVariationPointMarkerException;
 import divisioner.VariationPointDivisionConfiguration;
+import evolutionSimulation.productAssetsInitialization.SharedConfiguration;
 import evolutionSimulation.productAssetsInitialization.UnknownResourceToProcessException;
 import evolutionSimulation.tests.AlreadyMappedVariationPointContentsInjection;
 import evolutionSimulation.tests.EvolutionConfiguration;
@@ -108,11 +109,11 @@ public class DefaultEvolutionCore implements EvolutionCoreStrategies {
 				splAstTree, evolutionConfiguration, variationPointsArray);
 		
 		if (DebugInformation.OUTPIT_FILES_AS_ANNOTATED_AST_AND_CODE) {
-			UpdatedTreePersistence.persistsAstInFile("E:/aspects/spaProductLine/VariationPointDivisioner/evolutionDirectory/evolNum1/conccustom/vpData.json",
+			UpdatedTreePersistence.persistsAstInFile(SharedConfiguration.PROJECT_PATH + "/evolutionDirectory/evolNum1/conccustom/vpData.json",
 					variationPointsArray.toString());
-			UpdatedTreePersistence.persistsAstInFile("E:/aspects/spaProductLine/VariationPointDivisioner/evolutionDirectory/evolNum1/conccustom/ast.json",
+			UpdatedTreePersistence.persistsAstInFile(SharedConfiguration.PROJECT_PATH + "/evolutionDirectory/evolNum1/conccustom/ast.json",
 					splAstTree.toString());
-			UpdatedTreePersistence.persistsAstInFile("E:/aspects/spaProductLine/VariationPointDivisioner/evolutionDirectory/evolNum1/conccustom/ast.txt",
+			UpdatedTreePersistence.persistsAstInFile(SharedConfiguration.PROJECT_PATH + "/evolutionDirectory/evolNum1/conccustom/ast.txt",
 				ASTConverterClient.convertFromASTToCode(splAstTree.toString()));
 		}
 		

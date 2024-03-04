@@ -12,6 +12,7 @@ import codeContext.processors.NotFoundVariableDeclaration;
 import dividedAstExport.InvalidSystemVariationPointMarkerException;
 import divisioner.VariationPointDivisionConfiguration;
 import divisioner.divisionStrategies.RecallStrategy;
+import evolutionSimulation.productAssetsInitialization.SharedConfiguration;
 import variationPointsVisualization.AnnotationExtensionMarker;
 import variationPointsVisualization.DifferentAnnotationTypesOnTheSameVariationPoint;
 import variationPointsVisualization.DuplicatedAnnotation;
@@ -39,7 +40,7 @@ class RecallDivisionerStrategyTest {
 	@Test
 	void test() throws NotFoundVariableDeclaration, IOException, InterruptedException, 
 						InvalidSystemVariationPointMarkerException, DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation {
-		String filePath = "E:\\aspects\\spaProductLine\\VariationPointDivisioner\\src\\testFiles\\platnoJSIndirrectAll.js";
+		String filePath = SharedConfiguration.PROJECT_PATH + "\\src\\testFiles\\platnoJSIndirrectAll.js";
 		JSONArray harvestedVariationPoints = new RecallStrategy().divisionAndGetVariationPointsData(filePath);
 		
 		JSONObject variationPoint;

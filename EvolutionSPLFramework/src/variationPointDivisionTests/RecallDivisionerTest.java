@@ -4,6 +4,7 @@ import java.io.IOException;
 import codeContext.processors.NotFoundVariableDeclaration;
 import dividedAstExport.InvalidSystemVariationPointMarkerException;
 import divisioner.divisionStrategies.RecallStrategy;
+import evolutionSimulation.productAssetsInitialization.SharedConfiguration;
 import variationPointsVisualization.DifferentAnnotationTypesOnTheSameVariationPoint;
 import variationPointsVisualization.DuplicatedAnnotation;
 
@@ -30,10 +31,10 @@ public class RecallDivisionerTest {
 	 * @throws DuplicatedAnnotation
 	 */
 	public static void main(String args[]) throws NotFoundVariableDeclaration, IOException, InterruptedException, InvalidSystemVariationPointMarkerException, DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation {
-		//String filePath = "E:\\aspects\\spaProductLine\\VariationPointDivisioner\\src\\testFiles\\platnoJSIndirrect2.js";
-		String filePath = "E:\\aspects\\spaProductLine\\VariationPointDivisioner\\src\\testFiles\\platnoJSIndirrectAllTyped.js";
-		String fileOutputAstPath = "E:\\aspects\\spaProductLine\\VariationPointDivisioner\\output\\markedVariationPoints.json";
-		String fileOutputVariationPointsPath = "E:\\aspects\\spaProductLine\\VariationPointDivisioner\\output\\harvestedVariationPoints.json";
+		// String filePath = SharedConfiguration.PROJECT_PATH + "\\src\\testFiles\\platnoJSIndirrect2.js";
+		String filePath = SharedConfiguration.PROJECT_PATH + "\\src\\testFiles\\platnoJSIndirrectAllTyped.js";
+		String fileOutputAstPath = SharedConfiguration.PROJECT_PATH + "\\output\\markedVariationPoints.json";
+		String fileOutputVariationPointsPath = SharedConfiguration.PROJECT_PATH + "\\output\\harvestedVariationPoints.json";
 		new RecallStrategy().division(filePath, fileOutputAstPath, fileOutputVariationPointsPath);
 	}
 }

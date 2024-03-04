@@ -149,16 +149,36 @@ public class HTMLCanvasToTemplateInjector {
 			
 			shouldBeExcluded = false;
 			for (String scriptToOmit: HTMLCanvasToTemplateInjector.scriptsToOmit) {
-				if (absoluteOrRelativeProjectPath.toLowerCase().contains(scriptToOmit.toLowerCase())) { shouldBeExcluded = true; break; }
+				if (absoluteOrRelativeProjectPath.toLowerCase().contains(scriptToOmit.toLowerCase()) ||
+						scriptToOmit.toLowerCase().replace("\\", "/").contains(
+								absoluteOrRelativeProjectPath.toLowerCase().replace("\\", "/"))) { shouldBeExcluded = true; break; }
 			}
 			if (shouldBeExcluded) { continue; } //skipping scripts to omit
 
 			isLibrary = false;
 			for (String libraryPath: EvolutionSamples.getAllEvolutionSamples(null)) {
-				if (absoluteOrRelativeProjectPath.toLowerCase().contains(libraryPath.toLowerCase())) { isLibrary = true; break; }
+				System.out.println(libraryPath);
+				System.out.println(absoluteOrRelativeProjectPath);
+				if (absoluteOrRelativeProjectPath.replace("\\", "/").toLowerCase().contains(libraryPath.toLowerCase().replace("\\", "/"))
+						|| libraryPath.toLowerCase().replace("\\", "/").contains(
+								absoluteOrRelativeProjectPath.toLowerCase().replace("\\", "/"))) {
+					absoluteOrRelativeProjectPath = libraryPath; 
+					//importResource.setRelativeProjectPath(absoluteOrRelativeProjectPath);
+					System.out.println(libraryPath);
+					isLibrary = true; break; 
+				}
 			}
 			for (String libraryPath: EvolutionVariables.getAllEvolutionSamples(null)) {
-				if (absoluteOrRelativeProjectPath.toLowerCase().contains(libraryPath.toLowerCase())) { isLibrary = true; break; }
+				System.out.println(libraryPath);
+				System.out.println(absoluteOrRelativeProjectPath);
+				if (absoluteOrRelativeProjectPath.replace("\\", "/").toLowerCase().contains(libraryPath.toLowerCase().replace("\\", "/"))
+						|| libraryPath.toLowerCase().replace("\\", "/").contains(
+								absoluteOrRelativeProjectPath.toLowerCase().replace("\\", "/"))) { 
+					absoluteOrRelativeProjectPath = libraryPath; //change path to static configuration for all evolutions/steps/iterations 
+					System.out.println(libraryPath);
+					importResource.setRelativeProjectPath(libraryPath);
+					isLibrary = true; break;
+				}
 			}
 
 			if (absoluteOrRelativeProjectPath.contains("://") || absoluteOrRelativeProjectPath.contains(":\\")) {

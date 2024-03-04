@@ -85,6 +85,7 @@ public class VariationPointConjunctor {
 		for (ExportLocationAggregation exportedAggregation: exportedAggregations) {
 			for (ExportLocations exportLocations: exportedAggregation.getFileBasedLocations().values()) {
 				importPath = exportLocations.getImportPath();
+
 				if (!alreadyPreparedImports.contains(importPath)) {
 					alreadyPreparedImports.add(importPath);
 					

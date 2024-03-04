@@ -3,6 +3,8 @@ package evolutionSimulation.tests;
 import java.util.ArrayList;
 import java.util.List;
 
+import evolutionSimulation.productAssetsInitialization.SharedConfiguration;
+
 
 /**
  * Repository of custom/project specific variables for various scripts (fractals)
@@ -17,13 +19,13 @@ public class EvolutionVariables {
 	 * Path to configuration variables directory for specific project based scripts
 	 */
 	public static final String PATH_TO_SCRIPT = 
-			"E:\\aspects\\spaProductLine\\VariationPointDivisioner\\splsToMerge\\configurationVariables\\";
+			SharedConfiguration.PROJECT_PATH + "/splsToMerge/configurationVariables/";
 	
 	/**
 	 * Path to general configuration variables directory
 	 */
 	public static final String PATH_TO_BASE_SCRIPT = 
-			"E:\\aspects\\spaProductLine\\VariationPointDivisioner\\splsToMerge\\configurationVariablesGeneral\\";
+			SharedConfiguration.PROJECT_PATH + "/splsToMerge/configurationVariablesGeneral/";
 	
 	/**
 	 * Script names with general variables

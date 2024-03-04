@@ -9,6 +9,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 import evolutionSimulation.productAssetsInitialization.Resource;
+import evolutionSimulation.productAssetsInitialization.SharedConfiguration;
 
 
 /**
@@ -28,7 +29,7 @@ public interface CanvasBasedApplicationConfiguration {
 	/**
 	 * The location of CantoJS script (perceived as resource or one of SPL assets)
 	 */
-	public final static String CANTO_SCRIPT_RESOURCE_LOCATION = "E:\\aspects/spaProductLine/VariationPointDivisioner/resources/canto/canto-0.15.js";
+	public final static String CANTO_SCRIPT_RESOURCE_LOCATION = SharedConfiguration.CANTO_SCRIPT_RESOURCE_LOCATION;
 	
 	/**
 	 * The relative location of CantoJS script in project/SPL directory as one of its assets 

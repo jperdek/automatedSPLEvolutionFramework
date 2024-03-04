@@ -10,6 +10,7 @@ import dataRepresentationsExtensions.DataRepresentationsConfiguration;
 import dividedAstExport.InvalidSystemVariationPointMarkerException;
 import divisioner.VariationPointDivisionConfiguration;
 import evolutionSimulation.productAssetsInitialization.CanvasBasedResource;
+import evolutionSimulation.productAssetsInitialization.SharedConfiguration;
 import evolutionSimulation.productAssetsInitialization.UnknownResourceToProcessException;
 import positiveVariabilityManagement.UnmappedContextException;
 import positiveVariabilityManagement.VariationPointPlaceInArrayNotFound;
@@ -170,7 +171,7 @@ public class EvolutionSimulationTest {
 				DifferentlyAggregatedLocation, VariationPointPlaceInArrayNotFound, UnknownResourceToProcessException, 
 				AlreadyMappedVariationPointContentsInjection {
 		String inputFilePath = EvolutionSamples.FIVE_EDGE_INPUT_PATHS.get(0);
-		String outputFilePath = "E://aspects/spaProductLine/VariationPointDivisioner/evolutionDirectory";
+		String outputFilePath = SharedConfiguration.PATH_TO_EVOLUTION_DIRECTORY;
 		String currentEvolvedScriptRelativePath = "/js/platnoJS.js"; // this should be changed for each evolved project
 		//String templateRelativePath = "/index.html";
 		String pathToScriptInputFilePath = inputFilePath + "/" + EvolutionSamples.PATH_TO_SCRIPT;

@@ -80,9 +80,11 @@ public class WrappedTypeScriptContentInVariable {
 			scriptContentFromAST = ASTConverterClient.convertFromASTToCode(
 				synthesizedContent.getReferenceToProcessedAST().toString());
 			finalScriptContent = scriptContent.split(previousVariableName)[0] + this.variableName + " = `" + scriptContentFromAST + "`";
+			System.out.println("Replacing 2: " + previousVariableName + ">>>" + this.variableName);
 			this.typeScriptContent = finalScriptContent;
 			return finalScriptContent;
 		}
+		System.out.println("Replacing: " + previousVariableName + ">>>" + this.variableName);
 		finalScriptContent = scriptContent.replaceFirst(previousVariableName, this.variableName);
 		return finalScriptContent;
 	}

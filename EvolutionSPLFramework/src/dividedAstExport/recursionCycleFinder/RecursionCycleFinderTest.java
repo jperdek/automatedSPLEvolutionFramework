@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import codeConstructsEvaluation.transformation.ASTConverterClient;
 import codeConstructsEvaluation.transformation.PostRequester;
+import evolutionSimulation.productAssetsInitialization.SharedConfiguration;
 
 
 /**
@@ -27,7 +28,7 @@ class RecursionCycleFinderTest {
 	 */
 	@Test
 	void test() throws IOException, InterruptedException {
-		String filePath = "E:\\aspects/spaProductLine/VariationPointDivisioner/src/dividedAstExport/recursionCycleFinder/recursionTest.txt";
+		String filePath = SharedConfiguration.PROJECT_PATH + "/src/dividedAstExport/recursionCycleFinder/recursionTest.txt";
 		String fileContent = PostRequester.loadFileContent(filePath);
 		JSONObject astRoot = ASTConverterClient.convertFromCodeToASTJSON(fileContent);
 		RecursionCycleFinder recursionFinder = new RecursionCycleFinder(astRoot);
@@ -49,7 +50,7 @@ class RecursionCycleFinderTest {
 	 */
 	@Test
 	void test2() throws IOException, InterruptedException {
-		String filePath = "E:\\aspects/spaProductLine/VariationPointDivisioner/src/dividedAstExport/recursionCycleFinder/recursionTest2.txt";
+		String filePath = SharedConfiguration.PROJECT_PATH + "/src/dividedAstExport/recursionCycleFinder/recursionTest2.txt";
 		String fileContent = PostRequester.loadFileContent(filePath);
 		JSONObject astRoot = ASTConverterClient.convertFromCodeToASTJSON(fileContent);
 		RecursionCycleFinder recursionFinder = new RecursionCycleFinder(astRoot);

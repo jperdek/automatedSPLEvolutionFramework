@@ -3,6 +3,8 @@ package evolutionSimulation.tests;
 import java.util.ArrayList;
 import java.util.List;
 
+import evolutionSimulation.productAssetsInitialization.SharedConfiguration;
+
 /**
  * Repository of custom/project specific fractal rendering scripts (fractals)
  * -available functionality should be selectively marked as exported to efficiently tune and direct the evolution process
@@ -21,46 +23,46 @@ public class EvolutionSamples {
 	 * The paths to various projects that render Krishna anklet fractal with the similar structure
 	 */
 	public static final List<String> KRISHNA_ANKLET_INPUT_PATHS = List.of(
-			"E://aspects/spaProductLine/VariationPointDivisioner/splsToMerge/ankletFractal4",
-			"E://aspects/spaProductLine/VariationPointDivisioner/splsToMerge/ankletFractal5"
+			SharedConfiguration.PROJECT_PATH + "/splsToMerge/ankletFractal4",
+			SharedConfiguration.PROJECT_PATH + "/splsToMerge/ankletFractal5"
 	);
 	
 	/**
 	 * The paths to various projects that render Koch snowflake fractal with the similar structure
 	 */
 	public static final List<String> KOCH_INPUT_PATHS = List.of(
-			"E://aspects/spaProductLine/VariationPointDivisioner/splsToMerge/koch"
+			SharedConfiguration.PROJECT_PATH + "/splsToMerge/koch"
 	);
 	
 	/**
 	 * The paths to various projects that render Five edge fractal with the similar structure
 	 */
 	public static final List<String> FIVE_EDGE_INPUT_PATHS = List.of(
-			"E://aspects/spaProductLine/VariationPointDivisioner/splsToMerge/fiveEdge"
+			SharedConfiguration.PROJECT_PATH + "/splsToMerge/fiveEdge"
 	);
 	
 	/**
 	 * The paths to various projects that render N side shape with the similar structure
 	 */
 	public static final List<String> N_SIDE_INPUT_PATHS = List.of(
-			"E://aspects/spaProductLine/VariationPointDivisioner/splsToMerge/nSideHashtag"
+			SharedConfiguration.PROJECT_PATH + "/splsToMerge/nSideHashtag"
 	);
 	
 	/**
 	 * The paths to various projects that render Sierpinski shape with the similar structure
 	 */
 	public static final List<String> SIERPINSKI_INPUT_PATHS = List.of(
-			"E://aspects/spaProductLine/VariationPointDivisioner/splsToMerge/sierpinskyInOneStroke",
-			"E://aspects/spaProductLine/VariationPointDivisioner/splsToMerge/sierpinskyRecursion"
+			SharedConfiguration.PROJECT_PATH + "/splsToMerge/sierpinskyInOneStroke",
+			SharedConfiguration.PROJECT_PATH + "/splsToMerge/sierpinskyRecursion"
 	);
 	
 	/**
 	 * The paths to various projects that render W-Curves shape with the similar structure
 	 */
 	public static final List<String> WCURVES_INPUT_PATHS = List.of(
-			"E://aspects/spaProductLine/VariationPointDivisioner/splsToMerge/wkrivkyDoubled",
-			"E://aspects/spaProductLine/VariationPointDivisioner/splsToMerge/wkrivkyFractal4Recu",
-			"E://aspects/spaProductLine/VariationPointDivisioner/splsToMerge/wkrivkyFraktal"
+			SharedConfiguration.PROJECT_PATH + "/splsToMerge/wkrivkyDoubled",
+			SharedConfiguration.PROJECT_PATH + "/splsToMerge/wkrivkyFractal4Recu",
+			SharedConfiguration.PROJECT_PATH + "/splsToMerge/wkrivkyFraktal"
 	);
 	
 	
