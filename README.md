@@ -120,7 +120,7 @@ Automated SPL evolution framework - evolving variability on code level: Applicat
 
 
 
-### b) DATA EXTRACTION AND PROCESSING   
+### c) DATA EXTRACTION AND PROCESSING   
 
 #### INSTALLATION (For Windows, but quite similar for Linux)  
 
