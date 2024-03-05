@@ -1,16 +1,17 @@
-from analyzer import DynamicFractalAnalyzer
 import os
+from screenshooter import PlaywrightScreenshooter
 
 
 class DatasetVariabilityPointDataExtractor:
     def __init__(self) -> None:
-        self.dynamic_fractal_analyzer = DynamicFractalAnalyzer()
+        self.screenshooter = PlaywrightScreenshooter("chromium")
+        self.page = self.screenshooter.new_page()
 
     def process_dataset(
         self,
         dataset_directory_path: str,
         final_location_path: str = "./generated_dataset_vp_data",
-        is_wrapped: bool = False,
+        browser_timeout=30000,
     ) -> None:
         absolute_dataset_path = os.path.abspath(dataset_directory_path)
         absolute_final_path = os.path.abspath(final_location_path)
@@ -18,11 +19,12 @@ class DatasetVariabilityPointDataExtractor:
         for derivation_name in os.listdir(absolute_dataset_path):
             project_path = os.path.join(absolute_dataset_path, derivation_name)
             if os.path.isdir(project_path):
-                script_path = os.path.join(project_path, "js/platnoJS.js")
+                project_page_path = os.path.join(project_path, "index.html")
+                self.page.goto(project_page_path, timeout=browser_timeout)
                 vp_data_file_name = derivation_name + ".json"
                 final_image_path = os.path.join(absolute_final_path, vp_data_file_name)
-                variability_point_data = self.dynamic_fractal_analyzer.load_fractal(
-                    script_path, is_wrapped=is_wrapped
+                variability_point_data = self.page.evaluate(
+                    "() => JSON.stringify(globalResult);"
                 )
                 self.__save_json_data_to_file(variability_point_data, final_image_path)
 
@@ -38,5 +40,5 @@ if __name__ == "__main__":
     dataset_variability_point_data_extractor.process_dataset(
         "E:/aspects/automatedSPLEvolutionFramework/EvolutionSPLFramework/evolutionDirectory/evolNum1/conccustom",
         final_location_path="./generated_dataset_vp_data",
-        is_wrapped=True,
+        browser_timeout=180000,
     )
