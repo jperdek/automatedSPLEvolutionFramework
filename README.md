@@ -118,3 +118,32 @@ Automated SPL evolution framework - evolving variability on code level: Applicat
 	- open ./EvolutionSPLFramework/evolutionDirectory and launch one of the index.html files from SPL project directories inside
  	- if logging is set to true, then it will take a few seconds more  
 
+
+
+### b) DATA EXTRACTION AND PROCESSING   
+
+#### INSTALLATION (For Windows, but quite similar for Linux)  
+
+- 1b.) Install python programming language from https://www.python.org/downloads/  
+
+- 2b.) Switch to the Fractal Dynamic Data Collector folder  
+	```cd FractalDynamicDataCollector```  
+
+- 3b.) Create virtual environment and install dependencies stored in dependencies.txt  
+	```python -m virtualenv venv```  
+	```"./venv/Scripts/python.exe" -m pip install -r requirements.txt```  
+
+- 4b.) Initialize Playwrigth  
+	```"./venv/Scripts/python.exe" -m playwright install```
+
+
+#### TAKING SCREENSHOTS  
+
+-open ./FractalDynamicDataCollector/screenshoot_dataset.py and specify/change the arguments of the call on the line 52:  
+  - dataset_directory_path - the path pointing to directory where derived SPLs or products are stored \[CHANGE IS REQUIRED DURING SETUP]  
+  - final_location_path - the final location where taken screenshots are going to be stored, defaults to "./generated_dataset" \[CHANGE IS REQUIRED DURING SETUP]  
+     - it can be placed to derived SPLs or products which are located in ../EvolutionSPLFramework/evolutionDirectory/evolNum1/conccustom  
+     - the directory should contain directories with products each with own index.html file  
+  - max_size - changes the size of the image to this tuple (width, height), default value is None - the screenshot is not resized  
+  - canvas_id - the id of the element from which the screenshot should be taken, defaults to "#game"  
+  - browser_timeout - the timeout to load browser page and take screenshots (higher values are necessary where logging is enabled - factorials of data are logged in this case)  
