@@ -7,18 +7,23 @@
 # set the matplotlib backend so figures can be saved in the background
 import matplotlib
 
-matplotlib.use("Agg")  # "Agg "Will save the plot as a png, and will not pop up on the screen
-import keras
+matplotlib.use(
+    "Agg"
+)  # "Agg "Will save the plot as a png, and will not pop up on the screen
 # import the necessary packages
-from keras.preprocessing.image import \
-    ImageDataGenerator  # Generate batches of tensor image data with real-time data augmentation
+from keras.preprocessing.image import (
+    ImageDataGenerator,
+)  # Generate batches of tensor image data with real-time data augmentation
 from keras.optimizers import Adam
+
 # import keras.optimizers
-from keras.optimizers import \
-    SGD  # schotastic gradient desecnt : Optimizer for deep neural net --> SGD gives a constant learning rate
-from sklearn.model_selection import \
-    train_test_split  # randomly split the dataset into training and testing from tensorflow.keras.utils import img_to_array #Convert the image to array
-from keras.utils import to_categorical, img_to_array  # Converts a class vector (integers) to binary class matrix.
+from sklearn.model_selection import (
+    train_test_split,
+)  # randomly split the dataset into training and testing from tensorflow.keras.utils import img_to_array #Convert the image to array
+from keras.utils import (
+    to_categorical,
+    img_to_array,
+)  # Converts a class vector (integers) to binary class matrix.
 from imutils import paths
 import matplotlib.pyplot as plt
 import numpy as np
@@ -43,19 +48,12 @@ class LeNet:
         if K.image_data_format() == "channels_first":
             inputShape = (depth, height, width)
 
-        model.add(Conv2D(
-            20,
-            kernel_size=(5, 5),
-            padding="same",
-            input_shape=inputShape
-        ))
+        model.add(
+            Conv2D(20, kernel_size=(5, 5), padding="same", input_shape=inputShape)
+        )
         model.add(Activation("relu"))
         model.add(MaxPooling2D(strides=(2, 2)))
-        model.add(Conv2D(
-            50,
-            kernel_size=(5, 5),
-            padding="same"
-        ))
+        model.add(Conv2D(50, kernel_size=(5, 5), padding="same"))
         model.add(Activation("relu"))
         model.add(MaxPooling2D(strides=(2, 2)))
         model.add(Flatten())
@@ -69,12 +67,15 @@ class LeNet:
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-d", "--dataset", required=True,
-                help="path to input dataset")
-ap.add_argument("-m", "--model", required=True,
-                help="path to output model")
-ap.add_argument("-p", "--plot", type=str, default="plot.png",
-                help="path to output loss/accuracy plot")
+ap.add_argument("-d", "--dataset", required=True, help="path to input dataset")
+ap.add_argument("-m", "--model", required=True, help="path to output model")
+ap.add_argument(
+    "-p",
+    "--plot",
+    type=str,
+    default="plot.png",
+    help="path to output loss/accuracy plot",
+)
 args = vars(ap.parse_args())
 
 # initialize the number of epochs to train for, initia learning rate,
@@ -96,7 +97,9 @@ random.shuffle(imagePaths)
 
 # loop over the input images_native
 for imagePath in imagePaths:
-    image = cv2.imread(imagePath)  # load the image, pre-process it, and store it in the data list
+    image = cv2.imread(
+        imagePath
+    )  # load the image, pre-process it, and store it in the data list
     image = cv2.resize(image, (580, 580))
     image = img_to_array(image)
     data.append(image)
@@ -113,33 +116,43 @@ labels = np.array(labels)
 
 # partition the data into training and testing splits using 75% of
 # the data for training and the remaining 25% for testing
-(trainX, testX, trainY, testY) = train_test_split(data,
-                                                  labels, test_size=0.25, random_state=42)
+(trainX, testX, trainY, testY) = train_test_split(
+    data, labels, test_size=0.25, random_state=42
+)
 
 # convert the labels from integers to vectors
 trainY = to_categorical(trainY, num_classes=2)
 testY = to_categorical(testY, num_classes=2)
 
 # construct the image generator for data augmentation
-aug = ImageDataGenerator(rotation_range=30, width_shift_range=0.1,
-                         height_shift_range=0.1, shear_range=0.2, zoom_range=0.2,
-                         horizontal_flip=True, fill_mode="nearest")
+aug = ImageDataGenerator(
+    rotation_range=30,
+    width_shift_range=0.1,
+    height_shift_range=0.1,
+    shear_range=0.2,
+    zoom_range=0.2,
+    horizontal_flip=True,
+    fill_mode="nearest",
+)
 
 # initialize the model
 print("[Now compiling model...")
 model = LeNet.build(width=28, height=28, depth=3, classes=2)
 opt = Adam(lr=INIT_LR, decay=INIT_LR / EPOCHS)
 # opt = SGD(lr=INIT_LR, decay=INIT_LR / EPOCHS)
-model.compile(loss="binary_crossentropy", optimizer=opt,
-              metrics=["accuracy"])
+model.compile(loss="binary_crossentropy", optimizer=opt, metrics=["accuracy"])
 # A metric function is similar to a loss function, except that the results
 # from evaluating a metric are not used when training the model.
 
 # train the network
 print("Now training of network started...")
-H = model.fit_generator(aug.flow(trainX, trainY, batch_size=BS),
-                        validation_data=(testX, testY), steps_per_epoch=len(trainX) // BS,
-                        epochs=EPOCHS, verbose=1)  # Verbose : For ---> animation
+H = model.fit_generator(
+    aug.flow(trainX, trainY, batch_size=BS),
+    validation_data=(testX, testY),
+    steps_per_epoch=len(trainX) // BS,
+    epochs=EPOCHS,
+    verbose=1,
+)  # Verbose : For ---> animation
 
 # save the model to disk
 print("Now serializing network...")

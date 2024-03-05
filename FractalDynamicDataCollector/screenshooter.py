@@ -5,13 +5,17 @@ import os
 class PlaywrightScreenshooter:
     AVAILABLE_ENGINES = ["chromium", "firefox", "webkit"]
 
-    def __init__(self, engine_name: str, resolution: (int, int) = (2560, 1440), **arguments):
+    def __init__(
+        self, engine_name: str, resolution: (int, int) = (2560, 1440), **arguments
+    ):
         self.playwright_screenshooter = sync_playwright().start()
         self.engine_name = engine_name
         self.resolution = {"width": resolution[0], "height": resolution[1]}
         self.actual_page = None
         # launching
-        self.launched_browser = getattr(self.playwright_screenshooter, self.engine_name).launch(**arguments)
+        self.launched_browser = getattr(
+            self.playwright_screenshooter, self.engine_name
+        ).launch(**arguments)
 
     def launch(self, arguments: {}):
         chromium = self.playwright_screenshooter.chromium  # or "firefox" or "webkit".
@@ -22,11 +26,12 @@ class PlaywrightScreenshooter:
         self.actual_page = self.launched_browser.new_page(viewport=self.resolution)
         return self.actual_page
 
-    def take_screenshoot_according_locator(self,
-                                           focus_element_selector: str = "body", **arguments) -> bytes:
+    def take_screenshoot_according_locator(
+        self, focus_element_selector: str = "body", timeout: int = 30000
+    ) -> bytes:
         # arguments = {"type": "png", "quality": 100}
         locator = self.actual_page.locator(focus_element_selector)
-        return locator.screenshot(**arguments)
+        return locator.screenshot(timeout=timeout)
 
     def close(self) -> None:
         self.playwright_screenshooter.stop()

@@ -6,7 +6,10 @@ import numpy as np
 import cv2
 
 # construct the argument parse and parse the arguments
-from aestheticAssignment.sources.load_tuples import convert_tuples_to_vectors_with_filtering, load_data
+from aestheticAssignment.sources.load_tuples import (
+    convert_tuples_to_vectors_with_filtering,
+    load_data,
+)
 
 FINAL_IMAGE_SIZE = (600, 600)
 MODEL_PATH = "./modelMulti.model"
@@ -35,9 +38,19 @@ for image_name in image_paths:
 
 variation_points_data = load_data(VARIATION_POINT_DATA_PATH)
 centerX_vector, dimension = convert_tuples_to_vectors_with_filtering(
-    loaded_image_names_in_order, variation_points_data, "centerX", "iteration", MAX_VALUE_ARRAY_SIZE)
+    loaded_image_names_in_order,
+    variation_points_data,
+    "centerX",
+    "iteration",
+    MAX_VALUE_ARRAY_SIZE,
+)
 centerY_vector, dimension2 = convert_tuples_to_vectors_with_filtering(
-    loaded_image_names_in_order, variation_points_data, "centerY", "iteration", MAX_VALUE_ARRAY_SIZE)
+    loaded_image_names_in_order,
+    variation_points_data,
+    "centerY",
+    "iteration",
+    MAX_VALUE_ARRAY_SIZE,
+)
 
 
 model = load_model(MODEL_PATH)
@@ -45,17 +58,25 @@ model = load_model(MODEL_PATH)
 records = []
 for index, image_name in enumerate(image_paths):
     image_path = os.path.join(DATASET_IMAGES_PATH, image_name)
-    image = cv2.imread(image_path)  # load the image, pre-process it, and store it in the data list
+    image = cv2.imread(
+        image_path
+    )  # load the image, pre-process it, and store it in the data list
     image = cv2.resize(image, FINAL_IMAGE_SIZE)
     image = image.astype("float") / 255.0
     image = img_to_array(image)
     image = np.expand_dims(image, axis=0)
 
-    record_results = model.predict({
-        "base_image_layer": image,
-        "centerX": np.reshape(centerX_vector[index], (1, dimension[1], dimension[2])), # tf.reshape(centerX_vector, shape=(number_samples, 2)),
-        "centerY": np.reshape(centerY_vector[index], (1, dimension[1], dimension[2])), # tf.reshape(centerY_vector, shape=(number_samples, 2))
-    })[0]
+    record_results = model.predict(
+        {
+            "base_image_layer": image,
+            "centerX": np.reshape(
+                centerX_vector[index], (1, dimension[1], dimension[2])
+            ),  # tf.reshape(centerX_vector, shape=(number_samples, 2)),
+            "centerY": np.reshape(
+                centerY_vector[index], (1, dimension[1], dimension[2])
+            ),  # tf.reshape(centerY_vector, shape=(number_samples, 2))
+        }
+    )[0]
     # classify the input image
     record = {"name": image_name}
     highest = -1
@@ -70,8 +91,7 @@ for index, image_name in enumerate(image_paths):
     records.append(record)
 
 
-with open(RESULTS_CSV_PATH, "w", encoding="utf-8-sig", newline='') as csvfile:
+with open(RESULTS_CSV_PATH, "w", encoding="utf-8-sig", newline="") as csvfile:
     writer = csv.DictWriter(csvfile, fieldnames=records[0].keys(), delimiter=";")
     writer.writeheader()
     writer.writerows(records)
-

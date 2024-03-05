@@ -30,7 +30,9 @@ model = load_model(MODEL_PATH)
 records = []
 for image_name in image_paths:
     image_path = os.path.join(DATASET_IMAGES_PATH, image_name)
-    image = cv2.imread(image_path)  # load the image, pre-process it, and store it in the data list
+    image = cv2.imread(
+        image_path
+    )  # load the image, pre-process it, and store it in the data list
     image = cv2.resize(image, FINAL_IMAGE_SIZE)
     image = image.astype("float") / 255.0
     image = img_to_array(image)
@@ -54,8 +56,7 @@ for image_name in image_paths:
     records.append(record)
 
 
-with open(RESULTS_CSV_PATH, "w", encoding="utf-8-sig", newline='') as csvfile:
+with open(RESULTS_CSV_PATH, "w", encoding="utf-8-sig", newline="") as csvfile:
     writer = csv.DictWriter(csvfile, fieldnames=records[0].keys(), delimiter=";")
     writer.writeheader()
     writer.writerows(records)
-

@@ -9,22 +9,19 @@ import csv
 
 import matplotlib
 
-matplotlib.use("Agg")  # "Agg "Will save the plot as a png, and will not pop up on the screen
-import keras
+matplotlib.use(
+    "Agg"
+)  # "Agg "Will save the plot as a png, and will not pop up on the screen
 # import the necessary packages
-from keras.preprocessing.image import \
-    ImageDataGenerator  # Generate batches of tensor image data with real-time data augmentation
 from keras.optimizers import Adam
+
 # import keras.optimizers
-from keras.optimizers import \
-    SGD  # schotastic gradient desecnt : Optimizer for deep neural net --> SGD gives a constant learning rate
-from sklearn.model_selection import \
-    train_test_split  # randomly split the dataset into training and testing from tensorflow.keras.utils import img_to_array #Convert the image to array
-from keras.utils import to_categorical, img_to_array  # Converts a class vector (integers) to binary class matrix.
-from imutils import paths
+from keras.utils import (
+    to_categorical,
+    img_to_array,
+)  # Converts a class vector (integers) to binary class matrix.
 import matplotlib.pyplot as plt
 import numpy as np
-import argparse
 import random
 import cv2
 import os
@@ -45,19 +42,12 @@ class LeNet:
         if K.image_data_format() == "channels_first":
             inputShape = (depth, height, width)
 
-        model.add(Conv2D(
-            20,
-            kernel_size=(5, 5),
-            padding="same",
-            input_shape=inputShape
-        ))
+        model.add(
+            Conv2D(20, kernel_size=(5, 5), padding="same", input_shape=inputShape)
+        )
         model.add(Activation("relu"))
         model.add(MaxPooling2D(strides=(2, 2)))
-        model.add(Conv2D(
-            50,
-            kernel_size=(5, 5),
-            padding="same"
-        ))
+        model.add(Conv2D(50, kernel_size=(5, 5), padding="same"))
         model.add(Activation("relu"))
         model.add(MaxPooling2D(strides=(2, 2)))
         model.add(Flatten())
@@ -67,7 +57,6 @@ class LeNet:
         model.add(Activation("softmax"))
 
         return model
-
 
 
 # initialize the number of epochs to train for, initia learning rate,
@@ -88,7 +77,7 @@ labels = []
 
 # grab the image paths and randomly shuffle them
 random.seed(42)
-#random.shuffle(imagePaths)
+# random.shuffle(imagePaths)
 labels = []
 image_paths = []
 
@@ -106,7 +95,9 @@ number_classes = len(number_classes_dict.keys())
 # loop over the input images_native
 for image_name in image_paths:
     image_path = os.path.join(DATASET_IMAGES_PATH, image_name)
-    image = cv2.imread(image_path)  # load the image, pre-process it, and store it in the data list
+    image = cv2.imread(
+        image_path
+    )  # load the image, pre-process it, and store it in the data list
     image = cv2.resize(image, FINAL_IMAGE_SIZE)
     image = img_to_array(image)
     data.append(image)
@@ -123,11 +114,15 @@ testY = to_categorical(testY, num_classes=number_classes)
 
 # initialize the model
 print("[Now compiling model...")
-model = LeNet.build(width=FINAL_IMAGE_SIZE[0], height=FINAL_IMAGE_SIZE[1], depth=3, classes=number_classes)
+model = LeNet.build(
+    width=FINAL_IMAGE_SIZE[0],
+    height=FINAL_IMAGE_SIZE[1],
+    depth=3,
+    classes=number_classes,
+)
 opt = Adam(learning_rate=INIT_LR, decay=INIT_LR / EPOCHS)
 # opt = SGD(lr=INIT_LR, decay=INIT_LR / EPOCHS)
-model.compile(loss="categorical_crossentropy", optimizer=opt,
-              metrics=["accuracy"])
+model.compile(loss="categorical_crossentropy", optimizer=opt, metrics=["accuracy"])
 # A metric function is similar to a loss function, except that the results
 # from evaluating a metric are not used when training the model.
 history = model.fit(trainX, trainY, epochs=EPOCHS)
@@ -137,33 +132,32 @@ print("Now serializing network...")
 model.save(MODEL_PATH)
 
 results = model.evaluate(testX, testY)
-print('Training loss: ', results[0])
-print('Test accuracy: ', results[1])
+print("Training loss: ", results[0])
+print("Test accuracy: ", results[1])
 
 print(history.history.keys())
 print(history.history)
-loss = history.history['loss']
-val_loss = history.history['validation_loss']
+loss = history.history["loss"]
+val_loss = history.history["validation_loss"]
 
 epochs = range(1, len(loss) + 1)
 
-plt.plot(epochs, loss, 'bo', label='Trénovacia strata')
-plt.plot(epochs, val_loss, 'b', label='Validačná strata')
-plt.title('Trénovacia a validačná strata')
-plt.xlabel('Epochs')
-plt.ylabel('Loss')
+plt.plot(epochs, loss, "bo", label="Trénovacia strata")
+plt.plot(epochs, val_loss, "b", label="Validačná strata")
+plt.title("Trénovacia a validačná strata")
+plt.xlabel("Epochs")
+plt.ylabel("Loss")
 plt.legend()
 plt.show()
 
-acc = history.history['acc']
-val_acc = history.history['validation_acc']
+acc = history.history["acc"]
+val_acc = history.history["validation_acc"]
 
 epochs = range(1, len(acc) + 1)
 
-plt.plot(epochs, acc, 'bo', label='Trénovacia správnosť')
-plt.plot(epochs, val_acc, 'b', label="Validačná správnosť")
-plt.title('Trénovacia a validačná správnosť')
-plt.xlabel('Epochs')
-plt.ylabel('Accuracy')
+plt.plot(epochs, acc, "bo", label="Trénovacia správnosť")
+plt.plot(epochs, val_acc, "b", label="Validačná správnosť")
+plt.title("Trénovacia a validačná správnosť")
+plt.xlabel("Epochs")
+plt.ylabel("Accuracy")
 plt.legend()
-

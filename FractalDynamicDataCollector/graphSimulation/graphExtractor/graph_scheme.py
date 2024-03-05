@@ -1,17 +1,17 @@
-
 class FractalGraphScheme:
-
     @staticmethod
     def add_wcurve_instance_to_scheme(wcurve_scheme: dict) -> None:
-        wcurve_scheme.update({
-            "wcurve.diagonalLength": "int",
-            "wcurve.distanceWidthRadius": "int",
-            "wcurve.lineLength": "int",
-            "wcurve.lineLengthHalf": "int",
-            "wcurve.moveRatio": "int",
-            "wcurve.size": "int",
-            "wcurve.thickness": "int"
-        })
+        wcurve_scheme.update(
+            {
+                "wcurve.diagonalLength": "int",
+                "wcurve.distanceWidthRadius": "int",
+                "wcurve.lineLength": "int",
+                "wcurve.lineLengthHalf": "int",
+                "wcurve.moveRatio": "int",
+                "wcurve.size": "int",
+                "wcurve.thickness": "int",
+            }
+        )
 
     @staticmethod
     def create_default_scheme_for_draw_WCurve() -> dict:
@@ -22,7 +22,7 @@ class FractalGraphScheme:
             "direction": "int",
             "inheritedOperation": "bool",
             "iteration": "bool",
-            "moveRatioIteration": "float"
+            "moveRatioIteration": "float",
         }
         FractalGraphScheme.add_wcurve_instance_to_scheme(wcurve_scheme)
         return wcurve_scheme
@@ -39,7 +39,7 @@ class FractalGraphScheme:
             "x2": "float",
             "y1": "float",
             "y2": "float",
-            "thickness": "int"
+            "thickness": "int",
         }
         return line_scheme
 
@@ -50,7 +50,7 @@ class FractalGraphScheme:
             "distanceWidthRadius": "int",
             "lineLength": "int",
             "size": "int",
-            "thickness": "int"
+            "thickness": "int",
         }
         return wcurve_scheme
 
@@ -62,7 +62,7 @@ class FractalGraphScheme:
         return {
             "function drawWCurve": wcurve_scheme,
             "function drawLine": FractalGraphScheme.create_default_scheme_for_draw_line(),
-            "function Wcurve": FractalGraphScheme.create_default_scheme_for_wcurve()
+            "function Wcurve": FractalGraphScheme.create_default_scheme_for_wcurve(),
         }
 
     @staticmethod
@@ -71,6 +71,5 @@ class FractalGraphScheme:
         FractalGraphScheme.additionally_add_image_to_scheme(wcurve_scheme)
         return {
             "function drawWCurve": wcurve_scheme,
-            "function Wcurve": FractalGraphScheme.create_default_scheme_for_wcurve()
+            "function Wcurve": FractalGraphScheme.create_default_scheme_for_wcurve(),
         }
-

@@ -8,17 +8,19 @@
 import csv
 import os
 
-os.environ["PATH"] += os.pathsep + 'C:/Program Files/Graphviz/bin/'
+os.environ["PATH"] += os.pathsep + "C:/Program Files/Graphviz/bin/"
 
 # import the necessary packages
 from keras.applications.densenet import layers
 from keras.optimizers import Adam
-from keras.optimizers import \
-    SGD  # schotastic gradient desecnt : Optimizer for deep neural net --> SGD gives a constant learning rate
-from sklearn.model_selection import \
-    train_test_split  # randomly split the dataset into training and testing from tensorflow.keras.utils import img_to_array #Convert the image to array
-from keras.utils import to_categorical, img_to_array, \
-    plot_model  # Converts a class vector (integers) to binary class matrix.
+from sklearn.model_selection import (
+    train_test_split,
+)  # randomly split the dataset into training and testing from tensorflow.keras.utils import img_to_array #Convert the image to array
+from keras.utils import (
+    to_categorical,
+    img_to_array,
+    plot_model,
+)  # Converts a class vector (integers) to binary class matrix.
 import matplotlib.pyplot as plt
 import numpy as np
 import random
@@ -29,20 +31,28 @@ from keras.layers import Conv2D, MaxPooling2D
 from keras.layers import Activation, Flatten, Dense
 from keras import backend as K, Model, Input
 
-from aestheticAssignment.sources.load_tuples import load_data, convert_tuples_to_vectors_with_filtering
+from aestheticAssignment.sources.load_tuples import (
+    load_data,
+    convert_tuples_to_vectors_with_filtering,
+)
 
 
 class LeNetExtended:
-
     @staticmethod
-    def build_input_parts(associated_variable_names: list[str], dimension_layer: (int, int, int)) -> (
-            list[layers], list[layers]):
+    def build_input_parts(
+        associated_variable_names: list[str], dimension_layer: (int, int, int)
+    ) -> (list[layers], list[layers]):
         all_new_end_layers = []
         all_new_start_layers = []
         for associated_variable_name in associated_variable_names:
-            new_layer_input = Input(batch_shape=(None, dimension_layer[1], dimension_layer[2]),
-                                    dtype="float32", name=associated_variable_name)
-            new_layer = layers.Dense(32, activation='relu', name=associated_variable_name + "dense")(new_layer_input)
+            new_layer_input = Input(
+                batch_shape=(None, dimension_layer[1], dimension_layer[2]),
+                dtype="float32",
+                name=associated_variable_name,
+            )
+            new_layer = layers.Dense(
+                32, activation="relu", name=associated_variable_name + "dense"
+            )(new_layer_input)
 
             new_layer = Flatten()(new_layer)
             all_new_end_layers.append(new_layer)
@@ -51,19 +61,24 @@ class LeNetExtended:
 
     # [Conv=>relu ==>pool] * 2 =>fc=>softmax
     @staticmethod
-    def build(width, height, depth, classes, input_layers_start: list[layers], input_layers_end: list[layers]):
+    def build(
+        width,
+        height,
+        depth,
+        classes,
+        input_layers_start: list[layers],
+        input_layers_end: list[layers],
+    ):
         inputShape = (height, width, depth)
 
         if K.image_data_format() == "channels_first":
             inputShape = (depth, height, width)
 
         input_layer = Input(shape=inputShape, name="base_image_layer")
-        main_pipeline = Conv2D(
-            20, kernel_size=(5, 5), padding="same")(input_layer)
+        main_pipeline = Conv2D(20, kernel_size=(5, 5), padding="same")(input_layer)
         main_pipeline = Activation("relu")(main_pipeline)
         main_pipeline = MaxPooling2D(strides=(2, 2))(main_pipeline)
-        main_pipeline = Conv2D(
-            50, kernel_size=(5, 5), padding="same")(main_pipeline)
+        main_pipeline = Conv2D(50, kernel_size=(5, 5), padding="same")(main_pipeline)
         main_pipeline = Activation("relu")(main_pipeline)
         main_pipeline = MaxPooling2D(strides=(2, 2))(main_pipeline)
         main_pipeline = Flatten()(main_pipeline)
@@ -117,7 +132,9 @@ loaded_image_names_in_order = []
 for image_name in image_paths:
     loaded_image_names_in_order.append(image_name)
     image_path = os.path.join(DATASET_IMAGES_PATH, image_name)
-    image = cv2.imread(image_path)  # load the image, pre-process it, and store it in the data list
+    image = cv2.imread(
+        image_path
+    )  # load the image, pre-process it, and store it in the data list
     image = cv2.resize(image, FINAL_IMAGE_SIZE)
     image = img_to_array(image)
     data.append(image)
@@ -135,69 +152,97 @@ number_samples = len(loaded_image_names_in_order)
 
 variation_points_data = load_data(VARIATION_POINT_DATA_PATH)
 centerX_vector, dimension = convert_tuples_to_vectors_with_filtering(
-    loaded_image_names_in_order, variation_points_data, "centerX", "iteration", MAX_VALUE_ARRAY_SIZE)
+    loaded_image_names_in_order,
+    variation_points_data,
+    "centerX",
+    "iteration",
+    MAX_VALUE_ARRAY_SIZE,
+)
 centerY_vector, dimension2 = convert_tuples_to_vectors_with_filtering(
-    loaded_image_names_in_order, variation_points_data, "centerY", "iteration", MAX_VALUE_ARRAY_SIZE)
+    loaded_image_names_in_order,
+    variation_points_data,
+    "centerY",
+    "iteration",
+    MAX_VALUE_ARRAY_SIZE,
+)
 
-input_layers_start, input_layers_end = LeNetExtended.build_input_parts(["centerX", "centerY"], dimension)
-model = LeNetExtended.build(width=FINAL_IMAGE_SIZE[0], height=FINAL_IMAGE_SIZE[1], depth=3, classes=number_classes,
-                            input_layers_start=input_layers_start, input_layers_end=input_layers_end)
+input_layers_start, input_layers_end = LeNetExtended.build_input_parts(
+    ["centerX", "centerY"], dimension
+)
+model = LeNetExtended.build(
+    width=FINAL_IMAGE_SIZE[0],
+    height=FINAL_IMAGE_SIZE[1],
+    depth=3,
+    classes=number_classes,
+    input_layers_start=input_layers_start,
+    input_layers_end=input_layers_end,
+)
 opt = Adam(learning_rate=INIT_LR, decay=INIT_LR / EPOCHS)
 # opt = SGD(lr=INIT_LR, decay=INIT_LR / EPOCHS)
-model.compile(loss="categorical_crossentropy", optimizer=opt,
-              metrics=["accuracy"])
-plot_model(model, to_file='modelMultiInput.png', show_shapes=True, show_layer_names=True)
+model.compile(loss="categorical_crossentropy", optimizer=opt, metrics=["accuracy"])
+plot_model(
+    model, to_file="modelMultiInput.png", show_shapes=True, show_layer_names=True
+)
 
 if USE_VALIDATION_SET:
     # partition the data into training and testing splits using 75% of
     # the data for training and the remaining 25% for testing
-    (trainX, testX, trainY, testY) = train_test_split(data, labels, test_size=0.25, random_state=42)
+    (trainX, testX, trainY, testY) = train_test_split(
+        data, labels, test_size=0.25, random_state=42
+    )
 
     # convert the labels from integers to vectors
     trainY = to_categorical(trainY, num_classes=number_classes)
     testY = to_categorical(testY, num_classes=number_classes)
     # A metric function is similar to a loss function, except that the results
     # from evaluating a metric are not used when training the model.
-    history = model.fit(trainX, trainY, batch_size=BS,
-                        validation_data=(testX, testY), epochs=EPOCHS)
+    history = model.fit(
+        trainX, trainY, batch_size=BS, validation_data=(testX, testY), epochs=EPOCHS
+    )
 else:
     trainY = to_categorical(labels, num_classes=number_classes)
 
     # A metric function is similar to a loss function, except that the results
     # from evaluating a metric are not used when training the model.
-    history = model.fit({
-        "base_image_layer": data,
-        "centerX": centerX_vector,  # tf.reshape(centerX_vector, shape=(number_samples, 2)),
-        "centerY": centerY_vector,  # tf.reshape(centerY_vector, shape=(number_samples, 2))
-    }, trainY, batch_size=BS, epochs=EPOCHS, validation_split=0.2)
+    history = model.fit(
+        {
+            "base_image_layer": data,
+            "centerX": centerX_vector,  # tf.reshape(centerX_vector, shape=(number_samples, 2)),
+            "centerY": centerY_vector,  # tf.reshape(centerY_vector, shape=(number_samples, 2))
+        },
+        trainY,
+        batch_size=BS,
+        epochs=EPOCHS,
+        validation_split=0.2,
+    )
 
 # save the model to disk
 print("Now serializing network...")
 model.save(MODEL_PATH)
 
-loss = history.history['loss']
-val_loss = history.history['val_loss']
+loss = history.history["loss"]
+val_loss = history.history["val_loss"]
 
 epochs = range(1, len(loss) + 1)
 
-plt.plot(epochs, loss, 'bo', label='Trénovacia strata')
-plt.plot(epochs, val_loss, 'b', label='Validačná strata')
-plt.title('Trénovacia a validačná strata')
-plt.xlabel('Epochs')
-plt.ylabel('Loss')
+plt.plot(epochs, loss, "bo", label="Trénovacia strata")
+plt.plot(epochs, val_loss, "b", label="Validačná strata")
+plt.title("Trénovacia a validačná strata")
+plt.xlabel("Epochs")
+plt.ylabel("Loss")
 plt.legend()
 plt.show()
 plt.savefig("./model_loss.png")
 
-acc = history.history['accuracy']
-val_acc = history.history['val_accuracy']
+acc = history.history["accuracy"]
+val_acc = history.history["val_accuracy"]
 
 epochs = range(1, len(acc) + 1)
 
-plt.plot(epochs, acc, 'bo', label='Trénovacia správnosť')
-plt.plot(epochs, val_acc, 'b', label="Validačná správnosť")
-plt.title('Trénovacia a validačná správnosť')
-plt.xlabel('Epochs')
-plt.ylabel('Accuracy')
+plt.plot(epochs, acc, "bo", label="Trénovacia správnosť")
+plt.plot(epochs, val_acc, "b", label="Validačná správnosť")
+plt.title("Trénovacia a validačná správnosť")
+plt.xlabel("Epochs")
+plt.ylabel("Accuracy")
 plt.legend()
 plt.savefig("./model_acc.png")

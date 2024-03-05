@@ -25,8 +25,12 @@ def evaluate_most_frequent(values: str) -> float:
     return max_value
 
 
-def prepare_weights(base_record: dict, keys_for_weights: list[str],
-                    analyzed_content: str, associated_name: str = "perceivedAesthetics") -> None:
+def prepare_weights(
+    base_record: dict,
+    keys_for_weights: list[str],
+    analyzed_content: str,
+    associated_name: str = "perceivedAesthetics",
+) -> None:
     variables = {}
     analyzed_content = json.loads(analyzed_content.replace("'", '"'))
     for variable_name in keys_for_weights:
@@ -38,7 +42,9 @@ def prepare_weights(base_record: dict, keys_for_weights: list[str],
         base_record[associated_name + "_" + variable_name] = variables[variable_name]
 
 
-def aggregate_related_data(input_path: str, output_path: str, make_average: bool = True) -> None:
+def aggregate_related_data(
+    input_path: str, output_path: str, make_average: bool = True
+) -> None:
     data = []
     with open(input_path, "r", encoding="utf-8") as file:
         reader_dict = csv.DictReader(file, delimiter="$")
@@ -49,20 +55,34 @@ def aggregate_related_data(input_path: str, output_path: str, make_average: bool
             else:
                 row["Aesthetic"] = evaluate_most_frequent(row["Aesthetic"])
                 row["NotAesthetic"] = evaluate_most_frequent(row["NotAesthetic"])
-            prepare_weights(row, ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
-                            row["perceivedAesthetics"], "perceivedAesthetics")
-            prepare_weights(row, ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
-                            row["perceivedChaos"], "perceivedChaos")
+            prepare_weights(
+                row,
+                ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
+                row["perceivedAesthetics"],
+                "perceivedAesthetics",
+            )
+            prepare_weights(
+                row,
+                ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
+                row["perceivedChaos"],
+                "perceivedChaos",
+            )
             headers = list(row.keys())
             data.append(row)
-    with open(output_path,  "w", encoding="utf-8", newline="") as file:
+    with open(output_path, "w", encoding="utf-8", newline="") as file:
         writer_dict = csv.DictWriter(file, fieldnames=headers, delimiter="$")
         writer_dict.writeheader()
         writer_dict.writerows(data)
 
 
 if __name__ == "__main__":
-    aggregate_related_data("../generated_dataset_vp_graph_data_merged/function drawWCurve.csv",
-                           "./drawWCurveProcessed1.csv", True)
-    aggregate_related_data("../generated_dataset_vp_graph_data_merged/function drawWCurve.csv",
-                           "./drawWCurveProcessed2.csv", False)
+    aggregate_related_data(
+        "../generated_dataset_vp_graph_data_merged/function drawWCurve.csv",
+        "./drawWCurveProcessed1.csv",
+        True,
+    )
+    aggregate_related_data(
+        "../generated_dataset_vp_graph_data_merged/function drawWCurve.csv",
+        "./drawWCurveProcessed2.csv",
+        False,
+    )

@@ -7,25 +7,32 @@ from PIL import Image
 from io import BytesIO
 
 # for Windows only
-if hasattr(sys, 'getwindowsversion'):
-    os.environ['PATH'] += r";" + os.getcwd() + "\\vips-dev-8.12\\bin"
+if hasattr(sys, "getwindowsversion"):
+    os.environ["PATH"] += r";" + os.getcwd() + "\\vips-dev-8.12\\bin"
 import pyvips
 
 
 class ImageProcessor:
     @staticmethod
-    def automatically_trim_and_save_image(image_content: bytes, image_location: str,
-             max_size: Optional[tuple] = None, added_borders: int = 15,
-                                          color_to_trip=None) -> None:
+    def automatically_trim_and_save_image(
+        image_content: bytes,
+        image_location: str,
+        max_size: Optional[tuple] = None,
+        added_borders: int = 15,
+        color_to_trip=None,
+    ) -> None:
         if color_to_trip is None:
             color_to_trip = [51, 51, 51]
         image_content = ImageProcessor.trim_image_according_observed_boundaries(
-            image_content, added_borders=added_borders, color_to_trip=color_to_trip)
+            image_content, added_borders=added_borders, color_to_trip=color_to_trip
+        )
         ImageProcessor.save_image_using_PIL(image_content, image_location, max_size)
 
     @staticmethod
     def convert_from_svg(image_content: bytes) -> bytes:
-        u_image_file = pyvips.Image.new_from_buffer(image_content, "", access="sequential")
+        u_image_file = pyvips.Image.new_from_buffer(
+            image_content, "", access="sequential"
+        )
         image_file = u_image_file.write_to_buffer(".png")
         return image_file
 
@@ -35,31 +42,49 @@ class ImageProcessor:
         image = Image.open(image_file)
         width, height = image.size
 
-        new_image = image.crop((number_pixels, number_pixels, width - number_pixels, height - number_pixels))
+        new_image = image.crop(
+            (
+                number_pixels,
+                number_pixels,
+                width - number_pixels,
+                height - number_pixels,
+            )
+        )
 
         image.close()
         del image
         image_file.close()
         del image_file
         img_byte_arr = io.BytesIO()
-        new_image.save(img_byte_arr, format='PNG')
+        new_image.save(img_byte_arr, format="PNG")
         return img_byte_arr.getvalue()
 
     @staticmethod
-    def trim_image_according_observed_boundaries(image_content: bytes,
-                                                 access: str = "random", cropped_borders: int = 15,
-                                                 added_borders: int = 15,
-                                                 color_to_trip=None, threshold: int = 5,
-                                                 additionally_increase_with: int = 50, square: bool = False) -> bytes:
+    def trim_image_according_observed_boundaries(
+        image_content: bytes,
+        access: str = "random",
+        cropped_borders: int = 15,
+        added_borders: int = 15,
+        color_to_trip=None,
+        threshold: int = 5,
+        additionally_increase_with: int = 50,
+        square: bool = False,
+    ) -> bytes:
         if color_to_trip is None:
             color_to_trip = [51, 51, 51]
         if cropped_borders > 0:
-            image_content = ImageProcessor.__clip_borders(image_content, cropped_borders)
-        u_image_file = pyvips.Image.new_from_buffer(image_content, "", access=access) #access="sequential"
+            image_content = ImageProcessor.__clip_borders(
+                image_content, cropped_borders
+            )
+        u_image_file = pyvips.Image.new_from_buffer(
+            image_content, "", access=access
+        )  # access="sequential"
         original_height = u_image_file.height
 
         original_width = u_image_file.width
-        left, top, width, height = u_image_file[0].find_trim(background=color_to_trip, threshold=threshold)
+        left, top, width, height = u_image_file[0].find_trim(
+            background=color_to_trip, threshold=threshold
+        )
 
         if left != 0 and left - added_borders >= 0:
             left = left - added_borders
@@ -89,7 +114,9 @@ class ImageProcessor:
         return image_file
 
     @staticmethod
-    def increase_image_size(image_file: BytesIO, max_size: (int, int), color=None) -> Image:
+    def increase_image_size(
+        image_file: BytesIO, max_size: (int, int), color=None
+    ) -> Image:
         if color is None:
             color = (51, 51, 51)
         image = Image.open(image_file)
@@ -98,10 +125,18 @@ class ImageProcessor:
 
         if width > max_size[0]:
             raise Exception(
-                "Image width: " + str(width) + " is greater then is expected given by: " + str(max_size[0]))
+                "Image width: "
+                + str(width)
+                + " is greater then is expected given by: "
+                + str(max_size[0])
+            )
         if height > max_size[1]:
             raise Exception(
-                "Image height: " + str(height) + " is greater then is expected given by: " + str(max_size[1]))
+                "Image height: "
+                + str(height)
+                + " is greater then is expected given by: "
+                + str(max_size[1])
+            )
 
         left = int((max_size[0] - width) / 2.0)
         top = int((max_size[1] - height) / 2.0)
@@ -113,8 +148,9 @@ class ImageProcessor:
         return result
 
     @staticmethod
-    def save_image_using_PIL(image_content: bytes, image_location: str,
-                             max_size: Optional[tuple] = None) -> None:
+    def save_image_using_PIL(
+        image_content: bytes, image_location: str, max_size: Optional[tuple] = None
+    ) -> None:
         image_file = BytesIO(image_content)
         if max_size:
             image = ImageProcessor.increase_image_size(image_file, max_size)

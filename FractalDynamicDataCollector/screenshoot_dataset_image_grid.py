@@ -11,9 +11,13 @@ class DatasetScreenshooterToImageGrid:
         self.screenshooter = PlaywrightScreenshooter("chromium", resolution)
         self.page = self.screenshooter.new_page()
 
-    def process_dataset(self, dataset_directory_path: str,
-                        final_location_path: str = "./generated_dataset",
-                        max_size: Optional[tuple] = (3000, 3000), result_image_size: Optional[tuple] = (300, 300)) -> None:
+    def process_dataset(
+        self,
+        dataset_directory_path: str,
+        final_location_path: str = "./generated_dataset",
+        max_size: Optional[tuple] = (3000, 3000),
+        result_image_size: Optional[tuple] = (300, 300),
+    ) -> None:
         absolute_dataset_path = os.path.abspath(dataset_directory_path)
         absolute_final_path = os.path.abspath(final_location_path)
 
@@ -24,7 +28,7 @@ class DatasetScreenshooterToImageGrid:
             project_page_path = os.path.join(project_path, "index.html")
             sources_to_screenshot.append(project_page_path)
 
-        new_im = Image.new('RGB', max_size)
+        new_im = Image.new("RGB", max_size)
 
         index = 0
         for i in range(0, max_size[0], result_image_size[0]):
@@ -33,8 +37,12 @@ class DatasetScreenshooterToImageGrid:
                     break
                 project_page_path = sources_to_screenshot[index]
                 self.page.goto(project_page_path)
-                image_bytes = self.screenshooter.take_screenshoot_according_locator("#game")
-                image_bytes = ImageProcessor.trim_image_according_observed_boundaries(image_bytes)
+                image_bytes = self.screenshooter.take_screenshoot_according_locator(
+                    "#game"
+                )
+                image_bytes = ImageProcessor.trim_image_according_observed_boundaries(
+                    image_bytes
+                )
                 im = Image.open(io.BytesIO(image_bytes))
                 im.thumbnail(result_image_size)
                 new_im.paste(im, (i, j))
@@ -53,7 +61,7 @@ class DatasetScreenshooterToImageGrid:
         image_test = ImageProcessor.trim_image_according_observed_boundaries(image_test)
         ImageProcessor.save_image_using_PIL(image_test, "image.png", (600, 600))
         page_test.close()
-        #screenshooter_test.close()
+        # screenshooter_test.close()
 
     def close(self) -> None:
         self.page.close()
@@ -66,6 +74,9 @@ if __name__ == "__main__":
     if test:
         dataset_screenshooter.test()
     else:
-        dataset_screenshooter.process_dataset("E://aspects/src/derived",
-                                              max_size=(1500, 2500), result_image_size=(100, 100))
+        dataset_screenshooter.process_dataset(
+            "E://aspects/src/derived",
+            max_size=(1500, 2500),
+            result_image_size=(100, 100),
+        )
     # dataset_screenshooter.close()

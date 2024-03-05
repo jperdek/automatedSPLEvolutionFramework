@@ -1,11 +1,8 @@
-import os
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import tensorflow as tf
-from keras.utils import to_categorical
 from tensorflow import keras
-from sklearn.feature_extraction.text import TfidfVectorizer
 from tensorflow.keras import layers
 
 
@@ -173,7 +170,9 @@ class GNNNodeClassifier(tf.keras.Model):
             name="graph_conv2",
         )
         # Create a postprocess layer.
-        self.postprocess = self.create_ffn(hidden_units, dropout_rate, name="postprocess")
+        self.postprocess = self.create_ffn(
+            hidden_units, dropout_rate, name="postprocess"
+        )
         # Create a compute logits layer.
         self.compute_logits = layers.Dense(units=num_classes, name="logits")
 
@@ -221,7 +220,9 @@ class GNNNodeClassifier(tf.keras.Model):
         ax2.set_ylabel("Accuracy")
         plt.show()
 
-    def run_experiment(self, model, x_train, y_train, num_epochs, batch_size, learning_rate):
+    def run_experiment(
+        self, model, x_train, y_train, num_epochs, batch_size, learning_rate
+    ):
         # Compile the model.
         model.compile(
             optimizer=keras.optimizers.Adam(learning_rate),
@@ -245,38 +246,97 @@ class GNNNodeClassifier(tf.keras.Model):
         return history
 
 
-node_edges = pd.read_csv("data/connections.csv", sep="$", header=0, names=["from", "to"])
+node_edges = pd.read_csv(
+    "data/connections.csv", sep="$", header=0, names=["from", "to"]
+)
 
-column_names = ["node_id", "fname", "distanceWidthRadius", "lineLength", "size", "thickness", "__counter__",
-                "Name", "NotAesthetic", "Aesthetic", "perceivedAesthetics", "perceivedChaos", "same_counter",
-                "centerX", "centerY", "direction", "inheritedOperation", "iteration", "moveRatioIteration",
-                "wcurve.diagonalLength", "wcurve.distanceWidthRadius", "wcurve.lineLength", "wcurve.lineLengthHalf",
-                "wcurve.moveRatio", "wcurve.size", "wcurve.thickness", "image_base64_url", "perceivedAesthetics_0",
-                "perceivedAesthetics_1", "perceivedAesthetics_2", "perceivedAesthetics_3", "perceivedAesthetics_4",
-                "perceivedAesthetics_5", "perceivedAesthetics_6", "perceivedAesthetics_7", "perceivedAesthetics_8",
-                "perceivedAesthetics_9", "perceivedChaos_0", "perceivedChaos_1", "perceivedChaos_2",
-                "perceivedChaos_3", "perceivedChaos_4", "perceivedChaos_5", "perceivedChaos_6", "perceivedChaos_7",
-                "perceivedChaos_8", "perceivedChaos_9"]
+column_names = [
+    "node_id",
+    "fname",
+    "distanceWidthRadius",
+    "lineLength",
+    "size",
+    "thickness",
+    "__counter__",
+    "Name",
+    "NotAesthetic",
+    "Aesthetic",
+    "perceivedAesthetics",
+    "perceivedChaos",
+    "same_counter",
+    "centerX",
+    "centerY",
+    "direction",
+    "inheritedOperation",
+    "iteration",
+    "moveRatioIteration",
+    "wcurve.diagonalLength",
+    "wcurve.distanceWidthRadius",
+    "wcurve.lineLength",
+    "wcurve.lineLengthHalf",
+    "wcurve.moveRatio",
+    "wcurve.size",
+    "wcurve.thickness",
+    "image_base64_url",
+    "perceivedAesthetics_0",
+    "perceivedAesthetics_1",
+    "perceivedAesthetics_2",
+    "perceivedAesthetics_3",
+    "perceivedAesthetics_4",
+    "perceivedAesthetics_5",
+    "perceivedAesthetics_6",
+    "perceivedAesthetics_7",
+    "perceivedAesthetics_8",
+    "perceivedAesthetics_9",
+    "perceivedChaos_0",
+    "perceivedChaos_1",
+    "perceivedChaos_2",
+    "perceivedChaos_3",
+    "perceivedChaos_4",
+    "perceivedChaos_5",
+    "perceivedChaos_6",
+    "perceivedChaos_7",
+    "perceivedChaos_8",
+    "perceivedChaos_9",
+]
 feature_names = ["node_id", "Aesthetic"]
 feature_names_used = ["centerX", "centerY"]
-graph_nodes_all = pd.read_csv("data/drawWCurveProcessed.csv", sep="$", header=0, names=column_names)
+graph_nodes_all = pd.read_csv(
+    "data/drawWCurveProcessed.csv", sep="$", header=0, names=column_names
+)
 graph_nodes = graph_nodes_all[feature_names]
 
 class_values = sorted(graph_nodes["Aesthetic"].unique())
 class_idx = {name: id for id, name in enumerate(class_values)}
-nodes_fb_idx = {name: idx for idx, name in enumerate(sorted(graph_nodes["node_id"].unique()))}
+nodes_fb_idx = {
+    name: idx for idx, name in enumerate(sorted(graph_nodes["node_id"].unique()))
+}
 
 # filter edges
 edges_to_omit = list(set(node_edges["to"]).difference(graph_nodes["node_id"]))
 edges_from_omit = list(set(node_edges["from"]).difference(graph_nodes["node_id"]))
-node_edges = node_edges.drop([node_edges.index[index] for index, edge in enumerate(node_edges["to"]) if edge in edges_to_omit or edge in edges_from_omit])
-node_edges = node_edges.drop([node_edges.index[index] for index, edge in enumerate(node_edges["from"]) if edge in edges_from_omit or edge in edges_to_omit])
+node_edges = node_edges.drop(
+    [
+        node_edges.index[index]
+        for index, edge in enumerate(node_edges["to"])
+        if edge in edges_to_omit or edge in edges_from_omit
+    ]
+)
+node_edges = node_edges.drop(
+    [
+        node_edges.index[index]
+        for index, edge in enumerate(node_edges["from"])
+        if edge in edges_from_omit or edge in edges_to_omit
+    ]
+)
 
 
 graph_nodes["node_id"] = graph_nodes["node_id"].apply(lambda name: nodes_fb_idx[name])
 node_edges["to"] = node_edges["to"].apply(lambda name: nodes_fb_idx[name])
 node_edges["from"] = node_edges["from"].apply(lambda name: nodes_fb_idx[name])
-graph_nodes["Aesthetic"] = graph_nodes["Aesthetic"].apply(lambda value: class_idx[value])
+graph_nodes["Aesthetic"] = graph_nodes["Aesthetic"].apply(
+    lambda value: class_idx[value]
+)
 
 
 hidden_units = [32, 32]
@@ -291,8 +351,10 @@ edge_weights = tf.ones(shape=edges.shape[1])
 
 
 graph_nodes = graph_nodes.join(graph_nodes_all[feature_names_used])
-node_features = tf.cast(graph_nodes.sort_values("node_id")[
-                            feature_names].to_numpy().astype('float32'), dtype=tf.dtypes.float32)
+node_features = tf.cast(
+    graph_nodes.sort_values("node_id")[feature_names].to_numpy().astype("float32"),
+    dtype=tf.dtypes.float32,
+)
 
 print("Edges shape:", edges.shape)
 print("Nodes shape:", node_features.shape)
@@ -320,11 +382,15 @@ x_test = test_data[feature_names].to_numpy()
 print(x_train.shape)
 print(x_test.shape)
 # Create train and test targets as a numpy array.
-y_train = np.array([1 if aesthetics > 0.5 else 0 for aesthetics in train_data["Aesthetic"]])
-y_test = np.array([1 if aesthetics > 0.5 else 0 for aesthetics in test_data["Aesthetic"]])
+y_train = np.array(
+    [1 if aesthetics > 0.5 else 0 for aesthetics in train_data["Aesthetic"]]
+)
+y_test = np.array(
+    [1 if aesthetics > 0.5 else 0 for aesthetics in test_data["Aesthetic"]]
+)
 train_data = train_data.drop("Aesthetic", axis=1)
 test_data = test_data.drop("Aesthetic", axis=1)
-#print(y_train.shape)
+# print(y_train.shape)
 print(num_classes)
 gnn_model = GNNNodeClassifier(
     graph_info=graph_info,
@@ -338,7 +404,9 @@ print("GNN output shape:", gnn_model([1, 10, 100]))
 gnn_model.summary()
 
 x_train = train_data.node_id.to_numpy()
-history = gnn_model.run_experiment(gnn_model, x_train, y_train, num_epochs, batch_size, learning_rate)
+history = gnn_model.run_experiment(
+    gnn_model, x_train, y_train, num_epochs, batch_size, learning_rate
+)
 
 gnn_model.display_learning_curves(history)
 
