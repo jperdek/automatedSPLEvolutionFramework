@@ -306,6 +306,4 @@ public interface SPLEvolutionCore {
 	 * if true then the resulting variation points sequence of SPL will be persisted otherwise not 
 	 */
 	public final static boolean SERIALIZE_VARIATION_POINTS = true;
-	
-	public final static boolean NOT_LOG_OBJECTS = false;
 }

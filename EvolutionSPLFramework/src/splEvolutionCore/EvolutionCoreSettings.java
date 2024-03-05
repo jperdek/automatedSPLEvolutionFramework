@@ -39,6 +39,8 @@ import divisioner.divisionStrategies.RecallStrategy;
 import java.util.ArrayList;
 import java.util.List;
 
+import dataRepresentationsExtensions.DefaultDataRepresentations;
+
 
 /**
  * Instantiates strategies according to configuration from SPLEvolutionCore
@@ -94,8 +96,8 @@ public class EvolutionCoreSettings {
 	}
 	
 	public void setDefaultDataExtensions() {
-		this.notLogObjects = SPLEvolutionCore.NOT_LOG_OBJECTS;
-		this.notLogFunctions = false;
+		this.notLogObjects = DefaultDataRepresentations.NOT_LOG_OBJECTS;
+		this.notLogFunctions = DefaultDataRepresentations.NOT_LOG_FUNCTIONS;
 		this.notLogClassFunctions = false;
 		this.notLogClassConstructorFunctions = false;
 	}

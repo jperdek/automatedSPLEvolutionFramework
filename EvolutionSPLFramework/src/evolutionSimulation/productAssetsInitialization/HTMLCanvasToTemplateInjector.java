@@ -97,7 +97,7 @@ public class HTMLCanvasToTemplateInjector {
 		Element scriptElement = new Element(Tag.valueOf("script"), "");
 		scriptElement.attr("width", Integer.toString(canvasWidth));
 		scriptElement.attr("height", Integer.toString(canvasHeight));
-		scriptElement.id(canvasElementName);
+		// scriptElement.id("script" + canvasElementName); // ID should be unique and occur only once in HTML file
 		return scriptElement;
 	}
 	

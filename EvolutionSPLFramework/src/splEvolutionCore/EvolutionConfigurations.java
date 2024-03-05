@@ -29,6 +29,7 @@ import java.util.List;
 /**
  * Supported configurations to manage evolution phase/phases
  * 
+ * 
  * @author Jakub Perdek
  *
  */
