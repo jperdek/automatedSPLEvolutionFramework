@@ -84,19 +84,21 @@ class GraphProcessor:
         node_content = {"id": node_id}
         if drawing:
             if image_settings is None:
-                image_settings = ImageSettings()
-            image_settings.associated_objects = (
-                graph_json_node[connector_list_name]
-                if connector_list_name in graph_json_node.keys()
-                else []
-            )
+                image_settings = ImageSettings(disable_taking_images=False)
+            if not image_settings.disable_taking_images:
+                image_settings.associated_objects = (
+                    graph_json_node[connector_list_name]
+                    if connector_list_name in graph_json_node.keys()
+                    else []
+                ).copy()
 
-            image_settings.connector_type_name = connector_type_name
-            node_content[
-                "image_base64_url"
-            ] = GeometryDataToImage.put_geometry_data_to_image(
-                graph_json_node, image_settings
-            )
+                image_settings.connector_type_name = connector_type_name
+                node_content[
+                    "image_base64_url"
+                ] = GeometryDataToImage.put_geometry_data_to_image(
+                    graph_json_node, image_settings
+                )
+                image_settings.associated_objects.clear()
         for key, value in graph_json_node.items():
             if (
                 connector_list_name != key

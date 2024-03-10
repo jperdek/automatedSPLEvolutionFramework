@@ -33,7 +33,10 @@ class GeometryDataToImage:
 
     @staticmethod
     def draw_geometry_operation(
-        draw: ImageDraw, operation_name: str, associated_object: dict
+        draw: ImageDraw,
+        operation_name: str,
+        associated_object: dict,
+        thickness: int = 2,
     ) -> bool:
         if operation_name == "drawFiveSide":
             if not GeometryDataToImage.__check_consistency_of_keys_in_object(
@@ -54,6 +57,7 @@ class GeometryDataToImage:
                     associated_object["y2"],
                 ],
                 color,
+                width=thickness,
             )
             draw.line(
                 [
@@ -63,6 +67,7 @@ class GeometryDataToImage:
                     associated_object["y3"],
                 ],
                 color,
+                width=thickness,
             )
             draw.line(
                 [
@@ -72,6 +77,7 @@ class GeometryDataToImage:
                     associated_object["y4"],
                 ],
                 color,
+                width=thickness,
             )
             draw.line(
                 [
@@ -81,6 +87,7 @@ class GeometryDataToImage:
                     associated_object["y5"],
                 ],
                 color,
+                width=thickness,
             )
             draw.line(
                 [
@@ -90,6 +97,7 @@ class GeometryDataToImage:
                     associated_object["y1"],
                 ],
                 color,
+                width=thickness,
             )
             return True
         elif operation_name == "drawLine":
@@ -110,6 +118,7 @@ class GeometryDataToImage:
                     associated_object["y2"],
                 ],
                 color,
+                width=thickness,
             )
             return True
         else:
@@ -122,6 +131,7 @@ class GeometryDataToImage:
         draw: ImageDraw,
         function_names_to_generators_mapping: any,
         connector_type_name: str = "fname",
+        thickness: int = 2,
     ):
         if (
             connector_type_name in checked_object.keys()
@@ -132,7 +142,7 @@ class GeometryDataToImage:
                 checked_object[connector_type_name]
             ]
             if GeometryDataToImage.draw_geometry_operation(
-                draw, operation_name, checked_object
+                draw, operation_name, checked_object, thickness=thickness
             ):
                 return True
         return False
@@ -169,6 +179,7 @@ class GeometryDataToImage:
                 draw,
                 function_names_to_generators_mapping,
                 connector_type_name,
+                thickness=image_settings.line_thickness,
             ):
                 something_has_been_drawn = True
         if something_has_been_drawn:

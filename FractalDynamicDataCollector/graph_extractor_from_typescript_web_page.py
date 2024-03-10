@@ -106,6 +106,8 @@ if __name__ == "__main__":
         # whole hierarchy under given node will be skipped (if primitive drawing commands are mapped only otherwise
         # should be disabled)
         skip_nodes_used_to_draw_image=False,
-        image_settings=ImageSettings((1200, 1200), (400, 400)),
+        image_settings=ImageSettings(
+            (1200, 1200), (400, 400), disable_taking_images=True
+        ),
         browser_timeout=180000,
     )

@@ -15,7 +15,9 @@ class ImageSettings:
         result_dimensions: (int, int) = (200, 200),
         trim: bool = True,
         color_to_strip=None,
+        disable_taking_images: bool = False,
         trim_threshold: int = 55,
+        line_thickness: int = 3,
     ) -> None:
         if color_to_strip is None:
             color_to_strip = [255, 255, 255]
@@ -26,6 +28,8 @@ class ImageSettings:
         self.trim_threshold = trim_threshold
         self.associated_objects = []
         self.connector_type_name = []
+        self.line_thickness = line_thickness
+        self.disable_taking_images = disable_taking_images
 
 
 class MergeConfiguration:
