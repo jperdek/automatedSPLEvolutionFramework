@@ -6,7 +6,9 @@ Automated SPL evolution framework - evolving variability on code level: Applicat
    - choose from existing variation points beneficially and wisely (negative variability)  
    - to create code constructs from a particular context related to positive variability and ensure their execution   
    - to select variation points, then constructs on these points, and finally select some of these chosen constructs from some selected variation points to model features  
-   - to restrict the number of final products  
+   - to restrict the number of final products
+   - to produce various data representations and analyze them with various models (to enable comparison of various models under differently represented data)
+	- graph data, relation data, semi-relational data (logs), raster data (screenshots), and vector data (captured commands into XML)  
          
 
 ## CONTENTS      
