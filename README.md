@@ -15,7 +15,7 @@ Automated SPL evolution framework - evolving variability on code level: Applicat
 - in folder /EvolutionSPLFramework
 - the framework for automated aspect-oriented knowledge-driven SPL evolution  
       
-### Converter And Complexity Analysis API  
+### AST Converter And Complexity Analysis API  
 - in folder /ConverterAndComplexityAnalyzerAPI  
 - the API to convert JavaScript/TypeScript code into AST and back  
 - The API to evaluate code complexity metrics, including Halstead measures and LOC   
