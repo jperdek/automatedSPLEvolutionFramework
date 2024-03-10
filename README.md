@@ -139,16 +139,16 @@ Automated SPL evolution framework - evolving variability on code level: Applicat
 
 #### TAKING SCREENSHOTS  
 
-- open ./FractalDynamicDataCollector/screenshoot_dataset.py and specify/change the arguments of the call on the line 52:  
-  - dataset_directory_path - the path pointing to directory where derived SPLs or products are stored \[CHANGE IS REQUIRED DURING SETUP]  
+- open ./FractalDynamicDataCollector/screenshoot_dataset.py and specify/change the arguments of the call on line 52:  
+  - dataset_directory_path - the path pointing to the directory where derived SPLs or products are stored \[CHANGE IS REQUIRED DURING SETUP]  
   - final_location_path - the final location where taken screenshots are going to be stored, defaults to "./generated_dataset" \[CHANGE IS REQUIRED DURING SETUP]  
      - it can be placed to derived SPLs or products which are located in ../EvolutionSPLFramework/evolutionDirectory/evolNum1/conccustom  
-     - the directory should contain directories with products each with own index.html file  
+     - the directory should contain directories with products, each with its own index.html file  
   - max_size - changes the size of the image to this tuple (width, height), default value is None - the screenshot is not resized  
   - canvas_id - the id of the element from which the screenshot should be taken, defaults to "#game"  
-  - browser_timeout - the timeout to load browser page and take screenshots (higher values are necessary where logging is enabled - factorials of data are logged in this case)
+  - browser_timeout - the timeout to load the browser page and take screenshots (higher values are necessary where logging is enabled - factorials of data are logged in this case)
 
-- run following command:    
+- run the following command:    
    ```"./venv/Scripts/python.exe" "./FractalDynamicDataCollector/screenshoot_dataset.py"```
 
   ![Taking screenshots](https://github.com/jperdek/automatedSPLEvolutionFramework/blob/master/misc/screenshots/screenshoting.png)  
@@ -157,25 +157,52 @@ Automated SPL evolution framework - evolving variability on code level: Applicat
   
 #### GETTING LOGS FROM TYPESCRIPT SCRIPTS USED IN HTML TEMPLATES  
 
-- the script will load the html page and get logs from instantiated product (TypeScript cannot be easily processed by js2py library)
-- open ./FractalDynamicDataCollector/dataset_variability_point_data_extractor_from_typescript_web_page.py and specify/change the arguments of the call on the line 40:
-  - dataset_directory_path - the path pointing to directory where derived SPLs or products are stored \[CHANGE IS REQUIRED DURING SETUP]  
+- the script will load the html page and get logs from the instantiated product (TypeScript cannot be quickly processed by the js2py library)  
+- open ./FractalDynamicDataCollector/dataset_variability_point_data_extractor_from_typescript_web_page.py and specify/change the arguments of the call on line 40:  
+  - dataset_directory_path - the path pointing to the directory where derived SPLs or products are stored \[CHANGE IS REQUIRED DURING SETUP]  
+     - it can be placed to derived SPLs or products which are located in ../EvolutionSPLFramework/evolutionDirectory/evolNum1/conccustom   
+     - the directory should contain directories with products, each with its own index.html file   
   - final_location_path - the final location where extracted logs are going to be stored, defaults to "./generated_dataset_vp_data" \[CHANGE IS REQUIRED DURING SETUP]  
-     - it can be placed to derived SPLs or products which are located in ../EvolutionSPLFramework/evolutionDirectory/evolNum1/conccustom  
-     - the directory should contain directories with products each with own index.html file  
-  - browser_timeout - the timeout to load browser page and execute related scripts (higher values are necessary where logging is enabled - factorials of data are logged in this case)
-- run following command:    
+  - browser_timeout - the timeout to load the browser page and execute related scripts (higher values are necessary where logging is enabled - factorials of data are logged in this case)  
+- run the following command:    
    ```"./venv/Scripts/python.exe" "./FractalDynamicDataCollector/dataset_variability_point_data_extractor_from_typescript_web_page.py"```
 
 
+  
 #### GETTING LOGS FROM JAVASCRIPT SCRIPTS (FASTER BUT WITHOUT TYPESCRIPT TRANSPILATION SUPPORT)   
 
-- the script will load the main script using js2py library  
-- open ./FractalDynamicDataCollector/dataset_variability_point_data_extractor.py and specify/change the arguments of the call on the line 38:  
-  - dataset_directory_path - the path pointing to directory where derived SPLs or products are stored \[CHANGE IS REQUIRED DURING SETUP]   
-  - final_location_path - the final location where extracted logs are going to be stored, defaults to "./generated_dataset_vp_data" \[CHANGE IS REQUIRED DURING SETUP]   
-     - it can be placed to derived SPLs or products which are located in ../EvolutionSPLFramework/evolutionDirectory/evolNum1/conccustom   
-     - the directory should contain directories with products each with own index.html file  
-  - is_wrapped - if the content script that should be executed is wrapped between backticks and stored in variable as string   
-- run following command:    
-   ```"./venv/Scripts/python.exe" "./FractalDynamicDataCollector/dataset_variability_point_data_extractor.py"```  
+- the script will load the main script using the js2py library  
+- open ./FractalDynamicDataCollector/dataset_variability_point_data_extractor.py and specify/change the arguments of the call on line 38:   
+  - dataset_directory_path - the path pointing to the directory where derived SPLs or products are stored \[CHANGE IS REQUIRED DURING SETUP]  
+     - it can be placed to derived SPLs or products which are located in ../EvolutionSPLFramework/evolutionDirectory/evolNum1/conccustom    
+     - the directory should contain directories with products, each with its own index.html file  
+  - final_location_path - the final location where extracted logs are going to be stored, defaults to "./generated_dataset_vp_data" \[CHANGE IS REQUIRED DURING SETUP]     
+  - is_wrapped - if the content script that should be executed is wrapped between backticks and stored in a variable as a string   
+- run the following command:    
+   ```"./venv/Scripts/python.exe" "./FractalDynamicDataCollector/dataset_variability_point_data_extractor.py"``
+
+
+#### GETTING GRAPH DATA (FROM THE INTEGRATION OF EVOLVED SCRIPT IN HTML TEMPLATE)  
+
+- all program dependencies and the main script itself is integrated into the HTML template  
+- the script opens this HTML template with all required dependencies in the browser and executes the script to harvest data  
+- if harvesting fails, then additional functionality with an adaptation of not recursive processing of the whole hierarchy with called instances is called and requires to be processed/merged after extraction back (also dobe be our script)  
+- WARNING: taking images can take too long (more than 45 minutes)  
+- open ./FractalDynamicDataCollector/graph_extractor_from_typescript_web_page.py and specify/change the arguments of the call on line 103:  
+  - dataset_directory_path - the path pointing to the directory where derived SPLs or products are stored \[CHANGE IS REQUIRED DURING SETUP]  
+     - it can be placed to derived SPLs or products which are located in ../EvolutionSPLFramework/evolutionDirectory/evolNum1/conccustom  
+     - the directory should contain directories with products, each with its own index.html file  
+  - final_location_path - the final location where extracted logs are going to be stored, defaults to "./generated_dataset_vp_graph_data" \[CHANGE IS REQUIRED DURING SETUP]  
+  - skip_nodes_used_to_draw_image - other nodes are omitted if an image for a given node is created; otherwise, not (depends on the implementation, but if set to true, it can prevent the generation of entire graphs)  
+  - image_settings - the instance with image settings to specify how objects for a particular node should be drawn  
+     - disable_taking_images - disables taking images from each component (MAKE GETTING GRAPH DATA FASTER BUT WITHOUT IMAGES FROM PARTICULAR NODES)  
+     - max_image_dimensions - tuple with maximal width and height of each extracted image - should cover canvas size due to proper drawing of each object   
+     - result_dimensions - the final size of the generated/created image for a particular graph node - the final taken image is resized  
+     - trim - if trimming of void parts should be applied  
+     - color_to_strip - the color of empty pixels to trim the final image properly  
+     - trim_treshold - the threshold for trimming  
+     - line_thickness - the thickness of lines used during the drawing of the resulting image for a particular graph node    
+  - browser_timeout - the timeout to load the browser page and execute related scripts (higher values are necessary where logging is enabled - factorials of data are logged in this case)  
+- run the following command:    
+   ```"./venv/Scripts/python.exe" "./FractalDynamicDataCollector/graph_extractor_from_typescript_web_page.py"```  
+
