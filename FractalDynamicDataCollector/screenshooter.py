@@ -16,13 +16,14 @@ class PlaywrightScreenshooter:
         self.launched_browser = getattr(
             self.playwright_screenshooter, self.engine_name
         ).launch(**arguments)
+        self.browser = None
 
     def launch(self, arguments: {}):
         chromium = self.playwright_screenshooter.chromium  # or "firefox" or "webkit".
-        browser = chromium.launch()
+        self.browser = chromium.launch()
 
     def new_page(self) -> Page:
-        print(self.resolution)
+        print("Used resolution: " + str(self.resolution))
         self.actual_page = self.launched_browser.new_page(viewport=self.resolution)
         return self.actual_page
 

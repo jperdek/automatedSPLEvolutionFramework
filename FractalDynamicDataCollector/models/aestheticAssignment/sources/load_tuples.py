@@ -80,7 +80,7 @@ def load_given_tuples(
             if not observed_variable_name:
                 try:
                     observed_variable_name = int(field_names[1])
-                except:
+                except Exception:
                     observed_variable_name = field_names[1]
             observed_variable_value = line[observed_variable_name]
             observed_variable_value_str = str(observed_variable_value)
@@ -106,7 +106,7 @@ def load_given_tuples(
                     ):
                         try:
                             associated_values[field_name] = float(line[field_name])
-                        except:
+                        except Exception:
                             associated_values[field_name] = line[field_name]
             tuple_length = "tuple__" + "_".join(associated_values.keys())
             if (

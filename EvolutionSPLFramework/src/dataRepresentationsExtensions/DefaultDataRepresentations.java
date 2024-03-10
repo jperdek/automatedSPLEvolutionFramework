@@ -13,15 +13,20 @@ public interface DefaultDataRepresentations {
 	/**
 	 * Decides about injection of functionality to Log objects
 	 */
-	public static final boolean LOG_FUNCTIONALITY = true;
+	public static final boolean LOG_FUNCTIONALITY = false;
 	
 	/**
 	 * Decides about injection of functionality to simulate stack
 	 */
-	public static final boolean SIMULATE_STACK = false;
+	public static final boolean SIMULATE_STACK = true;
 	
 	
 
+	/**
+	 * Decides about insertion of helper functionality to harvest data from stack if function calls are deeply wrapped
+	 */
+	public static final boolean INSERTS_HELPER_FUNCTIONALITY_TO_HARVEST_DATA_FROM_STACK = true;
+	
 	/**
 	 * Decides about injection of functionality to (not) log objects
 	 */

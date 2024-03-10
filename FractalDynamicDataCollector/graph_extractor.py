@@ -18,6 +18,10 @@ class DatasetVariabilityPointGraphDataExtractor:
         connector_type_name: str = "fname",
         drawing: bool = True,
         image_settings: dict = None,
+        variable_with_graph: str = "initialGraphRoot",
+        file_with_connections_name: str = "connections.csv",
+        is_typescript: bool = False,
+        is_wrapped: bool = False,
     ) -> None:
         if not graph_schema:
             if drawing:
@@ -32,16 +36,19 @@ class DatasetVariabilityPointGraphDataExtractor:
             script_path = os.path.join(project_path, "js/platnoJS.js")
             graph_root = json.loads(
                 self.dynamic_fractal_analyzer.load_data_from_fractal(
-                    script_path, "initialGraphRoot"
+                    script_path,
+                    variable_with_graph,
+                    is_wrapped=is_wrapped,
+                    is_typescript=is_typescript,
                 )
             )
-
+            print(graph_root)
             absolute_derivation_path = os.path.join(
                 absolute_final_path, derivation_name
             )
             os.makedirs(absolute_derivation_path, exist_ok=True)
             absolute_connection_file_path = os.path.join(
-                absolute_derivation_path, "connections.csv"
+                absolute_derivation_path, file_with_connections_name
             )
             GraphProcessor.process_graph(
                 graph_root,
@@ -59,4 +66,9 @@ if __name__ == "__main__":
     dataset_variability_point_data_extractor = (
         DatasetVariabilityPointGraphDataExtractor()
     )
-    dataset_variability_point_data_extractor.process_dataset("E://aspects/src/derived2")
+    dataset_variability_point_data_extractor.process_dataset(
+        "E:/aspects/automatedSPLEvolutionFramework/EvolutionSPLFramework/evolutionDirectory/evolNum1/conccustom",
+        "./generated_dataset_vp_graph_data",
+        is_typescript=True,
+        is_wrapped=True,
+    )

@@ -1,5 +1,7 @@
 from typing import Optional
 
+from typing_extensions import deprecated
+
 from graphSimulation.graphExtractor.geometry_data_to_image import GeometryDataToImage
 from graphSimulation.graphMerger.merge_configuration import ImageSettings
 import csv
@@ -48,7 +50,9 @@ class GraphProcessor:
                 image_settings.connector_type_name = connector_type_name
                 node_content[
                     schema_name
-                ] = GeometryDataToImage.put_geometry_data_to_image(image_settings)
+                ] = GeometryDataToImage.put_geometry_data_to_image(
+                    graph_json_node, image_settings
+                )
             elif schema_name in graph_json_node.keys():
                 converted_checked_value = GraphProcessor.convert_according_type(
                     graph_json_node[schema_name], schema_type
@@ -69,6 +73,39 @@ class GraphProcessor:
         return node_content
 
     @staticmethod
+    def copy_node_content_without_schema(
+        graph_json_node: dict,
+        node_id: int,
+        connector_list_name: str = "pointsTo",
+        connector_type_name: str = "fname",
+        drawing: bool = True,
+        image_settings: Optional[ImageSettings] = None,
+    ) -> dict:
+        node_content = {"id": node_id}
+        if drawing:
+            if image_settings is None:
+                image_settings = ImageSettings()
+            image_settings.associated_objects = (
+                graph_json_node[connector_list_name]
+                if connector_list_name in graph_json_node.keys()
+                else []
+            )
+
+            image_settings.connector_type_name = connector_type_name
+            node_content[
+                "image_base64_url"
+            ] = GeometryDataToImage.put_geometry_data_to_image(
+                graph_json_node, image_settings
+            )
+        for key, value in graph_json_node.items():
+            if (
+                connector_list_name != key
+                and "previously_processed_node_content" != key
+            ):
+                node_content[key] = value
+        return node_content
+
+    @staticmethod
     def create_connection(
         result_node1: dict,
         result_node2: dict,
@@ -82,29 +119,41 @@ class GraphProcessor:
         }
 
     @staticmethod
-    def process_node(
+    @deprecated
+    def process_node_recursive(
         graph_json_node: dict,
         node_number_id: dict,
         connections: list[dict],
         result_nodes: dict,
-        used_schema: dict,
+        used_schema: Optional[dict],
         connector_list_name: str = "pointsTo",
         connector_type_name: str = "fname",
         drawing: bool = True,
         image_settings: Optional[ImageSettings] = None,
+        skip_nodes_used_to_draw_image: bool = True,
     ) -> dict:
         node_type = graph_json_node[connector_type_name]
         if node_type not in result_nodes.keys() or not result_nodes[node_type]:
             result_nodes[node_type] = []
-        node_content = GraphProcessor.copy_node_content_according_schema(
-            graph_json_node,
-            node_number_id["id"],
-            used_schema[node_type],
-            connector_list_name,
-            connector_type_name,
-            drawing,
-            image_settings,
-        )
+        if used_schema and node_type in used_schema:
+            node_content = GraphProcessor.copy_node_content_according_schema(
+                graph_json_node,
+                node_number_id["id"],
+                used_schema[node_type],
+                connector_list_name,
+                connector_type_name,
+                drawing,
+                image_settings,
+            )
+        else:
+            node_content = GraphProcessor.copy_node_content_without_schema(
+                graph_json_node,
+                node_number_id["id"],
+                connector_list_name,
+                connector_type_name,
+                drawing,
+                image_settings,
+            )
         node_number_id["id"] = node_number_id["id"] + 1
         result_nodes[node_type].append(node_content)
 
@@ -112,7 +161,8 @@ class GraphProcessor:
             for connected_node in graph_json_node[connector_list_name]:
                 # skip nodes which are used to draw image
                 if (
-                    drawing
+                    skip_nodes_used_to_draw_image
+                    and drawing
                     and connected_node[connector_type_name]
                     in GeometryDataToImage.FUNCTION_NAMES_TO_GENERATORS_MAPPING.keys()
                 ):
@@ -134,13 +184,81 @@ class GraphProcessor:
         return node_content
 
     @staticmethod
+    def process_node(
+        graph_json_node: dict,
+        node_number_id: dict,
+        connections: list[dict],
+        result_nodes: dict,
+        used_schema: Optional[dict],
+        connector_list_name: str = "pointsTo",
+        connector_type_name: str = "fname",
+        drawing: bool = True,
+        image_settings: Optional[ImageSettings] = None,
+        skip_nodes_used_to_draw_image: bool = True,
+    ) -> dict:
+        node_content = None
+        graph_json_node["previously_processed_node_content"] = None
+        process_node_stack = [graph_json_node]
+        while len(process_node_stack) > 0:
+            processed_node = process_node_stack.pop()
+            node_type = processed_node[connector_type_name]
+            if node_type not in result_nodes.keys() or not result_nodes[node_type]:
+                result_nodes[node_type] = []
+
+            if used_schema and node_type in used_schema:
+                node_content = GraphProcessor.copy_node_content_according_schema(
+                    processed_node,
+                    node_number_id["id"],
+                    used_schema[node_type],
+                    connector_list_name,
+                    connector_type_name,
+                    drawing,
+                    image_settings,
+                )
+            else:
+                node_content = GraphProcessor.copy_node_content_without_schema(
+                    processed_node,
+                    node_number_id["id"],
+                    connector_list_name,
+                    connector_type_name,
+                    drawing,
+                    image_settings,
+                )
+
+            node_number_id["id"] = node_number_id["id"] + 1
+            result_nodes[node_type].append(node_content)
+
+            # manage connections
+            parent_node_content = processed_node["previously_processed_node_content"]
+            if parent_node_content:
+                connections.append(
+                    GraphProcessor.create_connection(parent_node_content, node_content)
+                )
+            del processed_node["previously_processed_node_content"]
+
+            if connector_list_name in processed_node.keys():
+                for connected_node in processed_node[connector_list_name]:
+                    # skip nodes which are used to draw image
+                    if (
+                        skip_nodes_used_to_draw_image
+                        and drawing
+                        and connected_node[connector_type_name]
+                        in GeometryDataToImage.FUNCTION_NAMES_TO_GENERATORS_MAPPING.keys()
+                    ):
+                        continue
+                    connected_node["previously_processed_node_content"] = node_content
+                    process_node_stack.append(connected_node)
+        return node_content
+
+    @staticmethod
     def get_nodes_and_connectors_from_graph_in_JSON(
         graph_json: dict,
-        used_schema: dict,
+        used_schema: Optional[dict],
         connectors_list_name: str = "pointsTo",
         connector_type_name: str = "fname",
         drawing: bool = True,
-        image_settings=None,
+        image_settings: Optional[ImageSettings] = None,
+        skip_nodes_used_to_draw_image: bool = True,
     ) -> (list[dict], dict):
         connections = []
         node_number_id = {"id": 1}
@@ -159,6 +277,7 @@ class GraphProcessor:
                     connector_type_name,
                     drawing,
                     image_settings,
+                    skip_nodes_used_to_draw_image,
                 )
                 connections.append(
                     GraphProcessor.create_connection(init_node, neighbour_node)
@@ -178,13 +297,14 @@ class GraphProcessor:
     @staticmethod
     def process_graph(
         graph_root: dict,
-        graph_schema: dict,
+        graph_schema: Optional[dict],
         connector_result_file_path: str,
         result_file_path: str,
         connector_list_name: str = "pointsTo",
         connector_type_name: str = "fname",
         drawing: bool = True,
         image_settings: Optional[ImageSettings] = None,
+        skip_nodes_used_to_draw_image: bool = True,
     ):
         (
             connections,
@@ -196,13 +316,20 @@ class GraphProcessor:
             connector_type_name,
             drawing,
             image_settings,
+            skip_nodes_used_to_draw_image,
         )
         for node_type_name, result_nodes_type in result_nodes.items():
             node_type_absolute_path = os.path.join(
                 result_file_path, node_type_name + ".csv"
             )
+            result_nodes_keys = list(result_nodes_type[0].keys())
+            if not graph_schema:
+                for result_nodes_instance in result_nodes_type:
+                    for result_nodes_instance_key in result_nodes_instance.keys():
+                        if result_nodes_instance_key not in result_nodes_keys:
+                            result_nodes_keys.append(result_nodes_instance_key)
             GraphProcessor.create_csv_from_results(
-                node_type_absolute_path, result_nodes_type, result_nodes_type[0].keys()
+                node_type_absolute_path, result_nodes_type, result_nodes_keys
             )
         GraphProcessor.create_csv_from_results(
             connector_result_file_path, connections, list(connections[0].keys())

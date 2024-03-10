@@ -7,9 +7,6 @@
 # set the matplotlib backend so figures can be saved in the background
 import matplotlib
 
-matplotlib.use(
-    "Agg"
-)  # "Agg "Will save the plot as a png, and will not pop up on the screen
 # import the necessary packages
 from keras.preprocessing.image import (
     ImageDataGenerator,
@@ -36,6 +33,10 @@ from keras.models import Sequential
 from keras.layers import Conv2D, MaxPooling2D
 from keras.layers import Activation, Flatten, Dense
 from keras import backend as K
+
+matplotlib.use(
+    "Agg"
+)  # "Agg "Will save the plot as a png, and will not pop up on the screen
 
 
 class LeNet:

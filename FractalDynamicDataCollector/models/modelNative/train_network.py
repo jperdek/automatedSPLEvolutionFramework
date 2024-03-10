@@ -6,7 +6,6 @@
 
 # set the matplotlib backend so figures can be saved in the background
 import csv
-
 import os
 
 os.environ["PATH"] += os.pathsep + "C:/Program Files/Graphviz/bin/"

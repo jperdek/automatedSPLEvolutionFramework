@@ -73,7 +73,7 @@ class NodeVerifier:
                                     iterator_variable1, schema_type
                                 )
                             )
-                        except:
+                        except Exception:
                             converted_checked_value1 = (
                                 NodeVerifier.convert_according_type(
                                     graph_tree_json_node[schema_name], schema_type
@@ -97,7 +97,7 @@ class NodeVerifier:
                                     iterator_variable2, schema_type
                                 )
                             )
-                        except:
+                        except Exception:
                             converted_checked_value2 = (
                                 NodeVerifier.convert_according_type(
                                     graph_tree_json_node[schema_name], schema_type

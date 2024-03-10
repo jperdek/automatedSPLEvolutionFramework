@@ -89,16 +89,25 @@ public class DataRepresentationInnerWrappers {
 	}
 	
 	private String getParameters(JSONArray parametersArray) {
+		boolean storeWholeObjects = false;
 		String parameterObjectString = null;
 		JSONObject parameterAst;
 		String parameterName;
 		for (Object parameterObject: parametersArray) {
 			parameterAst = (JSONObject) parameterObject;
 			parameterName = ASTTextExtractorTools.getTextFromAstIncludingNameAndExpressions(parameterAst);
-			if (parameterObjectString == null) {
-				parameterObjectString = "\"" + parameterName + "\": " + parameterName;
+			if (storeWholeObjects) {
+				if (parameterObjectString == null) {
+					parameterObjectString = "\"" + parameterName + "\": " + parameterName;
+				} else {
+					parameterObjectString = parameterObjectString + ",\n\"" + parameterName + "\": " + parameterName;
+				}
 			} else {
-				parameterObjectString = parameterObjectString + ",\n\"" + parameterName + "\": " + parameterName;
+				if (parameterObjectString == null) {
+					parameterObjectString = "\"" + parameterName + "\": (typeof(" + parameterName + ")===\"object\" || typeof(\" + parameterName + \")===\"function\")? \"[Object]\" : " + parameterName;
+				} else {
+					parameterObjectString = parameterObjectString + ",\n\"" + parameterName + "\": (typeof(" + parameterName + ")===\"object\" || typeof(\" + parameterName + \")===\"function\")? \"[Object]\" : " + parameterName;
+				}
 			}
 		}
 		return parameterObjectString;

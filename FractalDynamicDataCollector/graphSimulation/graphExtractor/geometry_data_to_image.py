@@ -8,7 +8,10 @@ import io
 
 
 class GeometryDataToImage:
-    FUNCTION_NAMES_TO_GENERATORS_MAPPING = {"function drawLine": "drawLine"}
+    FUNCTION_NAMES_TO_GENERATORS_MAPPING = {
+        "function drawLine": "drawLine",
+        "function  FiveSideFractal": "drawFiveSide",
+    }
 
     @staticmethod
     def convert_to_base64_image_string_url(image_to_save: Image) -> str:
@@ -20,10 +23,80 @@ class GeometryDataToImage:
         )
 
     @staticmethod
+    def __check_consistency_of_keys_in_object(
+        associated_object: dict, key_list: list[str]
+    ) -> bool:
+        for key in key_list:
+            if key not in associated_object.keys():
+                return False
+        return True
+
+    @staticmethod
     def draw_geometry_operation(
         draw: ImageDraw, operation_name: str, associated_object: dict
     ) -> bool:
-        if operation_name == "drawLine":
+        if operation_name == "drawFiveSide":
+            if not GeometryDataToImage.__check_consistency_of_keys_in_object(
+                associated_object,
+                ["x1", "y1", "x2", "y2", "x3", "y3", "x4", "y4", "x5", "y5"],
+            ):
+                return False
+            color = (
+                associated_object["color"]
+                if "color" in associated_object.keys()
+                else "black"
+            )
+            draw.line(
+                [
+                    associated_object["x1"],
+                    associated_object["y1"],
+                    associated_object["x2"],
+                    associated_object["y2"],
+                ],
+                color,
+            )
+            draw.line(
+                [
+                    associated_object["x2"],
+                    associated_object["y2"],
+                    associated_object["x3"],
+                    associated_object["y3"],
+                ],
+                color,
+            )
+            draw.line(
+                [
+                    associated_object["x3"],
+                    associated_object["y3"],
+                    associated_object["x4"],
+                    associated_object["y4"],
+                ],
+                color,
+            )
+            draw.line(
+                [
+                    associated_object["x4"],
+                    associated_object["y4"],
+                    associated_object["x5"],
+                    associated_object["y5"],
+                ],
+                color,
+            )
+            draw.line(
+                [
+                    associated_object["x5"],
+                    associated_object["y5"],
+                    associated_object["x1"],
+                    associated_object["y1"],
+                ],
+                color,
+            )
+            return True
+        elif operation_name == "drawLine":
+            if not GeometryDataToImage.__check_consistency_of_keys_in_object(
+                associated_object, ["x1", "y1", "x2", "y2"]
+            ):
+                return False
             color = (
                 associated_object["color"]
                 if "color" in associated_object.keys()
@@ -41,9 +114,32 @@ class GeometryDataToImage:
             return True
         else:
             print("Unknown operation: " + operation_name)
+        return False
+
+    @staticmethod
+    def __is_drawwing_command(
+        checked_object: dict,
+        draw: ImageDraw,
+        function_names_to_generators_mapping: any,
+        connector_type_name: str = "fname",
+    ):
+        if (
+            connector_type_name in checked_object.keys()
+            and checked_object[connector_type_name]
+            in function_names_to_generators_mapping.keys()
+        ):
+            operation_name = function_names_to_generators_mapping[
+                checked_object[connector_type_name]
+            ]
+            if GeometryDataToImage.draw_geometry_operation(
+                draw, operation_name, checked_object
+            ):
+                return True
+        return False
 
     @staticmethod
     def put_geometry_data_to_image(
+        graph_json_node: dict,
         image_settings: Optional[ImageSettings] = None,
         connector_type_name: str = "fname",
         function_names_to_generators_mapping=None,
@@ -52,7 +148,6 @@ class GeometryDataToImage:
             function_names_to_generators_mapping = (
                 GeometryDataToImage.FUNCTION_NAMES_TO_GENERATORS_MAPPING
             )
-
         image1 = Image.new(
             "RGB",
             image_settings.max_image_dimensions,
@@ -61,19 +156,21 @@ class GeometryDataToImage:
         draw = ImageDraw.Draw(image1)
 
         something_has_been_drawn = False
+        if GeometryDataToImage.__is_drawwing_command(
+            graph_json_node,
+            draw,
+            function_names_to_generators_mapping,
+            connector_type_name,
+        ):
+            something_has_been_drawn = True
         for associated_object in image_settings.associated_objects:
-            if (
-                connector_type_name in associated_object.keys()
-                and associated_object[connector_type_name]
-                in function_names_to_generators_mapping.keys()
+            if GeometryDataToImage.__is_drawwing_command(
+                associated_object,
+                draw,
+                function_names_to_generators_mapping,
+                connector_type_name,
             ):
-                operation_name = function_names_to_generators_mapping[
-                    associated_object[connector_type_name]
-                ]
-                if GeometryDataToImage.draw_geometry_operation(
-                    draw, operation_name, associated_object
-                ):
-                    something_has_been_drawn = True
+                something_has_been_drawn = True
         if something_has_been_drawn:
             if image_settings.trim:
                 image_byte_arr = io.BytesIO()

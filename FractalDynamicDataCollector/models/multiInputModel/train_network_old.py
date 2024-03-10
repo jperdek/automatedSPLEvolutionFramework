@@ -183,7 +183,6 @@ centerY_vector = convert_tuples_to_vectors_with_filtering(
 )
 print(centerX_vector)
 if USE_VALIDATION_SET:
-    print("WRRRRRRRRONG")
     # partition the data into training and testing splits using 75% of
     # the data for training and the remaining 25% for testing
     (trainX, testX, trainY, testY) = train_test_split(
