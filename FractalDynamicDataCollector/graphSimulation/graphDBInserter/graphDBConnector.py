@@ -1,5 +1,9 @@
+import os
+from typing import Optional
+
 from graphSimulation.graphExtractor.graph_scheme import FractalGraphScheme
 from neo4j import GraphDatabase
+import re as regexp
 import csv
 import json
 
@@ -54,15 +58,46 @@ class GraphConnector:
     def __init__(self, uri: str, user: str, password: str) -> None:
         self.driver = GraphDatabase.driver(uri, auth=(user, password))
 
+    def __find_neo4j_schema_for_data(self, data_to_find_schema: csv.DictReader) -> dict:
+        object_schema = {}
+        for new_object_record in data_to_find_schema:
+            for analyzed_key, analyzed_value in new_object_record.items():
+                if analyzed_key == "id":
+                    object_schema["id"] = "int"
+                if regexp.search(
+                    r"^((?:-?[123456789]+\d*|0)\.\d+)$", str(analyzed_value).strip()
+                ):
+                    if (
+                        analyzed_key not in object_schema.keys()
+                        or object_schema[analyzed_key] != "string"
+                    ):
+                        object_schema[analyzed_key] = "float"
+                        continue
+                elif regexp.search(
+                    r"^((?:-?[123456789]+\d+|0))$", str(analyzed_value).strip()
+                ):
+                    if analyzed_key not in object_schema.keys() or (
+                        object_schema[analyzed_key] != "float"
+                        and object_schema[analyzed_key] != "string"
+                    ):
+                        object_schema[analyzed_key] = "int"
+                        continue
+                elif str(analyzed_value).strip() == "[object]":
+                    object_schema[analyzed_key] = "string"
+                    continue
+                object_schema[analyzed_key] = "string"
+                continue
+        return object_schema
+
     @staticmethod
-    def construct_non_problematic_schema(object_schema: dict) -> dict:
+    def __construct_non_problematic_schema(object_schema: Optional[dict]) -> dict:
         modified_schema = {}
         for key, value in object_schema.items():
             modified_schema[key.replace(".", "")] = value.replace(".", "")
         return modified_schema
 
     @staticmethod
-    def convert_schema_dict_to_neo_parameters(object_schema: dict) -> str:
+    def __convert_schema_dict_to_neo_parameters(object_schema: dict) -> str:
         neo4j_parameters = "{"
         for variable_name in object_schema.keys():
             variable_name = variable_name.replace(".", "")
@@ -77,17 +112,39 @@ class GraphConnector:
             session.run("MATCH (a)-[r]-(b)	DELETE r")
             session.run("MATCH (a) DELETE a")
 
+    def __save_object_schema(
+        self, new_schema: dict, new_schema_directory: str, entity_name: str
+    ) -> None:
+        path_to_serialized_entity = os.path.join(
+            new_schema_directory, entity_name + "_SCHEMA.json"
+        )
+        with open(path_to_serialized_entity, "w", encoding="utf-8") as file:
+            file.write(json.dumps(new_schema))
+
     def insert_objects(
         self,
         path_to_object_csv: str,
-        object_schema: dict,
+        object_schema: Optional[dict],
         object_name: str = "Obj",
         delimiter: str = "$",
+        new_schema_directory: str = "../../new_schemas",
     ):
-        object_schema = self.construct_non_problematic_schema(object_schema)
-        neo4j_parameters = self.convert_schema_dict_to_neo_parameters(object_schema)
-        with self.driver.session() as session:
-            with open(path_to_object_csv, "r", encoding="utf-8") as file:
+        with open(path_to_object_csv, "r", encoding="utf-8") as file:
+            with self.driver.session() as session:
+                new_objects = csv.DictReader(file, delimiter=delimiter)
+                if not object_schema:
+                    object_schema = self.__find_neo4j_schema_for_data(new_objects)
+                    self.__save_object_schema(
+                        object_schema, new_schema_directory, object_name
+                    )
+                else:
+                    object_schema = self.__construct_non_problematic_schema(
+                        object_schema
+                    )
+                neo4j_parameters = self.__convert_schema_dict_to_neo_parameters(
+                    object_schema
+                )
+                file.seek(0)
                 new_objects = csv.DictReader(file, delimiter=delimiter)
                 for new_object_record in new_objects:
                     new_object_record_schema = (
@@ -118,6 +175,91 @@ class GraphConnector:
     def close(self) -> None:
         # Don't forget to close the driver connection when you are finished with it
         self.driver.close()
+
+    def insert_graph_without_scheme(
+        self,
+        project_directory_path: str,
+        connections_file_name: str,
+        new_schema_directory: str = "../../new_schemas",
+        used_schemas: Optional[dict] = None,
+    ) -> None:
+        if used_schemas is None:
+            used_schemas = dict()
+        path_to_connections = None
+        absolute_project_directory_path = os.path.abspath(project_directory_path)
+
+        for entity_name in os.listdir(absolute_project_directory_path):
+            path_to_graph_file = os.path.join(
+                absolute_project_directory_path, entity_name
+            )
+            if not os.path.isdir(path_to_graph_file) and entity_name.endswith(".csv"):
+                print("Processing entity: " + entity_name)
+                if connections_file_name not in path_to_graph_file:
+                    object_type = (
+                        entity_name.replace(".csv", "").title().replace(" ", "")
+                    )
+                    used_schema = used_schemas.get(entity_name, {})
+                    if not used_schema:
+                        used_schemas[entity_name] = used_schema
+                    self.insert_objects(
+                        path_to_graph_file,
+                        object_schema=used_schema,
+                        object_name=object_type,
+                        new_schema_directory=new_schema_directory,
+                    )
+                else:
+                    path_to_connections = path_to_graph_file
+        if path_to_connections:
+            print("Inserting connections")
+            self.insert_connections(path_to_connections)
+        else:
+            raise Exception("Path to connections not found!")
+
+    @staticmethod
+    def insert_graph_without_scheme_transaction(
+        project_directory_path: str,
+        connections_file_name: str,
+        url: str,
+        user: str,
+        password: str,
+        new_schema_directory: str = "../../new_schemas",
+    ) -> None:
+        connection = GraphConnector(url, user, password)
+        connection.clear_database()
+        connection.insert_graph_without_scheme(
+            project_directory_path, connections_file_name, new_schema_directory
+        )
+        connection.close()
+
+    @staticmethod
+    def insert_graph_without_scheme_for_dataset(
+        dataset_directory_path: str,
+        url: str,
+        user: str,
+        password: str,
+        connections_file_name: str = "connections.csv",
+        new_schema_directory: str = "../../new_schemas",
+        clear_database: bool = True,
+    ) -> None:
+        connection = GraphConnector(url, user, password)
+        if clear_database:
+            connection.clear_database()
+        absolute_dataset_directory_path = os.path.abspath(dataset_directory_path)
+
+        print("Processing dataset: " + absolute_dataset_directory_path + " started!")
+        used_schemas = {}
+        for project_name in os.listdir(absolute_dataset_directory_path):
+            print("Inserting project: " + project_name)
+            project_directory_path = os.path.join(
+                absolute_dataset_directory_path, project_name
+            )
+            connection.insert_graph_without_scheme(
+                project_directory_path,
+                connections_file_name,
+                new_schema_directory=new_schema_directory,
+                used_schemas=used_schemas,
+            )
+        connection.close()
 
 
 def insert_merged_graph(url: str, user: str, password: str) -> None:
@@ -167,5 +309,14 @@ if __name__ == "__main__":
     url1 = f"{scheme}://{host_name}:{port}"
     user1 = "neo4j"
     password1 = "feature"
-    insert_merged_graph(url1, user1, password1)
+    # insert_merged_graph(url1, user1, password1)
     # insert_small_graph(url1, user1, password1)
+    GraphConnector.insert_graph_without_scheme_for_dataset(
+        dataset_directory_path="../../generated_dataset_vp_graph_data",
+        url=url1,
+        user=user1,
+        password=password1,
+        connections_file_name="connections.csv",
+        new_schema_directory="../../new_schemas",
+        clear_database=True,
+    )
