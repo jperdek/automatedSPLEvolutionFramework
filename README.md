@@ -6,7 +6,9 @@ Automated SPL evolution framework - evolving variability on code level: Applicat
    - choose from existing variation points beneficially and wisely (negative variability)  
    - to create code constructs from a particular context related to positive variability and ensure their execution   
    - to select variation points, then constructs on these points, and finally select some of these chosen constructs from some selected variation points to model features  
-   - to restrict the number of final products  
+   - to restrict the number of final products
+   - to produce various data representations and analyze them with various models (to enable comparison of various models under differently represented data)
+	- graph data, relation data, semi-relational data (logs), raster data (screenshots), and vector data (captured commands into XML)  
          
 
 ## CONTENTS      
@@ -207,7 +209,7 @@ Automated SPL evolution framework - evolving variability on code level: Applicat
    ```"./venv/Scripts/python.exe" "./FractalDynamicDataCollector/graph_extractor_from_typescript_web_page.py"```  
 
 Getting stored image in Base64 for particular graph node from dataset:  
- ![Getting stored image in Base64 for particular graph node for dataset](https://github.com/jperdek/automatedSPLEvolutionFramework/blob/master/misc/gettingBase64Hash.png)   
+ ![Getting stored image in Base64 for particular graph node for dataset](https://github.com/jperdek/automatedSPLEvolutionFramework/blob/master/misc/screenshots/gettingBase64Hash.png)   
 
 Converting selected image in Base64 for particular graph node using [Base64 image converter](https://codebeautify.org/base64-to-image-converter):  
  ![Taking screenshots](https://github.com/jperdek/automatedSPLEvolutionFramework/blob/master/misc/screenshots/convertingBase64HashToImage.png)    
