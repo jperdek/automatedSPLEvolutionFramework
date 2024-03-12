@@ -8,7 +8,9 @@ Automated SPL evolution framework - evolving variability on code level: Applicat
    - to select variation points, then constructs on these points, and finally select some of these chosen constructs from some selected variation points to model features  
    - to restrict the number of final products
    - to produce various data representations and analyze them with various models (to enable comparison of various models under differently represented data)
-	- graph data, relation data, semi-relational data (logs), raster data (screenshots), and vector data (captured commands into XML)  
+	- graph data, relation data, semi-relational data (logs), raster data (screenshots), and vector data (captured commands into XML)
+   - the possibility of inserting graph data from the entire dataset to Neo4J
+   - application on various machine learning and deep learning models
          
 
 ## CONTENTS      
