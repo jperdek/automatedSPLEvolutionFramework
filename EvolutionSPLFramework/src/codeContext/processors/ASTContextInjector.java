@@ -200,7 +200,7 @@ public class ASTContextInjector {
 	 * 
 	 * @param parentArrayObject - the parent JSON array where the positive variability parameter is going to be inserted on the given position
 	 * @param position - the position where positive variability function/constructor parameter is going to be inserted
-	 * @return 1 if VariationPointDivisionConfiguration.ALLOW_POSITIVE_VARIABILITY && VariationPointDivisionConfiguration.GENERATE_ALL_FUNCTION_PARAMETERS otherwise 0
+	 * @return 1 if VariationPointDivisionConfiguration.ALLOW_POSITIVE_VARIABILITY and VariationPointDivisionConfiguration.GENERATE_ALL_FUNCTION_PARAMETERS otherwise 0
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
@@ -245,7 +245,7 @@ public class ASTContextInjector {
 	 * @param position - the position in JSON array where the positive variability marker (function/constructor parameter) should be inserted
 	 * @param newVersionProcessedJSONObject - new version of processed JSON object
 	 * @param parentAstObject - the parent of actually processed AST part/object
-	 * @return  1 if VariationPointDivisionConfiguration.ALLOW_POSITIVE_VARIABILITY && VariationPointDivisionConfiguration.GENERATE_ALL_FUNCTION_PARAMETERS otherwise 0
+	 * @return  1 if VariationPointDivisionConfiguration.ALLOW_POSITIVE_VARIABILITY and VariationPointDivisionConfiguration.GENERATE_ALL_FUNCTION_PARAMETERS otherwise 0
 	 * @throws IOException
 	 * @throws InterruptedException
 	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint

@@ -55,9 +55,9 @@ public class CyclomaticComplexity implements ComplexityMeasure {
 	 * @return the difference between two Cyclomatic complexity measures that implements this interface
 	 */
 	public static CyclomaticComplexity getComplexityDifference(
-			CyclomaticComplexity complexity1, CyclomaticComplexity complexity2) {
-		double cyclomaticNumberDifference = complexity1.getCyclomaticNumber() - complexity2.getCyclomaticNumber();
-		double cyclomaticDensityDifference = complexity1.getCyclomaticDensity() - complexity2.getCyclomaticDensity();
+			CyclomaticComplexity complexityMeasure1, CyclomaticComplexity complexityMeasure2) {
+		double cyclomaticNumberDifference = complexityMeasure1.getCyclomaticNumber() - complexityMeasure2.getCyclomaticNumber();
+		double cyclomaticDensityDifference = complexityMeasure1.getCyclomaticDensity() - complexityMeasure2.getCyclomaticDensity();
 		return new CyclomaticComplexity(cyclomaticNumberDifference, cyclomaticDensityDifference);
 	}
 

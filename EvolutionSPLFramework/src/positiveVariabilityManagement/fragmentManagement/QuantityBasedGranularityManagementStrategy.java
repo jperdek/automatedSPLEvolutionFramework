@@ -42,7 +42,7 @@ public class QuantityBasedGranularityManagementStrategy implements CodeIncrement
 	 * Creates the quantity based granularity management strategy
 	 * 
 	 * @param methodThreshold - the minimal number of methods to introduce method
-	 * @param variableDeclarationForClassTreshold - the minimal number of variables to introduce class
+	 * @param variableDeclarationForClassThreshold - the minimal number of variables to introduce class
 	 */
 	public QuantityBasedGranularityManagementStrategy(
 			int methodThreshold, int variableDeclarationForClassThreshold) {

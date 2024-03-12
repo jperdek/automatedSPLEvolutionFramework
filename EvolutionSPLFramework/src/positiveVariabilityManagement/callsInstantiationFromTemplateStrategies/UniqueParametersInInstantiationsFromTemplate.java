@@ -1,8 +1,6 @@
 package positiveVariabilityManagement.callsInstantiationFromTemplateStrategies;
 
 import java.util.Queue;
-
-import positiveVariabilityManagement.UnmappedContextException;
 import splEvolutionCore.candidateSelector.PositiveVariationPointCandidateTemplates;
 
 
@@ -22,8 +20,6 @@ public class UniqueParametersInInstantiationsFromTemplate implements CallsInstan
 	 * @param variationPointCandidateTemplate - the template with information about particular/processed positive variability variation point (where functionality can be injected)
 	 * @param allVariablesMapper - the mapping of variable/parameter types to related information 
 	 * @return the queue with instantiated callable constructs
-	 * 
-	 * @throws UnmappedContextException
 	 */
 	@Override
 	public Queue<CallableConstruct> instantiateCallsFromTemplate(

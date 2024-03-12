@@ -94,7 +94,7 @@ public class EvolutionSamples {
 	/**
 	 * Concatenates the script path with script names to get scripts containing exported modules that can be imported to the project
 	 * 
-	 * @param evolutionSamplePathsImmutable - the list of script names
+	 * @param evolutionSamplePaths - the list of script names
 	 * @param scriptPathPart - the part of the script path that will be concatenated with the script name
 	 * @return the list of paths to project related scripts (fractals) with scripts containing exported modules that can be imported to project
 	 */

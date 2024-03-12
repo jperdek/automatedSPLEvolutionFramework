@@ -19,7 +19,7 @@ public class ClassAsVariableDeclarationAggregation implements ClassIntroductionT
 	/**
 	 * Checks if is beneficial to transform code fragments consisting from variable declarations into class
 	 * 
-	 * @param processedCodeFragment - instance of code fragment that is introduced
+	 * @param codeFragment - instance of code fragment that is introduced
 	 * @return condition if class is beneficial to introduce
 	 */
 	public boolean isConditionToIntroduceClassMet(CodeFragment codeFragment) {

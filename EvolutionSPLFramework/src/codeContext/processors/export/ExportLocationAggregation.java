@@ -14,7 +14,7 @@ import astFileProcessor.ASTLoader;
 
 /**
  * Manages aggregation of export locations with associated exported objects under one path for each file
- * - export aggregation <- export locations <- export location <- exports
+ * - export aggregation K-- export locations K-- export location K-- exports
  * 
  * @author Jakub Perdek
  *

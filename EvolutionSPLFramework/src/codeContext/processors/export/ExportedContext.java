@@ -170,7 +170,7 @@ public class ExportedContext {
 
 	/**
 	 * Returns the identifier (should be unique) of the exported context
-	 * - form: <callableString>TYPE[<type>]IMPORT[<fileName>]
+	 * - form: KcallableString>TYPE[Ktype>]IMPORT[KfileName>]
 	 * 
 	 * @return the identifier (should be unique) of the exported context
 	 */

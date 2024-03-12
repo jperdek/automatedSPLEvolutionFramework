@@ -31,6 +31,13 @@ public class AllInstantiationsFromTemplate implements CallsInstantiationFromTemp
 	 */
 	private static HashSet<String> messageOnOutput = new HashSet<String>();
 	
+	
+	/**
+	 * Initialization of AllInstantiationsFromTemplate
+	 */
+	public AllInstantiationsFromTemplate() {
+	}
+	
 	@Override
 	/**
 	 * Prescribe the function to perform all instantiations from selected callable constructs which parameters are substituted with given imported or available variables

@@ -82,7 +82,6 @@ public class HierarchyContextProcessor {
 	 * @param globalContext - global context - accessible in all places (such as variables declared as var in JavaScript)
 	 * @param baseFirstInnerContext - the default context as the root of inner context that is propagated to each new context
 	 * @param actualContext - the actually processed code context
-	 * @param overallContextOptions - code options to aggregate and extends possible calls of available functionality up to given context 
 	 */
 	public static JSONArray constructAllAvailableCalls(GlobalContext globalContext, InnerContext baseFirstInnerContext, InnerContext actualContext) {
 		ContextOptions extractedContextOption;

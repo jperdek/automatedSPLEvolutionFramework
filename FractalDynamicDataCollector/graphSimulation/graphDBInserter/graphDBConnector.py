@@ -182,6 +182,7 @@ class GraphConnector:
         connections_file_name: str,
         new_schema_directory: str = "../../new_schemas",
         used_schemas: Optional[dict] = None,
+        connections_only: bool = False
     ) -> None:
         if used_schemas is None:
             used_schemas = dict()
@@ -194,7 +195,7 @@ class GraphConnector:
             )
             if not os.path.isdir(path_to_graph_file) and entity_name.endswith(".csv"):
                 print("Processing entity: " + entity_name)
-                if connections_file_name not in path_to_graph_file:
+                if connections_file_name not in path_to_graph_file and not connections_only:
                     object_type = (
                         entity_name.replace(".csv", "").title().replace(" ", "")
                     )
@@ -223,11 +224,13 @@ class GraphConnector:
         user: str,
         password: str,
         new_schema_directory: str = "../../new_schemas",
+        connections_only: bool = False
     ) -> None:
         connection = GraphConnector(url, user, password)
-        connection.clear_database()
+        if not connections_only:
+            connection.clear_database()
         connection.insert_graph_without_scheme(
-            project_directory_path, connections_file_name, new_schema_directory
+            project_directory_path, connections_file_name, new_schema_directory, connections_only=connections_only
         )
         connection.close()
 
@@ -240,6 +243,7 @@ class GraphConnector:
         connections_file_name: str = "connections.csv",
         new_schema_directory: str = "../../new_schemas",
         clear_database: bool = True,
+        connections_only: bool = False
     ) -> None:
         connection = GraphConnector(url, user, password)
         if clear_database:
@@ -258,6 +262,7 @@ class GraphConnector:
                 connections_file_name,
                 new_schema_directory=new_schema_directory,
                 used_schemas=used_schemas,
+                connections_only=connections_only
             )
         connection.close()
 
@@ -319,4 +324,5 @@ if __name__ == "__main__":
         connections_file_name="connections.csv",
         new_schema_directory="../../new_schemas",
         clear_database=True,
+        connections_only=False
     )

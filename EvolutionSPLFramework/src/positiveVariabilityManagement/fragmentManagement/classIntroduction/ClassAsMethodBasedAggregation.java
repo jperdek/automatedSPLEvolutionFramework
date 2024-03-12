@@ -19,7 +19,7 @@ public class ClassAsMethodBasedAggregation implements ClassIntroductionTemplate 
 	/**
 	 * Checks if is beneficial to transform code fragments consisting from methods into class
 	 * 
-	 * @param processedCodeFragment - instance of code fragment that is introduced
+	 * @param codeFragment - instance of code fragment that is introduced
 	 * @return condition if class is beneficial to introduce
 	 */
 	public boolean isConditionToIntroduceClassMet(CodeFragment codeFragment) {
