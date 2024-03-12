@@ -141,7 +141,7 @@ public class MethodComplexityRecord extends ComplexityRecord implements EntityCo
 	/**
 	 * Calculates differences between the complexity measurements of two methods and instantiates new method record to store differences
 	 *  
-	 * @param compareWith - another method to compare this instance with
+	 * @param comparedWith - another method to compare this instance with
 	 * @return new measurement as subtraction of each complexity measurement in the most cases
 	 */
 	private MethodComplexityRecord instantiateMethodDifference(MethodComplexityRecord comparedWith) {

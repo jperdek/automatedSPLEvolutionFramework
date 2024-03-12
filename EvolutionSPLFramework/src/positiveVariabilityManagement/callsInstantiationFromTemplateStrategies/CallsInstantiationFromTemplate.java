@@ -22,7 +22,7 @@ public interface CallsInstantiationFromTemplate {
 	 * @param allVariablesMapper - the mapping of variable/parameter types to related information 
 	 * @return the queue with instantiated callable constructs
 	 * 
-	 * @throws UnmappedContextException
+	 * @throws UnmappedContextException - the exception informing about impossibility to map content on the resulting AST of final product in the synthesis process
 	 */
 	public Queue<CallableConstruct> instantiateCallsFromTemplate(
 			PositiveVariationPointCandidateTemplates variationPointCandidateTemplate, 

@@ -51,9 +51,9 @@ public class AssignedValueProcessForNegativeVariability extends AssignedValuePro
 	 * Assigns value for each negative variation point candidate
 	 * 
 	 * @param negativeVariationPointCandidates - the list of negative variation point candidates
-	 * @throws MethodToEvaluateComplexityNotFoundException
-	 * @throws IOException
-	 * @throws InterruptedException
+	 * @throws MethodToEvaluateComplexityNotFoundException - the exception thrown when method which complexity is evaluated is not found in results
+	 * @throws IOException - the exception for various problems with file loading
+	 * @throws InterruptedException - the exception thrown during interruption
 	 */
 	public void assignValuesProcess(List<NegativeVariationPointCandidate> negativeVariationPointCandidates) throws MethodToEvaluateComplexityNotFoundException, IOException, InterruptedException {
 		for (NegativeVariationPointCandidate negativeVariationPointCandidate: negativeVariationPointCandidates) {
@@ -67,9 +67,9 @@ public class AssignedValueProcessForNegativeVariability extends AssignedValuePro
 	 * -all available/assigned strategies with their measurements are executed and their values are stored
 	 * 
 	 * @param negativeVariationPointCandidate - the negative variation point candidate that is processed - metrics are associated with him
-	 * @throws MethodToEvaluateComplexityNotFoundException
-	 * @throws IOException
-	 * @throws InterruptedException
+	 * @throws MethodToEvaluateComplexityNotFoundException - the exception thrown when method which complexity is evaluated is not found in results
+	 * @throws IOException - the exception for various problems with file loading
+	 * @throws InterruptedException - the exception thrown during interruption
 	 */
 	public void assignValuesProcess(NegativeVariationPointCandidate negativeVariationPointCandidate) throws MethodToEvaluateComplexityNotFoundException, IOException, InterruptedException {
 		//group variation points according expressions
@@ -85,9 +85,9 @@ public class AssignedValueProcessForNegativeVariability extends AssignedValuePro
 	 * -inserts value from performed measurements
 	 * 
 	 * @param negativeVariationPointCandidate - representation of negative variation point with associated information including code
-	 * @throws MethodToEvaluateComplexityNotFoundException
-	 * @throws IOException
-	 * @throws InterruptedException
+	 * @throws MethodToEvaluateComplexityNotFoundException - the exception thrown when method which complexity is evaluated is not found in results
+	 * @throws IOException - the exception for various problems with file loading
+	 * @throws InterruptedException - the exception thrown during interruption
 	 */
 	private void assignValues(NegativeVariationPointCandidate negativeVariationPointCandidate) throws MethodToEvaluateComplexityNotFoundException, IOException, InterruptedException {
 		this.cleanVariabilityConstructs(negativeVariationPointCandidate.getVariationPointData()); 		// obtains variation point data

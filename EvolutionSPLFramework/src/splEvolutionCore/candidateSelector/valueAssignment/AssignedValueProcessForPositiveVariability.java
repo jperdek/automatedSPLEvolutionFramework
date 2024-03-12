@@ -76,8 +76,8 @@ public class AssignedValueProcessForPositiveVariability extends AssignedValuePro
 	 * @param positiveVariabilityCreatorStrategy - strategy to load possible calls from the positive variation point marker
 	 * @param callsInstantiationFromTemplateStrategy - strategy to manage instantiation of calls from the template - the parameterized call of function/constructor
 	 * @param chosenValueAssignmentStrategyForNegativeVariabilities - value assignment strategy to assign value/score of given measurement to instantiated callable construct 
-	 * @param availableExportUnits
-	 * @throws DuplicatedContextIdentifier
+	 * @param availableExportUnits - the entities with the external exported resources, especially variables
+	 * @throws DuplicatedContextIdentifier - the exception thrown if duplicated identifiers are assigned amongst contexts
 	 */
 	public AssignedValueProcessForPositiveVariability(CallsFromPositiveVariationPointCreator positiveVariabilityCreatorStrategy, 
 			CallsInstantiationFromTemplate callsInstantiationFromTemplateStrategy,
@@ -116,10 +116,10 @@ public class AssignedValueProcessForPositiveVariability extends AssignedValuePro
 	 * 
 	 * @param positiveVariationPointCandidatesTemplate - the list of processed positive variation points - information about them
 	 * @throws MethodToEvaluateComplexityNotFoundException
-	 * @throws IOException
-	 * @throws InterruptedException
-	 * @throws UnmappedContextException
-	 * @throws DifferentlyAggregatedLocation
+	 * @throws IOException - the exception for various problems with file loading
+	 * @throws InterruptedException - the exception thrown during interruption
+	 * @throws UnmappedContextException - the exception informing about impossibility to map content on the resulting AST of final product in the synthesis process
+	 * @throws DifferentlyAggregatedLocation - the exception referring that aggregated exports for different metrics of the same callable construct are different
 	 */
 	public void assignValuesProcess(List<PositiveVariationPointCandidateTemplates> positiveVariationPointCandidatesTemplate) throws 
 			MethodToEvaluateComplexityNotFoundException, IOException, InterruptedException, UnmappedContextException, DifferentlyAggregatedLocation {
@@ -149,10 +149,10 @@ public class AssignedValueProcessForPositiveVariability extends AssignedValuePro
 	 * @param positiveVariationPointCandidateTemplates - processed positive variation point which quality of selected callable constructs from selected templates will be evaluated
 	 * @return true if value assignment is done correctly otherwise false
 	 * @throws MethodToEvaluateComplexityNotFoundException
-	 * @throws IOException
-	 * @throws InterruptedException
-	 * @throws UnmappedContextException
-	 * @throws DifferentlyAggregatedLocation
+	 * @throws IOException - the exception for various problems with file loading
+	 * @throws InterruptedException - the exception thrown during interruption
+	 * @throws UnmappedContextException - the exception informing about impossibility to map content on the resulting AST of final product in the synthesis process
+	 * @throws DifferentlyAggregatedLocation - the exception referring that aggregated exports for different metrics of the same callable construct are different
 	 */
 	private boolean assignValues(PositiveVariationPointCandidateTemplates positiveVariationPointCandidateTemplates) throws 
 			MethodToEvaluateComplexityNotFoundException, IOException, InterruptedException, UnmappedContextException, DifferentlyAggregatedLocation {

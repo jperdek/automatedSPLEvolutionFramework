@@ -47,6 +47,8 @@ public class AggregatedCodeFragment implements CodeFragment {
 	 * Compares given instance of this code aggregation with another CodeFragment instance according to its imports 
 	 * 
 	 * @param codeFragment - an instance of CodeFragment that is compared according to its imports
+	 * @return the set of exported location aggregations/dependencies that are in code 
+	 * fragment and not the context of this aggregation (aggregated dependencies from another code fragment)
 	 */
 	public Set<String> compareExportLocationAggregations(CodeFragment codeFragment) {
 		return this.importsDependencies.compareImports(codeFragment.getExportLocationAggregation());

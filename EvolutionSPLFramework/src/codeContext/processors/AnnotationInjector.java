@@ -22,15 +22,20 @@ import variationPointsVisualization.NegativeVariabilityDecoratorConsistenceVerif
 public class AnnotationInjector {
 
 	/**
-	 * Processed annotation for variables in AST part
+	 * Instantiates AnnotationInjector 
+	 */
+	public AnnotationInjector() {}
+	
+	/**
+	 * Generates annotation/decorates particular variables in AST part
 	 * 
 	 * @param globalContext - global context - accessible in all places (such as variables declared as var in JavaScript)
-	 * @param innerContext
-	 * @param processedBlock
-	 * @throws IOException
-	 * @throws InterruptedException
-	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint
-	 * @throws DuplicatedAnnotation
+	 * @param innerContext- the actual inner context in the hierarchy of inner contexts
+	 * @param processedBlock - actually processed block
+	 * @throws IOException - the exception for various problems with file loading
+	 * @throws InterruptedException - the exception thrown during interruption
+	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint - the exception capturing different annotation types on the same variation point
+	 * @throws DuplicatedAnnotation - the exception capturing duplicated annotation that is found on AST
 	 */
 	public static void processAnnotationForVariablesInAstPart(GlobalContext globalContext, InnerContext innerContext, JSONObject processedBlock) throws IOException, InterruptedException, DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation {
 		JSONObject declarationList = (JSONObject) processedBlock.get("declarationList");
@@ -69,14 +74,15 @@ public class AnnotationInjector {
 	}
 	
 	/**
+	 * Generates annotation/decorates particular class in AST part
 	 * 
 	 * @param globalContext - global context - accessible in all places (such as variables declared as var in JavaScript)
-	 * @param innerContext
-	 * @param processedBlock
-	 * @throws IOException
-	 * @throws InterruptedException
-	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint
-	 * @throws DuplicatedAnnotation
+	 * @param innerContext - the actual inner context in the hierarchy of inner contexts
+	 * @param processedBlock - actually processed block
+	 * @throws IOException - the exception for various problems with file loading
+	 * @throws InterruptedException - the exception thrown during interruption
+	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint - the exception capturing different annotation types on the same variation point
+	 * @throws DuplicatedAnnotation - the exception capturing duplicated annotation that is found on AST
 	 */
 	public static void processAnnotationForClassInAstPart(GlobalContext globalContext, InnerContext innerContext, JSONObject processedBlock) throws IOException, InterruptedException, DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation {
 		JSONArray membersList = (JSONArray) processedBlock.get("members");
@@ -102,15 +108,16 @@ public class AnnotationInjector {
 	}
 	
 	/**
+	 * Generates annotation/decorates particular class variables in AST part
 	 * 
 	 * @param globalContext - global context - accessible in all places (such as variables declared as var in JavaScript)
-	 * @param innerContext
-	 * @param processedBlock
-	 * @param processedBlockParent
-	 * @throws IOException
-	 * @throws InterruptedException
-	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint
-	 * @throws DuplicatedAnnotation
+	 * @param innerContext - the actual inner context in the hierarchy of inner contexts
+	 * @param processedBlock - actually processed block
+	 * @param processedBlockParent - the parent of actually processed block
+	 * @throws IOException - the exception for various problems with file loading
+	 * @throws InterruptedException - the exception thrown during interruption
+	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint - the exception capturing different annotation types on the same variation point
+	 * @throws DuplicatedAnnotation - the exception capturing duplicated annotation that is found on AST
 	 */
 	public static void processAnnotationForClassVariablesInAstPart(GlobalContext globalContext, InnerContext innerContext, 
 			JSONObject processedBlock, JSONObject processedBlockParent) throws IOException, InterruptedException, DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation {
@@ -138,15 +145,16 @@ public class AnnotationInjector {
 	}
 	
 	/**
+	 * Generates annotation/decorates particular non-class functions in AST part
 	 * 
 	 * @param globalContext - global context - accessible in all places (such as variables declared as var in JavaScript)
-	 * @param innerContext
-	 * @param processedBlock
-	 * @param processedBlockParent
-	 * @throws IOException
-	 * @throws InterruptedException
-	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint
-	 * @throws DuplicatedAnnotation
+	 * @param innerContext - the actual inner context in the hierarchy of inner contexts
+	 * @param processedBlock - actually processed block
+	 * @param processedBlockParent - the parent of actually processed block
+	 * @throws IOException - the exception for various problems with file loading
+	 * @throws InterruptedException - the exception thrown during interruption
+	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint - the exception capturing different annotation types on the same variation point
+	 * @throws DuplicatedAnnotation - the exception capturing duplicated annotation that is found on AST
 	 */
 	public static void processAnnotationForNotClassFunctionInAstPart(GlobalContext globalContext, InnerContext innerContext, 
 			JSONObject processedBlock, JSONObject processedBlockParent) throws IOException, InterruptedException, DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation {
@@ -185,15 +193,16 @@ public class AnnotationInjector {
 	}
 	
 	/**
+	 * Generates annotation/decorates particular functions in AST part
 	 * 
 	 * @param globalContext - global context - accessible in all places (such as variables declared as var in JavaScript)
-	 * @param innerContext
-	 * @param processedBlock
-	 * @param processedBlockParent
-	 * @throws IOException
-	 * @throws InterruptedException
-	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint
-	 * @throws DuplicatedAnnotation
+	 * @param innerContext - the actual inner context in the hierarchy of inner contexts
+	 * @param processedBlock - actually processed block
+	 * @param processedBlockParent - the parent of actually processed block
+	 * @throws IOException - the exception for various problems with file loading
+	 * @throws InterruptedException - the exception thrown during interruption
+	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint - the exception capturing different annotation types on the same variation point
+	 * @throws DuplicatedAnnotation - the exception capturing duplicated annotation that is found on AST
 	 */
 	public static void processAnnotationForClassFunctionsInAstPart(GlobalContext globalContext, InnerContext innerContext,
 			JSONObject processedBlock, JSONObject processedBlockParent) throws IOException, InterruptedException, DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation {
@@ -233,16 +242,16 @@ public class AnnotationInjector {
 	}
 	
 	/**
-	 * Generates annotation/decorates given function/constructor parameter
+	 * Generates annotation/decorates particular function/constructor parameter
 	 * 
 	 * @param globalContext - global context - accessible in all places (such as variables declared as var in JavaScript)
-	 * @param innerContext
-	 * @param processedBlock
-	 * @param processedBlockParent
-	 * @throws IOException
-	 * @throws InterruptedException
-	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint
-	 * @throws DuplicatedAnnotation
+	 * @param innerContext - the actual inner context in the hierarchy of inner contexts
+	 * @param processedBlock - actually processed block
+	 * @param processedBlockParent - the parent of actually processed block
+	 * @throws IOException - the exception for various problems with file loading
+	 * @throws InterruptedException - the exception thrown during interruption
+	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint - the exception capturing different annotation types on the same variation point
+	 * @throws DuplicatedAnnotation - the exception capturing duplicated annotation that is found on AST
 	 */
 	public static void processAnnotationForParameterInAstPart(GlobalContext globalContext, InnerContext innerContext, 
 			JSONObject processedBlock, JSONObject processedBlockParent) throws IOException, InterruptedException, DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation {

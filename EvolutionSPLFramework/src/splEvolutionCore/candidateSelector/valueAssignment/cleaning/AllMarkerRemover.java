@@ -18,6 +18,11 @@ import divisioner.VariationPointDivisionConfiguration;
 public class AllMarkerRemover {
 	
 	/**
+	 * Instantiates AllMarkerRemover
+	 */
+	public AllMarkerRemover() {}
+	
+	/**
 	 * Recursive search for positive variability markers in application AST
 	 * 
 	 * @param astRoot - the root of processed AST to remove all positive variability markers from it

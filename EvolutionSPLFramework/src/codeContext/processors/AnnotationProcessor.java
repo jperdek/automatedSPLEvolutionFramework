@@ -13,6 +13,11 @@ import divisioner.VariationPointDivisionConfiguration;
  *
  */
 public class AnnotationProcessor {
+	
+	/**
+	 * Instantiates AnnotationProcessor
+	 */
+	public AnnotationProcessor() {}
 
 	/**
 	 * Verifies if particular AST part containing reserved negative variability system annotation from angular SPL

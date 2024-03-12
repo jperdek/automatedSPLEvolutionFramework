@@ -51,7 +51,7 @@ public class TyphonTypeScriptComplexityAnalysis implements ComplexityService{
 	 * Manages simple type handling - replaces parameters with "as" keyword
 	 * 
 	 * @param fileContent - the script/file content
-	 * @return the script/file content with replaced parameters (in <>) with use of as keyword
+	 * @return the script/file content with replaced parameters (in K>) with use of as keyword
 	 */
 	private static String manageSimpleTypeHandling(String fileContent) {
 		return fileContent.replaceAll("\\(\s*<([^>]+)>\s*([^/);,(-+*%^]+)\\)", "($1 as $2)");

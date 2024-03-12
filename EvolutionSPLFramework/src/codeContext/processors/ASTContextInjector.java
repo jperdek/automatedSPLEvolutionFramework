@@ -31,10 +31,10 @@ public class ASTContextInjector {
 	 * @param position - the position where context should be injected in statements array
 	 * @param newVersionProcessedJSONObject - new version of processed JSON object
 	 * @return 1 if VariationPointDivisionConfiguration.ALLOW_POSITIVE_VARIABILITY is set to true otherwise 0
-	 * @throws IOException
-	 * @throws InterruptedException
-	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint
-	 * @throws DuplicatedAnnotation
+	 * @throws IOException - the exception for various problems with file loading
+	 * @throws InterruptedException - the exception thrown during interruption
+	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint - the exception capturing different annotation types on the same variation point
+	 * @throws DuplicatedAnnotation - the exception capturing duplicated annotation that is found on AST
 	 */
 	public static int injectContextForStatements(GlobalContext globalContext, InnerContext usedInnerContext, JSONArray parentArrayObject, 
 			int position, JSONObject newVersionProcessedJSONObject) throws IOException, InterruptedException, DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation {
@@ -58,8 +58,8 @@ public class ASTContextInjector {
 	 * @param parentArrayObject - the parent JSON array where the positive variability marker (non-class variable) is going to be inserted on the given position 
 	 * @param position - the position in JSON array where the positive variability marker (non-class variable) should be inserted
 	 * @return 1 if VariationPointDivisionConfiguration.ALLOW_POSITIVE_VARIABILITY is set to true otherwise 0
-	 * @throws IOException
-	 * @throws InterruptedException
+	 * @throws IOException - the exception for various problems with file loading
+	 * @throws InterruptedException - the exception thrown during interruption
 	 */
 	public static int injectPositiveVariabilityContextForStatements(GlobalContext globalContext, 
 			InnerContext usedInnerContext, JSONArray parentArrayObject, int position) throws IOException, InterruptedException {
@@ -86,10 +86,10 @@ public class ASTContextInjector {
 	 * @param globalContext - global context - accessible in all places (such as variables declared as var in JavaScript)
 	 * @param usedInnerContext - actual/processed inner context in the hierarchy of inner contexts
 	 * @param newVersionProcessedJSONObject - new version of processed JSON object
-	 * @throws IOException
-	 * @throws InterruptedException
-	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint
-	 * @throws DuplicatedAnnotation
+	 * @throws IOException - the exception for various problems with file loading
+	 * @throws InterruptedException - the exception thrown during interruption
+	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint - the exception capturing different annotation types on the same variation point
+	 * @throws DuplicatedAnnotation - the exception capturing duplicated annotation that is found on AST
 	 */
 	public static void injectNegativeVariabilityContextForStatements(GlobalContext globalContext, InnerContext usedInnerContext, 
 			JSONObject newVersionProcessedJSONObject) throws IOException, InterruptedException, DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation {
@@ -104,10 +104,10 @@ public class ASTContextInjector {
 	 * @param newVersionProcessedJSONObject - new version of processed JSON object
 	 * @param parentAstObject - the parent of actually processed AST part/object
 	 * @param insertedVPElement - inserted variation point element
-	 * @throws IOException
-	 * @throws InterruptedException
-	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint
-	 * @throws DuplicatedAnnotation
+	 * @throws IOException - the exception for various problems with file loading
+	 * @throws InterruptedException - the exception thrown during interruption
+	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint - the exception capturing different annotation types on the same variation point
+	 * @throws DuplicatedAnnotation - the exception capturing duplicated annotation that is found on AST
 	 */
 	public static void injectNegativeVariabilityContextForMembersBetweenParentAndArrayMember(GlobalContext globalContext, InnerContext usedInnerContext, 
 			JSONObject newVersionProcessedJSONObject, JSONObject parentAstObject, JSONObject insertedVPElement) throws IOException, InterruptedException, DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation {
@@ -128,10 +128,10 @@ public class ASTContextInjector {
 	 * @param usedInnerContext - actual/processed inner context in the hierarchy of inner contexts
 	 * @param newVersionProcessedJSONObject - new version of processed JSON object
 	 * @param parentAstObject - the parent of actually processed AST part/object
-	 * @throws IOException
-	 * @throws InterruptedException
-	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint
-	 * @throws DuplicatedAnnotation
+	 * @throws IOException - the exception for various problems with file loading
+	 * @throws InterruptedException - the exception thrown during interruption
+	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint - the exception capturing different annotation types on the same variation point
+	 * @throws DuplicatedAnnotation - the exception capturing duplicated annotation that is found on AST
 	 */
 	public static void injectNegativeVariabilityContextForMembers(GlobalContext globalContext, InnerContext usedInnerContext, 
 			JSONObject newVersionProcessedJSONObject, 
@@ -150,8 +150,8 @@ public class ASTContextInjector {
 	 * @param parentArrayObject - the parent JSON array where the positive variability marker (class variable) is going to be inserted on the given position 
 	 * @param position - the position in JSON array where the positive variability marker (class variable) should be inserted
 	 * @return created marker appended to members array if VariationPointDivisionConfiguration.ALLOW_POSITIVE_VARIABILITY is set to true otherwise null
-	 * @throws IOException
-	 * @throws InterruptedException
+	 * @throws IOException - the exception for various problems with file loading
+	 * @throws InterruptedException - the exception thrown during interruption
 	 */
 	public static JSONObject injectContextForMembers(GlobalContext globalContext, InnerContext usedInnerContext, 
 			JSONArray parentArrayObject, int position) throws IOException, InterruptedException {
@@ -170,8 +170,8 @@ public class ASTContextInjector {
 	 * @param parentArrayObject - the parent JSON array where the positive variability marker (class variable) is going to be inserted on the given position
 	 * @param position - the position in JSON array where the positive variability marker (class variable) should be inserted
 	 * @return created marker appended to members array if VariationPointDivisionConfiguration.ALLOW_POSITIVE_VARIABILITY is set to true otherwise null
-	 * @throws IOException
-	 * @throws InterruptedException
+	 * @throws IOException - the exception for various problems with file loading
+	 * @throws InterruptedException - the exception thrown during interruption
 	 */
 	public static JSONObject injectPositiveVariabilityContextForMembers(GlobalContext globalContext, InnerContext usedInnerContext, 
 			JSONArray parentArrayObject, int position) throws IOException, InterruptedException {
@@ -201,8 +201,8 @@ public class ASTContextInjector {
 	 * @param parentArrayObject - the parent JSON array where the positive variability parameter is going to be inserted on the given position
 	 * @param position - the position where positive variability function/constructor parameter is going to be inserted
 	 * @return 1 if VariationPointDivisionConfiguration.ALLOW_POSITIVE_VARIABILITY and VariationPointDivisionConfiguration.GENERATE_ALL_FUNCTION_PARAMETERS otherwise 0
-	 * @throws IOException
-	 * @throws InterruptedException
+	 * @throws IOException - the exception for various problems with file loading
+	 * @throws InterruptedException - the exception thrown during interruption
 	 */
 	public static int injectPositiviveVariabilityContextForParameters(JSONArray parentArrayObject, int position) throws IOException, InterruptedException {
 		if (VariationPointDivisionConfiguration.ALLOW_POSITIVE_VARIABILITY && VariationPointDivisionConfiguration.GENERATE_ALL_FUNCTION_PARAMETERS) {
@@ -223,10 +223,10 @@ public class ASTContextInjector {
 	 * @param position - the position where negative variability annotation for parameter is going to be injected
 	 * @param newVersionProcessedJSONObject - new version of processed JSON object
 	 * @param parentAstObject - the parent of actually processed AST part/object
-	 * @throws IOException
-	 * @throws InterruptedException
-	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint
-	 * @throws DuplicatedAnnotation
+	 * @throws IOException - the exception for various problems with file loading
+	 * @throws InterruptedException - the exception thrown during interruption
+	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint - the exception capturing different annotation types on the same variation point
+	 * @throws DuplicatedAnnotation - the exception capturing duplicated annotation that is found on AST
 	 */
 	public static void injectNegativeVariabilityContextForParameters(GlobalContext globalContext, InnerContext usedInnerContext, 
 			JSONArray parentArrayObject, int position, JSONObject newVersionProcessedJSONObject, JSONObject parentAstObject) throws IOException, InterruptedException, DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation {
@@ -246,10 +246,10 @@ public class ASTContextInjector {
 	 * @param newVersionProcessedJSONObject - new version of processed JSON object
 	 * @param parentAstObject - the parent of actually processed AST part/object
 	 * @return  1 if VariationPointDivisionConfiguration.ALLOW_POSITIVE_VARIABILITY and VariationPointDivisionConfiguration.GENERATE_ALL_FUNCTION_PARAMETERS otherwise 0
-	 * @throws IOException
-	 * @throws InterruptedException
-	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint
-	 * @throws DuplicatedAnnotation
+	 * @throws IOException - the exception for various problems with file loading
+	 * @throws InterruptedException - the exception thrown during interruption
+	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint - the exception capturing different annotation types on the same variation point
+	 * @throws DuplicatedAnnotation - the exception capturing duplicated annotation that is found on AST
 	 */
 	public static int injectContextForParameters(GlobalContext globalContext, InnerContext usedInnerContext, JSONArray parentArrayObject, 
 			int position, JSONObject newVersionProcessedJSONObject, JSONObject parentAstObject) throws IOException, 

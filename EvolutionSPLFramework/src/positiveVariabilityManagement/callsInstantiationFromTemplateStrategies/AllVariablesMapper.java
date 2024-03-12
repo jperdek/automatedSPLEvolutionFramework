@@ -40,7 +40,7 @@ public class AllVariablesMapper {
 	 * Initializes the functionality to effectively manage substitution of function parameters with variables
 	 * 
 	 * @param fileExportUnits - the manager of exports across multiple files
-	 * @throws DuplicatedContextIdentifier
+	 * @throws DuplicatedContextIdentifier - the exception thrown if duplicated identifiers are assigned amongst contexts
 	 */
 	public AllVariablesMapper(FileExportsUnits fileExportUnits) throws DuplicatedContextIdentifier {
 		this.fileExportsUnits = fileExportsUnits;
@@ -52,7 +52,7 @@ public class AllVariablesMapper {
 	 * Evaluates the similarity of parts - all exported variables are loaded into substantiation entity
 	 * 
 	 * @param fileExportsUnits - the manager of exports across multiple files
-	 * @throws DuplicatedContextIdentifier
+	 * @throws DuplicatedContextIdentifier - the exception thrown if duplicated identifiers are assigned amongst contexts
 	 */
 	private void evaluateNewSimilarityParts(FileExportsUnits fileExportsUnits) throws DuplicatedContextIdentifier {
 		this.variablesForSubstantiation.loadAllExportedVariables(fileExportsUnits);
@@ -65,7 +65,7 @@ public class AllVariablesMapper {
 	 * @param callableConstructTemplate - the template with information about callable constructs and associated information such as its parameters
 	 * @return the mapping of each parameter types to associated variable context (instance of ParsedTypeOfVariableData)
 	 * 
-	 * @throws UnmappedContextException
+	 * @throws UnmappedContextException - the exception informing about impossibility to map content on the resulting AST of final product in the synthesis process
 	 */
 	public Map<String, ParsedTypeOfVariableData> findParameterInformation(CallableConstructTemplate callableConstructTemplate) throws UnmappedContextException {
 		Set<Entry<String, String>> parameterNamesToTypeMapping = callableConstructTemplate.getParameterNamesToTypeMappingEntries();

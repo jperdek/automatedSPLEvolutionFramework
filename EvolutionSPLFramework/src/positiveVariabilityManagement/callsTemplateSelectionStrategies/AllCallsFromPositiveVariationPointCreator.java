@@ -18,6 +18,11 @@ import splEvolutionCore.candidateSelector.PositiveVariationPointCandidateTemplat
 public class AllCallsFromPositiveVariationPointCreator implements CallsFromPositiveVariationPointCreator {
 
 	/**
+	 * Instantiates AllCallsFromPositiveVariationPointCreator
+	 */
+	public AllCallsFromPositiveVariationPointCreator() {}
+	
+	/**
 	 * Extracts all calls available at positive variation point except constructor calls (creation of entities)
 	 * 
 	 * @param variationPointCandidateTemplate - the template with information about particular/processed positive variability variation point (where functionality can be injected)

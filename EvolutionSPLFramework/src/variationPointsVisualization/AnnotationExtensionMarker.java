@@ -13,6 +13,9 @@ import divisioner.VariationPointDivisionConfiguration;
  */
 public class AnnotationExtensionMarker {
 	
+	/**
+	 * The counter to create annotation with different name if is not explicitly specified
+	 */
 	private static int usedIndexInner = 1;
 	
 	/**
@@ -23,12 +26,40 @@ public class AnnotationExtensionMarker {
 	 *
 	 */
 	public static enum SystemAnnotationType {
+
+		/**
+		 * System annotation named type for variation point to annotate variable in program
+		 */
 		VARIABLE("variableVP"),
+		
+		/**
+		 * System annotation named type for variation point to annotate function in program
+		 */
 		FUNCTION("functionVP"),
+		
+		/**
+		 * System annotation named type for variation point to annotate function parameter
+		 */
 		PARAMETER("parameterVP"),
+		
+		/**
+		 * System annotation named type for variation point to annotate constructor parameter
+		 */
 		CONSTRUCTOR_PARAMETER("constructorParameterVP"),
+		
+		/**
+		 * System annotation named type for variation point to annotate class function
+		 */
 		CLASS_FUNCTION("classFunctionVP"),
+		
+		/**
+		 * System annotation named type for variation point to annotate class variable
+		 */
 		CLASS_VARIABLE("classVariableVP"),
+		
+		/**
+		 * System annotation named type for variation point to annotate class
+		 */
 		CLASS("classVP");
 		
 		/**
@@ -52,6 +83,12 @@ public class AnnotationExtensionMarker {
 	     */
 	    public String getName() { return this.label; }
 	}
+	
+	
+	/**
+	 * Instantiates AnnotationExtensionMarker
+	 */
+	public AnnotationExtensionMarker() {}
 	
 	/**
 	 * Observes if annotation is system one - matches with one name from SystemAnnotationType enumeration

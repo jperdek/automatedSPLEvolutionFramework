@@ -14,6 +14,7 @@ import splEvolutionCore.candidateSelector.PositiveVariationPointCandidateTemplat
 /**
  * Representation of code fragment that is inserted in case of positive variability
  * 
+ * 
  * @author Jakub Perdek
  *
  */
@@ -44,6 +45,8 @@ public interface CodeFragment {
 	 * Compares given instance of Code Fragment with another CodeFragment instance according to its imports 
 	 * 
 	 * @param codeFragment - an instance of CodeFragment that is compared according to its imports
+	 * @return the set of exported location aggregations/dependencies that are in code 
+	 * fragment and not in aggregation of this code fragment's context
 	 */
 	public Set<String> compareExportLocationAggregations(CodeFragment codeFragment);
 	
@@ -51,6 +54,8 @@ public interface CodeFragment {
 	 * Get import dependencies from CodeFragment in form of AST tree
 	 * 
 	 * @return JSON Array of dependencies exported to AST
+	 * @throws IOException - the exception for various problems with file loading
+	 * @throws InterruptedException - the exception thrown during interruption
 	 */
 	public JSONArray getImportdependenciesAsAst() throws IOException, InterruptedException;
 	
@@ -58,6 +63,8 @@ public interface CodeFragment {
 	 * Integration of used imports to AST of base application
 	 * 
 	 * @param  originalAst - native AST from base application where imports should be integrated
+	 * @throws IOException - the exception for various problems with file loading
+	 * @throws InterruptedException - the exception thrown during interruption
 	 */
 	public void integrateImports(JSONObject originalAst) throws IOException, InterruptedException;
 	
@@ -65,6 +72,8 @@ public interface CodeFragment {
 	 * Returns AST of Code Fragment representation
 	 * 
 	 * @return returns JSON array from code statements
+	 * @throws IOException
+	 * @throws InterruptedException
 	 */
 	public JSONArray getCodeAst() throws IOException, InterruptedException;
 	

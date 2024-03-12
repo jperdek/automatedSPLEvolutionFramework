@@ -18,6 +18,11 @@ import variationPointsVisualization.AnnotationExtensionMarker;
 public class AnnotationsFromCodeRemover {
 
 	/**
+	 * Instantiates AnnotationsFromCodeRemover
+	 */
+	public AnnotationsFromCodeRemover() {}
+	
+	/**
 	 * Recursively removes all system negative variability variability annotations from the processed AST
 	 * 
 	 * @param astRoot - the root of processed AST

@@ -77,7 +77,7 @@ public class WrapperBasedInstantiationsFromTemplate implements CallsInstantiatio
 	 * 
 	 * @param callableConstructName - the callable functionality name without parameters or arguments
 	 * @param callableConstructNameWhole - the template of callable functionality with parameters or arguments (the call with unsubstituted parameters)
-	 * @param variableNameToExportedContextMapping - the mapping of variable names to exported contexts
+	 * @param parameterInformation - the mapping of variable names to exported contexts (variableNameToExportedContextMapping)
 	 * @return the queue with instantiated callable constructs
 	 */
 	private Queue<CallableConstruct> assignParametersForNewVariable(String callableConstructName, String callableConstructNameWhole, 
