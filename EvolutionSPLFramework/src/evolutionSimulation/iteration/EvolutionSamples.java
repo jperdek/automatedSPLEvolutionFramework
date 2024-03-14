@@ -1,4 +1,4 @@
-package evolutionSimulation.tests;
+package evolutionSimulation.iteration;
 
 import java.util.ArrayList;
 import java.util.List;

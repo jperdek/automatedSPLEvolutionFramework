@@ -10,7 +10,7 @@ import codeContext.processors.ASTTextExtractorTools;
 import dataRepresentationsExtensions.logs.Logged;
 import dataRepresentationsExtensions.logs.LoggedRepresentation;
 import dataRepresentationsExtensions.stack.FunctionStackLogger;
-import evolutionSimulation.tests.EvolutionConfiguration;
+import evolutionSimulation.EvolutionConfiguration;
 
 
 /**

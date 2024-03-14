@@ -1,7 +1,7 @@
 package splEvolutionCore.derivation;
 
 import codeConstructsEvaluation.transformation.ASTConverterClient;
-import evolutionSimulation.tests.EvolutionConfiguration;
+import evolutionSimulation.EvolutionConfiguration;
 import splEvolutionCore.SPLEvolutionCore;
 import splEvolutionCore.SPLEvolutionCore.DuplicateProductPreventionOptions;
 

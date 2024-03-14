@@ -3,6 +3,7 @@ package astFileProcessor;
 import java.io.FileReader;
 import java.io.IOException;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -58,6 +59,23 @@ public class ASTLoader {
 		try {
 	        JSONParser parser = new JSONParser();
 	        JSONObject configurationObject = (JSONObject) parser.parse(astString);
+	        return configurationObject;
+	    } catch (ParseException e) {
+	        e.printStackTrace();
+	    }
+		return null;
+	}
+	
+	/**
+	 * Loads JSON array from string
+	 * 
+	 * @param astString - the string representation that contains data in JSON array
+	 * @return JSON array with data
+	 */
+	public static JSONArray loadJSONArrayFromString(String astString) {
+		try {
+	        JSONParser parser = new JSONParser();
+	        JSONArray configurationObject = (JSONArray) parser.parse(astString);
 	        return configurationObject;
 	    } catch (ParseException e) {
 	        e.printStackTrace();

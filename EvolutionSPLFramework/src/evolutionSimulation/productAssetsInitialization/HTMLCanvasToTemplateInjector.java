@@ -16,10 +16,10 @@ import org.jsoup.nodes.Element;
 import org.jsoup.parser.Tag;
 
 import codeConstructsEvaluation.transformation.PostRequester;
-import evolutionSimulation.tests.EvolutionConfiguration;
-import evolutionSimulation.tests.EvolutionSamples;
-import evolutionSimulation.tests.EvolutionVariables;
-import evolutionSimulation.tests.WrappedTypeScriptContentInVariable;
+import evolutionSimulation.EvolutionConfiguration;
+import evolutionSimulation.iteration.EvolutionSamples;
+import evolutionSimulation.iteration.EvolutionVariables;
+import evolutionSimulation.iteration.WrappedTypeScriptContentInVariable;
 import positiveVariabilityManagement.SynthesizedContent;
 import splEvolutionCore.CanvasBasedApplicationConfiguration;
 import splEvolutionCore.DebugInformation;

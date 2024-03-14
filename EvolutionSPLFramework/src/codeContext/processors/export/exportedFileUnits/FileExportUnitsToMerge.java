@@ -11,7 +11,7 @@ import codeContext.processors.NotFoundVariableDeclaration;
 import dividedAstExport.InvalidSystemVariationPointMarkerException;
 import divisioner.Divisioner;
 import divisioner.VariationPointDivisionConfiguration;
-import evolutionSimulation.tests.WrappedTypeScriptContentInVariable;
+import evolutionSimulation.iteration.WrappedTypeScriptContentInVariable;
 import variationPointsVisualization.DifferentAnnotationTypesOnTheSameVariationPoint;
 import variationPointsVisualization.DuplicatedAnnotation;
 

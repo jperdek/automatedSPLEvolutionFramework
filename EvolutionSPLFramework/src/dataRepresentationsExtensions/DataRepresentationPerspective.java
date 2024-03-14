@@ -2,7 +2,8 @@ package dataRepresentationsExtensions;
 
 import java.io.IOException;
 import org.json.simple.JSONObject;
-import evolutionSimulation.tests.EvolutionConfiguration;
+
+import evolutionSimulation.EvolutionConfiguration;
 
 
 /**

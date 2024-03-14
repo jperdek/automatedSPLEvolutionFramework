@@ -1,9 +1,11 @@
-package evolutionSimulation.tests;
+package evolutionSimulation;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import dataRepresentationsExtensions.DataRepresentationsConfiguration;
+import evolutionSimulation.iteration.EvolutionSamples;
+import evolutionSimulation.iteration.EvolutionVariables;
 import evolutionSimulation.productAssetsInitialization.Resource;
 
 

@@ -306,4 +306,14 @@ public interface SPLEvolutionCore {
 	 * if true then the resulting variation points sequence of SPL will be persisted otherwise not 
 	 */
 	public final static boolean SERIALIZE_VARIATION_POINTS = true;
+	
+	/**
+	 * String identifier identifying data from variation points - representation
+	 */
+	public final static String VARIATION_POINTS_DATA_NAME_ID_ENDING = "_VariationPointData.json";
+	
+	/**
+	 * String identifier identifying AST of processed application
+	 */
+	public final static String PROCESSED_AST_NAME_ID_ENDING = "_AST.json";
 }

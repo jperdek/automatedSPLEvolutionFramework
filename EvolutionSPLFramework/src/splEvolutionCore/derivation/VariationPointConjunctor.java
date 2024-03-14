@@ -14,11 +14,11 @@ import java.util.Set;
 import codeContext.persistence.UpdatedTreePersistence;
 import codeContext.processors.export.ExportLocationAggregation;
 import codeContext.processors.export.ExportLocations;
+import evolutionSimulation.EvolutionConfiguration;
 import evolutionSimulation.productAssetsInitialization.CanvasBasedResource;
 import evolutionSimulation.productAssetsInitialization.HTMLCanvasToTemplateInjector;
 import evolutionSimulation.productAssetsInitialization.Resource;
 import evolutionSimulation.productAssetsInitialization.UnknownResourceToProcessException;
-import evolutionSimulation.tests.EvolutionConfiguration;
 import positiveVariabilityManagement.ProjectCopier;
 import positiveVariabilityManagement.SynthesizedContent;
 import splEvolutionCore.DebugInformation;
@@ -251,11 +251,11 @@ public class VariationPointConjunctor {
 
 		if (SPLEvolutionCore.SERIALIZE_APPLICATION_AST) {
 			JSONObject processedAST = synthesizedContent.getReferenceToProcessedAST();
-			UpdatedTreePersistence.persistsAstInFile(finalEvolutionResourcesPath + "_AST.json", processedAST);
+			UpdatedTreePersistence.persistsAstInFile(finalEvolutionResourcesPath + SPLEvolutionCore.PROCESSED_AST_NAME_ID_ENDING, processedAST);
 		}
 		if (SPLEvolutionCore.SERIALIZE_VARIATION_POINTS) {
 			JSONArray variationPointData = synthesizedContent.getVariationPointsDataReferenceAST();
-			UpdatedTreePersistence.persistsAstInFile(finalEvolutionResourcesPath + "_VariationDataPoints.json", 
+			UpdatedTreePersistence.persistsAstInFile(finalEvolutionResourcesPath + SPLEvolutionCore.VARIATION_POINTS_DATA_NAME_ID_ENDING, 
 					variationPointData.toString());
 		}
 	}
