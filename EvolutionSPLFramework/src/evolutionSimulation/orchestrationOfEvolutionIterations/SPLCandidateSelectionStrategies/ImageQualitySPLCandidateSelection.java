@@ -2,6 +2,13 @@ package evolutionSimulation.orchestrationOfEvolutionIterations.SPLCandidateSelec
 
 import java.util.List;
 
+
+/**
+ * Selects the candidate SPLs for the next evolution iteration process according to the quality of taken images
+ * 
+ * @author Jakub Perdek
+ *
+ */
 public class ImageQualitySPLCandidateSelection implements SPLNextEvolutionIterationCandidateSelectionStrategy {
 
 	public ImageQualitySPLCandidateSelection() {
@@ -12,6 +19,4 @@ public class ImageQualitySPLCandidateSelection implements SPLNextEvolutionIterat
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	
 }

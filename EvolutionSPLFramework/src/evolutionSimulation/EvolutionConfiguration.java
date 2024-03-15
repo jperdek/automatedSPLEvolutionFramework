@@ -45,9 +45,19 @@ public class EvolutionConfiguration {
 	
 	/**
 	 * The relative path to base/evolved script/source code that is managed/extended or updated
+	 * -  the initial setting should cover setting this information to start evolution only on one (application SPL) project or 
+	 * set pathToEvolvedSPLProjectDirectory to start SPL evolution on multiple (application SPLs) candidates
 	 */
-	private String currentEvolvedScriptRelativePath;
+	private String currentEvolvedScriptRelativePath = null;
 	
+	/**
+	 * Path to actually evolved SPL projects directory
+	 * -  the initial setting should cover setting this information to start SPL evolution on multiple (application SPLs) candidates or 
+	 * set pathToScriptInputFilePath to start evolution only on one (application SPL) project
+	 *  
+	 */
+	private String pathToEvolvedSPLProjectDirectory = null;
+
 	/**
 	 * OPTIONAL/ TEST BASED
 	 * The path to template HTML file, especially to run tests of evolved functionality
@@ -72,6 +82,11 @@ public class EvolutionConfiguration {
 	 * Initial code that is inserted to template to run tests of evolved functionality
 	 */
 	private String initialCode;
+	
+	/**
+	 * Instance managing conditions to terminate the SPL evolution process
+	 */
+	private EvolutionTerminateConditions evolutionTerminateConditions;
 	
 	
 	/**
@@ -121,6 +136,13 @@ public class EvolutionConfiguration {
 		this.initialCodeResources = new ArrayList<Resource>();
 		this.dataRepresentationsConfiguration = dataRepresentationsConfiguration;
 	}
+	
+	/**
+	 * Checks if condition for terminating the evolution process are met
+	 * 
+	 * @return true if (sub-)evolution process should be terminated otherwise not
+	 */
+	public boolean shouldTerminateEvolution() { return this.evolutionTerminateConditions.shouldTerminate(this.iteration); }
 	
 	/**
 	 * Returns the configuration to inject and optionally drive functionality for the creation of various data representations
@@ -324,6 +346,31 @@ public class EvolutionConfiguration {
 	public String getPathToScriptInputFile() { return this.pathToScriptInputFilePath; }
 	
 	/**
+	 * Sets the path to actually evolved script
+	 * 
+	 * @param pathToScriptInputFilePath - the path to actually evolved script
+	 */
+	public void setPathToScriptInputFile(String pathToScriptInputFilePath) {
+		this.pathToScriptInputFilePath = pathToScriptInputFilePath;
+	}
+	
+	/**
+	 * Returns the path to actually evolved SPL projects directory
+	 * 
+	 * @return the path to actually evolved SPL projects directory
+	 */
+	public String getPathToEvolvedSPLProjectDirectory() { return this.pathToEvolvedSPLProjectDirectory; }
+	
+	/**
+	 * Sets the path to actually evolved SPL projects directory
+	 * 
+	 * @param pathToEvolvedSPLProjectDirectory - the path to actually evolved SPL projects directory
+	 */
+	public void setPathToEvolvedSPLProjectDirectory(String pathToEvolvedSPLProjectDirectory) {
+		this.pathToEvolvedSPLProjectDirectory = pathToEvolvedSPLProjectDirectory;
+	}
+	
+	/**
 	 * Returns path to destination directory where assets and extensions will be incorporated 
 	 * concatenated with the AST file name ("/markedVariationPoints.json")
 	 * 
@@ -345,5 +392,12 @@ public class EvolutionConfiguration {
 	 */
 	public String getFileOutputVariationPoints(String applicationID) { 
 		return this.getOutputFilePath(applicationID) + "/harvestedVariationPoints.json";
+	}
+	
+	/**
+	 * Sets the path to the evolved SPL project directory from latest evolution
+	 */
+	public void setPathToEvolvedSPLProjectDirectoryFromLatestEvolution() {
+		this.pathToEvolvedSPLProjectDirectory = this.pathToEvolvedSPLProjectDirectory;
 	}
 }

@@ -38,14 +38,42 @@ import variationPointsVisualization.DuplicatedAnnotation;
 public class EvolutionIteration {
 
 	/**
+	 * Associated configuration with particular sub-evolution process to which this evolution iteration belongs to
+	 */
+	private EvolutionConfiguration associatedEvolutionConfiguration;
+
+	/**
+	 * Associated configuration with particular evolution core settings
+	 */
+	private EvolutionCoreSettings associatedEvolutionCoreSettings;
+	
+	/**
 	 * Instantiates the functionality to perform/manage evolution iteration according to provided configuration
 	 * 
 	 */
-	public EvolutionIteration() {	
+	public EvolutionIteration() {
+		this(null, null);
 	}
 	
 	/**
-	 * Performing one evolution iteration pahase according to provided configuration
+	 * Instantiates the functionality to perform/manage evolution iteration according to provided configuration
+	 * 
+	 * @param associatedEvolutionConfiguration - associated configuration for whole evolution process if available
+	 */
+	public EvolutionIteration(EvolutionConfiguration associatedEvolutionConfiguration, EvolutionCoreSettings associatedEvolutionCoreSettings) {
+		this.associatedEvolutionConfiguration = associatedEvolutionConfiguration;
+		this.associatedEvolutionCoreSettings = associatedEvolutionCoreSettings;
+	}
+	
+	/**
+	 * Returns the associated evolution core settings
+	 * 
+	 * @return the associated evolution core settings
+	 */
+	public EvolutionCoreSettings getAssociatedEvolutionCoreSettings() { return this.associatedEvolutionCoreSettings; }
+	
+	/**
+	 * Performing one evolution iteration phase according to provided configuration
 	 * 
 	 * 
 	 * @param evolutionConfiguration - the configuration to drive evolution process, especially executed evolution iterations
@@ -71,27 +99,67 @@ public class EvolutionIteration {
 				MethodToEvaluateComplexityNotFoundException, DuplicatedContextIdentifier, UnmappedContextException, 
 				DifferentlyAggregatedLocation, VariationPointPlaceInArrayNotFound, UnknownResourceToProcessException, 
 				AlreadyMappedVariationPointContentsInjection {
+		if (evolutionConfiguration == null) { evolutionConfiguration = this.associatedEvolutionConfiguration; }
+		
 		String pathToScriptInputFilePath = evolutionConfiguration.getPathToScriptInputFile();
 		EvolutionCoreStrategies evolutionCoreStrategy;
 		EvolutionCoreSettings evolutionCoreSettings = EvolutionConfigurations.getMaximalSemanticOrientedConfiguration();
 		
+		this.runEvolutioIteration(pathToScriptInputFilePath, evolutionConfiguration, evolutionCoreSettings);
+	}
+	
+	/**
+	 * Performing one evolution iteration phase according to provided configuration
+	 * -allowing use specific settings for this evolution iteration, including core strategies
+	 * -if these settings are not provided then class instances are used
+	 * 
+	 * @param evolutionCoreSettings
+	 * @param evolutionCoreSettings
+	 * @param evolutionConfiguration
+	 * @throws NotFoundVariableDeclaration
+	 * @throws IOException
+	 * @throws InterruptedException
+	 * @throws InvalidSystemVariationPointMarkerException
+	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint
+	 * @throws DuplicatedAnnotation
+	 * @throws DuplicateCandidateIdentifier
+	 * @throws AlreadyProvidedArgumentInConfigurationExpressionPlace
+	 * @throws MethodToEvaluateComplexityNotFoundException
+	 * @throws DuplicatedContextIdentifier
+	 * @throws UnmappedContextException
+	 * @throws DifferentlyAggregatedLocation
+	 * @throws VariationPointPlaceInArrayNotFound
+	 * @throws UnknownResourceToProcessException
+	 * @throws AlreadyMappedVariationPointContentsInjection
+	 */
+	public void runEvolutioIteration(String pathToScriptInputFilePath, EvolutionConfiguration evolutionConfiguration, EvolutionCoreSettings evolutionCoreSettings) throws NotFoundVariableDeclaration, IOException, 
+				InterruptedException, InvalidSystemVariationPointMarkerException, DifferentAnnotationTypesOnTheSameVariationPoint,
+				DuplicatedAnnotation, DuplicateCandidateIdentifier, AlreadyProvidedArgumentInConfigurationExpressionPlace, 
+				MethodToEvaluateComplexityNotFoundException, DuplicatedContextIdentifier, UnmappedContextException, 
+				DifferentlyAggregatedLocation, VariationPointPlaceInArrayNotFound, UnknownResourceToProcessException, 
+				AlreadyMappedVariationPointContentsInjection {
+		if (evolutionConfiguration == null) { evolutionConfiguration = this.associatedEvolutionConfiguration; }
+		if (evolutionCoreSettings == null) { evolutionCoreSettings = this.associatedEvolutionCoreSettings; }
+		
+		evolutionConfiguration.setPathToScriptInputFile(pathToScriptInputFilePath);
+		EvolutionCoreStrategies evolutionCoreStrategy;
 		VariationPointDivisionConfiguration variationPointDivisionConfiguration = evolutionCoreSettings.getVariationPointDivisionConfiguration();
 		//variationPointDivisionConfiguration.divisionAndGetHighlightedAst(inputFilePath, fileOutputAstPath, fileOutputVariationPointsPath);
 		String fileContent = PostRequester.loadFileContent(pathToScriptInputFilePath);
 		WrappedTypeScriptContentInVariable wrappedTypeScriptContentInVariable = new WrappedTypeScriptContentInVariable(fileContent);
-
+		
 		JSONObject astTreeRoot = ASTConverterClient.convertFromCodeToASTJSON(wrappedTypeScriptContentInVariable.getScript());
 		JSONObject highlightedAst = variationPointDivisionConfiguration.divisionAndGetHighlightedAst(astTreeRoot, pathToScriptInputFilePath);
 		
 		JSONArray harvestedVariationPoints = variationPointDivisionConfiguration.getVariationPointsData(highlightedAst);
-
+		
 		FileExportsUnits availableExportUnits = FileExportUnitsToMerge.prepareDefaultFileExportUnitsToMerge(
-				evolutionConfiguration.getSelectedExportedContentPaths(),
-				evolutionConfiguration.getPathExtensionToGetScript());
+			evolutionConfiguration.getSelectedExportedContentPaths(),
+			evolutionConfiguration.getPathExtensionToGetScript());
 		availableExportUnits.printContentOfExportUnits();
 		
 		evolutionCoreStrategy = evolutionCoreSettings.getEvolutionCoreStrategy();
 		evolutionCoreStrategy.evolve(highlightedAst, harvestedVariationPoints, 
-				availableExportUnits, evolutionCoreSettings, evolutionConfiguration);
-	}
+			availableExportUnits, evolutionCoreSettings, evolutionConfiguration);
+		}
 }

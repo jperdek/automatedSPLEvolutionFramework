@@ -13,15 +13,35 @@ import evolutionSimulation.orchestrationOfEvolutionIterations.SPLCandidateSelect
 import splEvolutionCore.SPLEvolutionCore;
 
 
+/**
+ * Loads and parses the information about actual SPL candididates for the new evolution iteration
+ * 
+ * @author Jakub Perdek
+ *
+ */
 public class SPLCandidateLoadingMechanism {
 
+	/**
+	 * The mapping of the file with variation points to the file name
+	 */
 	private Map<String, String> vpDataFileNameToProjectPath;
 	
 	
+	/**
+	 * Instantiates the SPL candidate loading mechanism
+	 */
 	public SPLCandidateLoadingMechanism() {
 		this.vpDataFileNameToProjectPath = new HashMap<String, String>();
 	}
 	
+	/**
+	 * Loads and parse SPL candidates
+	 * -TO DO: if variation points data JSON file  is not available for them then this functionality should be incorporated
+	 * 
+	 * @param previousEvolutionDirectoryPath - the path with SPLs from the previous evolution process
+	 * @param variationPointsDataAggregations
+	 * @throws IOException
+	 */
 	public void loadAndParseSPLCandidates(String previousEvolutionDirectoryPath,
 			VariationPointsDataAggregations variationPointsDataAggregations) throws IOException {
 		 File dir = new File(previousEvolutionDirectoryPath);
