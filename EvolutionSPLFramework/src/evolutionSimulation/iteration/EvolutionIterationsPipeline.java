@@ -8,6 +8,7 @@ import java.util.List;
 import codeContext.processors.NotFoundVariableDeclaration;
 import dividedAstExport.InvalidSystemVariationPointMarkerException;
 import evolutionSimulation.EvolutionConfiguration;
+import evolutionSimulation.orchestrationOfEvolutionIterations.SPLCandidateSelectionStrategies.SPLNextEvolutionIterationCandidateSelectionStrategy;
 import evolutionSimulation.orchestrationOfEvolutionIterations.SPLCandidateSelectionStrategies.SPLProjectCandidateToPopulationOfEvolIterationSelector;
 import evolutionSimulation.productAssetsInitialization.UnknownResourceToProcessException;
 import positiveVariabilityManagement.UnmappedContextException;
@@ -73,6 +74,7 @@ public class EvolutionIterationsPipeline {
 
 	/**
 	 * Runs the evolution pipeline (for particular evolution or sub-evolution and according to the specified configuration)
+	 * - manages evolution process that can terminate if termination conditions are fulfilled or all iterations are executed
 	 * 
 	 * @param evolutionConfiguration
 	 * @throws NotFoundVariableDeclaration
@@ -91,34 +93,50 @@ public class EvolutionIterationsPipeline {
 	 * @throws UnknownResourceToProcessException
 	 * @throws AlreadyMappedVariationPointContentsInjection
 	 */
-	public void runEvolutionPipeline(EvolutionConfiguration evolutionConfiguration) throws NotFoundVariableDeclaration, IOException, InterruptedException, InvalidSystemVariationPointMarkerException, DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation, DuplicateCandidateIdentifier, AlreadyProvidedArgumentInConfigurationExpressionPlace, MethodToEvaluateComplexityNotFoundException, DuplicatedContextIdentifier, UnmappedContextException, DifferentlyAggregatedLocation, VariationPointPlaceInArrayNotFound, UnknownResourceToProcessException, AlreadyMappedVariationPointContentsInjection {
+	public void runEvolutionPipeline(EvolutionConfiguration evolutionConfiguration) throws NotFoundVariableDeclaration, 
+				IOException, InterruptedException, InvalidSystemVariationPointMarkerException, DifferentAnnotationTypesOnTheSameVariationPoint, 
+				DuplicatedAnnotation, DuplicateCandidateIdentifier, AlreadyProvidedArgumentInConfigurationExpressionPlace, 
+				MethodToEvaluateComplexityNotFoundException, DuplicatedContextIdentifier, UnmappedContextException,
+				DifferentlyAggregatedLocation, VariationPointPlaceInArrayNotFound, UnknownResourceToProcessException, 
+				AlreadyMappedVariationPointContentsInjection {
 		Iterator<EvolutionIteration> evolutionIterationIterator = this.sequenceOfEvolutionIterations.iterator();
 		String pathToEvolvedSPLProjectsDirectory = evolutionConfiguration.getPathToEvolvedSPLProjectDirectory();
 		
+		SPLNextEvolutionIterationCandidateSelectionStrategy strategySPLNextEvolutionIterationCandidateSelection;
 		SPLProjectCandidateToPopulationOfEvolIterationSelector candidateForPopulationSelector = null;
 		EvolutionIteration evolutionIteration;
 		EvolutionCoreSettings evolutionCoreSettings;
 		List<String> pathsToScriptInputFilePath;
+		int numberEvolvedCandidatesFromLastIteration;
 
+		EvolutionConfiguration customizedEvolutionConfiguration = evolutionConfiguration;
 		while(evolutionIterationIterator.hasNext()) {
 			evolutionIteration = evolutionIterationIterator.next();
+			customizedEvolutionConfiguration = evolutionIteration.getAssociatedEvolutionConfiguration();
+			
+			numberEvolvedCandidatesFromLastIteration = customizedEvolutionConfiguration.getNumberOfEvolvedMembersInPopulation();
+			if (customizedEvolutionConfiguration == null) { customizedEvolutionConfiguration = evolutionConfiguration; }
 			evolutionCoreSettings = evolutionIteration.getAssociatedEvolutionCoreSettings();
 			
 			if (pathToEvolvedSPLProjectsDirectory == null || pathToEvolvedSPLProjectsDirectory.equals("")) {
 				evolutionIteration.runEvolutioIteration(evolutionConfiguration);
-			
 			} else {
+				strategySPLNextEvolutionIterationCandidateSelection = evolutionIteration.getEvolutionIterationCandidateSelectionMechanism();
+				
 				candidateForPopulationSelector = new SPLProjectCandidateToPopulationOfEvolIterationSelector(candidateForPopulationSelector);
-				pathsToScriptInputFilePath = candidateForPopulationSelector.getPathsToEachSPLProjectCandidateFromPopulation(pathToEvolvedSPLProjectsDirectory, null);
+				pathsToScriptInputFilePath = candidateForPopulationSelector.getPathsToEachSPLProjectCandidateFromPopulation(
+						numberEvolvedCandidatesFromLastIteration, 
+						pathToEvolvedSPLProjectsDirectory, strategySPLNextEvolutionIterationCandidateSelection);
 				for (String pathToScriptInputFilePath: pathsToScriptInputFilePath) {
-					evolutionIteration.runEvolutioIteration(pathToScriptInputFilePath, evolutionConfiguration, evolutionCoreSettings);
+					evolutionIteration.runEvolutioIteration(pathToScriptInputFilePath, customizedEvolutionConfiguration, evolutionCoreSettings);
 				}
 			}
 			
-			evolutionConfiguration.setPathToEvolvedSPLProjectDirectoryFromLatestEvolution();
-			if (evolutionConfiguration.shouldTerminateEvolution()) {
-				break;
-			}
+			// switch to the next iteration - changing paths
+			evolutionConfiguration.setPathToEvolvedSPLProjectDirectoryFromLatestEvolution(customizedEvolutionConfiguration);
+			if (evolutionConfiguration.shouldTerminateEvolution()) { break; }
+			
+			customizedEvolutionConfiguration = evolutionConfiguration;
 		}
 	}
 }

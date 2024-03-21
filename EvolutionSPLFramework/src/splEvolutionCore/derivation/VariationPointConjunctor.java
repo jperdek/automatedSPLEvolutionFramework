@@ -68,8 +68,12 @@ public class VariationPointConjunctor {
 	 */
 	public void serializeSythesizedContent(String resultingPath, SynthesizedContent synthesizedContent) throws IOException, InterruptedException {
 		if (resultingPath.contains("file:///")) { resultingPath = "file:///" + resultingPath.replace("://", ":/"); }
-		UpdatedTreePersistence.persistsAstInFile(resultingPath, ASTConverterClient.convertFromASTToCode(
-				synthesizedContent.getReferenceToProcessedAST().toString()));
+		String updatedAndCurrentlyEvolvedCode = ASTConverterClient.convertFromASTToCode(
+				synthesizedContent.getReferenceToProcessedAST().toString());
+		if (SPLEvolutionCore.CLEAR_COMMENTS_FROM_RESULTING_SPL_DERIVATION) {
+			updatedAndCurrentlyEvolvedCode = ASTConverterClient.clearComments(updatedAndCurrentlyEvolvedCode);
+		}
+		UpdatedTreePersistence.persistsAstInFile(resultingPath, updatedAndCurrentlyEvolvedCode);
 	}
 	
 	/**

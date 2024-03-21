@@ -13,6 +13,7 @@ import codeContext.processors.export.exportedFileUnits.FileExportsUnits;
 import dividedAstExport.InvalidSystemVariationPointMarkerException;
 import divisioner.VariationPointDivisionConfiguration;
 import evolutionSimulation.EvolutionConfiguration;
+import evolutionSimulation.orchestrationOfEvolutionIterations.SPLCandidateSelectionStrategies.SPLNextEvolutionIterationCandidateSelectionStrategy;
 import evolutionSimulation.productAssetsInitialization.UnknownResourceToProcessException;
 import positiveVariabilityManagement.UnmappedContextException;
 import positiveVariabilityManagement.VariationPointPlaceInArrayNotFound;
@@ -48,21 +49,48 @@ public class EvolutionIteration {
 	private EvolutionCoreSettings associatedEvolutionCoreSettings;
 	
 	/**
+	 * Strategy to select candidates from the previous iteration to the new one
+	 */
+	private SPLNextEvolutionIterationCandidateSelectionStrategy candidatesForEvolutionIterationSelector;
+	
+	
+	/**
 	 * Instantiates the functionality to perform/manage evolution iteration according to provided configuration
 	 * 
 	 */
-	public EvolutionIteration() {
-		this(null, null);
+	public EvolutionIteration() { this(null, null, null); }
+	
+	/**
+	 * Instantiates the functionality to perform/manage evolution iteration according to provided configuration
+	 * 
+	 * @param candidatesForEvolutionSelector - strategy which should be applied for selecting the candidates from the previous evolution
+	 */
+	public EvolutionIteration(SPLNextEvolutionIterationCandidateSelectionStrategy candidatesForEvolutionIterationSelector) {
+		this(candidatesForEvolutionIterationSelector, null, null);
 	}
 	
 	/**
 	 * Instantiates the functionality to perform/manage evolution iteration according to provided configuration
 	 * 
+	 * @param candidatesForEvolutionSelector - strategy which should be applied for selecting the candidates from the previous evolution
 	 * @param associatedEvolutionConfiguration - associated configuration for whole evolution process if available
+	 * @param associatedEvolutionCoreSettings - the configuration-settings for the decision making necessary in the evolution core processes 
+	 * (variation points selection, variability constructs selection, ...)
 	 */
-	public EvolutionIteration(EvolutionConfiguration associatedEvolutionConfiguration, EvolutionCoreSettings associatedEvolutionCoreSettings) {
+	public EvolutionIteration(SPLNextEvolutionIterationCandidateSelectionStrategy candidatesForEvolutionIterationSelector, 
+			EvolutionConfiguration associatedEvolutionConfiguration, EvolutionCoreSettings associatedEvolutionCoreSettings) {
+		this.candidatesForEvolutionIterationSelector = candidatesForEvolutionIterationSelector;
 		this.associatedEvolutionConfiguration = associatedEvolutionConfiguration;
 		this.associatedEvolutionCoreSettings = associatedEvolutionCoreSettings;
+	}
+	
+	/**
+	 * Returns the associated candidate selection mechanism from the precious evolution iteration
+	 * 
+	 * @return the associated candidate selection mechanism from the precious evolution iteration
+	 */
+	public SPLNextEvolutionIterationCandidateSelectionStrategy getEvolutionIterationCandidateSelectionMechanism() {
+		return this.candidatesForEvolutionIterationSelector; 
 	}
 	
 	/**
@@ -71,6 +99,13 @@ public class EvolutionIteration {
 	 * @return the associated evolution core settings
 	 */
 	public EvolutionCoreSettings getAssociatedEvolutionCoreSettings() { return this.associatedEvolutionCoreSettings; }
+	
+	/**
+	 * Returns the associated evolution configuration
+	 * 
+	 * @return the associated evolution configuration
+	 */
+	public EvolutionConfiguration getAssociatedEvolutionConfiguration() { return this.associatedEvolutionConfiguration; }
 	
 	/**
 	 * Performing one evolution iteration phase according to provided configuration
@@ -161,5 +196,5 @@ public class EvolutionIteration {
 		evolutionCoreStrategy = evolutionCoreSettings.getEvolutionCoreStrategy();
 		evolutionCoreStrategy.evolve(highlightedAst, harvestedVariationPoints, 
 			availableExportUnits, evolutionCoreSettings, evolutionConfiguration);
-		}
+	}
 }

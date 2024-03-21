@@ -1,6 +1,0 @@
-package evolutionSimulation.orchestrationOfEvolutionIterations.SPLCandidateSelectionStrategies.imageContentQualityAssignment;
-
-
-public class VariationPointsDataAdapter {
-	
-}

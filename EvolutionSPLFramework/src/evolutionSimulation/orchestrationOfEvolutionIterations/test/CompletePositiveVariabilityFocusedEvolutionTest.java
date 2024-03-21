@@ -8,8 +8,11 @@ import dividedAstExport.InvalidSystemVariationPointMarkerException;
 import evolutionSimulation.EvolutionConfiguration;
 import evolutionSimulation.iteration.AlreadyMappedVariationPointContentsInjection;
 import evolutionSimulation.iteration.EvolutionIteration;
+import evolutionSimulation.iteration.EvolutionIterationsPipeline;
 import evolutionSimulation.iteration.FiveEdgeEvolutionIterationTest;
 import evolutionSimulation.iteration.FractalIterationInitializationCodeFragments;
+import evolutionSimulation.orchestrationOfEvolutionIterations.SPLCandidateSelectionStrategies.RandomCandidateSelection;
+import evolutionSimulation.orchestrationOfEvolutionIterations.SPLCandidateSelectionStrategies.SPLNextEvolutionIterationCandidateSelectionStrategy;
 import evolutionSimulation.iteration.EvolutionSamples;
 import evolutionSimulation.productAssetsInitialization.CanvasBasedResource;
 import evolutionSimulation.productAssetsInitialization.SharedConfiguration;
@@ -40,7 +43,12 @@ public class CompletePositiveVariabilityFocusedEvolutionTest {
 	public CompletePositiveVariabilityFocusedEvolutionTest() {
 	}
 	
-	public EvolutionConfiguration prepareInitialIteration() {
+	/**
+	 * Prepares the configuration for the initial evolution phase
+	 * 
+	 * @return the configuration for the initial evolution phase
+	 */
+	public EvolutionConfiguration prepareInitialConfiguration() {
 		String inputFilePath = EvolutionSamples.FIVE_EDGE_INPUT_PATHS.get(0);
 		String outputFilePath = SharedConfiguration.PATH_TO_EVOLUTION_DIRECTORY;
 		String currentEvolvedScriptRelativePath = "/js/platnoJS.js"; // this should be changed for each evolved project
@@ -58,17 +66,46 @@ public class CompletePositiveVariabilityFocusedEvolutionTest {
 		return evolutionConfiguration;
 	}
 	
+	/**
+	 * Runs the evolution based on evolution pipeline - sample test
+	 * 
+	 * 
+	 * @param args - no arguments used
+	 * @throws NotFoundVariableDeclaration
+	 * @throws IOException
+	 * @throws InterruptedException
+	 * @throws InvalidSystemVariationPointMarkerException
+	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint
+	 * @throws DuplicatedAnnotation
+	 * @throws DuplicateCandidateIdentifier
+	 * @throws AlreadyProvidedArgumentInConfigurationExpressionPlace
+	 * @throws MethodToEvaluateComplexityNotFoundException
+	 * @throws DuplicatedContextIdentifier
+	 * @throws UnmappedContextException
+	 * @throws DifferentlyAggregatedLocation
+	 * @throws VariationPointPlaceInArrayNotFound
+	 * @throws UnknownResourceToProcessException
+	 * @throws AlreadyMappedVariationPointContentsInjection
+	 */
 	public static void main(String args[]) throws NotFoundVariableDeclaration, IOException, InterruptedException,
 		InvalidSystemVariationPointMarkerException, DifferentAnnotationTypesOnTheSameVariationPoint,
 		DuplicatedAnnotation, DuplicateCandidateIdentifier, AlreadyProvidedArgumentInConfigurationExpressionPlace,
 		MethodToEvaluateComplexityNotFoundException, DuplicatedContextIdentifier, UnmappedContextException,
 		DifferentlyAggregatedLocation, VariationPointPlaceInArrayNotFound, UnknownResourceToProcessException, 
 		AlreadyMappedVariationPointContentsInjection {
-		CompletePositiveVariabilityFocusedEvolutionTest completeIyterativeDevelopment = new  CompletePositiveVariabilityFocusedEvolutionTest();
-		EvolutionConfiguration evolutionConfiguration = completeIyterativeDevelopment.prepareInitialIteration();
-		
-		//evolutionConfiguration.setTemplateConfigurationPath(templateRelativePath);
-		EvolutionIteration evolutionSimulationTest = new EvolutionIteration();
-		evolutionSimulationTest.runEvolutioIteration(evolutionConfiguration);
+			CompletePositiveVariabilityFocusedEvolutionTest completeIyterativeDevelopment = new  CompletePositiveVariabilityFocusedEvolutionTest();
+			EvolutionConfiguration evolutionConfiguration = completeIyterativeDevelopment.prepareInitialConfiguration();
+			
+			// evolutionConfiguration.setTemplateConfigurationPath(templateRelativePath);
+			SPLNextEvolutionIterationCandidateSelectionStrategy evolution2IterationStrategy = new RandomCandidateSelection();
+			SPLNextEvolutionIterationCandidateSelectionStrategy evolution3IterationStrategy = new RandomCandidateSelection();
+			EvolutionIteration evolutionIteration1 = new EvolutionIteration();
+			EvolutionIteration evolutionIteration2 = new EvolutionIteration(evolution2IterationStrategy);
+			EvolutionIteration evolutionIteration3 = new EvolutionIteration(evolution3IterationStrategy);
+			EvolutionIterationsPipeline evolutionIterationsPipeline = new EvolutionIterationsPipeline();
+			evolutionIterationsPipeline.addEvolutionIterationToSequence(evolutionIteration1);
+			evolutionIterationsPipeline.addEvolutionIterationToSequence(evolutionIteration2);
+			evolutionIterationsPipeline.addEvolutionIterationToSequence(evolutionIteration3);
+			evolutionIterationsPipeline.runEvolutionPipeline(evolutionConfiguration);
 	}
 }

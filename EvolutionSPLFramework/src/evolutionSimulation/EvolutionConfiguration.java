@@ -88,6 +88,10 @@ public class EvolutionConfiguration {
 	 */
 	private EvolutionTerminateConditions evolutionTerminateConditions;
 	
+	/**
+	 * Number of evolved members in population (for previous evolution iterations)
+	 */
+	private int numberOfEvolvedMembersInPopulation = 3;
 	
 	/**
 	 * Strategies to direct the evolution process
@@ -126,8 +130,26 @@ public class EvolutionConfiguration {
 	 * @param currentEvolvedScriptRelativePath - the relative path to base/evolved script/source code that is managed/extended or updated
 	 */
 	public EvolutionConfiguration(String initialCode, String concernName, String inputFilePath,
+			String outputFilePath, String pathToScriptInputFilePath, 
+			String currentEvolvedScriptRelativePath, DataRepresentationsConfiguration dataRepresentationsConfiguration) {
+		this(initialCode, concernName, inputFilePath, outputFilePath, pathToScriptInputFilePath, 
+				currentEvolvedScriptRelativePath, dataRepresentationsConfiguration, new EvolutionTerminateConditions());
+	}
+	
+	/**
+	 * The instance of evolution configuration to drive evolution and store relevant information 
+	 * 
+	 * @param initialCode - the initial code that is inserted to template to run tests of evolved functionality
+	 * @param concernName - the name of evolved concern to properly name entities - rnadom string can be used
+	 * @param inputFilePath - the path to target project/sources that are extended
+	 * @param outputFilePath - the path to destination directory where assets and extensions will be incorporated
+	 * @param pathToScriptInputFilePath - the path to base script/source code that is managed/extended or updated
+	 * @param currentEvolvedScriptRelativePath - the relative path to base/evolved script/source code that is managed/extended or updated
+	 * @param evolutionTerminateConditions - the conditions to terminate evolution process
+	 */
+	public EvolutionConfiguration(String initialCode, String concernName, String inputFilePath,
 			String outputFilePath, String pathToScriptInputFilePath, String currentEvolvedScriptRelativePath,
-			DataRepresentationsConfiguration dataRepresentationsConfiguration) {
+			DataRepresentationsConfiguration dataRepresentationsConfiguration, EvolutionTerminateConditions evolutionTerminateConditions) {
 		this.initialCode = initialCode;
 		this.inputFilePath = inputFilePath;
 		this.outputFilePath = outputFilePath;
@@ -135,7 +157,24 @@ public class EvolutionConfiguration {
 		this.currentEvolvedScriptRelativePath = currentEvolvedScriptRelativePath;
 		this.initialCodeResources = new ArrayList<Resource>();
 		this.dataRepresentationsConfiguration = dataRepresentationsConfiguration;
+		this.evolutionTerminateConditions = evolutionTerminateConditions;
 	}
+
+	/**
+	 * Returns the number of evolved members in population (for previous evolution iterations)
+	 * 
+	 * @return the number of evolved members in population (for previous evolution iterations)
+	 */
+	public int getNumberOfEvolvedMembersInPopulation() { return this.numberOfEvolvedMembersInPopulation; }
+	
+	/**
+	 * Sets the number of evolved members in population (for previous evolution iterations)
+	 * 
+	 * @param numberOfEvolvedMembersInPopulation - the number of evolved members in population (for previous evolution iterations)
+	 */
+	public void setNumberOfEvolvedMembersInPopulation(int numberOfEvolvedMembersInPopulation) { 
+		this.numberOfEvolvedMembersInPopulation = numberOfEvolvedMembersInPopulation;
+	} 
 	
 	/**
 	 * Checks if condition for terminating the evolution process are met
@@ -399,5 +438,14 @@ public class EvolutionConfiguration {
 	 */
 	public void setPathToEvolvedSPLProjectDirectoryFromLatestEvolution() {
 		this.pathToEvolvedSPLProjectDirectory = this.pathToEvolvedSPLProjectDirectory;
+	}
+
+	/**
+	 * Sets the path to the evolved SPL project directory from latest evolution
+	 * 
+	 * @param globalEvolutionConfiguration - evolution configuration from previous iterations 
+	 */
+	public void setPathToEvolvedSPLProjectDirectoryFromLatestEvolution(EvolutionConfiguration globalEvolutionConfiguration) {
+		this.pathToEvolvedSPLProjectDirectory = globalEvolutionConfiguration.getPathToEvolvedSPLProjectDirectory();
 	}
 }

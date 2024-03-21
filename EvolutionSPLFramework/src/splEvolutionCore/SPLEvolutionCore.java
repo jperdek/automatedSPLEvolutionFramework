@@ -232,18 +232,22 @@ public interface SPLEvolutionCore {
 	 * Used separator/delimiter to separate various code fragments, especially one line ones
 	 */
 	public static final String CODE_FRAGMENT_SEPARATOR = "\n";
+	
 	/**
 	 * method can be introduced if number of appended lines exceeds this constant
 	 */
 	public static final Integer NUMBER_LINES_TO_INTRODUCE_METHOD = 5;
+	
 	/**
 	 * class can be introduced if number of declarations exceeds this constant
 	 */
 	public static final Integer NUMBER_DECLARATIONS_TO_INTRODUCE_CLASS = 3;
+	
 	/**
 	 * class can be introduced if number of declared methods exceeds this constant
 	 */
 	public static final Integer NUMBER_METHODS_TO_INTRODUCE_CLASS = 8;
+	
 	/**
 	 * class can be introduced if number of lines exceeds this constant
 	 */
@@ -316,4 +320,9 @@ public interface SPLEvolutionCore {
 	 * String identifier identifying AST of processed application
 	 */
 	public final static String PROCESSED_AST_NAME_ID_ENDING = "_AST.json";
+	
+	/**
+	 * Clears comments from resulting spl derivation
+	 */
+	public final static boolean CLEAR_COMMENTS_FROM_RESULTING_SPL_DERIVATION = true;
 }

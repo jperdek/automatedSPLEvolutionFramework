@@ -12,7 +12,7 @@ public interface DebugInformation {
 	/**
 	 * Persists the configuration output files of annotated/marked/highlighted AST for further processing and debugging 
 	 */
-	public static boolean OUTPIT_FILES_AS_ANNOTATED_AST_AND_CODE = true;
+	public static boolean OUTPIT_FILES_AS_ANNOTATED_AST_AND_CODE = false;
 	
 	/**
 	 * Shows selected synthesized code constructs to better debug incorporated changes that are done in the positive variability management

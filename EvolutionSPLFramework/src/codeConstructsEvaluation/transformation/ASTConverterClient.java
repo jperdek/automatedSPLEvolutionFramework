@@ -21,9 +21,18 @@ public class ASTConverterClient {
 			+ ComplexityConstructEvaluationConfiguration.FROM_CODE_TO_AST_SERVICE_URL;
 	private final static String FROM_AST_TO_CODE_SERVICE_URL = ComplexityConstructEvaluationConfiguration.SERVER_URL 
 			+ ComplexityConstructEvaluationConfiguration.FROM_AST_TO_CODE_SERVICE_URL;
+	private final static String CLEAR_COMMENTS_FROM_CODE_SERVICE_URL = ComplexityConstructEvaluationConfiguration.SERVER_URL 
+			+ ComplexityConstructEvaluationConfiguration.CLEAR_COMMENTS_IN_CODE_SERVICE_URL;
 	
-	
+	/**
+	 * 
+	 */
 	public ASTConverterClient() {}
+	
+	public static String clearComments(String codeWithComments) throws IOException, InterruptedException {
+		String cleanedCodeFromComments = PostRequester.doPost(ASTConverterClient.CLEAR_COMMENTS_FROM_CODE_SERVICE_URL, codeWithComments);
+		return cleanedCodeFromComments;
+	}
 	
 	public static String cleanOneLineIgnoreComments(String fileString) {
 		return fileString.replaceAll("//\s*@ts[^\n]+\n", "");

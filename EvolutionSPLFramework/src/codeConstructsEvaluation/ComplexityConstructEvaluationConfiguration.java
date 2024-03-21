@@ -50,4 +50,9 @@ public interface ComplexityConstructEvaluationConfiguration {
 	 * Service url part to convert AST to code
 	 */
 	public final static String FROM_AST_TO_CODE_SERVICE_URL = "convertBack";
+	
+	/**
+	 * Service url part to clear comments from (TypeScript) code
+	 */
+	public final static String CLEAR_COMMENTS_IN_CODE_SERVICE_URL = "cleanComments";
 }

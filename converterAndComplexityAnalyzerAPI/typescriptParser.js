@@ -14,6 +14,7 @@ app.use(bodyParser.text({limit: '50mb'}));
 
 const ts = require('typescript');
 const fs = require('fs');
+const commentCleaner = require("comment-cleaner")
 
 app.post('/convert', function (request, response) {
 	const ast = ts.createSourceFile("x.ts", request.body, ts.ScriptTarget.Latest);
@@ -31,6 +32,13 @@ app.post('/convertBack', function (request, response) {
 	const code = printer.printNode(ts.EmitHint.Unspecified, ast, ast);
 	response.set('Content-Type', 'text/html');
 	response.send(code);
+	response.status(200);
+});
+
+app.post('/cleanComments', function (request, response) {
+	const cleanedCode = commentCleaner.clean('ts', request.body);
+	response.set('Content-Type', 'text/html');
+	response.send(cleanedCode);
 	response.status(200);
 });
 
@@ -66,6 +74,17 @@ app.post('/analyzeEScomplex', function (request, response) {
 	const report = escomplex2.analyse(source);
 	response.set('Content-Type', 'text/html');
 	console.log(report);
+	response.send(report);
+	response.status(200);
+});
+
+
+app.post('/transpile', bodyParser.text({type: '*/*'}), function (request, response) {
+	const source = request.body;
+	const report = ts.transpile(source.replaceAll("export", "window.export"));
+	response.set('Content-Type', 'text/html');
+	console.log(report);
+	console.log("FAIIILLLL");
 	response.send(report);
 	response.status(200);
 });

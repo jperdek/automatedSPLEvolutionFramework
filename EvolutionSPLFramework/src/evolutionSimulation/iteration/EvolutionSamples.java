@@ -5,6 +5,7 @@ import java.util.List;
 
 import evolutionSimulation.productAssetsInitialization.SharedConfiguration;
 
+
 /**
  * Repository of custom/project specific fractal rendering scripts (fractals)
  * -available functionality should be selectively marked as exported to efficiently tune and direct the evolution process

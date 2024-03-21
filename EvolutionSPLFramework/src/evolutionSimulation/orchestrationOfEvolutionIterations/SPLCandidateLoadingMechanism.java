@@ -3,7 +3,9 @@ package evolutionSimulation.orchestrationOfEvolutionIterations;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.json.simple.JSONArray;
@@ -15,6 +17,7 @@ import splEvolutionCore.SPLEvolutionCore;
 
 /**
  * Loads and parses the information about actual SPL candididates for the new evolution iteration
+ * 
  * 
  * @author Jakub Perdek
  *
@@ -35,11 +38,28 @@ public class SPLCandidateLoadingMechanism {
 	}
 	
 	/**
+	 * Returns the list of SPL candidate names from each previous population member
+	 * 
+	 * @return the list of SPL candidate point names from each previous population member
+	 */
+	public List<String> getListOfCandidateSPLFileNamesFromEachPopulationMember() { 
+		return new ArrayList<String>(this.vpDataFileNameToProjectPath.keySet());
+	}
+
+	/**
+	 * Returns path to SPL project named according to candidate name
+	 * 
+	 * @param candidateName - get path to SPL project named according to candidate name
+	 * @return the path to SPL project named according to candidate name
+	 */
+	public String getCandidatePath(String candidateName) { return this.vpDataFileNameToProjectPath.get(candidateName); }
+	
+	/**
 	 * Loads and parse SPL candidates
 	 * -TO DO: if variation points data JSON file  is not available for them then this functionality should be incorporated
 	 * 
 	 * @param previousEvolutionDirectoryPath - the path with SPLs from the previous evolution process
-	 * @param variationPointsDataAggregations
+	 * @param variationPointsDataAggregations - the aggregations of variation point data
 	 * @throws IOException
 	 */
 	public void loadAndParseSPLCandidates(String previousEvolutionDirectoryPath,

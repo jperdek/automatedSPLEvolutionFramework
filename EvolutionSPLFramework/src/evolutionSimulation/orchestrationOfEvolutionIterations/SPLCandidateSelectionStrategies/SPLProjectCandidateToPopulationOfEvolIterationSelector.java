@@ -1,7 +1,9 @@
 package evolutionSimulation.orchestrationOfEvolutionIterations.SPLCandidateSelectionStrategies;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import evolutionSimulation.orchestrationOfEvolutionIterations.SPLCandidateLoadingMechanism;
 import evolutionSimulation.orchestrationOfEvolutionIterations.SPLCandidateSelectionStrategies.imageContentQualityAssignment.VariationPointsDataAggregations;
@@ -9,6 +11,7 @@ import evolutionSimulation.orchestrationOfEvolutionIterations.SPLCandidateSelect
 
 /**
  * Responsible to manage overall candidate selection process according to configuration for particular (sub-)evolution iteration
+ * 
  * 
  * @author Jakub Perdek
  *
@@ -25,7 +28,9 @@ public class SPLProjectCandidateToPopulationOfEvolIterationSelector {
 	 */
 	private VariationPointsDataAggregations variationPointsDataAggregations;
 	
-	
+	/**
+	 * The queue of previously used candidate selectors
+	 */
 	private PreviousProjectCandidatesSelectorsQueue previousProjectCandidatesSelectorsQueue = null;
 	
 	/**
@@ -71,13 +76,20 @@ public class SPLProjectCandidateToPopulationOfEvolIterationSelector {
 	 * 
 	 * @throws IOException
 	 */
-	public List<String> getPathsToEachSPLProjectCandidateFromPopulation(String previousEvolutionDirectory,
-			SPLNextEvolutionIterationCandidateSelectionStrategy evolIterationCandidateSelectionStrategy) throws IOException {
+	public List<String> getPathsToEachSPLProjectCandidateFromPopulation(int numberOfNextEvolutionCandidates, 
+			String previousEvolutionDirectory, SPLNextEvolutionIterationCandidateSelectionStrategy
+			evolIterationCandidateSelectionStrategy) throws IOException {
 		
 		mechanismForSPLCandidateLoading.loadAndParseSPLCandidates(previousEvolutionDirectory, variationPointsDataAggregations);
-		
-		List<String> candidateIterationSelectionStrategies = evolIterationCandidateSelectionStrategy.selectNextEvolutionIterationCandidates(previousEvolutionDirectory);
-		return candidateIterationSelectionStrategies;
-	}
+		List<String> listOfCandidateSPLFileNamesFromEachPopulationMember = this.mechanismForSPLCandidateLoading.getListOfCandidateSPLFileNamesFromEachPopulationMember();
+		List<String> selectedCandidates = 
+				evolIterationCandidateSelectionStrategy.selectNextEvolutionIterationCandidates(numberOfNextEvolutionCandidates,
+						previousEvolutionDirectory, listOfCandidateSPLFileNamesFromEachPopulationMember, 
+						variationPointsDataAggregations);
 
+		for (int i=0; i<selectedCandidates.size(); i++) {
+			selectedCandidates.set(i, mechanismForSPLCandidateLoading.getCandidatePath(selectedCandidates.get(i)));
+		}
+		return selectedCandidates;
+	}
 }
