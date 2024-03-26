@@ -322,7 +322,32 @@ public interface SPLEvolutionCore {
 	public final static String PROCESSED_AST_NAME_ID_ENDING = "_AST.json";
 	
 	/**
-	 * Clears comments from resulting spl derivation
+	 * Clears comments from resulting SPL derivation
 	 */
 	public final static boolean CLEAR_COMMENTS_FROM_RESULTING_SPL_DERIVATION = true;
+	
+	/**
+	 * Clears comments from resulting SPL during evolution iteration
+	 */
+	public final static boolean CLEAR_COMMENTS_DURING_SPL_EVOLUTION = true;
+	
+	/**
+	 * Copy resources from shared library into each SPL derivation
+	 */
+	public final static boolean INCLUDE_SHARED_LIBRARY = true;
+	
+	/**
+	 * Copy scripts with global configuration variables from shared library into each SPL derivation
+	 */
+	public final static boolean INCLUDE_SHARED_VARIABLES_IN_LIBRARY = true;
+	
+	/**
+	 * Path to stored libraries for each evolved SPL/product/application
+	 */
+	public final static String SHARED_LIBRARY_LOCATION = "lib";
+	
+	/**
+	 * Path to stored global variables for each evolved SPL/product/application
+	 */
+	public final static String SHARED_GLOBAL_VARIABLES_LOCATION = "lib/vars";
 }

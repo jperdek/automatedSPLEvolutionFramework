@@ -348,6 +348,19 @@ public class EvolutionConfiguration {
 	public int getIteration() { return this.iteration; }
 	
 	/**
+	 * Increases evolution iteration by one
+	 * 
+	 */
+	public void incrementIteration() { this.iteration = this.iteration + 1; }
+	
+	/**
+	 * Updates evolution iteration according to another evolution configuration
+	 * 
+	 * * @param evolutionConfiguration - another configuration for evolution iteration
+	 */
+	public void updateIteration(EvolutionConfiguration evolutionConfiguration) { this.iteration = evolutionConfiguration.getIteration(); }
+	
+	/**
 	 * Returns the path to source project/sources that are extended
 	 *  
 	 * @return the path to source project/sources that are extended

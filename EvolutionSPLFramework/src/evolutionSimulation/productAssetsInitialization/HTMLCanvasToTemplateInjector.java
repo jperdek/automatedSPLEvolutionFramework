@@ -9,6 +9,9 @@ import java.util.Scanner;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -23,6 +26,7 @@ import evolutionSimulation.iteration.WrappedTypeScriptContentInVariable;
 import positiveVariabilityManagement.SynthesizedContent;
 import splEvolutionCore.CanvasBasedApplicationConfiguration;
 import splEvolutionCore.DebugInformation;
+import splEvolutionCore.SPLEvolutionCore;
 
 
 /**
@@ -167,6 +171,8 @@ public class HTMLCanvasToTemplateInjector {
 		
 		String inVariableCode;
 		String fileContent;
+		String processedResourceFileName;
+		String destinationLibraryPath, destinationLibraryFilePath;
 		String allTranspiledCode = "";
 		String relativeBasePathParts[] = evolutionConfiguration.getCurrentEvolvedScriptRelativePath().split("/");
 		String relativeBasePath = relativeBasePathParts[relativeBasePathParts.length - 1];
@@ -188,7 +194,18 @@ public class HTMLCanvasToTemplateInjector {
 						|| libraryPath.toLowerCase().replace("\\", "/").contains(
 								absoluteOrRelativeProjectPath.toLowerCase().replace("\\", "/"))) {
 					absoluteOrRelativeProjectPath = libraryPath; 
-					isLibrary = true; break; 
+					isLibrary = true; 
+					if (SPLEvolutionCore.INCLUDE_SHARED_LIBRARY) {
+						processedResourceFileName = libraryPath.substring(libraryPath.replace("\\", "/").lastIndexOf("/"));
+						destinationLibraryPath = targetDestinationPath + "/" + SPLEvolutionCore.SHARED_LIBRARY_LOCATION;
+						destinationLibraryFilePath = destinationLibraryPath + "/" + processedResourceFileName;
+						try {
+							Files.createDirectories(Path.of(destinationLibraryPath));
+							Files.copy(Path.of(absoluteOrRelativeProjectPath), Path.of(destinationLibraryFilePath));
+						} catch (FileAlreadyExistsException e) {
+						}
+						importResource.setRelativeProjectPath(destinationLibraryFilePath);
+					} else { break; } 
 				}
 			}
 			
@@ -196,8 +213,21 @@ public class HTMLCanvasToTemplateInjector {
 				if (absoluteOrRelativeProjectPath.replace("\\", "/").toLowerCase().contains(libraryPath.toLowerCase().replace("\\", "/"))
 						|| libraryPath.toLowerCase().replace("\\", "/").contains(
 								absoluteOrRelativeProjectPath.toLowerCase().replace("\\", "/"))) { 
-					absoluteOrRelativeProjectPath = libraryPath; 
-					isLibrary = true; break; 
+					absoluteOrRelativeProjectPath = libraryPath;
+					isLibrary = true;
+					if (SPLEvolutionCore.INCLUDE_SHARED_VARIABLES_IN_LIBRARY) {
+						processedResourceFileName = libraryPath.substring(libraryPath.replace("\\", "/").lastIndexOf("/"));
+						destinationLibraryPath = targetDestinationPath + "/" + SPLEvolutionCore.SHARED_GLOBAL_VARIABLES_LOCATION;
+						destinationLibraryFilePath = destinationLibraryPath + "/" + processedResourceFileName;
+						try {
+							Files.createDirectories(Path.of(destinationLibraryPath));
+							Files.copy(Path.of(absoluteOrRelativeProjectPath), Path.of(destinationLibraryFilePath));
+						} catch (FileAlreadyExistsException e) {
+						}
+						importResource.setRelativeProjectPath(destinationLibraryFilePath);
+					} else {
+						break;
+					}
 				}
 			}
 			if (absoluteOrRelativeProjectPath.contains("://") || absoluteOrRelativeProjectPath.contains(":\\")) {
@@ -266,7 +296,21 @@ public class HTMLCanvasToTemplateInjector {
 		if (CanvasBasedApplicationConfiguration.WRAP_WITH_CANTO_JS) {
 			CanvasBasedApplicationConfiguration.insertAndCopyCantoImport(resources, targetDestinationPath);
 		}
+		
+		// inserts resources - some paths inside resources can change before this line
 		for (Resource resource: resources) {
+			if (!(resource instanceof CanvasBasedResource)) {
+				if (resource.isBase()) { continue; }
+				importResources.add(resource);
+			}
+		}
+				
+		callToSyntethizedFunctionality = this.generateTotranspileImportedScriptsAndPersistCode(
+				targetDestinationPath, importResources, evolutionConfiguration, synthesizedContent, projectId) 
+				+ callToSyntethizedFunctionality;
+		
+		// inserts resources - some paths inside resources can change before this line
+		for (Resource resource: importResources) {
 			if (resource instanceof CanvasBasedResource) {
 				canvasElement = this.createCanvasElement((CanvasBasedResource) resource); //add canvas  
 				bodyPart.appendChild(canvasElement);
@@ -274,15 +318,11 @@ public class HTMLCanvasToTemplateInjector {
 				if (resource.isBase()) { continue; }
 				scriptElement = this.createImportScriptWithContent(resource); //add dependencies  
 				headersPart.appendChild(scriptElement);
-				importResources.add(resource);
 			}
 		}
-		
-		callToSyntethizedFunctionality = this.generateTotranspileImportedScriptsAndPersistCode(
-				targetDestinationPath, importResources, evolutionConfiguration, synthesizedContent, projectId) 
-				+ callToSyntethizedFunctionality;
-		scriptElement =  this.createScriptWithContent(callToSyntethizedFunctionality);
-		bodyPart.appendChild(scriptElement); //add key functionality  
+				
+		scriptElement =  this.createScriptWithContent(callToSyntethizedFunctionality); 
+		bodyPart.appendChild(scriptElement); //add key functionality 
 		
 		File file = new File(htmlTemplateToInjectPath);
 		FileOutputStream fos = new FileOutputStream(file);

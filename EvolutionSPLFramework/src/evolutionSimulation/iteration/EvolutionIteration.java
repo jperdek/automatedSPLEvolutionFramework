@@ -21,6 +21,7 @@ import positiveVariabilityManagement.entities.DuplicatedContextIdentifier;
 import splEvolutionCore.EvolutionConfigurations;
 import splEvolutionCore.EvolutionCoreSettings;
 import splEvolutionCore.EvolutionCoreStrategies;
+import splEvolutionCore.SPLEvolutionCore;
 import splEvolutionCore.candidateSelector.AlreadyProvidedArgumentInConfigurationExpressionPlace;
 import splEvolutionCore.candidateSelector.DifferentlyAggregatedLocation;
 import splEvolutionCore.candidateSelector.DuplicateCandidateIdentifier;
@@ -137,7 +138,6 @@ public class EvolutionIteration {
 		if (evolutionConfiguration == null) { evolutionConfiguration = this.associatedEvolutionConfiguration; }
 		
 		String pathToScriptInputFilePath = evolutionConfiguration.getPathToScriptInputFile();
-		EvolutionCoreStrategies evolutionCoreStrategy;
 		EvolutionCoreSettings evolutionCoreSettings = EvolutionConfigurations.getMaximalSemanticOrientedConfiguration();
 		
 		this.runEvolutioIteration(pathToScriptInputFilePath, evolutionConfiguration, evolutionCoreSettings);
@@ -181,6 +181,9 @@ public class EvolutionIteration {
 		VariationPointDivisionConfiguration variationPointDivisionConfiguration = evolutionCoreSettings.getVariationPointDivisionConfiguration();
 		//variationPointDivisionConfiguration.divisionAndGetHighlightedAst(inputFilePath, fileOutputAstPath, fileOutputVariationPointsPath);
 		String fileContent = PostRequester.loadFileContent(pathToScriptInputFilePath);
+		if (SPLEvolutionCore.CLEAR_COMMENTS_DURING_SPL_EVOLUTION) {
+			fileContent = ASTConverterClient.clearComments(fileContent);
+		}
 		WrappedTypeScriptContentInVariable wrappedTypeScriptContentInVariable = new WrappedTypeScriptContentInVariable(fileContent);
 		
 		JSONObject astTreeRoot = ASTConverterClient.convertFromCodeToASTJSON(wrappedTypeScriptContentInVariable.getScript());
@@ -196,5 +199,6 @@ public class EvolutionIteration {
 		evolutionCoreStrategy = evolutionCoreSettings.getEvolutionCoreStrategy();
 		evolutionCoreStrategy.evolve(highlightedAst, harvestedVariationPoints, 
 			availableExportUnits, evolutionCoreSettings, evolutionConfiguration);
+		evolutionConfiguration.incrementIteration();
 	}
 }

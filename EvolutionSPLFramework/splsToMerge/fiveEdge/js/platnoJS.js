@@ -7,6 +7,7 @@ export function ccustom(context: CanvasRenderingContext2D, radius: number, itera
 }
 */
 
+@DecoratorTypesService.wholeBlockMethod({"drawCircleFromPreviousCoords": "true"})
 export function drawCirclePrevCoords(context: CanvasRenderingContext2D, radius: number) {
     if (context.currentX !== undefined && context.currentY !== undefined) {
         context.fillStyle = "rgba(300, 250, 150, .9)";
@@ -75,6 +76,7 @@ class Line {
 	@param {number} thickness - line thickness/width
 	
 */
+@DecoratorTypesService.wholeBlockMethod({"drawLine": "true"})
 function drawLine(context: CanvasRenderingContext2D, x1: number, y1: number, x2: number, y2: number, thickness: number) {
 	context.beginPath();
 	context.moveTo(x1, y1);
@@ -293,6 +295,7 @@ class Point {
 	@param {number} sideLength - initial length of side of five side fractal shape
 	@param {number} thickness - line thickness/width
 */
+@DecoratorTypesService.wholeClass({"fiveSide": "true"})
 class FiveSide {
   vertices: any[];
   iterations: number;
@@ -418,6 +421,7 @@ class FiveSide {
 	}
 }
 
+@DecoratorTypesService.wholeClass({"fiveSide": "true"})
 export class FiveSideFractal {
   /*
     DRAWS FIVE SIDES FRACTAL

@@ -113,7 +113,8 @@ public class EvolutionIterationsPipeline {
 		while(evolutionIterationIterator.hasNext()) {
 			evolutionIteration = evolutionIterationIterator.next();
 			customizedEvolutionConfiguration = evolutionIteration.getAssociatedEvolutionConfiguration();
-			
+			customizedEvolutionConfiguration.updateIteration(evolutionConfiguration);
+	
 			numberEvolvedCandidatesFromLastIteration = customizedEvolutionConfiguration.getNumberOfEvolvedMembersInPopulation();
 			if (customizedEvolutionConfiguration == null) { customizedEvolutionConfiguration = evolutionConfiguration; }
 			evolutionCoreSettings = evolutionIteration.getAssociatedEvolutionCoreSettings();
@@ -121,7 +122,8 @@ public class EvolutionIterationsPipeline {
 			if (pathToEvolvedSPLProjectsDirectory == null || pathToEvolvedSPLProjectsDirectory.equals("")) {
 				evolutionIteration.runEvolutioIteration(evolutionConfiguration);
 			} else {
-				strategySPLNextEvolutionIterationCandidateSelection = evolutionIteration.getEvolutionIterationCandidateSelectionMechanism();
+				strategySPLNextEvolutionIterationCandidateSelection = 
+						evolutionIteration.getEvolutionIterationCandidateSelectionMechanism();
 				
 				candidateForPopulationSelector = new SPLProjectCandidateToPopulationOfEvolIterationSelector(candidateForPopulationSelector);
 				pathsToScriptInputFilePath = candidateForPopulationSelector.getPathsToEachSPLProjectCandidateFromPopulation(
@@ -136,6 +138,7 @@ public class EvolutionIterationsPipeline {
 			evolutionConfiguration.setPathToEvolvedSPLProjectDirectoryFromLatestEvolution(customizedEvolutionConfiguration);
 			if (evolutionConfiguration.shouldTerminateEvolution()) { break; }
 			
+			evolutionConfiguration.updateIteration(customizedEvolutionConfiguration);
 			customizedEvolutionConfiguration = evolutionConfiguration;
 		}
 	}

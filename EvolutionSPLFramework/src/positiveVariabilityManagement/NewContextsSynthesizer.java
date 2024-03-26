@@ -412,7 +412,7 @@ public class NewContextsSynthesizer {
 
 		List<SynthesizedContent> synthesizedContents = new ArrayList<SynthesizedContent>();
  		for (VariationPointsContentInjection variationPointsContentInjection: variationPointsContentInjections) {
-			synthesizedContent = new SynthesizedContent(templateAstRoot, this.syntetizedContentName, derivationResourcesManager.getVariationPointData());
+			synthesizedContent = new SynthesizedContent(templateAstRoot, this.syntetizedContentName, this.derivationResourcesManager.getVariationPointData());
 			newApplicationAst = synthesizedContent.getReferenceToProcessedAST();
 			this.updateAstTreeAccordingInformationFromVariationPoints(
 					templateAstRoot, newApplicationAst, variationPointsContentInjection);

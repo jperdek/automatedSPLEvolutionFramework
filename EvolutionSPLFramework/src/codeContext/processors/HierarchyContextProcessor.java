@@ -30,7 +30,7 @@ public class HierarchyContextProcessor {
 	public static InnerContext createInnerContextIfNecessary(JSONObject astRoot, JSONObject astPart, InnerContext defaultInnerContext, boolean useTypes) {
 		String className, functionName;
 		boolean isDirectlyExported;
-		if (astPart.containsKey("members")) {
+		if (astPart.containsKey("members") && !((JSONArray) astPart.get("members")).isEmpty()) {
 			className = (String) ((JSONObject) astPart.get("name")).get("escapedText");
 			isDirectlyExported = ExportsProcessor.isConstructMarkedAsDirectExport(astPart);
 			return new ClassContext(defaultInnerContext, (long) astPart.get("pos"), (long) astPart.get(ASTContextProcessor.SEARCH_POSITION), 
