@@ -14,6 +14,7 @@ import evolutionSimulation.productAssetsInitialization.UnknownResourceToProcessE
 import positiveVariabilityManagement.UnmappedContextException;
 import positiveVariabilityManagement.VariationPointPlaceInArrayNotFound;
 import positiveVariabilityManagement.entities.DuplicatedContextIdentifier;
+import splEvolutionCore.DebugInformation;
 import splEvolutionCore.EvolutionCoreSettings;
 import splEvolutionCore.candidateSelector.AlreadyProvidedArgumentInConfigurationExpressionPlace;
 import splEvolutionCore.candidateSelector.DifferentlyAggregatedLocation;
@@ -111,12 +112,16 @@ public class EvolutionIterationsPipeline {
 
 		EvolutionConfiguration customizedEvolutionConfiguration = evolutionConfiguration;
 		while(evolutionIterationIterator.hasNext()) {
+			
 			evolutionIteration = evolutionIterationIterator.next();
 			customizedEvolutionConfiguration = evolutionIteration.getAssociatedEvolutionConfiguration();
-			customizedEvolutionConfiguration.updateIteration(evolutionConfiguration);
 	
-			numberEvolvedCandidatesFromLastIteration = customizedEvolutionConfiguration.getNumberOfEvolvedMembersInPopulation();
 			if (customizedEvolutionConfiguration == null) { customizedEvolutionConfiguration = evolutionConfiguration; }
+			if (DebugInformation.PROCESS_STEP_INFORMATION) { System.out.println("Performing evolution iteration number: " + customizedEvolutionConfiguration.getIteration()); }
+			
+			customizedEvolutionConfiguration.updateIteration(evolutionConfiguration);
+			customizedEvolutionConfiguration.updatePathToEvolvedSPLProjectDirectory();
+			numberEvolvedCandidatesFromLastIteration = customizedEvolutionConfiguration.getNumberOfEvolvedMembersInPopulation();
 			evolutionCoreSettings = evolutionIteration.getAssociatedEvolutionCoreSettings();
 			
 			if (pathToEvolvedSPLProjectsDirectory == null || pathToEvolvedSPLProjectsDirectory.equals("")) {
@@ -133,11 +138,16 @@ public class EvolutionIterationsPipeline {
 					evolutionIteration.runEvolutioIteration(pathToScriptInputFilePath, customizedEvolutionConfiguration, evolutionCoreSettings);
 				}
 			}
+
 			
 			// switch to the next iteration - changing paths
 			evolutionConfiguration.setPathToEvolvedSPLProjectDirectoryFromLatestEvolution(customizedEvolutionConfiguration);
-			if (evolutionConfiguration.shouldTerminateEvolution()) { break; }
+			if (evolutionConfiguration.shouldTerminateEvolution()) { 
+				if (DebugInformation.PROCESS_STEP_INFORMATION) { System.out.println("Terminating SPL (inner-)evolution..."); }
+				break;
+			}
 			
+			if (DebugInformation.PROCESS_STEP_INFORMATION) { System.out.println("Terminating evolution iteration and beginning with iteration number: " + customizedEvolutionConfiguration.getIteration()); }
 			evolutionConfiguration.updateIteration(customizedEvolutionConfiguration);
 			customizedEvolutionConfiguration = evolutionConfiguration;
 		}

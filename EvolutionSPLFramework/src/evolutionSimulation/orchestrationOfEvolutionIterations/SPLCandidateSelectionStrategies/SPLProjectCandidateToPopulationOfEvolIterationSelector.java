@@ -49,7 +49,12 @@ public class SPLProjectCandidateToPopulationOfEvolIterationSelector {
 			SPLProjectCandidateToPopulationOfEvolIterationSelector previousCandidateToPopulationSelector) {	
 		this.mechanismForSPLCandidateLoading = new SPLCandidateLoadingMechanism();
 		this.variationPointsDataAggregations = new VariationPointsDataAggregations();
-		this.previousProjectCandidatesSelectorsQueue = previousCandidateToPopulationSelector.getPreviousProjectCandidatesSelectorsQueueForNewSelectorInstance();
+		if (previousCandidateToPopulationSelector == null) {
+			this.previousProjectCandidatesSelectorsQueue = new PreviousProjectCandidatesSelectorsQueue(null);
+		} else {
+			this.previousProjectCandidatesSelectorsQueue = 
+					previousCandidateToPopulationSelector.getPreviousProjectCandidatesSelectorsQueueForNewSelectorInstance();
+		}
 	}
 	
 	/**

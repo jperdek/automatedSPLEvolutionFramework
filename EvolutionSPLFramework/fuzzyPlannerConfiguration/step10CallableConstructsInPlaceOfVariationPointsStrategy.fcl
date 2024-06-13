@@ -1,0 +1,131 @@
+// Block definition (there may be more than one block per file)
+FUNCTION_BLOCK variationPointDivisionStrategy
+
+// Define input variables
+VAR_INPUT
+    reuseOrientation : REAL;
+    iterationComplexity : REAL;
+	featureModularization : REAL;
+END_VAR
+
+// Define output variable
+VAR_OUTPUT
+    numberOfCallableConstructToSelectInVPPlace : REAL;
+END_VAR
+
+// Fuzzify input variable 'reuseOrientation'
+FUZZIFY reuseOrientation
+	TERM veryLow := (0, 1) (20, 0) ; 
+    TERM low := (15, 0) (20, 1) (40, 1) (45, 0) ;
+    TERM medium := (40, 0) (45, 1) (60,1) (65,0);
+    TERM high := (60, 0) (65, 1) (80, 1) (85, 0);
+	TERM veryHigh := (80, 0) (100, 1);
+END_FUZZIFY
+
+// Fuzzify input variable 'iterationComplexity'
+FUZZIFY iterationComplexity
+	TERM veryLow := (0, 1) (20, 0) ; 
+    TERM low := (15, 0) (20, 1) (40, 1) (45, 0) ;
+    TERM medium := (40, 0) (45, 1) (60,1) (65,0);
+    TERM high := (60, 0) (65, 1) (80, 1) (85, 0);
+	TERM veryHigh := (80, 0) (100, 1);
+END_FUZZIFY
+
+// Fuzzify input variable 'featureModularization'
+FUZZIFY featureModularization
+	TERM veryLow := (0, 1) (20, 0) ; 
+    TERM low := (15, 0) (20, 1) (40, 1) (45, 0) ;
+    TERM medium := (40, 0) (45, 1) (60,1) (65,0);
+    TERM high := (60, 0) (65, 1) (80, 1) (85, 0);
+	TERM veryHigh := (80, 0) (100, 1);
+END_FUZZIFY
+
+
+// Defzzzify output variable 'numberOfCallableConstructToSelectInVPPlace'
+DEFUZZIFY numberOfCallableConstructToSelectInVPPlace
+    TERM almostNo := (0, 1) (20, 0) ; 
+    TERM low := (15, 0) (20, 1) (40, 1) (45, 0) ;
+    TERM medium := (40, 0) (45, 1) (60,1) (65,0);
+    TERM high := (60, 0) (65, 1) (80, 1) (85, 0);
+	TERM almostAll := (80, 0) (100, 1);
+    // Use 'Center Of Gravity' defuzzification method
+    METHOD : COG;
+    // Default value is 0 (if no rule activates defuzzifier)
+    DEFAULT := 0;
+END_DEFUZZIFY
+
+RULEBLOCK No1
+    // Use 'min' for 'and' (also implicit use 'max'
+    // for 'or' to fulfill DeMorgan's Law)
+    AND : MIN;
+    // Use 'min' activation method
+    ACT : MIN;
+    // Use 'max' accumulation method
+    ACCU : MAX;
+
+    RULE 1 : IF reuseOrientation IS veryLow AND 
+				(iterationComplexity IS low OR reuseOrientation IS veryLow) AND 
+				(featureModularization IS low OR reuseOrientation IS veryLow)
+                THEN numberOfCallableConstructToSelectInVPPlace IS almostNo;
+
+    RULE 2 : IF reuseOrientation IS low AND 
+				(iterationComplexity IS medium OR reuseOrientation IS low) AND 
+				(featureModularization IS medium OR reuseOrientation IS low)
+                THEN numberOfCallableConstructToSelectInVPPlace IS low;
+				
+	RULE 3 : IF reuseOrientation IS medium AND 
+				(iterationComplexity IS high OR reuseOrientation IS medium) AND 
+				(featureModularization IS high OR reuseOrientation IS medium)
+                THEN numberOfCallableConstructToSelectInVPPlace IS medium;
+				
+	RULE 4 : IF reuseOrientation IS high AND 
+				(iterationComplexity IS veryHigh OR reuseOrientation IS high) AND 
+				(featureModularization IS veryHigh OR reuseOrientation IS high)
+                THEN numberOfCallableConstructToSelectInVPPlace IS high;
+	
+	RULE 5 : IF reuseOrientation IS veryHigh AND iterationComplexity IS veryHigh AND featureModularization IS veryHigh
+                THEN numberOfCallableConstructToSelectInVPPlace IS almostAll;
+				
+	RULE 6 : IF reuseOrientation IS veryHigh AND 
+				(iterationComplexity IS medium OR reuseOrientation IS low) AND 
+				(featureModularization IS medium OR reuseOrientation IS low)
+                THEN numberOfCallableConstructToSelectInVPPlace IS high;
+	
+	RULE 7 : IF reuseOrientation IS high AND 
+				(iterationComplexity IS medium OR reuseOrientation IS low) AND 
+				(featureModularization IS medium OR reuseOrientation IS low)
+                THEN numberOfCallableConstructToSelectInVPPlace IS medium;
+				
+	RULE 8 : IF reuseOrientation IS medium AND 
+				(iterationComplexity IS medium OR reuseOrientation IS low) AND 
+				(featureModularization IS medium OR reuseOrientation IS low)
+                THEN numberOfCallableConstructToSelectInVPPlace IS low;
+				
+	RULE 9 : IF (reuseOrientation IS low OR reuseOrientation IS veryLow) AND 
+				(iterationComplexity IS medium OR reuseOrientation IS low) AND 
+				(featureModularization IS medium OR reuseOrientation IS low)
+                THEN numberOfCallableConstructToSelectInVPPlace IS almostNo;
+			
+	RULE 10 : IF reuseOrientation IS veryHigh AND 
+				(iterationComplexity IS veryLow OR reuseOrientation IS low) AND 
+				(featureModularization IS veryLow OR reuseOrientation IS low)
+                THEN numberOfCallableConstructToSelectInVPPlace IS high;
+	
+	RULE 11 : IF reuseOrientation IS high AND 
+				(iterationComplexity IS veryLow OR reuseOrientation IS low) AND 
+				(featureModularization IS veryLow OR reuseOrientation IS low)
+                THEN numberOfCallableConstructToSelectInVPPlace IS medium;
+				
+	RULE 12 : IF reuseOrientation IS medium AND 
+				(iterationComplexity IS veryLow OR reuseOrientation IS low) AND 
+				(featureModularization IS veryLow OR reuseOrientation IS low)
+                THEN numberOfCallableConstructToSelectInVPPlace IS low;
+				
+	RULE 13 : IF (reuseOrientation IS low OR reuseOrientation IS veryLow) AND 
+				(iterationComplexity IS veryLow OR reuseOrientation IS low) AND 
+				(featureModularization IS veryLow OR reuseOrientation IS low)
+                THEN numberOfCallableConstructToSelectInVPPlace IS almostNo;
+				
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK

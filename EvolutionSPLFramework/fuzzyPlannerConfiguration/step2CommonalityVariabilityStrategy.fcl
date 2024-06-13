@@ -1,0 +1,252 @@
+// Block definition (there may be more than one block per file)
+FUNCTION_BLOCK commonalityVariabilitySelectionStrategy
+
+// Define input variables
+VAR_INPUT
+	//structuralVariabilityCoefficient: REAL; //has to be incorporated into quality prefferences
+    iterationComplexity : REAL;
+	structuralVariability : REAL;
+	reuseOrientation : REAL;
+END_VAR
+
+// Define output variable
+VAR_OUTPUT
+    numberVariationPointsExcludedFromVariable : REAL;
+	numberOfIncludedVariationPointsToVariable : REAL;
+END_VAR
+
+// Fuzzify input variable 'structuralVariabilityCoefficient'
+FUZZIFY structuralVariabilityCoefficient
+	TERM veryLow := (0, 1) (20, 0) ; 
+    TERM low := (15, 0) (20, 1) (40, 1) (45, 0) ;
+    TERM medium := (40, 0) (45, 1) (60,1) (65,0);
+    TERM high := (60, 0) (65, 1) (80, 1) (85, 0);
+	TERM veryHigh := (80, 0) (100, 1);
+END_FUZZIFY
+
+
+// Fuzzify input variable 'iterationComplexity'
+FUZZIFY iterationComplexity
+	TERM veryLow := (0, 1) (20, 0) ; 
+    TERM low := (15, 0) (20, 1) (40, 1) (45, 0) ;
+    TERM medium := (40, 0) (45, 1) (60,1) (65,0);
+    TERM high := (60, 0) (65, 1) (80, 1) (85, 0);
+	TERM veryHigh := (80, 0) (100, 1);
+END_FUZZIFY
+
+// Fuzzify input variable 'structuralVariability'
+FUZZIFY structuralVariability
+	TERM veryLow := (0, 1) (20, 0) ; 
+    TERM low := (15, 0) (20, 1) (40, 1) (45, 0) ;
+    TERM medium := (40, 0) (45, 1) (60,1) (65,0);
+    TERM high := (60, 0) (65, 1) (80, 1) (85, 0);
+	TERM veryHigh := (80, 0) (100, 1);
+END_FUZZIFY
+
+// Fuzzify input variable 'reuseOrientation'
+FUZZIFY reuseOrientation
+	TERM veryLow := (0, 1) (20, 0) ; 
+    TERM low := (15, 0) (20, 1) (40, 1) (45, 0) ;
+    TERM medium := (40, 0) (45, 1) (60,1) (65,0);
+    TERM high := (60, 0) (65, 1) (80, 1) (85, 0);
+	TERM veryHigh := (80, 0) (100, 1);
+END_FUZZIFY
+
+
+// Defzzzify output variable 'numberVariationPointsExcludedFromVariable'
+DEFUZZIFY numberVariationPointsExcludedFromVariable
+    TERM almostNo := (0, 1) (20, 0) ; 
+    TERM low := (15, 0) (20, 1) (40, 1) (45, 0) ;
+    TERM medium := (40, 0) (45, 1) (60,1) (65,0);
+    TERM high := (60, 0) (65, 1) (80, 1) (85, 0);
+	TERM almostAll := (80, 0) (100, 1);
+    // Use 'Center Of Gravity' defuzzification method
+    METHOD : COG;
+    // Default value is 0 (if no rule activates defuzzifier)
+    DEFAULT := 0;
+END_DEFUZZIFY
+
+// Defzzzify output variable 'numberOfIncludedVariationPointsToVariable'
+DEFUZZIFY numberOfIncludedVariationPointsToVariable
+    TERM almostNo := (0, 1) (20, 0) ; 
+    TERM low := (15, 0) (20, 1) (40, 1) (45, 0) ;
+    TERM medium := (40, 0) (45, 1) (60,1) (65,0);
+    TERM high := (60, 0) (65, 1) (80, 1) (85, 0);
+	TERM almostAll := (80, 0) (100, 1);
+    // Use 'Center Of Gravity' defuzzification method
+    METHOD : COG;
+    // Default value is 0 (if no rule activates defuzzifier)
+    DEFAULT := 0;
+END_DEFUZZIFY
+
+
+RULEBLOCK No1
+    // Use 'min' for 'and' (also implicit use 'max'
+    // for 'or' to fulfill DeMorgan's Law)
+    AND : MIN;
+    // Use 'min' activation method
+    ACT : MIN;
+    // Use 'max' accumulation method
+    ACCU : MAX;
+
+	RULE 1 : IF structuralVariability IS veryLow AND 
+				(iterationComplexity IS low OR iterationComplexity IS veryLow OR 
+				iterationComplexity IS medium OR iterationComplexity IS high) AND 
+				(reuseOrientation IS veryHigh  OR reuseOrientation IS high)
+                THEN numberVariationPointsExcludedFromVariable IS veryHigh;
+
+	RULE 2 : IF structuralVariability IS veryLow AND 
+				iterationComplexity IS veryHigh AND 
+				(reuseOrientation IS veryHigh OR reuseOrientation IS high)
+                THEN numberVariationPointsExcludedFromVariable IS high;
+		
+	RULE 3 : IF IF structuralVariability IS veryHigh AND 
+				(iterationComplexity IS low OR iterationComplexity IS veryLow OR 
+				iterationComplexity IS medium OR iterationComplexity IS high) AND 
+				(reuseOrientation IS veryHigh OR reuseOrientation IS high)
+                THEN numberOfIncludedVariationPointsToVariable IS almostNo;
+				
+	RULE 4 : IF structuralVariability IS veryHigh AND 
+				iterationComplexity IS veryHigh AND 
+				(reuseOrientation IS veryHigh  OR reuseOrientation IS high)
+                THEN numberOfIncludedVariationPointsToVariable IS low;
+				
+	
+	
+	RULE 5 : IF structuralVariability IS low AND 
+				(iterationComplexity IS low OR iterationComplexity IS veryLow OR 
+				iterationComplexity IS medium OR iterationComplexity IS high) AND 
+				(reuseOrientation IS high OR reuseOrientation IS medium OR reuseOrientation IS veryHigh)
+                THEN numberVariationPointsExcludedFromVariable IS high;
+
+	RULE 6 : IF structuralVariability IS low AND 
+				iterationComplexity IS veryHigh 
+				AND (reuseOrientation IS high  OR reuseOrientation IS medium OR reuseOrientation IS veryHigh)
+                THEN numberVariationPointsExcludedFromVariable IS medium;
+		
+	RULE 7 : IF structuralVariability IS high AND 
+				(iterationComplexity IS low OR iterationComplexity IS veryLow OR 
+				iterationComplexity IS medium OR iterationComplexity IS high) AND 
+				(reuseOrientation IS high  OR reuseOrientation IS medium OR reuseOrientation IS veryHigh)
+                THEN numberOfIncludedVariationPointsToVariable IS low;
+				
+	RULE 8 : IF structuralVariability IS high AND 
+				iterationComplexity IS veryHigh 
+				AND (reuseOrientation IS high OR reuseOrientation IS medium OR reuseOrientation IS veryHigh)
+                THEN numberOfIncludedVariationPointsToVariable IS medium;
+				
+				
+				
+	RULE 9 : IF structuralVariability IS medium AND 
+				(iterationComplexity IS low OR iterationComplexity IS veryLow OR 
+				iterationComplexity IS medium OR iterationComplexity IS high) AND 
+				(reuseOrientation IS medium OR reuseOrientation IS low)
+                THEN numberVariationPointsExcludedFromVariable IS medium;
+
+	RULE 10 : IF structuralVariability IS medium AND 
+				iterationComplexity IS veryHigh AND 
+				(reuseOrientation IS medium OR reuseOrientation IS low)
+                THEN numberVariationPointsExcludedFromVariable IS medium;
+		
+
+			
+	
+    RULE 13 : IF structuralVariability IS low AND 
+				(iterationComplexity IS low OR iterationComplexity IS veryLow OR 
+				iterationComplexity IS medium OR iterationComplexity IS high) AND 
+				(reuseOrientation IS medium OR reuseOrientation IS low)
+                THEN numberVariationPointsExcludedFromVariable IS low;
+				
+	RULE 14 : IF structuralVariability IS medium AND 
+				iterationComplexity IS veryHigh AND  
+				(reuseOrientation IS high OR reuseOrientation IS medium)
+                THEN numberVariationPointsExcludedFromVariable IS medium;
+				
+	RULE 15 : IF structuralVariability IS high AND 
+				(iterationComplexity IS low OR iterationComplexity IS veryLow OR 
+				iterationComplexity IS medium OR iterationComplexity IS high) AND 
+				(reuseOrientation IS veryHigh OR reuseOrientation IS high)
+                THEN numberOfIncludedVariationPointsToVariable IS high;
+	
+	RULE 16 : IF structuralVariability IS veryHigh AND iterationComplexity IS veryHigh AND 
+				reuseOrientation IS veryHigh
+                THEN numberOfIncludedVariationPointsToVariable IS almostAll;
+			
+			
+			
+    RULE 17 : IF structuralVariability IS veryLow AND 
+				(iterationComplexity IS low OR iterationComplexity IS veryLow OR 
+				iterationComplexity IS medium OR iterationComplexity IS high) AND 
+				(reuseOrientation IS low OR reuseOrientation IS veryLow)
+                THEN numberVariationPointsExcludedFromVariable IS almostNo;
+
+    RULE 18 : IF structuralVariability IS low AND 
+				iterationComplexity IS veryHigh AND 
+				(reuseOrientation IS medium OR reuseOrientation IS low)
+                THEN numberVariationPointsExcludedFromVariable IS low;
+				
+	RULE 19 : IF structuralVariability IS medium AND 
+				((iterationComplexity IS low OR iterationComplexity IS veryLow OR 
+				iterationComplexity IS medium OR iterationComplexity IS high) AND 
+				(reuseOrientation IS high OR reuseOrientation IS medium)
+                THEN numberOfIncludedVariationPointsToVariable IS medium;
+				
+	RULE 20 : IF structuralVariability IS high AND 
+				iterationComplexity IS veryHigh AND 
+				(reuseOrientation IS veryHigh OR reuseOrientation IS high)
+                THEN numberOfIncludedVariationPointsToVariable IS high;
+	
+	
+	
+	
+	RULE 21 : IF structuralVariability IS veryHigh AND 
+				(iterationComplexity IS low OR iterationComplexity IS veryLow OR 
+				iterationComplexity IS medium OR iterationComplexity IS high) AND 
+				(reuseOrientation IS low AND reuseOrientation IS veryLow)
+                THEN numberVariationPointsExcludedFromVariable IS high;
+	
+	
+	RULE 22 : IF structuralVariability IS low AND 
+				iterationComplexity IS veryHigh AND 
+				(reuseOrientation IS high OR reuseOrientation IS veryHigh)
+                THEN numberVariationPointsExcludedFromVariable IS almostNo;
+				
+	RULE 23 : IF structuralVariability IS medium AND 
+				(iterationComplexity IS high OR iterationComplexity IS medium) AND 
+				(reuseOrientation IS low OR reuseOrientation IS veryLow)
+                THEN numberOfIncludedVariationPointsToVariable IS low;
+				
+	RULE 24 : IF structuralVariability IS high AND 
+				reuseOrientation IS veryHigh AND 
+				(reuseOrientation IS low OR reuseOrientation IS veryLow)
+                THEN numberOfIncludedVariationPointsToVariable IS medium;
+	
+	
+	
+	RULE 25 : IF structuralVariability IS veryHigh AND iterationComplexity IS veryHigh AND 
+				(iterationComplexity IS low OR iterationComplexity IS veryLow OR 
+				iterationComplexity IS medium OR iterationComplexity IS high) AND
+				reuseOrientation IS low OR reuseOrientation IS veryLow)
+                THEN numberVariationPointsExcludedFromVariable IS low;
+			
+			
+    RULE 26 : IF structuralVariability IS veryLow AND 
+				reuseOrientation IS veryHigh AND 
+				(reuseOrientation IS hight OR reuseOrientation IS veryHigh)
+                THEN numberVariationPointsExcludedFromVariable IS high;
+
+    RULE 27 : IF structuralVariability IS low AND 
+				reuseOrientation IS veryHigh AND
+				(reuseOrientation IS veryHigh OR reuseOrientation IS high)
+                THEN numberOfIncludedVariationPointsToVariable IS medium;
+				
+	RULE 28 : IF structuralVariability IS medium AND
+				(iterationComplexity IS low OR iterationComplexity IS veryLow OR 
+				iterationComplexity IS medium OR iterationComplexity IS high) AND 
+				(reuseOrientation IS veryLow OR reuseOrientation IS veryHigh)
+                THEN numberOfIncludedVariationPointsToVariable IS low;
+
+				
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK

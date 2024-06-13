@@ -7,6 +7,7 @@ import splEvolutionCore.candidateSelector.NegativeVariationPointCandidate;
 
 /**
  * Selecting and deselecting the fixed number of candidates
+ * selection of variable software fragments
  * 
  * @author Jakub Perdek
  *

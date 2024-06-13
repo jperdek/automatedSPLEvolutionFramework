@@ -7,6 +7,7 @@ import dataRepresentationsExtensions.DataRepresentationsConfiguration;
 import evolutionSimulation.iteration.EvolutionSamples;
 import evolutionSimulation.iteration.EvolutionVariables;
 import evolutionSimulation.productAssetsInitialization.Resource;
+import splEvolutionCore.DebugInformation;
 
 
 /**
@@ -380,6 +381,16 @@ public class EvolutionConfiguration {
 	}
 	
 	/**
+	 * Returns the relative output file path including only the evolution 
+	 * iteration directory and evolved concern directory
+
+	 * @return the relative output file path including only the evolution iteration directory and evolved concern directory
+	 */
+	public String getRelativeOutputFilePathToEvolvedContent() {
+		return "/evolNum" + Integer.toString(this.iteration) + "/conc" + this.concernName;
+	}
+	
+	/**
 	 * Returns the path to destination directory where assets and extensions will be incorporated
 	 * -output path is concatenated with relative output path with use of application id
 	 * 
@@ -388,6 +399,15 @@ public class EvolutionConfiguration {
 	 */
 	public String getOutputFilePath(String applicationID) { 
 		return this.outputFilePath  + this.getRelativeOutputFilePath(applicationID);
+	}
+	
+	/**
+	 * Returns the path to destination directory where new currently evolved SPLs are stored/inserted
+	 * 
+	 * @return the path to destination directory where new currently evolved SPLs are stored/inserted
+	 */
+	public String getOutputFilePathToDirectoryUsedInCurrentEvolution() { 
+		return this.outputFilePath + this.getRelativeOutputFilePathToEvolvedContent();
 	}
 	
 	/**
@@ -404,6 +424,14 @@ public class EvolutionConfiguration {
 	 */
 	public void setPathToScriptInputFile(String pathToScriptInputFilePath) {
 		this.pathToScriptInputFilePath = pathToScriptInputFilePath;
+	}
+	
+	/**
+	 * Returns the path to actually evolved SPL projects directory
+	 * 
+	 */
+	public void updatePathToEvolvedSPLProjectDirectory() {
+		this.pathToEvolvedSPLProjectDirectory = this.getOutputFilePathToDirectoryUsedInCurrentEvolution(); 
 	}
 	
 	/**
@@ -448,17 +476,18 @@ public class EvolutionConfiguration {
 	
 	/**
 	 * Sets the path to the evolved SPL project directory from latest evolution
-	 */
-	public void setPathToEvolvedSPLProjectDirectoryFromLatestEvolution() {
-		this.pathToEvolvedSPLProjectDirectory = this.pathToEvolvedSPLProjectDirectory;
-	}
-
-	/**
-	 * Sets the path to the evolved SPL project directory from latest evolution
 	 * 
 	 * @param globalEvolutionConfiguration - evolution configuration from previous iterations 
 	 */
 	public void setPathToEvolvedSPLProjectDirectoryFromLatestEvolution(EvolutionConfiguration globalEvolutionConfiguration) {
-		this.pathToEvolvedSPLProjectDirectory = globalEvolutionConfiguration.getPathToEvolvedSPLProjectDirectory();
+		if (DebugInformation.PROCESS_STEP_INFORMATION) { 
+			System.out.println("Setting path to actually evolved SPL/applications for next evolution iteration: " + 
+							globalEvolutionConfiguration.getPathToEvolvedSPLProjectDirectory()); 
+		}
+		if (globalEvolutionConfiguration.getPathToEvolvedSPLProjectDirectory() != null) {
+			this.pathToEvolvedSPLProjectDirectory = globalEvolutionConfiguration.getPathToEvolvedSPLProjectDirectory();
+		} else {
+			System.out.println("Path to directory from previous evolution iteration is not set!");
+		}
 	}
 }

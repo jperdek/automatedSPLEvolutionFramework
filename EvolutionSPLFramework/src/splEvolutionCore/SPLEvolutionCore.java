@@ -135,12 +135,12 @@ public interface SPLEvolutionCore {
 	/**
 	 * Default number of features to select - the number of VP that should be processed
 	 */
-	public static int DEFAULT_NUMBER_OF_FEATURES_TO_SELECT = 3;
+	public static int DEFAULT_NUMBER_OF_FEATURES_TO_SELECT = 1; //3
 	
 	/**
 	 * Default number of callable constructs to select for each feature - number of constructs in each VP to select to select code constructs from various VP
 	 */
-	public static int DEFAULT_NUMBER_OF_FEATURE_CONSTRUCTS_TO_SELECT = 2;
+	public static int DEFAULT_NUMBER_OF_FEATURE_CONSTRUCTS_TO_SELECT = 1; //2
 	
 	/**
 	 * Default number of aggregated constructs to select - number of constructs in aggregation

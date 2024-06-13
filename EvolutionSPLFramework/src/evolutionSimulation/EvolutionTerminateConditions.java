@@ -53,7 +53,7 @@ public class EvolutionTerminateConditions {
 	 * @return true if (sub-)evolution process should terminate otherwise not
 	 */
 	public boolean shouldTerminate(int actualIterationNumber) {
-		if (this.maxNumberOfIterations != -1 && this.maxNumberOfIterations >= actualIterationNumber) {
+		if (this.maxNumberOfIterations != -1 && actualIterationNumber >= this.maxNumberOfIterations) {
 			return true;
 		}
 		return false;

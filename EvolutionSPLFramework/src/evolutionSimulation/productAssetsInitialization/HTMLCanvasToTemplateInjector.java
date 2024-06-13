@@ -95,7 +95,7 @@ public class HTMLCanvasToTemplateInjector {
 	 * @return the created canvas element according to its configuration from CanvasBasedResource instance
 	 */
 	private Element createCanvasElement(CanvasBasedResource canvasBasedResource) {
-		String canvasElementName = canvasBasedResource.getCanvasId(); 
+		// String canvasElementName = canvasBasedResource.getCanvasId(); 
 		int canvasWidth = canvasBasedResource.getCanvasWidth();
 		int canvasHeight = canvasBasedResource.getCanvasHeight();
 		Element scriptElement = new Element(Tag.valueOf("script"), "");

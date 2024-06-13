@@ -10,3 +10,5 @@
 /FractalDynamicDataCollector/generated_dataset
 .Rproj.user
 /EvolutionSPLFramework/evolutionDirectory/*
+/EvolutionSPLFramework/src/automatedPlanner/test/fclDemos/*
+/EvolutionSPLFramework/src/automatedPlanner/test/demos/*

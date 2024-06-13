@@ -1,0 +1,131 @@
+// Block definition (there may be more than one block per file)
+FUNCTION_BLOCK variationPointDivisionStrategy
+
+// Define input variables
+VAR_INPUT
+    featureDispersion : REAL;
+    iterationComplexity : REAL;
+	featurePosition : REAL;
+END_VAR
+
+// Define output variable
+VAR_OUTPUT
+    variationPointsProportion : REAL;
+END_VAR
+
+// Fuzzify input variable 'featureDispersion'
+FUZZIFY featureDispersion
+	TERM veryLow := (0, 1) (20, 0) ; 
+    TERM low := (15, 0) (20, 1) (40, 1) (45, 0) ;
+    TERM medium := (40, 0) (45, 1) (60,1) (65,0);
+    TERM high := (60, 0) (65, 1) (80, 1) (85, 0);
+	TERM veryHigh := (80, 0) (100, 1);
+END_FUZZIFY
+
+// Fuzzify input variable 'iterationComplexity'
+FUZZIFY iterationComplexity
+	TERM veryLow := (0, 1) (20, 0) ; 
+    TERM low := (15, 0) (20, 1) (40, 1) (45, 0) ;
+    TERM medium := (40, 0) (45, 1) (60,1) (65,0);
+    TERM high := (60, 0) (65, 1) (80, 1) (85, 0);
+	TERM veryHigh := (80, 0) (100, 1);
+END_FUZZIFY
+
+// Fuzzify input variable 'featurePosition'
+FUZZIFY featurePosition
+	TERM veryLow := (0, 1) (20, 0) ; 
+    TERM low := (15, 0) (20, 1) (40, 1) (45, 0) ;
+    TERM medium := (40, 0) (45, 1) (60,1) (65,0);
+    TERM high := (60, 0) (65, 1) (80, 1) (85, 0);
+	TERM veryHigh := (80, 0) (100, 1);
+END_FUZZIFY
+
+
+// Defzzzify output variable 'variationPointsProportion'
+DEFUZZIFY variationPointsProportion
+    TERM almostNo := (0, 1) (20, 0) ; 
+    TERM low := (15, 0) (20, 1) (40, 1) (45, 0) ;
+    TERM medium := (40, 0) (45, 1) (60,1) (65,0);
+    TERM high := (60, 0) (65, 1) (80, 1) (85, 0);
+	TERM almostAll := (80, 0) (100, 1);
+    // Use 'Center Of Gravity' defuzzification method
+    METHOD : COG;
+    // Default value is 0 (if no rule activates defuzzifier)
+    DEFAULT := 0;
+END_DEFUZZIFY
+
+RULEBLOCK No1
+    // Use 'min' for 'and' (also implicit use 'max'
+    // for 'or' to fulfill DeMorgan's Law)
+    AND : MIN;
+    // Use 'min' activation method
+    ACT : MIN;
+    // Use 'max' accumulation method
+    ACCU : MAX;
+
+    RULE 1 : IF featureDispersion IS veryLow AND 
+				(iterationComplexity IS low OR featureDispersion IS veryLow) AND 
+				(featurePosition IS low OR featureDispersion IS veryLow)
+                THEN variationPointsProportion IS almostNo;
+
+    RULE 2 : IF featureDispersion IS low AND 
+				(iterationComplexity IS medium OR featureDispersion IS low) AND 
+				(featurePosition IS medium OR featureDispersion IS low)
+                THEN variationPointsProportion IS low;
+				
+	RULE 3 : IF featureDispersion IS medium AND 
+				(iterationComplexity IS high OR featureDispersion IS medium) AND 
+				(featurePosition IS high OR featureDispersion IS medium)
+                THEN variationPointsProportion IS medium;
+				
+	RULE 4 : IF featureDispersion IS high AND 
+				(iterationComplexity IS veryHigh OR featureDispersion IS high) AND 
+				(featurePosition IS veryHigh OR featureDispersion IS high)
+                THEN variationPointsProportion IS high;
+	
+	RULE 5 : IF featureDispersion IS veryHigh AND iterationComplexity IS veryHigh AND featurePosition IS veryHigh
+                THEN variationPointsProportion IS almostAll;
+				
+	RULE 6 : IF featureDispersion IS veryHigh AND 
+				(iterationComplexity IS medium OR featureDispersion IS low) AND 
+				(featurePosition IS medium OR featureDispersion IS low)
+                THEN variationPointsProportion IS high;
+	
+	RULE 7 : IF featureDispersion IS high AND 
+				(iterationComplexity IS medium OR featureDispersion IS low) AND 
+				(featurePosition IS medium OR featureDispersion IS low)
+                THEN variationPointsProportion IS medium;
+				
+	RULE 8 : IF featureDispersion IS medium AND 
+				(iterationComplexity IS medium OR featureDispersion IS low) AND 
+				(featurePosition IS medium OR featureDispersion IS low)
+                THEN variationPointsProportion IS low;
+				
+	RULE 9 : IF (featureDispersion IS low OR featureDispersion IS veryLow) AND 
+				(iterationComplexity IS medium OR featureDispersion IS low) AND 
+				(featurePosition IS medium OR featureDispersion IS low)
+                THEN variationPointsProportion IS almostNo;
+			
+	RULE 10 : IF featureDispersion IS veryHigh AND 
+				(iterationComplexity IS veryLow OR featureDispersion IS low) AND 
+				(featurePosition IS veryLow OR featureDispersion IS low)
+                THEN variationPointsProportion IS high;
+	
+	RULE 11 : IF featureDispersion IS high AND 
+				(iterationComplexity IS veryLow OR featureDispersion IS low) AND 
+				(featurePosition IS veryLow OR featureDispersion IS low)
+                THEN variationPointsProportion IS medium;
+				
+	RULE 12 : IF featureDispersion IS medium AND 
+				(iterationComplexity IS veryLow OR featureDispersion IS low) AND 
+				(featurePosition IS veryLow OR featureDispersion IS low)
+                THEN variationPointsProportion IS low;
+				
+	RULE 13 : IF (featureDispersion IS low OR featureDispersion IS veryLow) AND 
+				(iterationComplexity IS veryLow OR featureDispersion IS low) AND 
+				(featurePosition IS veryLow OR featureDispersion IS low)
+                THEN variationPointsProportion IS almostNo;
+				
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK
