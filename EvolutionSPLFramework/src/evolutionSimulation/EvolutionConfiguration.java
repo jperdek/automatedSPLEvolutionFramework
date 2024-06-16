@@ -377,6 +377,9 @@ public class EvolutionConfiguration {
 	 * iteration directory, evolved concern directory and application id on path
 	 */
 	public String getRelativeOutputFilePath(String applicationID) {
+		if (this.concernName == null || this.concernName.equals("")) {
+			this.concernName = EvolutionConfigurationDirectionStrategies.CUSTOM.label;
+		}
 		return "/evolNum" + Integer.toString(this.iteration) + "/conc" + this.concernName + "/app" + applicationID;
 	}
 	
@@ -387,6 +390,9 @@ public class EvolutionConfiguration {
 	 * @return the relative output file path including only the evolution iteration directory and evolved concern directory
 	 */
 	public String getRelativeOutputFilePathToEvolvedContent() {
+		if (this.concernName == null || this.concernName.equals("")) {
+			this.concernName = EvolutionConfigurationDirectionStrategies.CUSTOM.label;
+		}
 		return "/evolNum" + Integer.toString(this.iteration) + "/conc" + this.concernName;
 	}
 	
@@ -480,14 +486,37 @@ public class EvolutionConfiguration {
 	 * @param globalEvolutionConfiguration - evolution configuration from previous iterations 
 	 */
 	public void setPathToEvolvedSPLProjectDirectoryFromLatestEvolution(EvolutionConfiguration globalEvolutionConfiguration) {
+		System.out.println(globalEvolutionConfiguration.getConcernName());
+		System.out.println(this.concernName);
+		if (this.concernName != null) {
+			this.concernName = globalEvolutionConfiguration.getConcernName();
+		}
 		if (DebugInformation.PROCESS_STEP_INFORMATION) { 
 			System.out.println("Setting path to actually evolved SPL/applications for next evolution iteration: " + 
 							globalEvolutionConfiguration.getPathToEvolvedSPLProjectDirectory()); 
 		}
 		if (globalEvolutionConfiguration.getPathToEvolvedSPLProjectDirectory() != null) {
-			this.pathToEvolvedSPLProjectDirectory = globalEvolutionConfiguration.getPathToEvolvedSPLProjectDirectory();
+			this.inputFilePath = this.pathToEvolvedSPLProjectDirectory = globalEvolutionConfiguration.getPathToEvolvedSPLProjectDirectory();
 		} else {
 			System.out.println("Path to directory from previous evolution iteration is not set!");
 		}
+	}
+	
+	/**
+	 * Prints information about currently set configuration
+	 */
+	public void printCurrentConfiguration() {
+		System.out.println();
+		System.out.println("------------------------ CONFIGURATION ---------------------------");
+		System.out.println("Processed concern name: " + this.concernName);
+		System.out.println("Relative path to current evolved script: " + this.currentEvolvedScriptRelativePath);
+		System.out.println("Input file path: " + this.inputFilePath);
+		System.out.println("Iteration: " + this.iteration);
+		System.out.println("Path to currently evolved SPL directory: " + this.pathToEvolvedSPLProjectDirectory);
+		System.out.println("Output file path: " + this.outputFilePath);
+		System.out.println("Template path: " + this.templateConfigurationPath);
+		System.out.println("Path to script input path: " + this.pathToScriptInputFilePath);
+		System.out.println("------------------------ CONFIGURATION ---------------------------");
+		System.out.println();
 	}
 }

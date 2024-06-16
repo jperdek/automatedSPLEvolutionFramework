@@ -35,12 +35,11 @@ public class RandomCandidateSelection implements SPLNextEvolutionIterationCandid
 		Set<String> usedCandidates = new HashSet<String>();
 		String selectedCandidate = null;
 		for (int i = 0; i < numberOfNextEvolutionCandidates; i++) {
-			usedCandidates.add(selectedCandidate);
 			do {
 				selectedProductIndex = rndm.nextInt(listOfCandidateSPLFileNamesFromEachPopulationMember.size());
 				selectedCandidate = listOfCandidateSPLFileNamesFromEachPopulationMember.get(selectedProductIndex);
-				usedCandidates.add(selectedCandidate);
-			} while (selectedCandidate == null || usedCandidates.contains(selectedCandidate));
+			} while (selectedCandidate == null || (numberOfNextEvolutionCandidates < listOfCandidateSPLFileNamesFromEachPopulationMember.size() && usedCandidates.contains(selectedCandidate)));
+			usedCandidates.add(selectedCandidate);
 		}
 		return new ArrayList<String>(usedCandidates);
 	}

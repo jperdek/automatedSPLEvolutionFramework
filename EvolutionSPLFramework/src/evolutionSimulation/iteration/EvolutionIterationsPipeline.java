@@ -60,6 +60,11 @@ public class EvolutionIterationsPipeline {
 	 * @param newIteration - the configuration for the new evolution iteration (phase)
 	 */
 	public void addEvolutionIterationToSequence(EvolutionIteration newIteration) {
+		if (!this.sequenceOfEvolutionIterations.isEmpty()) {
+			EvolutionIteration lastIteration = this.sequenceOfEvolutionIterations.get(this.sequenceOfEvolutionIterations.size() - 1);
+			EvolutionCoreSettings lastEvolutionCoreSettings = lastIteration.getAssociatedEvolutionCoreSettings();
+			newIteration.setEvolutionCoreSettings(lastEvolutionCoreSettings);
+		}
 		this.sequenceOfEvolutionIterations.add(newIteration);
 	}
 	
@@ -106,12 +111,14 @@ public class EvolutionIterationsPipeline {
 		SPLNextEvolutionIterationCandidateSelectionStrategy strategySPLNextEvolutionIterationCandidateSelection;
 		SPLProjectCandidateToPopulationOfEvolIterationSelector candidateForPopulationSelector = null;
 		EvolutionIteration evolutionIteration;
-		EvolutionCoreSettings evolutionCoreSettings;
-		List<String> pathsToScriptInputFilePath;
+		EvolutionCoreSettings evolutionCoreSettings = null;
+		String pathToScriptInputFilePath;
+		List<String> inputPaths;
 		int numberEvolvedCandidatesFromLastIteration;
 
 		EvolutionConfiguration customizedEvolutionConfiguration = evolutionConfiguration;
 		while(evolutionIterationIterator.hasNext()) {
+			pathToEvolvedSPLProjectsDirectory = customizedEvolutionConfiguration.getPathToEvolvedSPLProjectDirectory();
 			
 			evolutionIteration = evolutionIterationIterator.next();
 			customizedEvolutionConfiguration = evolutionIteration.getAssociatedEvolutionConfiguration();
@@ -122,19 +129,30 @@ public class EvolutionIterationsPipeline {
 			customizedEvolutionConfiguration.updateIteration(evolutionConfiguration);
 			customizedEvolutionConfiguration.updatePathToEvolvedSPLProjectDirectory();
 			numberEvolvedCandidatesFromLastIteration = customizedEvolutionConfiguration.getNumberOfEvolvedMembersInPopulation();
-			evolutionCoreSettings = evolutionIteration.getAssociatedEvolutionCoreSettings();
+			if (evolutionIteration.getAssociatedEvolutionCoreSettings() != null) {
+				evolutionCoreSettings = evolutionIteration.getAssociatedEvolutionCoreSettings();
+			}
 			
 			if (pathToEvolvedSPLProjectsDirectory == null || pathToEvolvedSPLProjectsDirectory.equals("")) {
+				System.out.println("NO Path to evolved directory!");
+				if (DebugInformation.PROCESS_STEP_INFORMATION) { customizedEvolutionConfiguration.printCurrentConfiguration(); }
 				evolutionIteration.runEvolutioIteration(evolutionConfiguration);
+				// introduces the core settings from this iteration
+				evolutionCoreSettings = evolutionIteration.getAssociatedEvolutionCoreSettings();
 			} else {
+				System.out.println("Begin with path to evolved directory: " + pathToEvolvedSPLProjectsDirectory);
 				strategySPLNextEvolutionIterationCandidateSelection = 
 						evolutionIteration.getEvolutionIterationCandidateSelectionMechanism();
 				
 				candidateForPopulationSelector = new SPLProjectCandidateToPopulationOfEvolIterationSelector(candidateForPopulationSelector);
-				pathsToScriptInputFilePath = candidateForPopulationSelector.getPathsToEachSPLProjectCandidateFromPopulation(
+				inputPaths = candidateForPopulationSelector.getPathsToEachSPLProjectCandidateFromPopulation(
 						numberEvolvedCandidatesFromLastIteration, 
 						pathToEvolvedSPLProjectsDirectory, strategySPLNextEvolutionIterationCandidateSelection);
-				for (String pathToScriptInputFilePath: pathsToScriptInputFilePath) {
+				System.out.println("Input Paths number: " + inputPaths.size());
+				for (String inputPath: inputPaths) {
+					pathToScriptInputFilePath = inputPath + evolutionConfiguration.getCurrentEvolvedScriptRelativePath();
+					System.out.println("Input Path: " + pathToScriptInputFilePath);
+					if (DebugInformation.PROCESS_STEP_INFORMATION) { customizedEvolutionConfiguration.printCurrentConfiguration(); }
 					evolutionIteration.runEvolutioIteration(pathToScriptInputFilePath, customizedEvolutionConfiguration, evolutionCoreSettings);
 				}
 			}

@@ -156,6 +156,7 @@ public class DerivationResourcesManager {
 		
 		if (SPLEvolutionCore.DUPLICATE_PREVENTION_OPTION != DuplicateProductPreventionOptions.DISALLOW) {
 			if (AlreadyCreatedProjectException.alreadyExists(overallHash)) {
+				System.out.println("This SPL has been already generated!!! Hash: " + overallHash + " already exists. Skipping...");
 				return null;
 			} else {
 				AlreadyCreatedProjectException.addHash(overallHash);

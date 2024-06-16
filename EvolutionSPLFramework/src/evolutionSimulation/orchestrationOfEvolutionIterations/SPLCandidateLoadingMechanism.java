@@ -64,20 +64,29 @@ public class SPLCandidateLoadingMechanism {
 	 */
 	public void loadAndParseSPLCandidates(String previousEvolutionDirectoryPath,
 			VariationPointsDataAggregations variationPointsDataAggregations) throws IOException {
+		System.out.println("Loading candidates for new evolution iteration from directory: " + previousEvolutionDirectoryPath);
 		 File dir = new File(previousEvolutionDirectoryPath);
 		 File[] directoryListing = dir.listFiles();
-		 String fileContent, fileName, vpDataAbsolutePath;
+		 String fileContent, fileName, vpDataAbsolutePath, vpDataAbsolutePath2;
 		 JSONArray variationPointsData;
 		 if (directoryListing != null) {
 		    for (File childFile: directoryListing) {
 		    	vpDataAbsolutePath = childFile.getAbsolutePath();
+		    	System.out.println("Processing the candidate file: " + vpDataAbsolutePath);
 		    	if (!childFile.isDirectory() && vpDataAbsolutePath.contains(SPLEvolutionCore.VARIATION_POINTS_DATA_NAME_ID_ENDING)) {
+		    		System.out.println("Found variation point data.");
 		    		fileContent = String.join(" ", Files.readAllLines(childFile.toPath()));
 		    		variationPointsData = ASTLoader.loadJSONArrayFromString(fileContent);
 		    	  	fileName = vpDataAbsolutePath.split(SPLEvolutionCore.VARIATION_POINTS_DATA_NAME_ID_ENDING)[0];
 		    	  	fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
 		    	  	variationPointsDataAggregations.processVariationPointsData(variationPointsData, fileName);
-		    	  	this.vpDataFileNameToProjectPath.put(fileName, vpDataAbsolutePath);
+		    	  	for (File childFile2: directoryListing) {
+				    	vpDataAbsolutePath2 = childFile2.getAbsolutePath();
+				    	if (!vpDataAbsolutePath.equals(vpDataAbsolutePath2) && vpDataAbsolutePath.contains(vpDataAbsolutePath2)) {
+				    		this.vpDataFileNameToProjectPath.put(fileName, vpDataAbsolutePath2);
+				    		break;
+		    	  		}
+		    	  	}
 		    	}
 		    }
 		 } else {

@@ -93,6 +93,7 @@ public class SPLProjectCandidateToPopulationOfEvolIterationSelector {
 						variationPointsDataAggregations);
 
 		for (int i=0; i<selectedCandidates.size(); i++) {
+			System.out.println("Chosen path to candidate: " + mechanismForSPLCandidateLoading.getCandidatePath(selectedCandidates.get(i)));
 			selectedCandidates.set(i, mechanismForSPLCandidateLoading.getCandidatePath(selectedCandidates.get(i)));
 		}
 		return selectedCandidates;

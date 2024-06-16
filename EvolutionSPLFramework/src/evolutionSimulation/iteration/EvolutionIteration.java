@@ -61,6 +61,7 @@ public class EvolutionIteration {
 	 */
 	public EvolutionIteration() { this(null, null, null); }
 	
+	
 	/**
 	 * Instantiates the functionality to perform/manage evolution iteration according to provided configuration
 	 * 
@@ -83,6 +84,15 @@ public class EvolutionIteration {
 		this.candidatesForEvolutionIterationSelector = candidatesForEvolutionIterationSelector;
 		this.associatedEvolutionConfiguration = associatedEvolutionConfiguration;
 		this.associatedEvolutionCoreSettings = associatedEvolutionCoreSettings;
+	}
+	
+	/**
+	 * Associates the evolution core settings with this evolution iteration
+	 * 
+	 * @param evolutionCoreSettings - associated configuration with particular evolution core settings which will be associated with this evolution iteration
+	 */
+	public void setEvolutionCoreSettings(EvolutionCoreSettings evolutionCoreSettings) {
+		this.associatedEvolutionCoreSettings = evolutionCoreSettings;
 	}
 	
 	/**
@@ -139,6 +149,7 @@ public class EvolutionIteration {
 		
 		String pathToScriptInputFilePath = evolutionConfiguration.getPathToScriptInputFile();
 		EvolutionCoreSettings evolutionCoreSettings = EvolutionConfigurations.getMaximalSemanticOrientedConfiguration();
+		this.associatedEvolutionCoreSettings = evolutionCoreSettings;
 		
 		this.runEvolutioIteration(pathToScriptInputFilePath, evolutionConfiguration, evolutionCoreSettings);
 	}
