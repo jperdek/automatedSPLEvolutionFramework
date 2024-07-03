@@ -286,4 +286,9 @@ public class UsedVariables implements ExportedContextInterface {
 		}
 		return objectWithAssociatedType;
 	}
+	
+	@Override
+	public String getCallableStr() { return this.createDescriptiveJSON().toJSONString(); }
+	
+	public String getIdentificationAST() { return this.createDescriptiveJSON().toJSONString(); };
 }

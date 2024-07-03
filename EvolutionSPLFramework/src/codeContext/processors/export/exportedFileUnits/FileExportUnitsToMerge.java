@@ -12,6 +12,7 @@ import dividedAstExport.InvalidSystemVariationPointMarkerException;
 import divisioner.Divisioner;
 import divisioner.VariationPointDivisionConfiguration;
 import evolutionSimulation.iteration.WrappedTypeScriptContentInVariable;
+import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.ExportAssetPlanner;
 import variationPointsVisualization.DifferentAnnotationTypesOnTheSameVariationPoint;
 import variationPointsVisualization.DuplicatedAnnotation;
 
@@ -31,6 +32,7 @@ public class FileExportUnitsToMerge {
 	 * @param inputCodePathForFile - the path to input code with exports (file which content can be used/imported in base script)
 	 * @param extensionBeforeName - the extension before file name that is optionally removed
 	 * @param fileExportUnits - the manager of exports across multiple files
+	 * @param exportAssetsPlanner - asset planner to configure whole evolution or its subsequence consisting of evolution iterations
 	 * 
 	 * @throws NotFoundVariableDeclaration
 	 * @throws IOException
@@ -40,7 +42,7 @@ public class FileExportUnitsToMerge {
 	 * @throws DuplicatedAnnotation
 	 */
 	private static void prepareAndAddFileExportUnitsToMerge(String inputCodePathForFile, 
-			String extensionBeforeName, FileExportsUnits fileExportUnits) throws NotFoundVariableDeclaration, 
+			String extensionBeforeName, FileExportsUnits fileExportUnits, ExportAssetPlanner exportAssetPlanner) throws NotFoundVariableDeclaration, 
 				IOException, InterruptedException, InvalidSystemVariationPointMarkerException, 
 				DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation {
 		CodeContext codeContextForFile;
@@ -56,7 +58,7 @@ public class FileExportUnitsToMerge {
 		JSONObject astRoot = divisionStrategyForFile.divisionAndGetHighlightedAst(
 				fileName, wrappedTypeScriptContentInVariable.getScript(), divisionerForFileToMerge);
 
-		FileExportUnit fileExportUnitForFile = FileExportUnit.loadFileExportUnit(divisionerForFileToMerge);
+		FileExportUnit fileExportUnitForFile = FileExportUnit.loadFileExportUnit(divisionerForFileToMerge, exportAssetPlanner);
 
 		codeContextForFile = divisionerForFileToMerge.getCodeContextFromDivision(); 
 		fileExportUnitForFile.harvestExports(astRoot, codeContextForFile);
@@ -70,6 +72,7 @@ public class FileExportUnitsToMerge {
 	 * @param fileName - the name of processed file
 	 * @param extensionBeforeName - the extension before file name that is optionally removed
 	 * @param fileExportUnits - the manager of exports across multiple files
+	 * @param exportAssetsPlanner - asset planner to configure whole evolution or its subsequence consisting of evolution iterations
 	 * 
 	 * @throws NotFoundVariableDeclaration
 	 * @throws IOException
@@ -79,7 +82,7 @@ public class FileExportUnitsToMerge {
 	 * @throws DuplicatedAnnotation
 	 */
 	public static void prepareAndAddFileExportUnitsToMergeFileContent(String fileContent, String fileName,
-			String extensionBeforeName, FileExportsUnits fileExportUnits) throws NotFoundVariableDeclaration, 
+			String extensionBeforeName, FileExportsUnits fileExportUnits, ExportAssetPlanner exportAssetPlanner) throws NotFoundVariableDeclaration, 
 				IOException, InterruptedException, InvalidSystemVariationPointMarkerException, 
 				DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation {
 		CodeContext codeContextForFile;
@@ -90,7 +93,7 @@ public class FileExportUnitsToMerge {
 		JSONObject astRoot = divisionStrategyForFile.divisionAndGetHighlightedAst(
 				fileName, fileContent, divisionerForFileToMerge);
 
-		FileExportUnit fileExportUnitForFile = FileExportUnit.loadFileExportUnit(divisionerForFileToMerge);
+		FileExportUnit fileExportUnitForFile = FileExportUnit.loadFileExportUnit(divisionerForFileToMerge, exportAssetPlanner);
 
 		codeContextForFile = divisionerForFileToMerge.getCodeContextFromDivision(); 
 		fileExportUnitForFile.harvestExports(astRoot, codeContextForFile);
@@ -102,6 +105,7 @@ public class FileExportUnitsToMerge {
 	 * 
 	 * @param inputCodePathsForFile - the path to input code with exports (file which content can be used/imported in base script)
 	 * @param extensionBeforeName - the extension before file name that is optionally removed
+	 * @param exportAssetsPlanner - asset planner to configure whole evolution or its subsequence consisting of evolution iterations
 	 * @return the manager for exports across various/processed files
 	 * 
 	 * @throws NotFoundVariableDeclaration
@@ -112,12 +116,13 @@ public class FileExportUnitsToMerge {
 	 * @throws DuplicatedAnnotation
 	 */
 	public static FileExportsUnits prepareDefaultFileExportUnitsToMerge(
-					List<String> inputCodePathsForFile, String extensionBeforeName) throws NotFoundVariableDeclaration, 
+					List<String> inputCodePathsForFile, String extensionBeforeName, 
+					ExportAssetPlanner exportAssetPlanner) throws NotFoundVariableDeclaration, 
 			IOException, InterruptedException, InvalidSystemVariationPointMarkerException, 
 			DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation {
 		FileExportsUnits fileExportUnits = new FileExportsUnits();
 		for (String inputCodePathForFile: inputCodePathsForFile) {
-			FileExportUnitsToMerge.prepareAndAddFileExportUnitsToMerge(inputCodePathForFile, extensionBeforeName, fileExportUnits);
+			FileExportUnitsToMerge.prepareAndAddFileExportUnitsToMerge(inputCodePathForFile, extensionBeforeName, fileExportUnits, exportAssetPlanner);
 		}
 		return fileExportUnits;
 	}

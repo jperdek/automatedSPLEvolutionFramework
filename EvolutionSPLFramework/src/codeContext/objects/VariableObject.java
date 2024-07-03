@@ -189,4 +189,10 @@ public class VariableObject extends CodeContextObject implements Comparable<Stri
 	public ExportedObjectInterface getExtendableInnerObjectAccordingToType(String innerObjectType) {
 		return null;
 	}
+
+	@Override
+	public String getCallableStr() { return this.createDescriptiveJSON().toJSONString(); }
+
+	@Override
+	public String getIdentificationAST() { return this.createDescriptiveJSON().toJSONString(); }
 }

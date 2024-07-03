@@ -428,4 +428,10 @@ public class InnerContext implements ExportedContextInterface, ExportedObjectInt
 		objectWithAssociatedType = this.usedVariables.getExtendableInnerObjectAccordingToType(innerObjectType);
 		return objectWithAssociatedType;
 	}
+	
+	@Override
+	public String getCallableStr() { return this.createDescriptiveJSON(null).toJSONString(); }
+
+	@Override
+	public String getIdentificationAST() { return this.createDescriptiveJSON(null).toJSONString(); }
 }

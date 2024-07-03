@@ -14,6 +14,8 @@ import dividedAstExport.InvalidSystemVariationPointMarkerException;
 import divisioner.VariationPointDivisionConfiguration;
 import evolutionSimulation.EvolutionConfiguration;
 import evolutionSimulation.iteration.AlreadyMappedVariationPointContentsInjection;
+import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.ExportAssetPlanner;
+import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.strategies.AssetMisuse;
 import evolutionSimulation.productAssetsInitialization.SharedConfiguration;
 import evolutionSimulation.productAssetsInitialization.UnknownResourceToProcessException;
 import positiveVariabilityManagement.NewContextsSynthesizer;
@@ -55,7 +57,7 @@ public class DefaultEvolutionCore implements EvolutionCoreStrategies {
 	 * @param availableExportUnits - available exports
 	 * @param evolutionCoreSettings - strategies instantiated for given evolution phase/phases
 	 * @param evolutionConfiguration - the configuration for given evolution phase
-	 * 
+	 * @param exportAssetPlanner
 	 * @throws DuplicateCandidateIdentifier
 	 * @throws IOException
 	 * @throws InterruptedException
@@ -71,16 +73,17 @@ public class DefaultEvolutionCore implements EvolutionCoreStrategies {
 	 * @throws VariationPointPlaceInArrayNotFound
 	 * @throws UnknownResourceToProcessException
 	 * @throws AlreadyMappedVariationPointContentsInjection
+	 * @throws AssetMisuse 
 	 */
 	public void evolve(JSONObject splAstTree, JSONArray variationPointsArray, 
 			FileExportsUnits availableExportUnits, EvolutionCoreSettings evolutionCoreSettings, 
-			EvolutionConfiguration evolutionConfiguration) throws DuplicateCandidateIdentifier, 
+			EvolutionConfiguration evolutionConfiguration, ExportAssetPlanner exportAssetPlanner) throws DuplicateCandidateIdentifier, 
 			IOException, InterruptedException, InvalidSystemVariationPointMarkerException, 
 			DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation, 
 			AlreadyProvidedArgumentInConfigurationExpressionPlace, NotFoundVariableDeclaration, 
 			MethodToEvaluateComplexityNotFoundException, DuplicatedContextIdentifier, 
 			UnmappedContextException, DifferentlyAggregatedLocation, VariationPointPlaceInArrayNotFound,
-			UnknownResourceToProcessException, AlreadyMappedVariationPointContentsInjection {
+			UnknownResourceToProcessException, AlreadyMappedVariationPointContentsInjection, AssetMisuse {
 		
 		int numberSelectedCandidates = 3;
 		List<ChosenValueAssignmentStrategyForNegativeVariability> chosenValueAssignmentStrategyForNegativeVariabilities = 
@@ -133,7 +136,7 @@ public class DefaultEvolutionCore implements EvolutionCoreStrategies {
 				evolutionCoreSettings.getFeatureConstructSelectionStrategy(), 
 				evolutionCoreSettings.getCodeIncrementGranularityManagementStrategy(),
 				evolutionCoreSettings.getSelectionOfConstructsSelectionStrategies(),
-				derivationResourcesManager, evolutionConfiguration.getEvolvedContentName());
+				derivationResourcesManager, evolutionConfiguration.getEvolvedContentName(), exportAssetPlanner);
 		List<SynthesizedContent> synthesizedContents = newContextsSynthesizer.selectAndSynthetizeContexts(
 				splAstTree, positiveVariationPointCandidatesTemplates, true);
 		DefaultEvolutionCore.clearNegativeVariabilityAnnotationsAndMarkers(synthesizedContents);

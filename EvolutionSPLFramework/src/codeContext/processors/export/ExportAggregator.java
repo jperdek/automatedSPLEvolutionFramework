@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.ExportAssetPlanner;
 
 
 /**
@@ -26,11 +27,16 @@ public class ExportAggregator {
 	 */
 	private Map<String, ExportedObjectInterface> contextToExportMap;
 	
+	/**
+	 * Functionality to plan use of exported objects during evolution or its subsequence
+	 */
+	private ExportAssetPlanner exportPlanner;
 	
 	/**
 	 * Creates export aggregator to manage exports
 	 */
-	public ExportAggregator() {
+	public ExportAggregator(ExportAssetPlanner exportPlanner) {
+		this.exportPlanner = exportPlanner;
 		this.associatedExports = new HashMap<String, ExportedContext>();
 		this.contextToExportMap = new HashMap<String, ExportedObjectInterface>();
 	}
@@ -42,6 +48,7 @@ public class ExportAggregator {
 	 * @param exportedContext - the exported context object with information about export
 	 */
 	public void associateExport(String exportType, ExportedContext exportedContext) {
+		this.exportPlanner.putAssetToPlanner(exportType, (ExportedInterface) exportedContext);
 		this.associatedExports.put(exportType, exportedContext);
 	}
 	
@@ -52,6 +59,7 @@ public class ExportAggregator {
 	 * @param context - the exported context object with information about export
 	 */
 	public void associateExport(String exportType, ExportedObjectInterface context) {
+		this.exportPlanner.putAssetToPlanner(exportType, (ExportedInterface) context);
 		this.contextToExportMap.put(exportType, context);
 	}
 	

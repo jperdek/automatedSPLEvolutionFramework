@@ -46,4 +46,11 @@ public interface ExportedContextInterface {
 	 * @return the exported object according to its type 
 	 */
 	public ExportedObjectInterface getExtendableInnerObjectAccordingToType(String innerObjectType);
+	
+	/**
+	 * Returns the export represented as string
+	 * 
+	 * @return the export represented as string
+	 */
+	public String getCallableStr();
 }

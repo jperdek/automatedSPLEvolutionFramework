@@ -1,10 +1,13 @@
 package positiveVariabilityManagement;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.ExportAssetPlanner;
 
 
 /**
@@ -23,9 +26,12 @@ public class TopologicallyDiverseConstructsSelection implements SelectionOfConst
 	 * 
 	 * @param availableFunctionalitiesToVariationPointsMap - the maping of particular variation point identifier to selected and applicable injections of code contents
 	 * @return the list of content injection for selected variation points
+	 * @throws InterruptedException 
+	 * @throws IOException 
 	 */
 	public List<VariationPointsContentInjection> aggregateAllPossibleInjections(
-			Map<String, VariationPointContentsInjection> availableFunctionalitiesToVariationPointsMap) {
+			Map<String, VariationPointContentsInjection> availableFunctionalitiesToVariationPointsMap,
+			ExportAssetPlanner exportAssetPlanner) throws IOException, InterruptedException {
 		
 		Map<String, VariationPointContentsInjection> topologicallyDiverseConstructsSelection 
 				= new HashMap<String, VariationPointContentsInjection>(availableFunctionalitiesToVariationPointsMap);	
@@ -50,6 +56,6 @@ public class TopologicallyDiverseConstructsSelection implements SelectionOfConst
 			}
 		}
 		System.out.println(topologicallyDiverseConstructsSelection.size());
-		return new AllVariationPointContentInjectionAggregator().aggregateAllPossibleInjections(topologicallyDiverseConstructsSelection);
+		return new AllVariationPointContentInjectionAggregator().aggregateAllPossibleInjections(topologicallyDiverseConstructsSelection, exportAssetPlanner);
 	}
 }

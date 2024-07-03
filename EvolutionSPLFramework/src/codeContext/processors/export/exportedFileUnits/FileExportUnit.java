@@ -9,6 +9,7 @@ import codeContext.InnerContext;
 import codeContext.processors.export.ExportAggregator;
 import dividedAstExport.InvalidSystemVariationPointMarkerException;
 import divisioner.Divisioner;
+import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.ExportAssetPlanner;
 import positiveVariabilityCodeInjector.ExportHarvester;
 
 
@@ -45,10 +46,10 @@ public class FileExportUnit {
 	 * @param fileName - the name of file with exports
 	 * @param baseInnerContext - the associated base/root inner context - pointing to hierarchy of inner contexts
 	 */
-	public FileExportUnit(String fileName, InnerContext baseInnerContext) {
+	public FileExportUnit(String fileName, InnerContext baseInnerContext, ExportAssetPlanner exportPlanner) {
 		this.fileName = fileName;
 		this.baseInnerContext = baseInnerContext;
-		this.exportAggregator = new ExportAggregator();
+		this.exportAggregator = new ExportAggregator(exportPlanner);
 	}
 	
 	/**
@@ -92,13 +93,14 @@ public class FileExportUnit {
 	 * Returns the entity that is responsible for divisioning the functionality into variation points
 	 * 
 	 * @param divisioner - the entity responsible for divisioning the functionality into variation points
+	 * @param exportAssetsPlanner - asset planner to configure whole evolution or its subsequence consisting of evolution iterations
 	 * @return the entity that is responsible for divisioning the functionality into variation points
 	 */
-	public static FileExportUnit loadFileExportUnit(Divisioner divisioner) {
+	public static FileExportUnit loadFileExportUnit(Divisioner divisioner, ExportAssetPlanner exportAssetsPlanner) {
 		CodeContext extractedCodeContext = divisioner.getCodeContextFromDivision();
 		String fileName = extractedCodeContext.getFileName();
 		InnerContext baseInnerContext = extractedCodeContext.getInnerContext().getBaseContext();
-		FileExportUnit fileExportUnit = new FileExportUnit(fileName, baseInnerContext);
+		FileExportUnit fileExportUnit = new FileExportUnit(fileName, baseInnerContext, exportAssetsPlanner);
 		return fileExportUnit;
 	}
 	

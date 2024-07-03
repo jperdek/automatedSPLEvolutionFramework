@@ -1,5 +1,6 @@
 package positiveVariabilityManagement;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -8,6 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
 
+import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.ExportAssetPlanner;
 import positiveVariabilityManagement.fragmentManagement.model.CodeFragment;
 import splEvolutionCore.DebugInformation;
 import splEvolutionCore.SPLEvolutionCore;
@@ -32,10 +34,14 @@ public class AllVariationPointContentInjectionAggregator implements SelectionOfC
 	 * with all information about positive variability (new functionality) required for derivation of final products are created
 	 * 
 	 * @param availableFunctionalitiesToVariationPointsMap - the mapping of selected code constructs to variation points according to previously processed the context information
+	 * @param exportAssetPlanner - asset planning instance that provides the checking if injection can be created for particular asset
 	 * @return the list of all possible content injections where each is used for further product derivation
+	 * @throws InterruptedException 
+	 * @throws IOException 
 	 */
 	public List<VariationPointsContentInjection> aggregateAllPossibleInjections(
-			Map<String, VariationPointContentsInjection> availableFunctionalitiesToVariationPointsMap) {
+			Map<String, VariationPointContentsInjection> availableFunctionalitiesToVariationPointsMap,
+			ExportAssetPlanner exportAssetPlanner) throws IOException, InterruptedException {
 		Map<VariationPointsContentInjection, String> contentInjectionToNameMap = new HashMap<VariationPointsContentInjection, String>();
 		Map<CodeFragment, Integer> codeFragmentToIndexMap = new HashMap<CodeFragment, Integer>();
 		Queue<VariationPointsContentInjection> harvestedContentMarkerCapacities = new LinkedList<VariationPointsContentInjection>();
@@ -59,15 +65,18 @@ public class AllVariationPointContentInjectionAggregator implements SelectionOfC
 			}
 					
 			for (CodeFragment codeFragment: variationPointContentsInjection.getCodeFragments()) {
-				newVariationPointsContentInjection = new VariationPointsContentInjection();
-				newVariationPointsContentInjection.addCodeFragmentReference(variationPointMarkerName, codeFragment);
-				contentInjectionToNameMap.put(newVariationPointsContentInjection, variationPointMarkerName);
-				codeFragmentToIndexMap.put(codeFragment, index);
-				index++;
+				newVariationPointsContentInjection = new VariationPointsContentInjection(exportAssetPlanner);
+				if (newVariationPointsContentInjection.addCodeFragmentReference(variationPointMarkerName, codeFragment)) {
+					contentInjectionToNameMap.put(newVariationPointsContentInjection, variationPointMarkerName);
+					codeFragmentToIndexMap.put(codeFragment, index);
+					index++;
+				} else {
+					System.out.println("Injection not prepared from code fragment in variation point named: " + variationPointMarkerName);
+				}
 			}
 		}
 
-		harvestedContentMarkerCapacities.add(new VariationPointsContentInjection());
+		harvestedContentMarkerCapacities.add(new VariationPointsContentInjection(exportAssetPlanner));
 		Entry<VariationPointsContentInjection, String> availableFunctionalitiesEntry;
 		List<Entry<VariationPointsContentInjection, String>> availableFunctionalitiesEntryList = 
 				new ArrayList<Entry<VariationPointsContentInjection, String>>(contentInjectionToNameMap.entrySet());
@@ -94,12 +103,15 @@ public class AllVariationPointContentInjectionAggregator implements SelectionOfC
 					variationPointsContentInjectionPart = availableFunctionalitiesEntry.getKey();
 		
 					for (CodeFragment codeFragment: variationPointsContentInjectionPart.getCodeFragments()) {
-						newVariationPointsContentInjection = new VariationPointsContentInjection(variationPointsContentInjection);
+						newVariationPointsContentInjection = new VariationPointsContentInjection(variationPointsContentInjection, exportAssetPlanner);
 						if(DebugInformation.SHOW_POLLUTING_INFORMATION) {
 							System.out.println(variationPointMarkerName + " <---*****---> " + codeFragment.getCode());
 						}
-						newVariationPointsContentInjection.addCodeFragmentReference(variationPointMarkerName, codeFragment);
-						harvestedContentMarkerCapacities2.add(newVariationPointsContentInjection);
+						if (newVariationPointsContentInjection.addCodeFragmentReference(variationPointMarkerName, codeFragment)) {
+							harvestedContentMarkerCapacities2.add(newVariationPointsContentInjection);
+						} else {
+							System.out.println("Injection not prepared from code fragment in variation point named: " + variationPointMarkerName);
+						}
 					}
 				}
 			}

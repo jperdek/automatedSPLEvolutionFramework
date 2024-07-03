@@ -140,4 +140,9 @@ public class GlobalContext implements ExportedContextInterface {
 	public ExportedObjectInterface getExtendableInnerObjectAccordingToType(String innerObjectType) {
 		return null; //only complex data structures should be associated to type - thus null
 	}
+
+	@Override
+	public String getCallableStr() { return this.createDescriptiveJSON().toJSONString(); }
+	
+	public String getIdentificationAST() { return this.createDescriptiveJSON().toJSONString(); };
 }

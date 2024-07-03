@@ -67,4 +67,18 @@ public interface ExportedObjectInterface {
 	 * Sets the instance as exported
 	 */
 	public void setAsExported();
+
+	/**
+	 * Returns the export represented as string
+	 * 
+	 * @return the export represented as string
+	 */
+	public String getCallableStr();
+	
+	/**
+	 * Returns the code representation AST in String
+	 * 
+	 * @return the code representation AST in String
+	 */
+	public String getIdentificationAST();
 }

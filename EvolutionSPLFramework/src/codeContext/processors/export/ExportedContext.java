@@ -16,7 +16,7 @@ import splEvolutionCore.DebugInformation;
  * @author Jakub Perdek
  *
  */
-public class ExportedContext {
+public class ExportedContext implements ExportInterface {
 
 	/**
 	 * Enumeration of code context types
@@ -170,7 +170,7 @@ public class ExportedContext {
 
 	/**
 	 * Returns the identifier (should be unique) of the exported context
-	 * - form: KcallableString>TYPE[Ktype>]IMPORT[KfileName>]
+	 * - form: callableString>TYPE[Ktype>]IMPORT[KfileName>]
 	 * 
 	 * @return the identifier (should be unique) of the exported context
 	 */
@@ -186,4 +186,11 @@ public class ExportedContext {
 			System.out.println("CONTEXT INFORMATION: " + this.contextInformation.toString());
 		}
 	}
+
+	/**
+	 * Returns the code representation AST in String
+	 * 
+	 * @return the code representation AST in String
+	 */
+	public String getIdentificationAST() { return this.contextInformation.toJSONString(); }
 }

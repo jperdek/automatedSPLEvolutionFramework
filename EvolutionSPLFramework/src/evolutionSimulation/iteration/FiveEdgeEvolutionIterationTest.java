@@ -4,6 +4,10 @@ import codeContext.processors.NotFoundVariableDeclaration;
 import dataRepresentationsExtensions.DataRepresentationsConfiguration;
 import dividedAstExport.InvalidSystemVariationPointMarkerException;
 import evolutionSimulation.EvolutionConfiguration;
+import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.AssetPlannerBaseStrategy;
+import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.ExportAssetPlanner;
+import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.strategies.AssetMisuse;
+import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.strategies.NonRestrictiveAssetPlanning;
 import evolutionSimulation.productAssetsInitialization.CanvasBasedResource;
 import evolutionSimulation.productAssetsInitialization.SharedConfiguration;
 import evolutionSimulation.productAssetsInitialization.UnknownResourceToProcessException;
@@ -55,13 +59,14 @@ public class FiveEdgeEvolutionIterationTest extends EvolutionIteration {
 	 * @throws VariationPointPlaceInArrayNotFound
 	 * @throws UnknownResourceToProcessException
 	 * @throws AlreadyMappedVariationPointContentsInjection
+	 * @throws AssetMisuse 
 	 */
 	public static void main(String args[]) throws NotFoundVariableDeclaration, IOException, InterruptedException,
 				InvalidSystemVariationPointMarkerException, DifferentAnnotationTypesOnTheSameVariationPoint,
 				DuplicatedAnnotation, DuplicateCandidateIdentifier, AlreadyProvidedArgumentInConfigurationExpressionPlace,
 				MethodToEvaluateComplexityNotFoundException, DuplicatedContextIdentifier, UnmappedContextException,
 				DifferentlyAggregatedLocation, VariationPointPlaceInArrayNotFound, UnknownResourceToProcessException, 
-				AlreadyMappedVariationPointContentsInjection {
+				AlreadyMappedVariationPointContentsInjection, AssetMisuse {
 		String inputFilePath = EvolutionSamples.FIVE_EDGE_INPUT_PATHS.get(0);
 		String outputFilePath = SharedConfiguration.PATH_TO_EVOLUTION_DIRECTORY;
 		String currentEvolvedScriptRelativePath = "/js/platnoJS.js"; // this should be changed for each evolved project
@@ -78,6 +83,7 @@ public class FiveEdgeEvolutionIterationTest extends EvolutionIteration {
 		String templatePath = null;
 		evolutionConfiguration.addInitialResource(new CanvasBasedResource(canvasElementName, templatePath));
 		//evolutionConfiguration.setTemplateConfigurationPath(templateRelativePath);
-		evolutionSimulationTest.runEvolutioIteration(evolutionConfiguration);
+		ExportAssetPlanner exportAssetPlanner = new AssetPlannerBaseStrategy(new  NonRestrictiveAssetPlanning());
+		evolutionSimulationTest.runEvolutioIteration(evolutionConfiguration, exportAssetPlanner);
 	}
 }

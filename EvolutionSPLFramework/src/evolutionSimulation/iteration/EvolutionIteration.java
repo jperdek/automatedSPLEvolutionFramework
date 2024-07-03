@@ -14,6 +14,8 @@ import dividedAstExport.InvalidSystemVariationPointMarkerException;
 import divisioner.VariationPointDivisionConfiguration;
 import evolutionSimulation.EvolutionConfiguration;
 import evolutionSimulation.orchestrationOfEvolutionIterations.SPLCandidateSelectionStrategies.SPLNextEvolutionIterationCandidateSelectionStrategy;
+import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.ExportAssetPlanner;
+import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.strategies.AssetMisuse;
 import evolutionSimulation.productAssetsInitialization.UnknownResourceToProcessException;
 import positiveVariabilityManagement.UnmappedContextException;
 import positiveVariabilityManagement.VariationPointPlaceInArrayNotFound;
@@ -123,6 +125,7 @@ public class EvolutionIteration {
 	 * 
 	 * 
 	 * @param evolutionConfiguration - the configuration to drive evolution process, especially executed evolution iterations
+	 * @param exportAssetPlanner
 	 * @throws NotFoundVariableDeclaration
 	 * @throws IOException
 	 * @throws InterruptedException
@@ -138,20 +141,22 @@ public class EvolutionIteration {
 	 * @throws VariationPointPlaceInArrayNotFound
 	 * @throws UnknownResourceToProcessException
 	 * @throws AlreadyMappedVariationPointContentsInjection
+	 * @throws AssetMisuse 
 	 */
-	public void runEvolutioIteration(EvolutionConfiguration evolutionConfiguration) throws NotFoundVariableDeclaration, IOException, 
+	public void runEvolutioIteration(EvolutionConfiguration evolutionConfiguration, 
+			ExportAssetPlanner exportAssetPlanner) throws NotFoundVariableDeclaration, IOException, 
 				InterruptedException, InvalidSystemVariationPointMarkerException, DifferentAnnotationTypesOnTheSameVariationPoint,
 				DuplicatedAnnotation, DuplicateCandidateIdentifier, AlreadyProvidedArgumentInConfigurationExpressionPlace, 
 				MethodToEvaluateComplexityNotFoundException, DuplicatedContextIdentifier, UnmappedContextException, 
 				DifferentlyAggregatedLocation, VariationPointPlaceInArrayNotFound, UnknownResourceToProcessException, 
-				AlreadyMappedVariationPointContentsInjection {
+				AlreadyMappedVariationPointContentsInjection, AssetMisuse {
 		if (evolutionConfiguration == null) { evolutionConfiguration = this.associatedEvolutionConfiguration; }
 		
 		String pathToScriptInputFilePath = evolutionConfiguration.getPathToScriptInputFile();
 		EvolutionCoreSettings evolutionCoreSettings = EvolutionConfigurations.getMaximalSemanticOrientedConfiguration();
 		this.associatedEvolutionCoreSettings = evolutionCoreSettings;
 		
-		this.runEvolutioIteration(pathToScriptInputFilePath, evolutionConfiguration, evolutionCoreSettings);
+		this.runEvolutioIteration(pathToScriptInputFilePath, evolutionConfiguration, evolutionCoreSettings, exportAssetPlanner);
 	}
 	
 	/**
@@ -162,6 +167,7 @@ public class EvolutionIteration {
 	 * @param evolutionCoreSettings
 	 * @param evolutionCoreSettings
 	 * @param evolutionConfiguration
+	 * @param exportAssetPlanner
 	 * @throws NotFoundVariableDeclaration
 	 * @throws IOException
 	 * @throws InterruptedException
@@ -177,13 +183,17 @@ public class EvolutionIteration {
 	 * @throws VariationPointPlaceInArrayNotFound
 	 * @throws UnknownResourceToProcessException
 	 * @throws AlreadyMappedVariationPointContentsInjection
+	 * @throws AssetMisuse 
 	 */
-	public void runEvolutioIteration(String pathToScriptInputFilePath, EvolutionConfiguration evolutionConfiguration, EvolutionCoreSettings evolutionCoreSettings) throws NotFoundVariableDeclaration, IOException, 
+	public void runEvolutioIteration(String pathToScriptInputFilePath, 
+			EvolutionConfiguration evolutionConfiguration, 
+			EvolutionCoreSettings evolutionCoreSettings,
+			ExportAssetPlanner exportAssetPlanner) throws NotFoundVariableDeclaration, IOException, 
 				InterruptedException, InvalidSystemVariationPointMarkerException, DifferentAnnotationTypesOnTheSameVariationPoint,
 				DuplicatedAnnotation, DuplicateCandidateIdentifier, AlreadyProvidedArgumentInConfigurationExpressionPlace, 
 				MethodToEvaluateComplexityNotFoundException, DuplicatedContextIdentifier, UnmappedContextException, 
 				DifferentlyAggregatedLocation, VariationPointPlaceInArrayNotFound, UnknownResourceToProcessException, 
-				AlreadyMappedVariationPointContentsInjection {
+				AlreadyMappedVariationPointContentsInjection, AssetMisuse {
 		if (evolutionConfiguration == null) { evolutionConfiguration = this.associatedEvolutionConfiguration; }
 		if (evolutionCoreSettings == null) { evolutionCoreSettings = this.associatedEvolutionCoreSettings; }
 		
@@ -204,12 +214,12 @@ public class EvolutionIteration {
 		
 		FileExportsUnits availableExportUnits = FileExportUnitsToMerge.prepareDefaultFileExportUnitsToMerge(
 			evolutionConfiguration.getSelectedExportedContentPaths(),
-			evolutionConfiguration.getPathExtensionToGetScript());
+			evolutionConfiguration.getPathExtensionToGetScript(), exportAssetPlanner);
 		availableExportUnits.printContentOfExportUnits();
 		
 		evolutionCoreStrategy = evolutionCoreSettings.getEvolutionCoreStrategy();
 		evolutionCoreStrategy.evolve(highlightedAst, harvestedVariationPoints, 
-			availableExportUnits, evolutionCoreSettings, evolutionConfiguration);
+			availableExportUnits, evolutionCoreSettings, evolutionConfiguration, exportAssetPlanner);
 		evolutionConfiguration.incrementIteration();
 	}
 }

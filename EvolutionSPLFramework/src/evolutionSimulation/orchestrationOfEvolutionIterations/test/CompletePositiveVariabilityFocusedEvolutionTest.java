@@ -9,10 +9,13 @@ import evolutionSimulation.EvolutionConfiguration;
 import evolutionSimulation.iteration.AlreadyMappedVariationPointContentsInjection;
 import evolutionSimulation.iteration.EvolutionIteration;
 import evolutionSimulation.iteration.EvolutionIterationsPipeline;
-import evolutionSimulation.iteration.FiveEdgeEvolutionIterationTest;
 import evolutionSimulation.iteration.FractalIterationInitializationCodeFragments;
 import evolutionSimulation.orchestrationOfEvolutionIterations.SPLCandidateSelectionStrategies.RandomCandidateSelection;
 import evolutionSimulation.orchestrationOfEvolutionIterations.SPLCandidateSelectionStrategies.SPLNextEvolutionIterationCandidateSelectionStrategy;
+import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.AssetPlannerBaseStrategy;
+import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.ExportAssetPlanner;
+import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.strategies.AssetMisuse;
+import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.strategies.PlanAssetOnce;
 import evolutionSimulation.iteration.EvolutionSamples;
 import evolutionSimulation.productAssetsInitialization.CanvasBasedResource;
 import evolutionSimulation.productAssetsInitialization.SharedConfiguration;
@@ -86,15 +89,17 @@ public class CompletePositiveVariabilityFocusedEvolutionTest {
 	 * @throws VariationPointPlaceInArrayNotFound
 	 * @throws UnknownResourceToProcessException
 	 * @throws AlreadyMappedVariationPointContentsInjection
+	 * @throws AssetMisuse 
 	 */
 	public static void main(String args[]) throws NotFoundVariableDeclaration, IOException, InterruptedException,
 		InvalidSystemVariationPointMarkerException, DifferentAnnotationTypesOnTheSameVariationPoint,
 		DuplicatedAnnotation, DuplicateCandidateIdentifier, AlreadyProvidedArgumentInConfigurationExpressionPlace,
 		MethodToEvaluateComplexityNotFoundException, DuplicatedContextIdentifier, UnmappedContextException,
 		DifferentlyAggregatedLocation, VariationPointPlaceInArrayNotFound, UnknownResourceToProcessException, 
-		AlreadyMappedVariationPointContentsInjection {
+		AlreadyMappedVariationPointContentsInjection, AssetMisuse {
 			CompletePositiveVariabilityFocusedEvolutionTest completeIyterativeDevelopment = new  CompletePositiveVariabilityFocusedEvolutionTest();
 			EvolutionConfiguration evolutionConfiguration = completeIyterativeDevelopment.prepareInitialConfiguration();
+			ExportAssetPlanner exportAssetPlanner = new AssetPlannerBaseStrategy(new PlanAssetOnce());
 			
 			// evolutionConfiguration.setTemplateConfigurationPath(templateRelativePath);
 			SPLNextEvolutionIterationCandidateSelectionStrategy evolution2IterationStrategy = new RandomCandidateSelection();
@@ -106,6 +111,6 @@ public class CompletePositiveVariabilityFocusedEvolutionTest {
 			evolutionIterationsPipeline.addEvolutionIterationToSequence(evolutionIteration1);
 			evolutionIterationsPipeline.addEvolutionIterationToSequence(evolutionIteration2);
 			evolutionIterationsPipeline.addEvolutionIterationToSequence(evolutionIteration3);
-			evolutionIterationsPipeline.runEvolutionPipeline(evolutionConfiguration);
+			evolutionIterationsPipeline.runEvolutionPipeline(evolutionConfiguration, exportAssetPlanner);
 	}
 }

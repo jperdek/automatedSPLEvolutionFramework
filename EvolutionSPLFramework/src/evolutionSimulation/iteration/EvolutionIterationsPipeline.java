@@ -10,6 +10,8 @@ import dividedAstExport.InvalidSystemVariationPointMarkerException;
 import evolutionSimulation.EvolutionConfiguration;
 import evolutionSimulation.orchestrationOfEvolutionIterations.SPLCandidateSelectionStrategies.SPLNextEvolutionIterationCandidateSelectionStrategy;
 import evolutionSimulation.orchestrationOfEvolutionIterations.SPLCandidateSelectionStrategies.SPLProjectCandidateToPopulationOfEvolIterationSelector;
+import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.ExportAssetPlanner;
+import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.strategies.AssetMisuse;
 import evolutionSimulation.productAssetsInitialization.UnknownResourceToProcessException;
 import positiveVariabilityManagement.UnmappedContextException;
 import positiveVariabilityManagement.VariationPointPlaceInArrayNotFound;
@@ -83,6 +85,7 @@ public class EvolutionIterationsPipeline {
 	 * - manages evolution process that can terminate if termination conditions are fulfilled or all iterations are executed
 	 * 
 	 * @param evolutionConfiguration
+	 * @param exportAssetPlanner
 	 * @throws NotFoundVariableDeclaration
 	 * @throws IOException
 	 * @throws InterruptedException
@@ -98,13 +101,15 @@ public class EvolutionIterationsPipeline {
 	 * @throws VariationPointPlaceInArrayNotFound
 	 * @throws UnknownResourceToProcessException
 	 * @throws AlreadyMappedVariationPointContentsInjection
+	 * @throws AssetMisuse 
 	 */
-	public void runEvolutionPipeline(EvolutionConfiguration evolutionConfiguration) throws NotFoundVariableDeclaration, 
+	public void runEvolutionPipeline(EvolutionConfiguration evolutionConfiguration, 
+			ExportAssetPlanner exportAssetPlanner) throws NotFoundVariableDeclaration, 
 				IOException, InterruptedException, InvalidSystemVariationPointMarkerException, DifferentAnnotationTypesOnTheSameVariationPoint, 
 				DuplicatedAnnotation, DuplicateCandidateIdentifier, AlreadyProvidedArgumentInConfigurationExpressionPlace, 
 				MethodToEvaluateComplexityNotFoundException, DuplicatedContextIdentifier, UnmappedContextException,
 				DifferentlyAggregatedLocation, VariationPointPlaceInArrayNotFound, UnknownResourceToProcessException, 
-				AlreadyMappedVariationPointContentsInjection {
+				AlreadyMappedVariationPointContentsInjection, AssetMisuse {
 		Iterator<EvolutionIteration> evolutionIterationIterator = this.sequenceOfEvolutionIterations.iterator();
 		String pathToEvolvedSPLProjectsDirectory = evolutionConfiguration.getPathToEvolvedSPLProjectDirectory();
 		
@@ -136,7 +141,7 @@ public class EvolutionIterationsPipeline {
 			if (pathToEvolvedSPLProjectsDirectory == null || pathToEvolvedSPLProjectsDirectory.equals("")) {
 				System.out.println("NO Path to evolved directory!");
 				if (DebugInformation.PROCESS_STEP_INFORMATION) { customizedEvolutionConfiguration.printCurrentConfiguration(); }
-				evolutionIteration.runEvolutioIteration(evolutionConfiguration);
+				evolutionIteration.runEvolutioIteration(evolutionConfiguration, exportAssetPlanner);
 				// introduces the core settings from this iteration
 				evolutionCoreSettings = evolutionIteration.getAssociatedEvolutionCoreSettings();
 			} else {
@@ -153,7 +158,8 @@ public class EvolutionIterationsPipeline {
 					pathToScriptInputFilePath = inputPath + evolutionConfiguration.getCurrentEvolvedScriptRelativePath();
 					System.out.println("Input Path: " + pathToScriptInputFilePath);
 					if (DebugInformation.PROCESS_STEP_INFORMATION) { customizedEvolutionConfiguration.printCurrentConfiguration(); }
-					evolutionIteration.runEvolutioIteration(pathToScriptInputFilePath, customizedEvolutionConfiguration, evolutionCoreSettings);
+					evolutionIteration.runEvolutioIteration(pathToScriptInputFilePath, 
+							customizedEvolutionConfiguration, evolutionCoreSettings, exportAssetPlanner);
 				}
 			}
 

@@ -10,6 +10,8 @@ import codeContext.processors.export.exportedFileUnits.FileExportsUnits;
 import dividedAstExport.InvalidSystemVariationPointMarkerException;
 import evolutionSimulation.EvolutionConfiguration;
 import evolutionSimulation.iteration.AlreadyMappedVariationPointContentsInjection;
+import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.ExportAssetPlanner;
+import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.strategies.AssetMisuse;
 import evolutionSimulation.productAssetsInitialization.UnknownResourceToProcessException;
 import positiveVariabilityManagement.UnmappedContextException;
 import positiveVariabilityManagement.VariationPointPlaceInArrayNotFound;
@@ -37,6 +39,7 @@ public interface EvolutionCoreStrategies {
 	 * @param availableExportUnits - available exports
 	 * @param evolutionCoreSettings - strategies instantiated for given evolution phase/phases
 	 * @param evolutionConfiguration - the configuration for given evolution phase
+	 * @param exportAssetPlanner
 	 * @throws DuplicateCandidateIdentifier
 	 * @throws IOException
 	 * @throws InterruptedException
@@ -55,11 +58,11 @@ public interface EvolutionCoreStrategies {
 	 */
 	public void evolve(JSONObject splAstTree, JSONArray variationPointsArray, 
 			FileExportsUnits availableExportUnits, EvolutionCoreSettings evolutionCoreSettings, 
-			EvolutionConfiguration evolutionConfiguration) throws DuplicateCandidateIdentifier, 
+			EvolutionConfiguration evolutionConfiguration, ExportAssetPlanner exportAssetPlanner) throws DuplicateCandidateIdentifier, 
 			IOException, InterruptedException, InvalidSystemVariationPointMarkerException, 
 			DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation, 
 			AlreadyProvidedArgumentInConfigurationExpressionPlace, NotFoundVariableDeclaration, 
 			MethodToEvaluateComplexityNotFoundException, DuplicatedContextIdentifier, 
 			UnmappedContextException, DifferentlyAggregatedLocation, VariationPointPlaceInArrayNotFound,
-			UnknownResourceToProcessException, AlreadyMappedVariationPointContentsInjection;
+			UnknownResourceToProcessException, AlreadyMappedVariationPointContentsInjection, AssetMisuse;
 }

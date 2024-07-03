@@ -1,9 +1,12 @@
 package positiveVariabilityManagement;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.ExportAssetPlanner;
 import positiveVariabilityManagement.fragmentManagement.model.CodeFragment;
 
 
@@ -26,11 +29,18 @@ public class VariationPointsContentInjection {
 	 */
 	private CodeFragment lastUsedCodeFragment = null;
 	
+	/**
+	 * Asset planning instance that provides the checking if injection can be created for particular asset
+	 */
+	private ExportAssetPlanner exportAssetPlanner;
 	
 	/**
 	 * Initializes the functionality for managing the resources for code content injection in place multiple selected variation point into the resulting AST
+	 * 
+	 * @param exportAssetPlanner - asset planning instance that provides the checking if injection can be created for particular asset
 	 */
-	public VariationPointsContentInjection() {
+	public VariationPointsContentInjection(ExportAssetPlanner exportAssetPlanner) {
+		this.exportAssetPlanner = exportAssetPlanner;
 		this.contentsOfVariationPointsMap = new HashMap<String, CodeFragment>();
 	}
 	
@@ -39,8 +49,10 @@ public class VariationPointsContentInjection {
 	 * -last used code fragment is set
 	 * 
 	 * @param variationPointsContentInjection - another instance of a similar type providing the initial settings
+	 * @param exportAssetPlanner - asset planning instance that provides the checking if injection can be created for particular asset
 	 */
-	public VariationPointsContentInjection(VariationPointsContentInjection variationPointsContentInjection) {
+	public VariationPointsContentInjection(VariationPointsContentInjection variationPointsContentInjection, ExportAssetPlanner exportAssetPlanner) {
+		this.exportAssetPlanner = exportAssetPlanner;
 		this.lastUsedCodeFragment = variationPointsContentInjection.getLastUsedCodeFragment();
 		this.contentsOfVariationPointsMap = new HashMap<String, CodeFragment>(
 				variationPointsContentInjection.getContentsOfVariationPoints());
@@ -52,10 +64,17 @@ public class VariationPointsContentInjection {
 	 * 
 	 * @param variationPointMarkerName - the unique variation point identifier, specifically the variation point marker name
 	 * @param codeFragment - selected code fragment for further injection (which is going to be added into the map)
+	 * @return true if code content is successfully prepared for content injection otherwise false
+	 * @throws InterruptedException 
+	 * @throws IOException 
 	 */
-	public void addCodeFragmentReference(String variationPointMarkerName, CodeFragment codeFragment) {
-		this.lastUsedCodeFragment = codeFragment;
-		this.contentsOfVariationPointsMap.put(variationPointMarkerName, codeFragment);
+	public boolean addCodeFragmentReference(String variationPointMarkerName, CodeFragment codeFragment) throws IOException, InterruptedException {
+		if (this.exportAssetPlanner.canUseAsset(codeFragment.getCodeAst().toJSONString())) {
+			this.lastUsedCodeFragment = codeFragment;
+			this.contentsOfVariationPointsMap.put(variationPointMarkerName, codeFragment);
+			return true;
+		}
+		return false;
 	}
 	
 	/**

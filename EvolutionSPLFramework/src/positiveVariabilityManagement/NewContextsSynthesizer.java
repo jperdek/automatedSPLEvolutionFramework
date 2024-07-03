@@ -15,6 +15,8 @@ import dataRepresentationsExtensions.DataRepresentationPerspective;
 import dividedAstExport.InvalidSystemVariationPointMarkerException;
 import divisioner.VariationPointDivisionConfiguration;
 import evolutionSimulation.iteration.AlreadyMappedVariationPointContentsInjection;
+import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.ExportAssetPlanner;
+import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.strategies.AssetMisuse;
 import evolutionSimulation.productAssetsInitialization.UnknownResourceToProcessException;
 import positiveVariabilityManagement.fragmentManagement.CodeIncrementGranularityManagementStrategy;
 import positiveVariabilityManagement.fragmentManagement.model.CodeFragment;
@@ -69,6 +71,11 @@ public class NewContextsSynthesizer {
 	private String syntetizedContentName;
 	
 	/**
+	 * Planner of used assets in particular evolution iteration
+	 */
+	private ExportAssetPlanner exportAssetPlanner;
+	
+	/**
 	 * 
 	 */
 	private DataRepresentationPerspective dataRepresentationPerspective;
@@ -88,13 +95,15 @@ public class NewContextsSynthesizer {
 			FeatureConstructsSelectionStrategy featureConstructsSelectionStrategy,
 			CodeIncrementGranularityManagementStrategy codeIncrementGranularityManagementStrategy,
 			SelectionOfConstructsAcrossSelectedVariationPointsStrategies selectionOfConstructsSelectionStrategies,
-			DerivationResourcesManager derivationResourcesManager, String syntetizedContentName) {
+			DerivationResourcesManager derivationResourcesManager, String syntetizedContentName, 
+			ExportAssetPlanner exportAssetPlanner) {
 		this.derivationResourcesManager = derivationResourcesManager;
 		this.syntetizedContentName = syntetizedContentName;
 		this.featureSelectionStrategy = featureSelectionStrategy;
 		this.featureConstructsSelectionStrategy = featureConstructsSelectionStrategy;
 		this.selectionOfConstructsAcrossSelectedVariationPointsStrategy = selectionOfConstructsSelectionStrategies;
 		this.codeIncrementGranularityManagementStrategy = codeIncrementGranularityManagementStrategy;
+		this.exportAssetPlanner = exportAssetPlanner;
 		
 		this.dataRepresentationPerspective = new DataRepresentationPerspective();
 	}
@@ -161,7 +170,7 @@ public class NewContextsSynthesizer {
 			System.out.println("No constructs selected!"); 
 		}
 		
-		// coe granularity is handled in place of one variable point/positive variation point candidate template
+		// code granularity is handled in place of one variable point/positive variation point candidate template
 		for(List<Entry<String, Map<String, AssignedValue>>> selectedFeatureConstructs: positiveVariationPointConstructs) {
 			granularityShapedCodeFragment = this.codeIncrementGranularityManagementStrategy.associateConstructsTogether(
 					selectedFeatureConstructs, selectedTemplate);
@@ -194,11 +203,12 @@ public class NewContextsSynthesizer {
 	 * @throws VariationPointPlaceInArrayNotFound
 	 * @throws UnknownResourceToProcessException
 	 * @throws AlreadyMappedVariationPointContentsInjection
+	 * @throws AssetMisuse 
 	 */
 	public List<SynthesizedContent> selectAndSynthetizeContexts(JSONObject astRoot, 
 			List<PositiveVariationPointCandidateTemplates> positiveVariationPointCandidatesTemplates,
 			boolean processDirectly) throws IOException, InterruptedException, InvalidSystemVariationPointMarkerException,
-			VariationPointPlaceInArrayNotFound, UnknownResourceToProcessException, AlreadyMappedVariationPointContentsInjection {
+			VariationPointPlaceInArrayNotFound, UnknownResourceToProcessException, AlreadyMappedVariationPointContentsInjection, AssetMisuse {
 		Map<String, VariationPointContentsInjection> functionalityOnVarPointsToPossibilitiesMap 
 				= this.selectContexts(positiveVariationPointCandidatesTemplates);
 		VariationPointContentsInjection variationPointContentInjection;
@@ -254,10 +264,11 @@ public class NewContextsSynthesizer {
 	 * @throws IOException
 	 * @throws InterruptedException
 	 * @throws VariationPointPlaceInArrayNotFound
+	 * @throws AssetMisuse 
 	 */
 	private void processPossiblePositiveVariationPointPlace(JSONObject astTemplatePart, String contextIdentifier, 
 			JSONArray contextArray, VariationPointsContentInjection variationPointsContentInjection) 
-					throws IOException, InterruptedException, VariationPointPlaceInArrayNotFound {
+					throws IOException, InterruptedException, VariationPointPlaceInArrayNotFound, AssetMisuse {
 		String markerName = this.getMarkerName(astTemplatePart);
 		int foundPositionIndex = -1;
 	
@@ -275,6 +286,7 @@ public class NewContextsSynthesizer {
 			}
 			
 			codeFragment = variationPointsContentInjection.getContentAccordingToMarkerName(markerName);
+			
 			if (codeFragment != null) {
 				codePartsArray = codeFragment.getCodeAst();
 				
@@ -287,6 +299,7 @@ public class NewContextsSynthesizer {
 					}
 				}
 				
+				this.exportAssetPlanner.useAsset(codeFragment.getCodeAst().toJSONString());
 				contextArray.addAll(foundPositionIndex, codePartsArray);
 			}
 		}
@@ -303,10 +316,11 @@ public class NewContextsSynthesizer {
 	 * @throws InterruptedException
 	 * @throws InvalidSystemVariationPointMarkerException
 	 * @throws VariationPointPlaceInArrayNotFound
+	 * @throws AssetMisuse 
 	 */
 	private void searchForPositiveVariabilityVariationPointMarkers(JSONObject astTemplatePart, JSONObject astPart,
 			VariationPointsContentInjection variationPointsContentInjection) throws IOException, 
-			InterruptedException, InvalidSystemVariationPointMarkerException, VariationPointPlaceInArrayNotFound {
+			InterruptedException, InvalidSystemVariationPointMarkerException, VariationPointPlaceInArrayNotFound, AssetMisuse {
 		String key;
 		if (astTemplatePart == null || astPart == null) { return; }
 
@@ -370,10 +384,11 @@ public class NewContextsSynthesizer {
 	 * @throws InterruptedException
 	 * @throws InvalidSystemVariationPointMarkerException
 	 * @throws VariationPointPlaceInArrayNotFound
+	 * @throws AssetMisuse 
 	 */
 	private void updateAstTreeAccordingInformationFromVariationPoints(JSONObject templateAstRoot, JSONObject newApplicationAst, 
 			VariationPointsContentInjection variationPointsContentInjection) throws IOException, 
-			InterruptedException, InvalidSystemVariationPointMarkerException, VariationPointPlaceInArrayNotFound {		
+			InterruptedException, InvalidSystemVariationPointMarkerException, VariationPointPlaceInArrayNotFound, AssetMisuse {		
 		this.searchForPositiveVariabilityVariationPointMarkers(templateAstRoot, newApplicationAst, variationPointsContentInjection);
 		if (!SPLEvolutionCore.APPLY_TO_TEMPLATE) { 			// imports are not inserted into template
 			this.integrateImports(newApplicationAst, variationPointsContentInjection);
@@ -394,15 +409,16 @@ public class NewContextsSynthesizer {
 	 * @throws InvalidSystemVariationPointMarkerException
 	 * @throws VariationPointPlaceInArrayNotFound
 	 * @throws UnknownResourceToProcessException
+	 * @throws AssetMisuse 
 	 */
 	public List<SynthesizedContent> synthesizeContexts(JSONObject templateAstRoot,
 			Map<String, VariationPointContentsInjection> functionalityOnVarPointsToPossibilitiesMap,
 			boolean processDirectly) throws IOException, 
-			InterruptedException, InvalidSystemVariationPointMarkerException, VariationPointPlaceInArrayNotFound, UnknownResourceToProcessException {
+			InterruptedException, InvalidSystemVariationPointMarkerException, VariationPointPlaceInArrayNotFound, UnknownResourceToProcessException, AssetMisuse {
 		
 		// synthesis of selected constructs across selected variation points
 		List<VariationPointsContentInjection> variationPointsContentInjections = this.selectionOfConstructsAcrossSelectedVariationPointsStrategy.
-				aggregateAllPossibleInjections(functionalityOnVarPointsToPossibilitiesMap);
+				aggregateAllPossibleInjections(functionalityOnVarPointsToPossibilitiesMap, this.exportAssetPlanner);
 		VariationPointConjunctor variationPointConjunctor;
 		ExportLocationAggregation associatedAggregatedLocationExports;
 		SynthesizedContent synthesizedContent;
