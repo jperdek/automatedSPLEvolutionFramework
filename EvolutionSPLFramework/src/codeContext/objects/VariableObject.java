@@ -10,6 +10,7 @@ import codeContext.InnerContext;
 import codeContext.processors.export.ExportAggregator;
 import codeContext.processors.export.ExportedContext;
 import codeContext.processors.export.ExportedContextInterface;
+import codeContext.processors.export.ExportedInterface;
 import codeContext.processors.export.ExportedObjectInterface;
 
 
@@ -19,7 +20,7 @@ import codeContext.processors.export.ExportedObjectInterface;
  * @author Jakub Perdek
  *
  */
-public class VariableObject extends CodeContextObject implements Comparable<String>, ExportedContextInterface, ExportedObjectInterface {
+public class VariableObject extends CodeContextObject implements Comparable<String>, ExportedContextInterface, ExportedObjectInterface, ExportedInterface {
 	
 	/**
 	 * The name of the variable

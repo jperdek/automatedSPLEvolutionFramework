@@ -16,7 +16,7 @@ import splEvolutionCore.DebugInformation;
  * @author Jakub Perdek
  *
  */
-public class ExportedContext implements ExportInterface {
+public class ExportedContext implements ExportedInterface {
 
 	/**
 	 * Enumeration of code context types

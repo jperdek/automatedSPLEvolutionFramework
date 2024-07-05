@@ -7,7 +7,7 @@ package codeContext.processors.export;
  * @author Jakub Perdek
  *
  */
-public interface ExportedInterface extends ExportInterface, ExportedObjectInterface, ExportedContextInterface {
+public interface ExportedInterface {
 
 	/**
 	 * Returns the export represented as string

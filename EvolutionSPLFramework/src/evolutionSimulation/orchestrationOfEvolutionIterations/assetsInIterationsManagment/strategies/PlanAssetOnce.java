@@ -51,8 +51,8 @@ public class PlanAssetOnce implements AssetPlanningStrategy {
 	}
 
 	@Override
-	public void useAsset(String assetIdentifier) throws AssetMisuse {
-		if (!this.canUseAsset(assetIdentifier)) {
+	public void useAsset(String assetIdentifier, boolean usedInEvolutionIteration) throws AssetMisuse {
+		if (!usedInEvolutionIteration && !this.canUseAsset(assetIdentifier)) {
 			throw new AssetMisuse("Cannot use assets if is aleready used! Checking is probably missing...");
 		}
 		this.loadedAssetsFrequencyManagerRef.checkConstructUseAndMarkIfTrue(assetIdentifier);

@@ -37,7 +37,7 @@ public class NonRestrictiveAssetPlanning implements AssetPlanningStrategy {
 	}
 
 	@Override
-	public void useAsset(String assetIdentifier) throws AssetMisuse {
+	public void useAsset(String assetIdentifier, boolean usedInEvolutionIteration) throws AssetMisuse {
 	}
 
 }

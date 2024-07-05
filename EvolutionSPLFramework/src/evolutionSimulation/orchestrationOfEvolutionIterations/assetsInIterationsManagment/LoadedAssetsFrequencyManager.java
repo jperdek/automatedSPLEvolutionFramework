@@ -54,12 +54,17 @@ public class LoadedAssetsFrequencyManager {
 		Integer maximalFrequency = this.exportLocationUsageFrequencyLimits.get(constructName);
 		Integer locationUsageFrequency = this.exportLocationUsageFrequency.get(constructName); 
 		if (maximalFrequency == null) { maximalFrequency = -1; }
-		if (locationUsageFrequency == null) {
-			this.exportLocationUsageFrequency.put(constructName, locationUsageFrequency.intValue() + 1);
+		if (locationUsageFrequency == null && maximalFrequency == -1) {
+			System.out.println("Allowing to plan asset: " + constructName + ". No associated limitations!");
+			this.exportLocationUsageFrequency.put(constructName, 1);
 			return true;
 		}
 		if (maximalFrequency.intValue() == -1 || 
 				locationUsageFrequency.intValue() < maximalFrequency.intValue()) {
+			System.out.println("Allowing to plan asset: " + constructName);
+			if (maximalFrequency.intValue() == -1) {
+				System.out.println("Holding limit: " + locationUsageFrequency.intValue() + " < " + maximalFrequency.intValue());
+			} 
 			this.exportLocationUsageFrequency.put(constructName, locationUsageFrequency.intValue() + 1);
 			return true;
 		}
@@ -73,7 +78,8 @@ public class LoadedAssetsFrequencyManager {
 	 * @param usageLimit - the limit that will guard the possibility to plan particular asset
 	 */
 	public void addLocationIfNotExistWithLimit(String constructName, int usageLimit) {
-		if (this.exportLocationUsageFrequencyLimits.containsKey(constructName)) {
+		if (!this.exportLocationUsageFrequencyLimits.containsKey(constructName)) {
+			System.out.println("Setting limit: " + usageLimit + " for construct name: " + constructName);
 			this.exportLocationUsageFrequencyLimits.put(constructName, usageLimit);
 			this.exportLocationUsageFrequency.put(constructName, 0);
 		}
@@ -99,6 +105,7 @@ public class LoadedAssetsFrequencyManager {
 	 * @param usageLimit - the limit that will guard the possibility to plan particular asset
 	 */
 	public void addLocationWithLimit(String constructName, int usageLimit) {
+		System.out.println("Setting limit: " + usageLimit + " for construct name: " + constructName);
 		this.exportLocationUsageFrequencyLimits.put(constructName, usageLimit);
 		this.exportLocationUsageFrequency.put(constructName, 0);
 	}

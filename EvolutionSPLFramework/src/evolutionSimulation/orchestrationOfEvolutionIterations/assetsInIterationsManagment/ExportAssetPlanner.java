@@ -30,5 +30,5 @@ public abstract class ExportAssetPlanner {
 	 * 
 	 * @param exportType
 	 */
-	public abstract void useAsset(String assetIdentifier) throws AssetMisuse;
+	public abstract void useAsset(String assetIdentifier, boolean usedInEvolutionIteration) throws AssetMisuse;
 }

@@ -16,6 +16,7 @@ import codeContext.objects.SortByCodeContext;
 import codeContext.objects.VariableObject;
 import codeContext.processors.export.ExportAggregator;
 import codeContext.processors.export.ExportedContextInterface;
+import codeContext.processors.export.ExportedInterface;
 import codeContext.processors.export.ExportedObjectInterface;
 import divisioner.VariationPointDivisionConfiguration;
 import splEvolutionCore.DebugInformation;
@@ -26,7 +27,7 @@ import splEvolutionCore.DebugInformation;
  * @author Jakub Perdek
  *
  */
-public class UsedVariables implements ExportedContextInterface {
+public class UsedVariables implements ExportedContextInterface, ExportedInterface {
 	
 	/**
 	 * The list of used variables by given code context

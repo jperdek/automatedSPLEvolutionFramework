@@ -48,5 +48,7 @@ public class AssetPlannerBaseStrategy extends ExportAssetPlanner {
 	}
 
 	@Override
-	public void useAsset(String assetIdentifier) throws AssetMisuse { this.assetPlanningStrategy.useAsset(assetIdentifier); }
+	public void useAsset(String assetIdentifier, boolean usedInEvolutionIteration) throws AssetMisuse { 
+		this.assetPlanningStrategy.useAsset(assetIdentifier, usedInEvolutionIteration); 
+	}
 }

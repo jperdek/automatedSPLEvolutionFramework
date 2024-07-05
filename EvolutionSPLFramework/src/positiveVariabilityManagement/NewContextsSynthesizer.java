@@ -299,7 +299,7 @@ public class NewContextsSynthesizer {
 					}
 				}
 				
-				this.exportAssetPlanner.useAsset(codeFragment.getCodeAst().toJSONString());
+				this.exportAssetPlanner.useAsset(codeFragment.getCodeAst().toJSONString(), true);
 				contextArray.addAll(foundPositionIndex, codePartsArray);
 			}
 		}

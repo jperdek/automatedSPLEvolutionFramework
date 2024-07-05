@@ -11,6 +11,7 @@ import codeContext.objects.VariableObject;
 import codeContext.processors.ASTContextProcessor;
 import codeContext.processors.export.ExportAggregator;
 import codeContext.processors.export.ExportedContextInterface;
+import codeContext.processors.export.ExportedInterface;
 import codeContext.processors.export.ExportedObjectInterface;
 import splEvolutionCore.DebugInformation;
 
@@ -21,7 +22,7 @@ import splEvolutionCore.DebugInformation;
  * @author Jakub Perdek
  *
  */
-public class InnerContext implements ExportedContextInterface, ExportedObjectInterface {
+public class InnerContext implements ExportedContextInterface, ExportedObjectInterface, ExportedInterface {
 	
 	/**
 	 * Used parameters of inner context

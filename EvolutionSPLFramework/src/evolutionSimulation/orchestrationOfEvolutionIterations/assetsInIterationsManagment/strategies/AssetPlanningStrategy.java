@@ -38,5 +38,5 @@ public interface AssetPlanningStrategy {
 	 * @param assetIdentifier
 	 * @throws AssetMisuse
 	 */
-	public void useAsset(String assetIdentifier) throws AssetMisuse;
+	public void useAsset(String assetIdentifier, boolean usedInEvolutionIteration) throws AssetMisuse;
 }

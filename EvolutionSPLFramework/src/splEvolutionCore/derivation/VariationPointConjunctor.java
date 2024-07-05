@@ -3,11 +3,13 @@ package splEvolutionCore.derivation;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -112,7 +114,7 @@ public class VariationPointConjunctor {
 	 * @throws UnknownResourceToProcessException
 	 * @throws InterruptedException
 	 */
-	private void prepareTestTemplateAndDependencies(String projectId, EvolutionConfiguration evolutionConfiguration, 
+	private void prepareTestTemplateAndDependenciesOnlyOne(String projectId, EvolutionConfiguration evolutionConfiguration, 
 			List<ExportLocationAggregation> exportedAggregations, SynthesizedContent synthesizedContent) 
 					throws IOException, UnknownResourceToProcessException, InterruptedException {
 		String targetDestinationPath = evolutionConfiguration.getOutputFilePath(projectId);
@@ -144,6 +146,119 @@ public class VariationPointConjunctor {
 				this.derivationResourcesManager.getEvolutionConfigurationReference().getInitialCode(), targetDestinationPath, 
 				templateDestinationPath, usedResources, evolutionConfiguration, synthesizedContent, projectId);
 	}
+	
+	/**
+	 * Returns list of potential names of source projects or simply folder names that needs to be checked (against correctness)
+	 * 
+	 * @param projectPath - path to directory of which file names should be extracted
+	 * @return list of potential names of source projects or simply folder names that needs to be checked (against correctness)
+	 */
+	private List<String> getDirectoryProjectNames(String projectPath) {
+		String fileName;
+		
+		List<String> sourceProjectNames = new ArrayList<String>();
+		File folder = new File(projectPath);
+		File[] availableFiles = folder.listFiles();
+		if (availableFiles == null) { return sourceProjectNames; }
+
+		for (File processedFile: availableFiles) {
+			if (processedFile.isDirectory()) {
+				fileName = processedFile.getName();
+				sourceProjectNames.add(fileName);
+			}
+		}
+		return sourceProjectNames;
+	}
+	
+	/**
+	 * 
+	 * @param evolutionConfiguration
+	 * @param targetProjectPath
+	 * @return
+	 */
+	private List<String> getTargetSPLProjectPathExtensions(EvolutionConfiguration evolutionConfiguration, String targetProjectPath) {
+		String sourceProjectPath = evolutionConfiguration.getInputFilePath();
+		List<String> sourceProjectFileNames = this.getDirectoryProjectNames(sourceProjectPath);
+		List<String> targetProjectFileNames = this.getDirectoryProjectNames(targetProjectPath);
+		Iterator<String> sourceProjectFileIterator = sourceProjectFileNames.iterator();
+		Iterator<String> targetProjectFileIterator;
+		
+		List<String> targetProjectPathExtensions = new ArrayList<String>();
+		String sourceProjectFileName, targetProjectFileName;
+		while(sourceProjectFileIterator.hasNext()) {
+			sourceProjectFileName = sourceProjectFileIterator.next();
+			targetProjectFileIterator = targetProjectFileNames.iterator();
+			
+			while(targetProjectFileIterator.hasNext()) {
+				targetProjectFileName = targetProjectFileIterator.next();
+				if (sourceProjectFileName.equals(targetProjectFileName)) {
+					targetProjectPathExtensions.add(sourceProjectFileName);
+				}
+			}
+		}
+		
+		if (targetProjectPathExtensions.isEmpty()) {
+			targetProjectPathExtensions.add("");
+		}
+		return targetProjectPathExtensions;
+	}
+	
+	/**
+	 * Prepares test template and dependencies
+	 * 
+	 * @param projectId - unique project identifier
+	 * @param evolutionConfiguration - object that manages evolution configuration
+	 * @param exportedAggregations - list of exported aggregated exports that should be included as dependencies
+	 * @param synthesizedContent - synthesized content object that is used to synthesize whole project/AST
+	 * @throws IOException
+	 * @throws UnknownResourceToProcessException
+	 * @throws InterruptedException
+	 */
+	private void prepareTestTemplateAndDependencies(String projectId, EvolutionConfiguration evolutionConfiguration, 
+			List<ExportLocationAggregation> exportedAggregations, SynthesizedContent synthesizedContent) 
+					throws IOException, UnknownResourceToProcessException, InterruptedException {
+		String targetDestinationPath = evolutionConfiguration.getOutputFilePath(projectId);
+		String adaptedTargetDestinationPath;
+		String templateDestinationPath = evolutionConfiguration.getTemplateConfigurationPath(projectId);
+		HTMLCanvasToTemplateInjector htmlCanvasToTemplateInjector = new HTMLCanvasToTemplateInjector();
+		List<Resource> usedResources = this.prepareRessourcesFromExportedAggregations(exportedAggregations);
+		
+		List<String> sourceProjectFileNames = this.getTargetSPLProjectPathExtensions(evolutionConfiguration, projectId);
+		for (String sourceProjectFileName: sourceProjectFileNames) {
+			adaptedTargetDestinationPath = targetDestinationPath;
+			
+			if (!sourceProjectFileName.equals("")) {
+				adaptedTargetDestinationPath = adaptedTargetDestinationPath + "/" + sourceProjectFileName;
+			}
+
+			if(DebugInformation.PROCESS_STEP_INFORMATION || DebugInformation.SHOW_DERIVED_PROJECT_INFORMATION) {
+				System.out.println("Final template path: " + templateDestinationPath);
+				System.out.println("Final adapted template path: " + adaptedTargetDestinationPath);
+				System.out.println("Final updated/evolved base script path: " + targetDestinationPath);
+			}
+			
+			//String canvasElementName, templatePath;
+			Resource canvasResource;
+			for (Resource initialResource: evolutionConfiguration.getInitialResources()) {
+				if (initialResource instanceof CanvasBasedResource) {
+					canvasResource = (Resource) initialResource; //new CanvasBasedResource(canvasElementName, templatePath);
+					usedResources.add(canvasResource);
+				} else {
+					throw new UnknownResourceToProcessException("Resource with path: " + 
+								initialResource.getRelativePathFromProject() + " is unknown initial resource!");
+				}
+			}
+			
+			if (templateDestinationPath.contains("file:///")) {
+				templateDestinationPath = templateDestinationPath.replace("file:///", "");
+			}
+			// FOR EXPORTS IN ADVANCED APPLICATIONS THESE IMPORTS SHOULD BE INCLUDED INTO FINAL AST OF RESULTING PROJECT
+			htmlCanvasToTemplateInjector.injectToTemplate(
+					this.derivationResourcesManager.getEvolutionConfigurationReference().getInitialCode(), adaptedTargetDestinationPath, 
+					templateDestinationPath, usedResources, evolutionConfiguration, synthesizedContent, projectId);
+		}
+	}
+
 	
 	/**
 	 * Copies base project assets as whole project directory including libraries, images, css files
