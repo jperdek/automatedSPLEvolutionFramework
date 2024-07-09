@@ -229,6 +229,26 @@ public class EvolutionConfiguration {
 	public void setTemplateConfigurationPath(String templateRelativePath) { this.templateConfigurationPath = templateRelativePath; }
 	
 	/**
+	 * Information string covering evolution identification used in evolved project name
+	 */
+	private final static String NAME_EVOLUTION_IDENTIFICATION_NOTE = "evolNum";
+	
+	/**
+	 * Information string covering evolution identification used in evolved project path
+	 */
+	private final static String PATH_EVOLUTION_IDENTIFICATION_NOTE = "/evolNum";
+	
+	/**
+	 * Information string covering concern identification used in evolved project path
+	 */
+	private final static String PATH_CONCERN_IDENTIFICATION_NOTE = "/conc";
+	
+	/**
+	 * Information string covering application identification used in evolved project path
+	 */
+	private final static String PATH_APPLICATION_IDENTIFICATION_NOTE = "/app";
+	
+	/**
 	 * Returns the relative configuration path to template HTML file
 	 * -this file is usually used for test purposes
 	 * -the file is named "index.html" by default
@@ -245,14 +265,16 @@ public class EvolutionConfiguration {
 	/**
 	 * Returns the path to template configuration HTML file
 	 * 
+	 * @param targetDestinationPath - destination path to resulting directory if is modified otherwise use null
 	 * @param applicationID - the unique identifier of application/evolved SPL
 	 * @return the path to template configuration HTML file
 	 */
-	public String getTemplateConfigurationPath(String applicationID) {
+	public String getTemplateConfigurationPath(String targetDestinationPath, String applicationID) {
+		if (targetDestinationPath == null) { targetDestinationPath = this.getOutputFilePath(applicationID); }
 		if (this.templateConfigurationPath == null) {
-			return this.getOutputFilePath(applicationID) + "/index.html"; //return root of project - relativePath
+			return targetDestinationPath + "/index.html"; //return root of project - relativePath
 		}
-		return this.getOutputFilePath(applicationID) + this.templateConfigurationPath; 
+		return targetDestinationPath + this.templateConfigurationPath; 
 	}
 	
 	/**
@@ -326,7 +348,19 @@ public class EvolutionConfiguration {
 		if (this.concernName == null || this.concernName.equals("")) {
 			this.concernName = EvolutionConfigurationDirectionStrategies.CUSTOM.label;
 		}
-		return this.concernName + "evolNum" + this.iteration; 
+		return this.concernName + EvolutionConfiguration.NAME_EVOLUTION_IDENTIFICATION_NOTE + this.iteration; 
+	}
+	
+	/**
+	 * Returns the unique name of the evolved content referencing the evolved concern (focus) and iteration
+	 * 
+	 * @return the unique name of the evolved content referencing the evolved concern (focus) and iteration
+	 */
+	private String getEvolvedContentName(int evolutionIteration, String concernName) {
+		if (concernName == null || concernName.equals("")) {
+			concernName = EvolutionConfigurationDirectionStrategies.CUSTOM.label;
+		}
+		return concernName + EvolutionConfiguration.NAME_EVOLUTION_IDENTIFICATION_NOTE + evolutionIteration; 
 	}
 	
 	/**
@@ -380,7 +414,9 @@ public class EvolutionConfiguration {
 		if (this.concernName == null || this.concernName.equals("")) {
 			this.concernName = EvolutionConfigurationDirectionStrategies.CUSTOM.label;
 		}
-		return "/evolNum" + Integer.toString(this.iteration) + "/conc" + this.concernName + "/app" + applicationID;
+		return EvolutionConfiguration.PATH_EVOLUTION_IDENTIFICATION_NOTE + Integer.toString(this.iteration) + 
+				EvolutionConfiguration.PATH_CONCERN_IDENTIFICATION_NOTE + this.concernName + 
+				EvolutionConfiguration.PATH_APPLICATION_IDENTIFICATION_NOTE + applicationID;
 	}
 	
 	/**
@@ -393,8 +429,35 @@ public class EvolutionConfiguration {
 		if (this.concernName == null || this.concernName.equals("")) {
 			this.concernName = EvolutionConfigurationDirectionStrategies.CUSTOM.label;
 		}
-		return "/evolNum" + Integer.toString(this.iteration) + "/conc" + this.concernName;
+		return EvolutionConfiguration.PATH_EVOLUTION_IDENTIFICATION_NOTE + Integer.toString(this.iteration) + 
+				EvolutionConfiguration.PATH_CONCERN_IDENTIFICATION_NOTE + this.concernName;
 	}
+	
+	/**
+	 * Checks if particular string is possible project name
+	 * 
+	 * @param projectName - particular string that should be checked
+	 * @return true if particular string is possible project name otherwise false
+	 */
+	public boolean isProjectName(String projectName) {
+		if (projectName.contains(EvolutionConfiguration.NAME_EVOLUTION_IDENTIFICATION_NOTE)) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Checks if particular string is possible last evolution project name
+	 * 
+	 * @param projectName - particular string that should be checked
+	 * @return true if particular string is possible project name otherwise false
+	 */
+	public boolean isEvolutionLastIterationProjectName(String projectName) {
+		String mainProjectNamePart = getEvolvedContentName(this.iteration - 1, this.concernName);
+		if (projectName.contains(mainProjectNamePart)) { return true; }
+		return false;
+	}
+	
 	
 	/**
 	 * Returns the path to destination directory where assets and extensions will be incorporated
@@ -460,24 +523,28 @@ public class EvolutionConfiguration {
 	 * Returns path to destination directory where assets and extensions will be incorporated 
 	 * concatenated with the AST file name ("/markedVariationPoints.json")
 	 * 
+	 * @param targetDestinationPath - destination path to resulting directory if is modified otherwise use null
 	 * @param applicationID - the unique identifier of application/evolved SPL
 	 * @return path to destination directory where assets and extensions will be incorporated 
 	 * concatenated with the AST file name ("/markedVariationPoints.json")
 	 */
-	public String getFileOutputAstPath(String applicationID) { 
-		return this.getOutputFilePath(applicationID) + "/markedVariationPoints.json"; 
+	public String getFileOutputAstPath(String targetDestinationPath, String applicationID) { 
+		if (targetDestinationPath == null) { targetDestinationPath = this.getOutputFilePath(applicationID); }
+		return targetDestinationPath + "/markedVariationPoints.json"; 
 	}
 	
 	/**
 	 * Returns path to destination directory where assets and extensions will be incorporated 
 	 * concatenated with the name of file where information about variation points is stored ("/harvestedVariationPoints.json")
 	 * 
+	 * @param targetDestinationPath - destination path to resulting directory if is modified otherwise use null
 	 * @param applicationID - the unique identifier of application/evolved SPL
 	 * @return path to destination directory where assets and extensions will be incorporated 
 	 * concatenated with the name of file where information about variation points is stored ("/harvestedVariationPoints.json")
 	 */
-	public String getFileOutputVariationPoints(String applicationID) { 
-		return this.getOutputFilePath(applicationID) + "/harvestedVariationPoints.json";
+	public String getFileOutputVariationPoints(String targetDestinationPath, String applicationID) { 
+		if (targetDestinationPath == null) { targetDestinationPath = this.getOutputFilePath(applicationID); }
+		return targetDestinationPath + "/harvestedVariationPoints.json";
 	}
 	
 	/**

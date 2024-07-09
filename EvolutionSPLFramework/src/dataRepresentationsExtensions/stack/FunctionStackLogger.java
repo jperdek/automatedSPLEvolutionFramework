@@ -53,7 +53,7 @@ public class FunctionStackLogger {
 	 * @throws InterruptedException
 	 */
 	private void createStackFunctionality(String insertedObjectDefinition, JSONArray statementsArray) throws IOException, InterruptedException {
-		String functionPush = "pushData(" + insertedObjectDefinition + ")";
+		String functionPush = "try { pushData(" + insertedObjectDefinition + "); } catch(error) { return; }";
 		JSONObject astPush = ASTConverterClient.getFirstStatementFromASTFile(ASTConverterClient.convertFromCodeToASTJSON(functionPush));
 		statementsArray.add(0, astPush); //put to function start
 		

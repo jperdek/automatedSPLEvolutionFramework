@@ -149,6 +149,15 @@ public class HTMLCanvasToTemplateInjector {
 	}
 
 	/**
+	 * Removes the last used script element from the template
+	 * 
+	 * @param bodyPart - the processed template
+	 */
+	private void removeLastScript(Element bodyPart) {
+		bodyPart.select("script").last().remove();
+	}
+	
+	/**
 	 * Generates and optionally updates imported scripts and persists the final code in template
 	 * 
 	 * @param targetDestinationPath - the path directing to the destination directory, to the root to target project/SPL
@@ -184,7 +193,12 @@ public class HTMLCanvasToTemplateInjector {
 			for (String scriptToOmit: HTMLCanvasToTemplateInjector.scriptsToOmit) {
 				if (absoluteOrRelativeProjectPath.toLowerCase().contains(scriptToOmit.toLowerCase()) ||
 						scriptToOmit.toLowerCase().replace("\\", "/").contains(
-								absoluteOrRelativeProjectPath.toLowerCase().replace("\\", "/"))) { shouldBeExcluded = true; break; }
+								absoluteOrRelativeProjectPath.toLowerCase().replace("\\", "/"))) { 
+					if (!SPLEvolutionCore.INCLUDE_SHARED_LIBRARY || 
+							!absoluteOrRelativeProjectPath.contains(SPLEvolutionCore.SHARED_LIBRARY_LOCATION)) { 
+						shouldBeExcluded = true; break;
+					}
+				}
 			}
 			if (shouldBeExcluded) { continue; } //skipping scripts to omit
 
@@ -273,13 +287,14 @@ public class HTMLCanvasToTemplateInjector {
 	 * @param evolutionConfiguration - the configuration associated with evolution process, especially its phases to drive evolution and store relevant information
 	 * @param synthesizedContent - the sources necessary to manage synthesis of the evolved part - the code with updated AST is persisted along with template
 	 * @param projectId - the unique identifier of final project/SPL
+	 * @param isInitialPhase - true if the first iteration is processed - starts from only one SPL otherwise false
 	 * 
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
 	public void injectToTemplate(String callToSyntethizedFunctionality, String targetDestinationPath, 
 			String htmlTemplateToInjectPath, List<Resource> resources, EvolutionConfiguration evolutionConfiguration, 
-			SynthesizedContent synthesizedContent, String projectId) throws IOException, InterruptedException {
+			SynthesizedContent synthesizedContent, String projectId, boolean isInitialPhase) throws IOException, InterruptedException {
 		String templateContent = this.optionalyCreateHTMLFileAndGetContent(htmlTemplateToInjectPath);
 		Document document;
 		if (templateContent.equals("") || templateContent == null) {
@@ -316,12 +331,19 @@ public class HTMLCanvasToTemplateInjector {
 				bodyPart.appendChild(canvasElement);
 			} else {
 				if (resource.isBase()) { continue; }
+				String relativeImportPath = resource.getRelativePathFromProject();
+				if (bodyPart.select("script[src='" + relativeImportPath + "']").size() == 0) {
+					for (Element script :bodyPart.select("script[src='" + relativeImportPath + "']")) {
+						script.remove();
+					}
+				}
 				scriptElement = this.createImportScriptWithContent(resource); //add dependencies  
 				headersPart.appendChild(scriptElement);
 			}
 		}
-				
-		scriptElement =  this.createScriptWithContent(callToSyntethizedFunctionality); 
+			
+		if (!isInitialPhase) { this.removeLastScript(bodyPart); } // removes previously injected script with injected converted and initialized variables
+		scriptElement =  this.createScriptWithContent(callToSyntethizedFunctionality);
 		bodyPart.appendChild(scriptElement); //add key functionality 
 		
 		File file = new File(htmlTemplateToInjectPath);

@@ -34,6 +34,7 @@ public class RandomCandidateSelection implements SPLNextEvolutionIterationCandid
 		int selectedProductIndex;
 		Set<String> usedCandidates = new HashSet<String>();
 		String selectedCandidate = null;
+		if (listOfCandidateSPLFileNamesFromEachPopulationMember.size() == 0) { return new ArrayList<String>(); }
 		for (int i = 0; i < numberOfNextEvolutionCandidates; i++) {
 			do {
 				selectedProductIndex = rndm.nextInt(listOfCandidateSPLFileNamesFromEachPopulationMember.size());

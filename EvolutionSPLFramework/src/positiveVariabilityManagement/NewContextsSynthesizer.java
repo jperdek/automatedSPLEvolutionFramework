@@ -423,9 +423,10 @@ public class NewContextsSynthesizer {
 		ExportLocationAggregation associatedAggregatedLocationExports;
 		SynthesizedContent synthesizedContent;
 		JSONObject newApplicationAst;
+		String potentialTargetPath;
 		String projectId;
 		List<ExportLocationAggregation> usedExportedAggregations;
-
+		
 		List<SynthesizedContent> synthesizedContents = new ArrayList<SynthesizedContent>();
  		for (VariationPointsContentInjection variationPointsContentInjection: variationPointsContentInjections) {
 			synthesizedContent = new SynthesizedContent(templateAstRoot, this.syntetizedContentName, this.derivationResourcesManager.getVariationPointData());
@@ -458,8 +459,9 @@ public class NewContextsSynthesizer {
 					projectId = variationPointConjunctor.deriveProductWithConjunctingParts(synthesizedContent, usedExportedAggregations);
 				}
 				
-				if (SPLEvolutionCore.SERIALIZE_APPLICATION_AST || SPLEvolutionCore.SERIALIZE_VARIATION_POINTS) {
-					variationPointConjunctor.serializeModifiedVariationPointConfiguration(synthesizedContent, projectId);
+				if (!SPLEvolutionCore.APPLY_TO_TEMPLATE && (SPLEvolutionCore.SERIALIZE_APPLICATION_AST || SPLEvolutionCore.SERIALIZE_VARIATION_POINTS)) {
+					potentialTargetPath = this.derivationResourcesManager.getEvolutionConfigurationReference().getOutputFilePath(projectId);
+					variationPointConjunctor.serializeModifiedVariationPointConfiguration(potentialTargetPath, synthesizedContent, projectId);
 				}
 			} else {
 				synthesizedContents.add(synthesizedContent);

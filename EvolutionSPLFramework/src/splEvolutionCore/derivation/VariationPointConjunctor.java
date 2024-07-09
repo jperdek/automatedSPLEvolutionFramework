@@ -118,7 +118,7 @@ public class VariationPointConjunctor {
 			List<ExportLocationAggregation> exportedAggregations, SynthesizedContent synthesizedContent) 
 					throws IOException, UnknownResourceToProcessException, InterruptedException {
 		String targetDestinationPath = evolutionConfiguration.getOutputFilePath(projectId);
-		String templateDestinationPath = evolutionConfiguration.getTemplateConfigurationPath(projectId);
+		String templateDestinationPath = evolutionConfiguration.getTemplateConfigurationPath(null, projectId);
 		HTMLCanvasToTemplateInjector htmlCanvasToTemplateInjector = new HTMLCanvasToTemplateInjector();
 		List<Resource> usedResources = this.prepareRessourcesFromExportedAggregations(exportedAggregations);
 		
@@ -144,7 +144,7 @@ public class VariationPointConjunctor {
 		// FOR EXPORTS IN ADVANCED APPLICATIONS THESE IMPORTS SHOULD BE INCLUDED INTO FINAL AST OF RESULTING PROJECT
 		htmlCanvasToTemplateInjector.injectToTemplate(
 				this.derivationResourcesManager.getEvolutionConfigurationReference().getInitialCode(), targetDestinationPath, 
-				templateDestinationPath, usedResources, evolutionConfiguration, synthesizedContent, projectId);
+				templateDestinationPath, usedResources, evolutionConfiguration, synthesizedContent, projectId, true);
 	}
 	
 	/**
@@ -159,7 +159,6 @@ public class VariationPointConjunctor {
 		List<String> sourceProjectNames = new ArrayList<String>();
 		File folder = new File(projectPath);
 		File[] availableFiles = folder.listFiles();
-		if (availableFiles == null) { return sourceProjectNames; }
 
 		for (File processedFile: availableFiles) {
 			if (processedFile.isDirectory()) {
@@ -178,28 +177,25 @@ public class VariationPointConjunctor {
 	 */
 	private List<String> getTargetSPLProjectPathExtensions(EvolutionConfiguration evolutionConfiguration, String targetProjectPath) {
 		String sourceProjectPath = evolutionConfiguration.getInputFilePath();
+		System.out.println("Used source project path for analysis: " + sourceProjectPath);
+		//System.out.println("Used target project path for analysis: " + targetProjectPath);
 		List<String> sourceProjectFileNames = this.getDirectoryProjectNames(sourceProjectPath);
-		List<String> targetProjectFileNames = this.getDirectoryProjectNames(targetProjectPath);
+		//List<String> targetProjectFileNames = this.getDirectoryProjectNames(targetProjectPath);
 		Iterator<String> sourceProjectFileIterator = sourceProjectFileNames.iterator();
-		Iterator<String> targetProjectFileIterator;
 		
 		List<String> targetProjectPathExtensions = new ArrayList<String>();
 		String sourceProjectFileName, targetProjectFileName;
 		while(sourceProjectFileIterator.hasNext()) {
 			sourceProjectFileName = sourceProjectFileIterator.next();
-			targetProjectFileIterator = targetProjectFileNames.iterator();
 			
-			while(targetProjectFileIterator.hasNext()) {
-				targetProjectFileName = targetProjectFileIterator.next();
-				if (sourceProjectFileName.equals(targetProjectFileName)) {
-					targetProjectPathExtensions.add(sourceProjectFileName);
-				}
+			if (evolutionConfiguration.isEvolutionLastIterationProjectName(sourceProjectFileName)) {
+				System.out.println("Found project path: " + sourceProjectFileName);
+				targetProjectPathExtensions.add(sourceProjectFileName);
 			}
 		}
 		
-		if (targetProjectPathExtensions.isEmpty()) {
-			targetProjectPathExtensions.add("");
-		}
+		//enable to produce exactly one product if names not match for initial iteration
+		if (targetProjectPathExtensions.size() == 0) { targetProjectPathExtensions.add(""); }
 		return targetProjectPathExtensions;
 	}
 	
@@ -219,16 +215,23 @@ public class VariationPointConjunctor {
 					throws IOException, UnknownResourceToProcessException, InterruptedException {
 		String targetDestinationPath = evolutionConfiguration.getOutputFilePath(projectId);
 		String adaptedTargetDestinationPath;
-		String templateDestinationPath = evolutionConfiguration.getTemplateConfigurationPath(projectId);
-		HTMLCanvasToTemplateInjector htmlCanvasToTemplateInjector = new HTMLCanvasToTemplateInjector();
-		List<Resource> usedResources = this.prepareRessourcesFromExportedAggregations(exportedAggregations);
+		String templateDestinationPath;
+		HTMLCanvasToTemplateInjector htmlCanvasToTemplateInjector;
+		List<Resource> usedResources;
 		
-		List<String> sourceProjectFileNames = this.getTargetSPLProjectPathExtensions(evolutionConfiguration, projectId);
+		List<String> sourceProjectFileNames = this.getTargetSPLProjectPathExtensions(evolutionConfiguration, targetDestinationPath);
+		boolean isInitialPhase;
 		for (String sourceProjectFileName: sourceProjectFileNames) {
 			adaptedTargetDestinationPath = targetDestinationPath;
 			
-			if (!sourceProjectFileName.equals("")) {
+			//NO SOURCE FOUND!!!
+			isInitialPhase = sourceProjectFileName.equals("");
+			if (!isInitialPhase) {
 				adaptedTargetDestinationPath = adaptedTargetDestinationPath + "/" + sourceProjectFileName;
+				templateDestinationPath = evolutionConfiguration.getTemplateConfigurationPath(adaptedTargetDestinationPath, projectId);
+			} else {
+				System.out.println("Generating default one/standalone initial resource.");
+				templateDestinationPath = evolutionConfiguration.getTemplateConfigurationPath(null, projectId);
 			}
 
 			if(DebugInformation.PROCESS_STEP_INFORMATION || DebugInformation.SHOW_DERIVED_PROJECT_INFORMATION) {
@@ -238,6 +241,7 @@ public class VariationPointConjunctor {
 			}
 			
 			//String canvasElementName, templatePath;
+			usedResources = this.prepareRessourcesFromExportedAggregations(exportedAggregations);
 			Resource canvasResource;
 			for (Resource initialResource: evolutionConfiguration.getInitialResources()) {
 				if (initialResource instanceof CanvasBasedResource) {
@@ -253,9 +257,14 @@ public class VariationPointConjunctor {
 				templateDestinationPath = templateDestinationPath.replace("file:///", "");
 			}
 			// FOR EXPORTS IN ADVANCED APPLICATIONS THESE IMPORTS SHOULD BE INCLUDED INTO FINAL AST OF RESULTING PROJECT
+			htmlCanvasToTemplateInjector = new HTMLCanvasToTemplateInjector();
 			htmlCanvasToTemplateInjector.injectToTemplate(
 					this.derivationResourcesManager.getEvolutionConfigurationReference().getInitialCode(), adaptedTargetDestinationPath, 
-					templateDestinationPath, usedResources, evolutionConfiguration, synthesizedContent, projectId);
+					templateDestinationPath, usedResources, evolutionConfiguration, synthesizedContent, projectId, isInitialPhase);
+			
+			if (SPLEvolutionCore.SERIALIZE_APPLICATION_AST || SPLEvolutionCore.SERIALIZE_VARIATION_POINTS) {
+				this.serializeModifiedVariationPointConfiguration(adaptedTargetDestinationPath, synthesizedContent, projectId);
+			}
 		}
 	}
 
@@ -357,13 +366,14 @@ public class VariationPointConjunctor {
 	 * 
 	 * -target paths are generated at this point
 	 * 
+	 * @param targetDestinationPath - destination path to resulting directory
 	 * @param synthesizedContent  synthesized content object that is used to synthesize whole project/AST 
 	 * @param projectId - unique project identifier
 	 */
-	public void serializeModifiedVariationPointConfiguration(SynthesizedContent synthesizedContent, String projectId) {
+	public void serializeModifiedVariationPointConfiguration(String targetDestinationPath, SynthesizedContent synthesizedContent, String projectId) {
 		if (projectId == null) { return; }
 		EvolutionConfiguration evolutionConfiguration = this.derivationResourcesManager.getEvolutionConfigurationReference();
-		String targetDestinationPath = evolutionConfiguration.getOutputFilePath(projectId);
+		if (targetDestinationPath == null) { targetDestinationPath = evolutionConfiguration.getOutputFilePath(projectId); }
 		String evolvedContentName = this.derivationResourcesManager.getEvolvedContentName();
 		String finalEvolutionResourcesPath = targetDestinationPath + evolvedContentName + synthesizedContent.getFileName();
 		this.variationPointConjunction.add(finalEvolutionResourcesPath);
