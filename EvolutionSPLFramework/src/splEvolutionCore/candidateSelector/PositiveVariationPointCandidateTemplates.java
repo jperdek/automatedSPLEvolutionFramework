@@ -1,6 +1,7 @@
 package splEvolutionCore.candidateSelector;
 
 import positiveVariabilityManagement.callsTemplateSelectionStrategies.CallsFromPositiveVariationPointCreator;
+import splEvolutionCore.SPLEvolutionCore;
 import splEvolutionCore.candidateSelector.valueAssignment.AssignedValue;
 import positiveVariabilityManagement.entities.CallableConstructTemplate;
 import org.json.simple.JSONObject;
@@ -51,6 +52,8 @@ public class PositiveVariationPointCandidateTemplates extends VariationPointCand
 	
 	/**
 	 * Extracts selected calls from positive variation point, creates template and assigns equal default value to all templates
+	 * Removes the forbidden calls that are restricted with settings
+	 * 
 	 * 
 	 * @param positiveVariabilityCreatorStrategy - the strategy to extract selected calls from positive variation point
 	 * @return true if creation of template from executable code does not fail otherwise false
@@ -59,8 +62,25 @@ public class PositiveVariationPointCandidateTemplates extends VariationPointCand
 			CallsFromPositiveVariationPointCreator positiveVariabilityCreatorStrategy) {
 		List<String> executedCodeTemplates = positiveVariabilityCreatorStrategy.extractCallsFromPositiveVariationPoint(this);
 		if (executedCodeTemplates == null) { return false; }
+		String comparedTemplateStub, comparedForbiddenCodeToSkipStub;
+
+		boolean canPass;
 		for (String executedCodeTemplate: executedCodeTemplates) {
-			this.putAssignedValue(executedCodeTemplate, new AssignedValue(1, 1, true));
+			comparedTemplateStub = executedCodeTemplate.substring(executedCodeTemplate.indexOf('(') + 1);
+			
+			canPass = true;
+			for (String embeddedNameToSkip: SPLEvolutionCore.FORBIDDEN_FUNCTIONS_IN_PROCESSED_SPLS) {
+				comparedForbiddenCodeToSkipStub = embeddedNameToSkip.substring(embeddedNameToSkip.indexOf('(') + 1);
+				
+				if (comparedTemplateStub.equals(comparedForbiddenCodeToSkipStub)) {
+					System.out.println("Omitting function " + embeddedNameToSkip + " that is found as forbidden.");
+					canPass = false; 
+					break;
+				}
+			}
+			if (canPass) {
+				this.putAssignedValue(executedCodeTemplate, new AssignedValue(1, 1, true));
+			}
 		}
 		return true;
 	}

@@ -36,9 +36,11 @@ public class PositiveVariationPointCandidateSelection {
 		List<PositiveVariationPointCandidateTemplates> positiveVariationCandidates = new ArrayList<PositiveVariationPointCandidateTemplates>();
 		PositiveVariationPointCandidateTemplates createdCandidate;
 		
+		String affectedCode;
 		JSONObject variationPointData;
 		for (Object variationPointObject: variationPointArray) {
 			variationPointData = (JSONObject) variationPointObject;
+			
 			// the test if variation point belongs to positive variability
 			if ((boolean) variationPointData.get(PositiveVariationPointCandidateSelection.NEW_VARIATION_POINT) == true) {
 				createdCandidate = new PositiveVariationPointCandidateTemplates(variationPointData);

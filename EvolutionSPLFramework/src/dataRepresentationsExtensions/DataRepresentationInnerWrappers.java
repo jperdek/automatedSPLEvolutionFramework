@@ -25,6 +25,11 @@ public class DataRepresentationInnerWrappers {
 	private FunctionStackLogger functionStackLogger;
 	private Logged defaultGlobalLogged = null;
 	
+	/**
+	 * Information if stack functionality is already pushed into derived SPLs
+	 */
+	private boolean availableStackStatus = DefaultDataRepresentations.SIMULATE_STACK;
+	
 	public DataRepresentationInnerWrappers() {
 		this.functionStackLogger = new FunctionStackLogger();
 	}
@@ -33,7 +38,10 @@ public class DataRepresentationInnerWrappers {
 		this.additionalDataRepresentationsCreatorsInjector(astRoot, astRoot, astRoot, dataRepresentationsConfiguration);
 		if (dataRepresentationsConfiguration.shouldInjectStackFunctionality()) {
 			System.out.println("Injecting stacks!");
-			this.functionStackLogger.initializeStackStubOnAst(astRoot); //base functions are added after all functionality is prepared
+			this.availableStackStatus = this.functionStackLogger.verifyIfStackIsAlreadyPushed(astRoot);
+			if (!this.availableStackStatus) {
+				this.functionStackLogger.initializeStackStubOnAst(astRoot); //base functions are added after all functionality is prepared
+			}
 		}
 		if (dataRepresentationsConfiguration.shouldInjectLogFunctionality()) {
 			System.out.println("Injecting logs!");
@@ -137,7 +145,7 @@ public class DataRepresentationInnerWrappers {
 		String additionalObjectString;
 		
 		// TO-DO extract modifiers
-		if (dataRepresentationsConfiguration.shouldInjectStackFunctionality()) {
+		if (dataRepresentationsConfiguration.shouldInjectStackFunctionality() && !this.availableStackStatus) {
 			additionalObjectString = this.getParameters(parametersArray);
 			this.functionStackLogger.createReferencedInstance("", additionalObjectString, statementsArray);
 		}
@@ -157,7 +165,7 @@ public class DataRepresentationInnerWrappers {
 		
 		// TO-DO extract modifiers
 		String className = ASTTextExtractorTools.getTextFromAstIncludingNameAndExpressions(processedClassAst);
-		if (dataRepresentationsConfiguration.shouldInjectStackFunctionality()) {
+		if (dataRepresentationsConfiguration.shouldInjectStackFunctionality() && !this.availableStackStatus) {
 			additionalObjectString = this.getParameters(parametersArray);
 			this.functionStackLogger.createReferencedInstance(className, additionalObjectString, statementsArray);
 		}
@@ -179,7 +187,7 @@ public class DataRepresentationInnerWrappers {
 		// TO-DO extract modifiers
 		String className = ASTTextExtractorTools.getTextFromAstIncludingNameAndExpressions(processedClassAst);
 		String callOfclassName = "new " + className;
-		if (dataRepresentationsConfiguration.shouldInjectStackFunctionality()) {
+		if (dataRepresentationsConfiguration.shouldInjectStackFunctionality() && !this.availableStackStatus) {
 			additionalObjectString = this.getParameters(parametersArray);
 			this.functionStackLogger.createReferencedInstance(callOfclassName, additionalObjectString, statementsArray);
 		}

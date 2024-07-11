@@ -93,6 +93,7 @@ public class VariationPointConjunctor {
 				importPath = exportLocations.getImportPath();
 
 				if (!alreadyPreparedImports.contains(importPath)) {
+					System.out.println("Adding resource to used resource: " + importPath);
 					alreadyPreparedImports.add(importPath);
 					
 					importResource = new Resource(importPath);
@@ -241,7 +242,8 @@ public class VariationPointConjunctor {
 			}
 			
 			//String canvasElementName, templatePath;
-			usedResources = this.prepareRessourcesFromExportedAggregations(exportedAggregations);
+			System.out.println("Processed resources.");
+			usedResources = new ArrayList<Resource>(this.prepareRessourcesFromExportedAggregations(exportedAggregations));
 			Resource canvasResource;
 			for (Resource initialResource: evolutionConfiguration.getInitialResources()) {
 				if (initialResource instanceof CanvasBasedResource) {

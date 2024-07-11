@@ -188,14 +188,16 @@ public class HTMLCanvasToTemplateInjector {
 		boolean isLibrary, isBaseScript, shouldBeExcluded;
 		for (Resource importResource: importResources) {
 			String absoluteOrRelativeProjectPath = importResource.getRelativePathFromProject();
-
+			System.out.println("_____Handled resource: " + absoluteOrRelativeProjectPath);
 			shouldBeExcluded = false;
 			for (String scriptToOmit: HTMLCanvasToTemplateInjector.scriptsToOmit) {
 				if (absoluteOrRelativeProjectPath.toLowerCase().contains(scriptToOmit.toLowerCase()) ||
 						scriptToOmit.toLowerCase().replace("\\", "/").contains(
 								absoluteOrRelativeProjectPath.toLowerCase().replace("\\", "/"))) { 
+					// ADDED TO MANAGE RESOURCES PROPERLY
 					if (!SPLEvolutionCore.INCLUDE_SHARED_LIBRARY || 
 							!absoluteOrRelativeProjectPath.contains(SPLEvolutionCore.SHARED_LIBRARY_LOCATION)) { 
+						System.out.println("Excluded script: " + absoluteOrRelativeProjectPath);
 						shouldBeExcluded = true; break;
 					}
 				}
@@ -204,6 +206,7 @@ public class HTMLCanvasToTemplateInjector {
 
 			isLibrary = false;
 			for (String libraryPath: EvolutionSamples.getAllEvolutionSamples(null)) {
+				System.out.println("Processing possible library: " + absoluteOrRelativeProjectPath);
 				if (absoluteOrRelativeProjectPath.replace("\\", "/").toLowerCase().contains(libraryPath.toLowerCase().replace("\\", "/"))
 						|| libraryPath.toLowerCase().replace("\\", "/").contains(
 								absoluteOrRelativeProjectPath.toLowerCase().replace("\\", "/"))) {
@@ -213,6 +216,7 @@ public class HTMLCanvasToTemplateInjector {
 						processedResourceFileName = libraryPath.substring(libraryPath.replace("\\", "/").lastIndexOf("/"));
 						destinationLibraryPath = targetDestinationPath + "/" + SPLEvolutionCore.SHARED_LIBRARY_LOCATION;
 						destinationLibraryFilePath = destinationLibraryPath + "/" + processedResourceFileName;
+						System.out.println("Configuring inner configuration library file: " + destinationLibraryFilePath + ". Setting this path.");
 						try {
 							Files.createDirectories(Path.of(destinationLibraryPath));
 							Files.copy(Path.of(absoluteOrRelativeProjectPath), Path.of(destinationLibraryFilePath));
@@ -224,6 +228,7 @@ public class HTMLCanvasToTemplateInjector {
 			}
 			
 			for (String libraryPath: EvolutionVariables.getAllEvolutionSamples(null)) {
+				System.out.println("Processing possible library: " + absoluteOrRelativeProjectPath);
 				if (absoluteOrRelativeProjectPath.replace("\\", "/").toLowerCase().contains(libraryPath.toLowerCase().replace("\\", "/"))
 						|| libraryPath.toLowerCase().replace("\\", "/").contains(
 								absoluteOrRelativeProjectPath.toLowerCase().replace("\\", "/"))) { 
@@ -233,6 +238,7 @@ public class HTMLCanvasToTemplateInjector {
 						processedResourceFileName = libraryPath.substring(libraryPath.replace("\\", "/").lastIndexOf("/"));
 						destinationLibraryPath = targetDestinationPath + "/" + SPLEvolutionCore.SHARED_GLOBAL_VARIABLES_LOCATION;
 						destinationLibraryFilePath = destinationLibraryPath + "/" + processedResourceFileName;
+						System.out.println("Configuring inner configuration library file: " + destinationLibraryFilePath + ". Setting this path.");
 						try {
 							Files.createDirectories(Path.of(destinationLibraryPath));
 							Files.copy(Path.of(absoluteOrRelativeProjectPath), Path.of(destinationLibraryFilePath));

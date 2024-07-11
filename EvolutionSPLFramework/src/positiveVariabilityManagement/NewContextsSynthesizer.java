@@ -419,6 +419,10 @@ public class NewContextsSynthesizer {
 		// synthesis of selected constructs across selected variation points
 		List<VariationPointsContentInjection> variationPointsContentInjections = this.selectionOfConstructsAcrossSelectedVariationPointsStrategy.
 				aggregateAllPossibleInjections(functionalityOnVarPointsToPossibilitiesMap, this.exportAssetPlanner);
+		if (variationPointsContentInjections.size() > SPLEvolutionCore.MAX_SPL_INSTANCES_TO_DERIVE) {
+			variationPointsContentInjections = variationPointsContentInjections.subList(0, SPLEvolutionCore.MAX_SPL_INSTANCES_TO_DERIVE);
+		}
+
 		VariationPointConjunctor variationPointConjunctor;
 		ExportLocationAggregation associatedAggregatedLocationExports;
 		SynthesizedContent synthesizedContent;

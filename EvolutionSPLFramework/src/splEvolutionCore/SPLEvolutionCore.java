@@ -350,4 +350,14 @@ public interface SPLEvolutionCore {
 	 * Path to stored global variables for each evolved SPL/product/application
 	 */
 	public final static String SHARED_GLOBAL_VARIABLES_LOCATION = "lib/vars";
+	
+	/**
+	 * Restriction to maximal derived SPLs during evolution - obeyed only in special cases
+	 */
+	public final static int MAX_SPL_INSTANCES_TO_DERIVE = 3;
+
+	/**
+	 * The list of functions that cannot be instantiated into code fragment
+	 */
+	public final static List<String> FORBIDDEN_FUNCTIONS_IN_PROCESSED_SPLS = List.of("popData()", "harvestStackData()");
 }

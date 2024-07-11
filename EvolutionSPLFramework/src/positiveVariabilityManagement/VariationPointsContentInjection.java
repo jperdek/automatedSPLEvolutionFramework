@@ -72,8 +72,12 @@ public class VariationPointsContentInjection {
 		if (this.exportAssetPlanner.canUseAsset(codeFragment.getCodeAst().toJSONString())) {
 			this.lastUsedCodeFragment = codeFragment;
 			this.contentsOfVariationPointsMap.put(variationPointMarkerName, codeFragment);
+			System.out.println("Code fragment has been added into assets.............................................." + codeFragment.getCode());
+			System.out.println("....... Dependencies" + codeFragment.getImportDependenciesAsCode());
 			return true;
 		}
+		System.out.println("Code fragment has not been added into assets.............................................." + codeFragment.getCode());
+		System.out.println("....... Dependencies" + codeFragment.getImportDependenciesAsCode());
 		return false;
 	}
 	

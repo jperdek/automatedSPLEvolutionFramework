@@ -153,13 +153,15 @@ public class EvolutionIterationsPipeline {
 				inputPaths = candidateForPopulationSelector.getPathsToEachSPLProjectCandidateFromPopulation(
 						numberEvolvedCandidatesFromLastIteration, 
 						pathToEvolvedSPLProjectsDirectory, strategySPLNextEvolutionIterationCandidateSelection);
-				System.out.println("Input Paths number: " + inputPaths.size());
+				System.out.println("EVOLUTION ITERATION: " + customizedEvolutionConfiguration.getIteration() + " Input Paths number: " + inputPaths.size());
 				for (String inputPath: inputPaths) {
 					pathToScriptInputFilePath = inputPath + evolutionConfiguration.getCurrentEvolvedScriptRelativePath();
 					System.out.println("Input Path: " + pathToScriptInputFilePath);
 					if (DebugInformation.PROCESS_STEP_INFORMATION) { customizedEvolutionConfiguration.printCurrentConfiguration(); }
 					evolutionIteration.runEvolutioIteration(pathToScriptInputFilePath, 
 							customizedEvolutionConfiguration, evolutionCoreSettings, exportAssetPlanner);
+					//ADAPTATIONS ARE MISSING!!!!
+					
 				}
 			}
 

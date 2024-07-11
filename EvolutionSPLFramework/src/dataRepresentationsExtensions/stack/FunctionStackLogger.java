@@ -159,6 +159,46 @@ public class FunctionStackLogger {
 	}
 
 	/**
+	 * Checks if stack is already inserted/included
+	 * -the search is performed only on the top of AST of final product script
+	 * 
+	 * @param astRoot - the root of the base updated AST of final product script
+	 * @return true if stack is already inserted/included otherwise false
+	 */
+	public boolean verifyIfStackIsAlreadyPushed(JSONObject astRoot) {
+		boolean hasPushFunction = false, hasPopFunction = false, hasStackStub = false, hasInitialGraphRoot = false;
+		JSONArray stackStubStatements = (JSONArray) astRoot.get("statements");
+		JSONObject statementJSON, variableDeclarationJSON;
+		JSONArray variableDeclarations;
+		String functionName, variableName;
+		for (Object statementObject: stackStubStatements) {
+			statementJSON = (JSONObject) statementObject;
+			if (statementJSON.containsKey("name") && statementJSON.containsKey("body")) {
+				functionName = (String) ((JSONObject) statementJSON.get("name")).get("escapedText");
+				if (functionName.equals("pushData")) {
+					hasPushFunction = true;
+				} else if(functionName.equals("popData")) {
+					hasPopFunction = true;
+				}
+			} else if(statementJSON.containsKey("declarationList")) {
+				variableDeclarations = (JSONArray) ((JSONObject) statementJSON.get("declarationList")).get("declarations");
+				if (variableDeclarations != null) {
+					for (Object declarationObject: variableDeclarations) {
+						variableDeclarationJSON = (JSONObject) declarationObject;
+						variableName = (String) ((JSONObject) variableDeclarationJSON.get("name")).get("escapedText");
+						if (variableName.equals("stackStub")) {
+							hasStackStub = true;
+						} else if(variableName.equals("initialGraphRoot")) {
+							hasInitialGraphRoot = true;
+						}
+					}
+				}
+			}
+		}
+		return hasPushFunction && hasPopFunction && hasStackStub && hasInitialGraphRoot;
+	}
+	
+	/**
 	 * Initializes the stack stub on base evolved AST of particular derived product
 	 * -helper functionality to extract deeply nested data is optionally inserted according to configuration
 	 * 

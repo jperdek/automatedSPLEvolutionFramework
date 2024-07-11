@@ -22,6 +22,49 @@ export function drawCirclePrevCoords(context: CanvasRenderingContext2D, radius: 
     }
 }
 
+@DecoratorTypesService.wholeBlockMethod({"drawCircleFromPreviousCoords": "true"})
+export function drawCover1(context: CanvasRenderingContext2D, radius: number) {
+    if (context.currentX !== undefined && context.currentY !== undefined) {
+        context.fillStyle = "rgba(300, 250, 150, .9)";
+		let x1 = context.currentX;
+		let y1 = context.currentY;
+		let x2 = x1 - 2*radius;
+		let y2 = y1 - 2*radius;
+        context.beginPath();
+        context.moveTo(x1, y1 - radius);
+		context.lineTo(x2, y2 - radius);
+		context.lineTo(x2 + radius, y2);
+		context.lineTo(x2, y2 + radius);
+		context.lineTo(x1, y1 + radius);
+		context.lineTo(x1 - radius, y1 - radius);
+		context.lineTo(x1, y1 - radius);
+        context.closePath();
+        context.fill();
+    }
+}
+
+@DecoratorTypesService.wholeBlockMethod({"drawCircleFromPreviousCoords": "true"})
+export function drawCover2(context: CanvasRenderingContext2D, radius: number) {
+    if (context.currentX !== undefined && context.currentY !== undefined) {
+        context.fillStyle = "rgba(300, 250, 150, .9)";
+		let x1 = context.currentX;
+		let y1 = context.currentY;
+		let x2 = x1 + 2*radius;
+		let y2 = y1 + 2*radius;
+        context.beginPath();
+       	context.moveTo(x1, y1);
+		context.lineTo(x1, y1 - radius);
+		context.lineTo(x2, y2 + radius);
+		context.lineTo(x2, y2);
+		context.lineTo(x1, y1 + radius);
+		context.lineTo(x2, y2 - radius);
+		context.lineTo(x1, y1);
+		
+        context.closePath();
+        context.fill();
+    }
+}
+
 /*
 	CIRCLE OBJECT - definition
 	

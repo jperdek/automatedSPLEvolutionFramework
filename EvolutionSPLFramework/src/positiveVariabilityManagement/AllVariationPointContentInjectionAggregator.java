@@ -120,6 +120,11 @@ public class AllVariationPointContentInjectionAggregator implements SelectionOfC
 			helper = harvestedContentMarkerCapacities;
 			harvestedContentMarkerCapacities = harvestedContentMarkerCapacities2;
 			harvestedContentMarkerCapacities2 = helper;
+			
+			if (SPLEvolutionCore.MAX_SPL_INSTANCES_TO_DERIVE < harvestedContentMarkerCapacitiesAll.size()) {
+				System.out.println("Maximal number of instances is reached.");
+				break;
+			}
 		}
 		if(DebugInformation.PROCESS_STEP_INFORMATION) {
 			System.out.println("..........." + harvestedContentMarkerCapacitiesAll.size());
