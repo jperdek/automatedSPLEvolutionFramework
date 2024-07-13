@@ -354,7 +354,7 @@ public interface SPLEvolutionCore {
 	/**
 	 * Restriction to maximal derived SPLs during evolution - obeyed only in special cases
 	 */
-	public final static int MAX_SPL_INSTANCES_TO_DERIVE = 3;
+	public final static int MAX_SPL_INSTANCES_TO_DERIVE = 2;
 
 	/**
 	 * The list of functions that cannot be instantiated into code fragment

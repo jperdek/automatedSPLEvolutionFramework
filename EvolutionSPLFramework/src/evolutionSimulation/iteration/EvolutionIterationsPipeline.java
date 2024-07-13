@@ -161,20 +161,21 @@ public class EvolutionIterationsPipeline {
 					evolutionIteration.runEvolutioIteration(pathToScriptInputFilePath, 
 							customizedEvolutionConfiguration, evolutionCoreSettings, exportAssetPlanner);
 					//ADAPTATIONS ARE MISSING!!!!
-					
+					//evolutionCoreSettings = evolutionIteration.getAssociatedEvolutionCoreSettings();
 				}
 			}
-
 			
 			// switch to the next iteration - changing paths
-			evolutionConfiguration.setPathToEvolvedSPLProjectDirectoryFromLatestEvolution(customizedEvolutionConfiguration);
 			if (evolutionConfiguration.shouldTerminateEvolution()) { 
 				if (DebugInformation.PROCESS_STEP_INFORMATION) { System.out.println("Terminating SPL (inner-)evolution..."); }
 				break;
 			}
 			
 			if (DebugInformation.PROCESS_STEP_INFORMATION) { System.out.println("Terminating evolution iteration and beginning with iteration number: " + customizedEvolutionConfiguration.getIteration()); }
+			
+			customizedEvolutionConfiguration.incrementIteration();
 			evolutionConfiguration.updateIteration(customizedEvolutionConfiguration);
+			evolutionConfiguration.setPathToEvolvedSPLProjectDirectoryFromLatestEvolution(customizedEvolutionConfiguration);
 			customizedEvolutionConfiguration = evolutionConfiguration;
 		}
 	}

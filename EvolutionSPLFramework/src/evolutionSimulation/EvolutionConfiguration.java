@@ -553,6 +553,7 @@ public class EvolutionConfiguration {
 	 * @param globalEvolutionConfiguration - evolution configuration from previous iterations 
 	 */
 	public void setPathToEvolvedSPLProjectDirectoryFromLatestEvolution(EvolutionConfiguration globalEvolutionConfiguration) {
+		System.out.println("--------------------------------------------->  SETTINGSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
 		System.out.println(globalEvolutionConfiguration.getConcernName());
 		System.out.println(this.concernName);
 		if (this.concernName != null) {
@@ -563,9 +564,12 @@ public class EvolutionConfiguration {
 							globalEvolutionConfiguration.getPathToEvolvedSPLProjectDirectory()); 
 		}
 		if (globalEvolutionConfiguration.getPathToEvolvedSPLProjectDirectory() != null) {
+			System.out.println("Unknown path.....................................");
 			this.inputFilePath = this.pathToEvolvedSPLProjectDirectory = globalEvolutionConfiguration.getPathToEvolvedSPLProjectDirectory();
 		} else {
-			System.out.println("Path to directory from previous evolution iteration is not set!");
+			this.inputFilePath = this.pathToEvolvedSPLProjectDirectory = 
+					globalEvolutionConfiguration.getOutputFilePathToDirectoryUsedInCurrentEvolution();
+			System.out.println("Already set input file path: " + this.inputFilePath);
 		}
 	}
 	

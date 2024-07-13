@@ -220,6 +220,5 @@ public class EvolutionIteration {
 		evolutionCoreStrategy = evolutionCoreSettings.getEvolutionCoreStrategy();
 		evolutionCoreStrategy.evolve(highlightedAst, harvestedVariationPoints, 
 			availableExportUnits, evolutionCoreSettings, evolutionConfiguration, exportAssetPlanner);
-		evolutionConfiguration.incrementIteration();
 	}
 }

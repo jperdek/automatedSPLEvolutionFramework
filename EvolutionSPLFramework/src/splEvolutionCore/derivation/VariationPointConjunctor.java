@@ -288,7 +288,7 @@ public class VariationPointConjunctor {
 		
 		String destinationProjectPath = evolutionConfiguration.getOutputFilePath(projectId);
 		this.createDirectoriesOnGivenPathIfAreNotExist(destinationProjectPath);
-		ProjectCopier.copyExistingProject(sourceProjectPath, destinationProjectPath, true);
+		ProjectCopier.copyExistingProject(sourceProjectPath, destinationProjectPath, true, false);
 	}
 	
 	/**
