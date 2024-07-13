@@ -139,10 +139,10 @@ public class SPLCandidateLoadingMechanism {
 		    		}
 		    	}
 		    } 
-		   
+		    directoryListing = dir.listFiles();
 	    	for (File childFile: directoryListing) {
 		    	vpDataAbsolutePath = childFile.getAbsolutePath();
-		    	if (!childFile.isDirectory()) {
+		    	if (!childFile.isDirectory() && vpDataAbsolutePath.contains(SPLEvolutionCore.VARIATION_POINTS_DATA_NAME_ID_ENDING)) {
 		    		this.loadAndParseSPLCandidate(childFile, childFile.getAbsolutePath(), variationPointsDataAggregations, directoryListing);
 		    	}
 		    }
@@ -182,11 +182,11 @@ public class SPLCandidateLoadingMechanism {
 		    	pathAndVersion = vpDataAbsolutePath2.split("_XXX_");
 		    	vpDataAbsolutePath2ToCompare = pathAndVersion[0];
 		    	if (pathAndVersion.length > 1) { vpDataAbsolutePath2ToCompare = vpDataAbsolutePath2ToCompare + "_XXX_" + pathAndVersion[1]; }
+		    	
 		    	System.out.println(pathAndVersion.length);
 		    	System.out.println("IN: " + vpDataAbsolutePath2 + " for comparison is used: " + vpDataAbsolutePath2ToCompare);
 		    	if (!vpDataAbsolutePath.equals(vpDataAbsolutePath2ToCompare) && vpDataAbsolutePath.contains(vpDataAbsolutePath2ToCompare)) {
 		    		insertedPath = vpDataAbsolutePath2;
-		    		if (pathAndVersion.length > 1) { insertedPath = insertedPath + "_XXX_" + pathAndVersion[1]; }
 		    		System.out.println("INSERTED PATH: " + insertedPath.replace("//", "/"));
 		    		this.vpDataFileNameToProjectPath.put(fileName, insertedPath.replace("//", "/"));
 		    		break;
