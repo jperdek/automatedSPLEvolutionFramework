@@ -11,7 +11,9 @@ import codeContext.processors.NotFoundVariableDeclaration;
 import codeContext.processors.export.exportedFileUnits.FileExportUnitsToMerge;
 import codeContext.processors.export.exportedFileUnits.FileExportsUnits;
 import dividedAstExport.InvalidSystemVariationPointMarkerException;
+import divisioner.Divisioner;
 import divisioner.VariationPointDivisionConfiguration;
+import divisioner.VariationPointDivisioning;
 import evolutionSimulation.EvolutionConfiguration;
 import evolutionSimulation.orchestrationOfEvolutionIterations.SPLCandidateSelectionStrategies.SPLNextEvolutionIterationCandidateSelectionStrategy;
 import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.ExportAssetPlanner;
@@ -199,7 +201,7 @@ public class EvolutionIteration {
 		
 		evolutionConfiguration.setPathToScriptInputFile(pathToScriptInputFilePath);
 		EvolutionCoreStrategies evolutionCoreStrategy;
-		VariationPointDivisionConfiguration variationPointDivisionConfiguration = evolutionCoreSettings.getVariationPointDivisionConfiguration();
+		VariationPointDivisioning variationPointDivisioning = evolutionCoreSettings.getVariationPointDivisioning();
 		//variationPointDivisionConfiguration.divisionAndGetHighlightedAst(inputFilePath, fileOutputAstPath, fileOutputVariationPointsPath);
 		String fileContent = PostRequester.loadFileContent(pathToScriptInputFilePath);
 		if (SPLEvolutionCore.CLEAR_COMMENTS_DURING_SPL_EVOLUTION) {
@@ -208,9 +210,9 @@ public class EvolutionIteration {
 		WrappedTypeScriptContentInVariable wrappedTypeScriptContentInVariable = new WrappedTypeScriptContentInVariable(fileContent);
 		
 		JSONObject astTreeRoot = ASTConverterClient.convertFromCodeToASTJSON(wrappedTypeScriptContentInVariable.getScript());
-		JSONObject highlightedAst = variationPointDivisionConfiguration.divisionAndGetHighlightedAst(astTreeRoot, pathToScriptInputFilePath);
+		JSONObject highlightedAst = variationPointDivisioning.divisionAndGetHighlightedAst(astTreeRoot, pathToScriptInputFilePath);
 		
-		JSONArray harvestedVariationPoints = variationPointDivisionConfiguration.getVariationPointsData(highlightedAst);
+		JSONArray harvestedVariationPoints = variationPointDivisioning.getVariationPointsData(highlightedAst);
 		
 		FileExportsUnits availableExportUnits = FileExportUnitsToMerge.prepareDefaultFileExportUnitsToMerge(
 			evolutionConfiguration.getSelectedExportedContentPaths(),

@@ -35,6 +35,7 @@ import splEvolutionCore.SPLEvolutionCore.ParameterMatchingStrategyStrategies;
 import splEvolutionCore.SPLEvolutionCore.SyntetizeConstructsOptions;
 import splEvolutionCore.SPLEvolutionCore.VariationPointDivisionConfigurationStrategies;
 import divisioner.VariationPointDivisionConfiguration;
+import divisioner.VariationPointDivisioning;
 import divisioner.divisionStrategies.RecallStrategy;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +61,7 @@ public class EvolutionCoreSettings {
 	private FeatureConstructsSelectionStrategy featureConstructsSelectionStrategy;
 	private CodeIncrementGranularityManagementStrategy codeIncrementGranularityManagementStrategy;
 	private SelectionOfConstructsAcrossSelectedVariationPointsStrategies selectionOfConstructsAcrossSelectedVariationPointsStrategies;
-	private VariationPointDivisionConfiguration variationPointDivisionConfiguration;
+	private VariationPointDivisioning variationPointDivisioning;
 	private EvolutionCoreStrategies evolutionCoreStrategy;
 	
 	private boolean notLogObjects = false;
@@ -83,7 +84,7 @@ public class EvolutionCoreSettings {
 		this.featureConstructsSelectionStrategy = this.createSelectedFeatureConstructsSelectionStrategy(
 				SyntetizeConstructsOptions.TOPOLOGICALLY_DIVERSE_SELECTED);
 		this.codeIncrementGranularityManagementStrategy = this.createSelectedCodeGranularityManagementStrategy();
-		this.variationPointDivisionConfiguration = this.createVariationPointDivisionConfiguration();
+		this.variationPointDivisioning = this.createVariationPointDivisioning();
 		this.selectionOfConstructsAcrossSelectedVariationPointsStrategies = 
 				this.createSelectionOfConstructsAcrossSelectedVariationPointsStrategies();
 	}
@@ -128,7 +129,7 @@ public class EvolutionCoreSettings {
 			FeatureConstructsSelectionStrategy featureConstructsSelectionStrategy,
 			CodeIncrementGranularityManagementStrategy codeIncrementGranularityManagementStrategy,
 			SelectionOfConstructsAcrossSelectedVariationPointsStrategies selectionOfConstructsAcrossSelectedVariationPointsStrategies,
-			VariationPointDivisionConfiguration variationPointDivisionConfiguration) {
+			VariationPointDivisioning variationPointDivisioning) {
 		this.evolutionCoreStrategy = evolutionCoreStrategy;
 		this.positiveVariabilityCreatorStrategy = positiveVariabilityCreatorStrategy;
 		this.callsInstantiationFromTemplateStrategy = callsInstantiationFromTemplateStrategy;
@@ -140,7 +141,7 @@ public class EvolutionCoreSettings {
 		this.featureSelectionStrategy = featureSelectionStrategy;
 		this.featureConstructsSelectionStrategy = featureConstructsSelectionStrategy;
 		this.codeIncrementGranularityManagementStrategy = codeIncrementGranularityManagementStrategy;
-		this.variationPointDivisionConfiguration = variationPointDivisionConfiguration;
+		this.variationPointDivisioning = variationPointDivisioning;
 		this.selectionOfConstructsAcrossSelectedVariationPointsStrategies = 
 				selectionOfConstructsAcrossSelectedVariationPointsStrategies;
 	}
@@ -159,17 +160,17 @@ public class EvolutionCoreSettings {
 	
 	/**
 	 * Instantiates strategy to manage the divisions into positive and negative variability in the 
-	 * whole evolution according to to settings (of variables) from SPLEvolutionCore 
+	 * whole evolution according to to settings (of variables) from SPLEvolutionCore in wrapped manager entity
 	 *  
 	 * @return strategy to manage the divisions into positive and negative variability in the 
-	 * whole evolution according to to settings (of variables) from SPLEvolutionCore 
+	 * whole evolution according to to settings (of variables) from SPLEvolutionCore in wrapped manager entity
 	 */
-	private static VariationPointDivisionConfiguration createVariationPointDivisionConfiguration() {
+	private static VariationPointDivisioning createVariationPointDivisioning() {
 		if (SPLEvolutionCore.SELECTED_VARIATION_POINT_DICISION_CONFIGURATION_STRATEGY ==
 				VariationPointDivisionConfigurationStrategies.RECALL_DIVISIONING) {
-			return new RecallStrategy();
+			return new VariationPointDivisioning(new RecallStrategy());
 		}
-		return new RecallStrategy();
+		return new VariationPointDivisioning(new RecallStrategy());
 	}
 	
 	/**
@@ -346,13 +347,16 @@ public class EvolutionCoreSettings {
 	 * 
 	 * @return strategy to manage given evolution iteration
 	 */
-	public EvolutionCoreStrategies getEvolutionCoreStrategy() {
-		return this.evolutionCoreStrategy;
-	}
+	public EvolutionCoreStrategies getEvolutionCoreStrategy() { return this.evolutionCoreStrategy; }
 	
-	public VariationPointDivisionConfiguration getVariationPointDivisionConfiguration() {
-		return this.variationPointDivisionConfiguration;
-	}
+	/**
+	 * Returns prepared strategy to manage the divisions into positive and negative variability in the 
+	 * whole evolution according to to settings (of variables) from SPLEvolutionCore in wrapped manager entity
+	 *  
+	 * @return strategy to manage the divisions into positive and negative variability in the 
+	 * whole evolution according to to settings (of variables) from SPLEvolutionCore in wrapped manager entity
+	 */
+	public VariationPointDivisioning getVariationPointDivisioning() { return this.variationPointDivisioning; }
 	
 	public FeatureConstructsSelectionStrategy getFeatureConstructSelectionStrategy() {
 		return this.featureConstructsSelectionStrategy;

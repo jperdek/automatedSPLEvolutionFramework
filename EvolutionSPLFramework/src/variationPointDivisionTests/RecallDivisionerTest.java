@@ -3,6 +3,10 @@ package variationPointDivisionTests;
 import java.io.IOException;
 import codeContext.processors.NotFoundVariableDeclaration;
 import dividedAstExport.InvalidSystemVariationPointMarkerException;
+import divisioner.Divisioner;
+import divisioner.DivisioningInterface;
+import divisioner.VariationPointDivisionConfiguration;
+import divisioner.VariationPointDivisioning;
 import divisioner.divisionStrategies.RecallStrategy;
 import evolutionSimulation.productAssetsInitialization.SharedConfiguration;
 import variationPointsVisualization.DifferentAnnotationTypesOnTheSameVariationPoint;
@@ -35,6 +39,7 @@ public class RecallDivisionerTest {
 		String filePath = SharedConfiguration.PROJECT_PATH + "\\src\\testFiles\\platnoJSIndirrectAllTyped.js";
 		String fileOutputAstPath = SharedConfiguration.PROJECT_PATH + "\\output\\markedVariationPoints.json";
 		String fileOutputVariationPointsPath = SharedConfiguration.PROJECT_PATH + "\\output\\harvestedVariationPoints.json";
-		new RecallStrategy().division(filePath, fileOutputAstPath, fileOutputVariationPointsPath);
+		VariationPointDivisioning variationPointDivisioning = new VariationPointDivisioning();
+		variationPointDivisioning.division(filePath, fileOutputAstPath, fileOutputVariationPointsPath);
 	}
 }

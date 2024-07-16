@@ -11,6 +11,7 @@ import codeContext.processors.NotFoundVariableDeclaration;
 import dividedAstExport.InvalidSystemVariationPointMarkerException;
 import divisioner.Divisioner;
 import divisioner.VariationPointDivisionConfiguration;
+import divisioner.VariationPointDivisioning;
 import evolutionSimulation.iteration.WrappedTypeScriptContentInVariable;
 import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.ExportAssetPlanner;
 import variationPointsVisualization.DifferentAnnotationTypesOnTheSameVariationPoint;
@@ -49,18 +50,17 @@ public class FileExportUnitsToMerge {
 		String fileContent = PostRequester.loadFileContent(inputCodePathForFile);
 		if (fileContent.equals("") || fileContent == null) { return; }
 		WrappedTypeScriptContentInVariable wrappedTypeScriptContentInVariable = new WrappedTypeScriptContentInVariable(fileContent);
-		Divisioner divisionerForFileToMerge = new Divisioner();
-		VariationPointDivisionConfiguration divisionStrategyForFile = divisionerForFileToMerge.getDivisionStrategy();
+		VariationPointDivisioning variationPointDivisioning = new VariationPointDivisioning();
 		
 		String fileName = inputCodePathForFile.replace(extensionBeforeName, "");
 		fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
 
-		JSONObject astRoot = divisionStrategyForFile.divisionAndGetHighlightedAst(
-				fileName, wrappedTypeScriptContentInVariable.getScript(), divisionerForFileToMerge);
+		JSONObject astRoot = variationPointDivisioning.divisionAndGetHighlightedAst(
+				fileName, wrappedTypeScriptContentInVariable.getScript());
 
-		FileExportUnit fileExportUnitForFile = FileExportUnit.loadFileExportUnit(divisionerForFileToMerge, exportAssetPlanner);
+		codeContextForFile = variationPointDivisioning.getCodeContextFromDivision(); 
+		FileExportUnit fileExportUnitForFile = FileExportUnit.loadFileExportUnit(codeContextForFile, exportAssetPlanner);
 
-		codeContextForFile = divisionerForFileToMerge.getCodeContextFromDivision(); 
 		fileExportUnitForFile.harvestExports(astRoot, codeContextForFile);
 		fileExportUnits.addFileContextMapping(codeContextForFile.getFileName(), fileExportUnitForFile);
 	}
@@ -85,17 +85,14 @@ public class FileExportUnitsToMerge {
 			String extensionBeforeName, FileExportsUnits fileExportUnits, ExportAssetPlanner exportAssetPlanner) throws NotFoundVariableDeclaration, 
 				IOException, InterruptedException, InvalidSystemVariationPointMarkerException, 
 				DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation {
-		CodeContext codeContextForFile;
-		Divisioner divisionerForFileToMerge = new Divisioner();
-		VariationPointDivisionConfiguration divisionStrategyForFile = divisionerForFileToMerge.getDivisionStrategy();
+		VariationPointDivisioning variationPointDivisioning = new VariationPointDivisioning();
 		
 		fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
-		JSONObject astRoot = divisionStrategyForFile.divisionAndGetHighlightedAst(
-				fileName, fileContent, divisionerForFileToMerge);
+		JSONObject astRoot = variationPointDivisioning.divisionAndGetHighlightedAst(fileName, fileContent);
+		CodeContext codeContextForFile = variationPointDivisioning.getCodeContextFromDivision();
 
-		FileExportUnit fileExportUnitForFile = FileExportUnit.loadFileExportUnit(divisionerForFileToMerge, exportAssetPlanner);
+		FileExportUnit fileExportUnitForFile = FileExportUnit.loadFileExportUnit(codeContextForFile, exportAssetPlanner);
 
-		codeContextForFile = divisionerForFileToMerge.getCodeContextFromDivision(); 
 		fileExportUnitForFile.harvestExports(astRoot, codeContextForFile);
 		fileExportUnits.addFileContextMapping(codeContextForFile.getFileName(), fileExportUnitForFile);
 	}

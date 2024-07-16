@@ -26,22 +26,23 @@ import variationPointsVisualization.DuplicatedAnnotation;
  * @author Jakub Perdek
  *
  */
-public class Divisioner {
+public class Divisioner implements DivisioningInterface {
 
 	/**
-	 * The configuration to division variation points into negative and positive variability
+	 * The configuration and support to division variation points into negative and positive variability accoring to particular strategy
 	 */
-	private VariationPointDivisionConfiguration variationPointDivisionConfiguration;
+	private VariationPointsDivisioningStrategy variationPointsDivisioningStrategy;
 	
 	/**
 	 * The code context used for divisioning
 	 */
-	private CodeContext divisionerContext;
+	private CodeContext divisionerContext = null;
 	
 	/**
 	 * The functionality to optimize processing by cutting the leaves
 	 */
 	private AstLeavesCutter astLeavesCutter;
+	
 	
 	/**
 	 * Creates the instance of functionality to division AST into positive and negative variability variation points
@@ -54,17 +55,17 @@ public class Divisioner {
 	/**
 	 * Creates the instance of functionality to division AST into positive and negative variability variation points
 	 * 
-	 * @param variationPointDivisionConfiguration
+	 * @param variationPointDivisionConfiguration - implementation of strategy to division variation points
 	 */
-	public Divisioner(VariationPointDivisionConfiguration variationPointDivisionConfiguration) {
-		this.variationPointDivisionConfiguration = variationPointDivisionConfiguration;
+	public Divisioner(VariationPointsDivisioningStrategy variationPointsDivisioningStrategy) {
+		this.variationPointsDivisioningStrategy = variationPointsDivisioningStrategy;
 		this.astLeavesCutter = new AstLeavesCutter();
 	}
 	
 	/**
-	 * Returns code context that is used for divisioning
-	 *  
-	 * @return
+	 * Returns code context with hierarchical information obtained from divisioning
+	 * 
+	 * @return the code context with hierarchical information obtained from divisioning
 	 */
 	public CodeContext getCodeContextFromDivision() { return this.divisionerContext; }
 	
@@ -73,7 +74,7 @@ public class Divisioner {
 	 * 
 	 * @return used strategy for divisioning into variation points
 	 */
-	public VariationPointDivisionConfiguration getDivisionStrategy() { return this.variationPointDivisionConfiguration; }
+	public VariationPointsDivisioningStrategy getDivisionStrategy() { return this.variationPointsDivisioningStrategy; }
 
 	//public static int counter = 1;
 	/**

@@ -10,7 +10,10 @@ import org.junit.jupiter.api.Test;
 
 import codeContext.processors.NotFoundVariableDeclaration;
 import dividedAstExport.InvalidSystemVariationPointMarkerException;
+import divisioner.Divisioner;
+import divisioner.DivisioningInterface;
 import divisioner.VariationPointDivisionConfiguration;
+import divisioner.VariationPointDivisioning;
 import divisioner.divisionStrategies.RecallStrategy;
 import evolutionSimulation.productAssetsInitialization.SharedConfiguration;
 import variationPointsVisualization.AnnotationExtensionMarker;
@@ -41,7 +44,9 @@ class RecallDivisionerStrategyTest {
 	void test() throws NotFoundVariableDeclaration, IOException, InterruptedException, 
 						InvalidSystemVariationPointMarkerException, DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation {
 		String filePath = SharedConfiguration.PROJECT_PATH + "\\src\\testFiles\\platnoJSIndirrectAll.js";
-		JSONArray harvestedVariationPoints = new RecallStrategy().divisionAndGetVariationPointsData(filePath);
+		RecallStrategy recallStrategyToDivision = new RecallStrategy();
+		VariationPointDivisioning variationPointDivisioning = new VariationPointDivisioning(recallStrategyToDivision);
+		JSONArray harvestedVariationPoints = variationPointDivisioning.divisionAndGetVariationPointsData(filePath);
 		
 		JSONObject variationPoint;
 		String variationPointName, variationVPType;

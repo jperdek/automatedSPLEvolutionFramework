@@ -21,6 +21,7 @@ import splEvolutionCore.candidateSelector.valueAssignment.featureSelectionStrate
 import splEvolutionCore.candidateSelector.valueAssignment.featureSelectionStrategies.templateSelection.FeatureSelectionStrategy;
 import splEvolutionCore.candidateSelector.valueAssignment.featureSelectionStrategies.templateSelection.SelectUpToConstantConstructsAsFeatures;
 import divisioner.VariationPointDivisionConfiguration;
+import divisioner.VariationPointDivisioning;
 import divisioner.divisionStrategies.RecallStrategy;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +62,7 @@ public class EvolutionConfigurations {
 		CodeIncrementGranularityManagementStrategy codeIncrementGranularityManagementStrategy = 
 				new QuantityBasedGranularityManagementStrategy(SPLEvolutionCore.NUMBER_LINES_TO_INTRODUCE_METHOD, 
 						SPLEvolutionCore.NUMBER_METHODS_TO_INTRODUCE_CLASS);
-		VariationPointDivisionConfiguration variationPointDivisionConfiguration = new RecallStrategy();
+		VariationPointDivisioning variationPointDivisioning = new VariationPointDivisioning(new RecallStrategy());
 		SelectionOfConstructsAcrossSelectedVariationPointsStrategies selectionOfConstructsAcrossSelectedVariationPointsStrategies = 
 				new AllVariationPointContentInjectionAggregator();//new TopologicallyDiverseConstructsSelection(); 
 		EvolutionCoreSettings maximalSemanticOrientedConfiguration = new EvolutionCoreSettings(evolutionCoreStrategies,
@@ -69,7 +70,7 @@ public class EvolutionConfigurations {
 				negativeVariabilityValueAssignmentStrategies, positiveVariabilityValueAssignmentStrategies, 
 				featureSelectionStrategy, featureSelectionConstructsStrategy, 
 				codeIncrementGranularityManagementStrategy, selectionOfConstructsAcrossSelectedVariationPointsStrategies,
-				variationPointDivisionConfiguration);
+				variationPointDivisioning);
 		return maximalSemanticOrientedConfiguration;
 	}
 	

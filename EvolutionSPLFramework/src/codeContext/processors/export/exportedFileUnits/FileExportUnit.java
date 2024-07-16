@@ -92,12 +92,11 @@ public class FileExportUnit {
 	/**
 	 * Returns the entity that is responsible for divisioning the functionality into variation points
 	 * 
-	 * @param divisioner - the entity responsible for divisioning the functionality into variation points
+	 * @param extractedCodeContext - extracted code context from the divisioning process
 	 * @param exportAssetsPlanner - asset planner to configure whole evolution or its subsequence consisting of evolution iterations
 	 * @return the entity that is responsible for divisioning the functionality into variation points
 	 */
-	public static FileExportUnit loadFileExportUnit(Divisioner divisioner, ExportAssetPlanner exportAssetsPlanner) {
-		CodeContext extractedCodeContext = divisioner.getCodeContextFromDivision();
+	public static FileExportUnit loadFileExportUnit(CodeContext extractedCodeContext, ExportAssetPlanner exportAssetsPlanner) {
 		String fileName = extractedCodeContext.getFileName();
 		InnerContext baseInnerContext = extractedCodeContext.getInnerContext().getBaseContext();
 		FileExportUnit fileExportUnit = new FileExportUnit(fileName, baseInnerContext, exportAssetsPlanner);
