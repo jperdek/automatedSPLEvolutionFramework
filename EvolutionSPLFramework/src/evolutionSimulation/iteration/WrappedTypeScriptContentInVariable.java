@@ -60,7 +60,7 @@ public class WrappedTypeScriptContentInVariable {
 	public String getScript() { return this.typeScriptContent; }
 	
 	/**
-	 * Forces the unique naming of variable mainly to prevent conflict during import and transpillation in the test HTML template 
+	 * Forces the unique naming of variable mainly to prevent conflict during import and transpilation in the test HTML template 
 	 * -variable is used to store the base imported fractal rendering script written in TypeScript in string form that should be transpilled before its application inside browser
 	 * 
 	 * @param scriptContent - the original TypeScript content 
@@ -85,6 +85,23 @@ public class WrappedTypeScriptContentInVariable {
 			return finalScriptContent;
 		}
 		finalScriptContent = scriptContent.replaceFirst(previousVariableName, this.variableName);
+		return finalScriptContent;
+	}
+	
+	/**
+	 * Returns TypeScript content assigned to declared global variable that can be stored in JavaScript file
+	 * 
+	 * @param scriptContent - the TypeScript content that should be stored in declared JavaScript global variable
+	 * @return the final TypeScript content assigned to declared global variable that can be stored in JavaScript file
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public String persistTypeScriptContent(String scriptContent) throws IOException, InterruptedException {
+		UUID uuid = UUID.randomUUID();
+		String finalScriptContent = scriptContent;
+		this.variableName = this.variableName.strip() + uuid.toString().substring(0, 5).strip();
+		finalScriptContent = "var " + this.variableName + " = `" + finalScriptContent + "`";
+		this.typeScriptContent = finalScriptContent;
 		return finalScriptContent;
 	}
 	

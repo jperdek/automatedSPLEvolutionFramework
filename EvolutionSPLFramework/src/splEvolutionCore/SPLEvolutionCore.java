@@ -390,4 +390,25 @@ public interface SPLEvolutionCore {
 	 * Separates the currently available variable from the name/identifier of variation point to manage both
 	 */
 	public final static String CURRENTLY_AVAILABLE_VARIABLE_DELIMITER = "_YYY_";
+	
+	/**
+	 * Disables inject and use external variables during the evolution (has impact on available code fragments used during positive variability handling)
+	 */
+	public final static boolean DISABLE_EXTERNAL_VARIABLE_INJECTIONS = true;
+	
+	/**
+	 * Disables inject and use internally available variables during the evolution (has impact on available code fragments used during positive variability handling)
+	 */
+	public final static boolean DISABLE_INTERNAL_VARIABLE_INJECTIONS = false; 
+	
+	/**
+	 * The name of file with configuration of custom annotations used to manage variability in SPL with their declaration
+	 */
+	public final static String DECORATOR_CONFIGURATION_ANNOTATIONS_FILE_NAME = "decoratorsSPL.js";
+	
+	/**
+	 * Path to file with configuration of custom annotations used to manage variability in SPL with their declaration
+	 */
+	public final static String DECORATOR_CONFIGURATION_ANNOTATIONS_FILE_PATH = 
+			"js/" + SPLEvolutionCore.DECORATOR_CONFIGURATION_ANNOTATIONS_FILE_NAME;
 }

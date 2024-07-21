@@ -224,7 +224,7 @@ public class NewContextsSynthesizer {
 		//content preparation (into map transformation) - extracts selected constructs from each variation point and organizes them in map
 		for (PositiveVariationPointCandidateTemplates positiveVariationPointCandidateTemplate: positiveVariationPointCandidatesTemplates) {
 			actuallyProcessedVariationPointData = positiveVariationPointCandidateTemplate.getVariationPointData();
-			variationPointIDName = (String) actuallyProcessedVariationPointData.get("actuallyProcessedVariationPointData"); //"variationPointName"
+			variationPointIDName = (String) actuallyProcessedVariationPointData.get("variationPointName"); //"variationPointName"
 			
 			if (variationPointIDName != null && !functionalityOnVarPointsToPossibilitiesMap.containsKey(variationPointIDName)) {
 				variationPointContentInjection = new VariationPointContentsInjection(positiveVariationPointCandidateTemplate, new ArrayList<CodeFragment>());

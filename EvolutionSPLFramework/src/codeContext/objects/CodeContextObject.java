@@ -9,7 +9,7 @@ import java.util.Comparator;
  * @author Jakub Perdek
  *
  */
-public class CodeContextObject implements Comparator<CodeContextObject> {
+public class CodeContextObject implements Comparator<CodeContextObject>, Comparable<Object> {
 	
 	/**
 	 * The position of code context in AST 
@@ -31,7 +31,7 @@ public class CodeContextObject implements Comparator<CodeContextObject> {
 	 * 
 	 * @return the position of Code context in the application AST
 	 */
-	public long getPosition() { return position; }
+	public long getPosition() { return this.position; }
 	
 	/**
 	 * Information if this context is already reached during parsing of/walk through the application AST
@@ -50,5 +50,16 @@ public class CodeContextObject implements Comparator<CodeContextObject> {
 	 */
 	public int compare(CodeContextObject o1, CodeContextObject o2) {
 		return Math.toIntExact(o1.getPosition() - o2.getPosition());
+	}
+	
+
+	/**
+	 * Compares the positions of the two provided code contexts
+	 * 
+	 * @param o - the code context of the second object
+	 */
+	@Override
+	public int compareTo(Object o) {
+		return Math.toIntExact(((CodeContextObject) o).getPosition() - this.getPosition());
 	}
 }

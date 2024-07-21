@@ -33,12 +33,12 @@ public class ParameterInjectionPositionObservation {
 		String variationPointNameWithVariableType;
 		InjectionCandidateVariationPoint injectionCandidateVariationPoint;
 		Map<String, InjectionCandidateVariationPoint> variableTypeToInjectedVariableMap;
-		int searchPosition;
+		long searchPosition;
 		
 		for (PositiveVariationPointCandidateTemplates positiveVariationPointCandidateTemplate: positiveVariationPointCandidatesTemplates) {
 			actuallyProcessedVariationPointData = positiveVariationPointCandidateTemplate.getVariationPointData();
 			variationPointIDName = (String) actuallyProcessedVariationPointData.get("variationPointName");
-			searchPosition = (int) actuallyProcessedVariationPointData.get("startPosition");
+			searchPosition = (long) actuallyProcessedVariationPointData.get("startPosition");
 			System.out.println(actuallyProcessedVariationPointData.toString());
 			for (VariableObject processedVariable: codeContext.getActualVariables(
 					searchPosition, actualScriptVariablesToSubstituteConfiguration)) {

@@ -49,8 +49,9 @@ public class ExportLocationAggregation {
 	 */
 	public ExportLocationAggregation(String variationPointToInjectCondIdentifier) {
 		this.fileBasedLocations = new HashMap<String, ExportLocations>();
+		System.out.println("------------------------------------> Dependecy: " + variationPointToInjectCondIdentifier);
 		this.variationPointToInjectCondIdentifier = variationPointToInjectCondIdentifier;
-		if (this.variationPointToInjectCondIdentifier == null) {
+		if (this.variationPointToInjectCondIdentifier != null) {
 			this.belongToParticularVariationPoint = true;
 		}
 	}

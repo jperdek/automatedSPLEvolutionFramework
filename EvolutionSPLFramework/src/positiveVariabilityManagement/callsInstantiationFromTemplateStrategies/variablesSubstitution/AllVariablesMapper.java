@@ -141,9 +141,10 @@ public class AllVariablesMapper {
 				parameterType = parameterNamesToTypeEntry.getValue();
 				
 				nameToContextMapping = this.parameterInjectionPositionObservation.getVariableToVariationPointMappping(parameterType);
-				
-				parsedTypeOfVariableData = new ParsedTypeOfVariableDataWithVPMapping(nameToContextMapping);
-				parsedTypesMapping.put(parameterType, parsedTypeOfVariableData);
+				if (nameToContextMapping != null) {
+					parsedTypeOfVariableData = new ParsedTypeOfVariableDataWithVPMapping(nameToContextMapping);
+					parsedTypesMapping.put(parameterType, parsedTypeOfVariableData);
+				}
 			} else {
 				parsedTypeOfVariableData = parsedTypesMapping.get(parameterType);
 				parsedTypeOfVariableData.increaseOccurence();

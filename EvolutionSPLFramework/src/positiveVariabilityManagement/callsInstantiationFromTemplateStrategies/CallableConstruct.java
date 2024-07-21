@@ -6,6 +6,7 @@ import codeContext.processors.export.ExportLocationAggregation;
 import codeContext.processors.export.ExportedContext;
 import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.ExportedObjectOrAvailableVariable;
 import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.InjectionCandidateVariationPoint;
+import splEvolutionCore.SPLEvolutionCore;
 
 
 /**
@@ -95,6 +96,7 @@ public class CallableConstruct {
 	 * @param parameterExportedContext - associated exported context/dependency related to the parameter type
 	 */
 	public void addParameter(String parameterToSubstitute, ExportedContext parameterExportedContext) {
+		if (SPLEvolutionCore.DISABLE_EXTERNAL_VARIABLE_INJECTIONS) { return; }
 		this.substitutedParameters.add(parameterToSubstitute);
 		this.exportsMapping.add(parameterExportedContext);
 	}
@@ -108,6 +110,7 @@ public class CallableConstruct {
 	 * @throws AlreadyChosenVariationPointForInjectionException - exception informing about violating dependency of previously chosen another variation point where content must be injected
 	 */
 	public void addParameter(String parameterToSubstitute, InjectionCandidateVariationPoint parameterExportedContext) throws AlreadyChosenVariationPointForInjectionException {
+		if (SPLEvolutionCore.DISABLE_INTERNAL_VARIABLE_INJECTIONS) { throw new AlreadyChosenVariationPointForInjectionException("Injection of inner variables is disabled!"); }
 		this.substitutedParameters.add(parameterToSubstitute);
 		if (this.belongToParticularVariationPoint) {
 			if (!this.variationPointToInjectCondIdentifier.equals(parameterExportedContext.getVariationPointIdentifier())) {
@@ -132,12 +135,14 @@ public class CallableConstruct {
 	 */
 	public boolean addParameterWithChecking(String parameterToSubstitute, ExportedObjectOrAvailableVariable parameterExportedContext) throws AlreadyChosenVariationPointForInjectionException {
 		if (parameterExportedContext instanceof  InjectionCandidateVariationPoint) {
+			if (SPLEvolutionCore.DISABLE_INTERNAL_VARIABLE_INJECTIONS) { return false; }
 			if (!this.variationPointToInjectCondIdentifier.equals(
 					((InjectionCandidateVariationPoint) parameterExportedContext).getVariationPointIdentifier())) {
 				return false;
 			}
 			this.addParameter(parameterToSubstitute, (InjectionCandidateVariationPoint) parameterExportedContext);
 		} else {
+			if (SPLEvolutionCore.DISABLE_EXTERNAL_VARIABLE_INJECTIONS) { return true; }
 			this.addParameter(parameterToSubstitute, (ExportedContext) parameterExportedContext);
 		}
 		return true;

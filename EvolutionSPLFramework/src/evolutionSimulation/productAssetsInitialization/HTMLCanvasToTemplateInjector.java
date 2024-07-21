@@ -206,7 +206,6 @@ public class HTMLCanvasToTemplateInjector {
 
 			isLibrary = false;
 			for (String libraryPath: EvolutionSamples.getAllEvolutionSamples(null)) {
-				System.out.println("Processing possible library: " + absoluteOrRelativeProjectPath);
 				if (absoluteOrRelativeProjectPath.replace("\\", "/").toLowerCase().contains(libraryPath.toLowerCase().replace("\\", "/"))
 						|| libraryPath.toLowerCase().replace("\\", "/").contains(
 								absoluteOrRelativeProjectPath.toLowerCase().replace("\\", "/"))) {
@@ -228,7 +227,6 @@ public class HTMLCanvasToTemplateInjector {
 			}
 			
 			for (String libraryPath: EvolutionVariables.getAllEvolutionSamples(null)) {
-				System.out.println("Processing possible library: " + absoluteOrRelativeProjectPath);
 				if (absoluteOrRelativeProjectPath.replace("\\", "/").toLowerCase().contains(libraryPath.toLowerCase().replace("\\", "/"))
 						|| libraryPath.toLowerCase().replace("\\", "/").contains(
 								absoluteOrRelativeProjectPath.toLowerCase().replace("\\", "/"))) { 
@@ -317,6 +315,7 @@ public class HTMLCanvasToTemplateInjector {
 		if (CanvasBasedApplicationConfiguration.WRAP_WITH_CANTO_JS) {
 			CanvasBasedApplicationConfiguration.insertAndCopyCantoImport(resources, targetDestinationPath);
 		}
+		CustomAnnotationsAsDecoratorsImporter.injectCustomDecorators(targetDestinationPath, headersPart);
 		
 		// inserts resources - some paths inside resources can change before this line
 		for (Resource resource: resources) {

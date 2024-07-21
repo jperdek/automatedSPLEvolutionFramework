@@ -45,7 +45,7 @@ public class InjectionIntoVariationPointValidator {
 	public static void checkDependencies(String variationPointNameAssociatedToCodeFragment, String variationPointNameInnerDependency) throws AlreadyChosenVariationPointForInjectionException {
 		if (!variationPointNameAssociatedToCodeFragment.equals(variationPointNameInnerDependency)) {
 			throw new AlreadyChosenVariationPointForInjectionException("Another variation point: " + 
-					variationPointNameAssociatedToCodeFragment + " has already been chosen for injection. Occured in exported dependencies.");
+					variationPointNameAssociatedToCodeFragment + " has conflict with " + variationPointNameInnerDependency + " been chosen for injection. Occured in exported dependencies.");
 		}
 	}
 	

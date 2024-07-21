@@ -213,9 +213,16 @@ public class UsedVariables implements ExportedContextInterface, ExportedInterfac
 	 * @return all actually declared (before or at currentPosition that is provided as function parameter) variables
 	 */
 	public List<VariableObject> getAllActualVariableObject(long currentPosition) {
-		int finalLength = Arrays.binarySearch(
-				(ImportObject[]) this.usedVariableObjects.toArray(new ImportObject[0]), new CodeContextObject(currentPosition));
-		return new ArrayList<VariableObject>(this.usedVariableObjects.subList(0, finalLength));
+		System.out.println("Current position: " + currentPosition);
+		for (VariableObject vo: this.usedVariableObjects) {
+			System.out.println(vo.getExportName() + "  " + vo.getCallableStr());
+		}
+		CodeContextObject[] cco = new CodeContextObject[this.usedVariableObjects.size()];
+		cco = (CodeContextObject[]) this.usedVariableObjects.toArray(cco);
+		int finalLength = Arrays.binarySearch(cco, new CodeContextObject(currentPosition));
+		if (finalLength == -1) { finalLength = this.usedVariableObjects.size(); }
+		if (Math.abs(finalLength) >= this.usedVariableObjects.size() - 1 && this.usedVariableObjects.size() != 0) { finalLength = Math.abs(finalLength) - 1; }
+		return new ArrayList<VariableObject>(this.usedVariableObjects.subList(0, Math.abs(finalLength)));
 	}
 
 	/**

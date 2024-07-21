@@ -20,7 +20,7 @@ import codeContext.processors.export.ExportedObjectInterface;
  * @author Jakub Perdek
  *
  */
-public class VariableObject extends CodeContextObject implements Comparable<String>, ExportedContextInterface, ExportedObjectInterface, ExportedInterface {
+public class VariableObject extends CodeContextObject implements Comparable<Object>, ExportedContextInterface, ExportedObjectInterface, ExportedInterface {
 	
 	/**
 	 * The name of the variable
@@ -99,14 +99,17 @@ public class VariableObject extends CodeContextObject implements Comparable<Stri
 	/**
 	 * Compares variable name and compared variable name provided in function argument
 	 * 
-	 * @param variableName - the compared variable name
+	 * @param object - the compared variable name or base type
 	 * @return 1 if variable name and compared variable name match otherwise 0
 	 */
-	public int compareTo(String variableName) {
-		if (this.variableName.equals(variableName)) {
-			return 1;
-		}
-		return 0;
+	public int compareTo(Object object) {
+		if (object instanceof String) {
+			if (this.variableName.equals(variableName)) {
+				return 1;
+			}
+			return 0;
+		} 
+		return super.compareTo(object);
 	}
 	
 	/**
