@@ -6,6 +6,7 @@ import codeContext.ClassContext;
 import codeContext.FunctionContext;
 import codeContext.InnerContext;
 import codeContext.objects.VariableObject;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.ExportedObjectOrAvailableVariable;
 import splEvolutionCore.DebugInformation;
 
 
@@ -16,7 +17,7 @@ import splEvolutionCore.DebugInformation;
  * @author Jakub Perdek
  *
  */
-public class ExportedContext implements ExportedInterface {
+public class ExportedContext implements ExportedInterface, ExportedObjectOrAvailableVariable {
 
 	/**
 	 * Enumeration of code context types

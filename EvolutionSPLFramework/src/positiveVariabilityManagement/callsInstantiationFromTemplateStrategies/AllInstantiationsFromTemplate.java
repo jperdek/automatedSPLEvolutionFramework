@@ -12,6 +12,11 @@ import java.util.Map.Entry;
 import java.util.Queue;
 
 import positiveVariabilityManagement.UnmappedContextException;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.ActualScriptVariablesToSubstituteConfiguration;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.AllVariablesMapper;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.ExportedObjectOrAvailableVariable;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.ParsedTypeOfVariableData;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.ParsedTypeOfVariableImportedData;
 import positiveVariabilityManagement.entities.CallableConstructTemplate;
 import splEvolutionCore.DebugInformation;
 import splEvolutionCore.candidateSelector.PositiveVariationPointCandidateTemplates;
@@ -50,7 +55,9 @@ public class AllInstantiationsFromTemplate implements CallsInstantiationFromTemp
 	 */
 	public Queue<CallableConstruct> instantiateCallsFromTemplate(
 			PositiveVariationPointCandidateTemplates variationPointCandidateTemplate,
-			AllVariablesMapper allVariablesMapper) throws UnmappedContextException {
+			AllVariablesMapper allVariablesMapper) throws UnmappedContextException, AlreadyChosenVariationPointForInjectionException {
+		ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration = 
+				allVariablesMapper.getActualScriptVariablesToSubstituteConfiguration();
 		String callableConstructName, callableConstructNameWhole;
 		Queue<CallableConstruct> callableConstructs = null;
 		Queue<CallableConstruct> allCallableConstructs = new LinkedList<CallableConstruct>();
@@ -58,23 +65,22 @@ public class AllInstantiationsFromTemplate implements CallsInstantiationFromTemp
 		Set<Entry<String, String>> parameterNamesToTypeMapping;
 		ParsedTypeOfVariableData parsedTypeOfVariableData;
 
-		Map<String, ExportedContext> variableNameToExportedContextMapping;
+		Map<String, ? extends ExportedObjectOrAvailableVariable> variableNameToContextMapping;
 		Map<String, ParsedTypeOfVariableData> parameterInformation; //type, associatedData
 		for (CallableConstructTemplate callableConstructTemplate: variationPointCandidateTemplate.getCallableConstructTemplates()) {
 			callableConstructNameWhole = callableConstructTemplate.getCallableTemplateForm();
 			
 			callableConstructName = callableConstructNameWhole.substring(0, callableConstructNameWhole.indexOf('('));
-			parameterInformation = allVariablesMapper.findParameterInformation(callableConstructTemplate);
+			parameterInformation = allVariablesMapper.findExternalScriptsParameterInformation(callableConstructTemplate);
 			parameterNamesToTypeMapping = callableConstructTemplate.getParameterNamesToTypeMappingEntries();
 			callableConstructs = null;
 
 			for (Entry<String, String> parameterEntry: parameterNamesToTypeMapping) { //for each [variable name, variable type]
 				parameterType = parameterEntry.getValue();
 				parsedTypeOfVariableData = parameterInformation.get(parameterType);
-				variableNameToExportedContextMapping = parsedTypeOfVariableData.getNameToContextMapping();
+				variableNameToContextMapping = parsedTypeOfVariableData.getNameToContextMapping();
 				callableConstructs = this.assignParametersForNewVariable(callableConstructName,
-						callableConstructNameWhole, variableNameToExportedContextMapping);
-		
+						callableConstructNameWhole, variableNameToContextMapping);
 			}
 			if (!callableConstructs.isEmpty()) {
 				allCallableConstructs.addAll(callableConstructs); 
@@ -96,16 +102,17 @@ public class AllInstantiationsFromTemplate implements CallsInstantiationFromTemp
 	 * @param callableConstructNameWhole - the template of callable functionality with parameters or arguments (the call with unsubstituted parameters)
 	 * @param variableNameToExportedContextMapping - the mapping of variable names to exported contexts
 	 * @return the queue with instantiated callable constructs
+	 * @throws AlreadyChosenVariationPointForInjectionException 
 	 */
 	private Queue<CallableConstruct> assignParametersForNewVariable(String callableConstructName, String callableConstructNameWhole, 
-			Map<String, ExportedContext> variableNameToExportedContextMapping) {
+			Map<String, ? extends ExportedObjectOrAvailableVariable> variableNameToExportedContextMapping) throws AlreadyChosenVariationPointForInjectionException {
 		Queue<CallableConstruct> callableConstructsOld = new LinkedList<CallableConstruct>();
 		callableConstructsOld.add(new CallableConstruct(callableConstructName));
 
 		Queue<CallableConstruct> preCallableConstructsNew = new LinkedList<CallableConstruct>();
 		CallableConstruct callableConstructNew;
 		String matchedVariableName;
-		ExportedContext matchedExportedContext;
+		ExportedObjectOrAvailableVariable matchedExportedContextOrVariable;
 		
 		String variablePart;
 		String originalParameters[] = callableConstructNameWhole.split(
@@ -116,14 +123,15 @@ public class AllInstantiationsFromTemplate implements CallsInstantiationFromTemp
 		
 			// SIMILARITY MATCHING
 			preCallableConstructsNew = new LinkedList<CallableConstruct>();
-			for (Entry<String, ExportedContext> variableNameToExportedContext: variableNameToExportedContextMapping.entrySet()) {
+			for (Entry<String, ? extends ExportedObjectOrAvailableVariable> variableNameToExportedContext: variableNameToExportedContextMapping.entrySet()) {
 				matchedVariableName = variableNameToExportedContext.getKey();
-				matchedExportedContext = variableNameToExportedContext.getValue();
+				matchedExportedContextOrVariable = variableNameToExportedContext.getValue();
 
 				for (CallableConstruct callableConstructOld: callableConstructsOld) {
 					callableConstructNew = new CallableConstruct(callableConstructOld);
-					callableConstructNew.addParameter(matchedVariableName, matchedExportedContext);
-					preCallableConstructsNew.add(callableConstructNew);
+					if (callableConstructNew.addParameterWithChecking(variablePart, matchedExportedContextOrVariable)) {
+						preCallableConstructsNew.add(callableConstructNew);
+					}
 				}
 			}
 			callableConstructsOld.clear();

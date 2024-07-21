@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import java.util.Queue;
 
 import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.ExportAssetPlanner;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.AlreadyChosenVariationPointForInjectionException;
 import positiveVariabilityManagement.fragmentManagement.model.CodeFragment;
 import splEvolutionCore.DebugInformation;
 import splEvolutionCore.SPLEvolutionCore;
@@ -38,10 +39,11 @@ public class AllVariationPointContentInjectionAggregator implements SelectionOfC
 	 * @return the list of all possible content injections where each is used for further product derivation
 	 * @throws InterruptedException 
 	 * @throws IOException 
+	 * @throws AlreadyChosenVariationPointForInjectionException 
 	 */
 	public List<VariationPointsContentInjection> aggregateAllPossibleInjections(
 			Map<String, VariationPointContentsInjection> availableFunctionalitiesToVariationPointsMap,
-			ExportAssetPlanner exportAssetPlanner) throws IOException, InterruptedException {
+			ExportAssetPlanner exportAssetPlanner) throws IOException, InterruptedException, AlreadyChosenVariationPointForInjectionException {
 		Map<VariationPointsContentInjection, String> contentInjectionToNameMap = new HashMap<VariationPointsContentInjection, String>();
 		Map<CodeFragment, Integer> codeFragmentToIndexMap = new HashMap<CodeFragment, Integer>();
 		Queue<VariationPointsContentInjection> harvestedContentMarkerCapacities = new LinkedList<VariationPointsContentInjection>();

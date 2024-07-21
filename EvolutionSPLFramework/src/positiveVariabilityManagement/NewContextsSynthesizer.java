@@ -18,6 +18,7 @@ import evolutionSimulation.iteration.AlreadyMappedVariationPointContentsInjectio
 import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.ExportAssetPlanner;
 import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.strategies.AssetMisuse;
 import evolutionSimulation.productAssetsInitialization.UnknownResourceToProcessException;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.AlreadyChosenVariationPointForInjectionException;
 import positiveVariabilityManagement.fragmentManagement.CodeIncrementGranularityManagementStrategy;
 import positiveVariabilityManagement.fragmentManagement.model.CodeFragment;
 import splEvolutionCore.DebugInformation;
@@ -134,12 +135,14 @@ public class NewContextsSynthesizer {
 		for (PositiveVariationPointCandidateTemplates selectedTemplate: selectedTemplates) {
 			positiveVariationPointConstructCandidate = selectedTemplate.getAssociatedPositiveVariabilityConstructsCandidate();
 			
-			functionalityOnVarPoints = this.selectConstructs(positiveVariationPointConstructCandidate, selectedTemplate);
+			actuallyProcessedVariationPointData = selectedTemplate.getVariationPointData();
+			variationPointIDName = (String) actuallyProcessedVariationPointData.get("variationPointName");
+			
+			functionalityOnVarPoints = this.selectConstructs(positiveVariationPointConstructCandidate, selectedTemplate, variationPointIDName);
 			if (DebugInformation.PROCESS_STEP_INFORMATION) { System.out.println("Constructs selected: " + functionalityOnVarPoints.size()); }
 			variationPointContentInjection = new VariationPointContentsInjection(selectedTemplate, functionalityOnVarPoints);
 			if (variationPointContentInjection.getCodeFragments().size() == 0) { continue; }
-			actuallyProcessedVariationPointData = selectedTemplate.getVariationPointData();
-			variationPointIDName = (String) actuallyProcessedVariationPointData.get("variationPointName");
+			
 
 			if (variationPointIDName != null && !functionalityOnVarPointsToPossibilitiesMap.containsKey(variationPointIDName)) {
 				functionalityOnVarPointsToPossibilitiesMap.put(variationPointIDName, variationPointContentInjection);
@@ -155,10 +158,11 @@ public class NewContextsSynthesizer {
 	 * 
 	 * @param positiveVariationPointConstructCandidate - the entity containing code construct candidates that can enhance existing functionality in place of actually focused variation point
 	 * @param selectedTemplate - features/positive variation points representation from which available constructs are extracted/obtained
+	 * @param selectedVariationPointToInjectContent - the selected variation point where content is intended to be injected (for injection dependency checks)
 	 * @return the list of code fragments for further selections and synthesis, which holding all decisions (selections, structural information)
 	 */
 	private List<CodeFragment> selectConstructs(PositiveVariationPointCandidate positiveVariationPointConstructCandidate, 
-			PositiveVariationPointCandidateTemplates selectedTemplate) {
+			PositiveVariationPointCandidateTemplates selectedTemplate, String selectedVariationPointToInjectContent) {
 		List<CodeFragment> associatedGranularityShapedCodeFragments = new ArrayList<CodeFragment>();
 		CodeFragment granularityShapedCodeFragment;
 		if (positiveVariationPointConstructCandidate.getPositiveVariationPointConstructs().size() == 0) { 
@@ -173,7 +177,8 @@ public class NewContextsSynthesizer {
 		// code granularity is handled in place of one variable point/positive variation point candidate template
 		for(List<Entry<String, Map<String, AssignedValue>>> selectedFeatureConstructs: positiveVariationPointConstructs) {
 			granularityShapedCodeFragment = this.codeIncrementGranularityManagementStrategy.associateConstructsTogether(
-					selectedFeatureConstructs, selectedTemplate);
+					selectedFeatureConstructs, selectedTemplate, selectedVariationPointToInjectContent);
+			if (granularityShapedCodeFragment == null) { continue; } //if dependency injection into variation point is violated
 			if (DebugInformation.SHOW_SELECTED_SYNTESIZED_CODE_CONSTRUCTS) { this.showPrintedCode(granularityShapedCodeFragment); }
 			associatedGranularityShapedCodeFragments.add(granularityShapedCodeFragment);
 		}
@@ -204,11 +209,12 @@ public class NewContextsSynthesizer {
 	 * @throws UnknownResourceToProcessException
 	 * @throws AlreadyMappedVariationPointContentsInjection
 	 * @throws AssetMisuse 
+	 * @throws AlreadyChosenVariationPointForInjectionException 
 	 */
 	public List<SynthesizedContent> selectAndSynthetizeContexts(JSONObject astRoot, 
 			List<PositiveVariationPointCandidateTemplates> positiveVariationPointCandidatesTemplates,
 			boolean processDirectly) throws IOException, InterruptedException, InvalidSystemVariationPointMarkerException,
-			VariationPointPlaceInArrayNotFound, UnknownResourceToProcessException, AlreadyMappedVariationPointContentsInjection, AssetMisuse {
+			VariationPointPlaceInArrayNotFound, UnknownResourceToProcessException, AlreadyMappedVariationPointContentsInjection, AssetMisuse, AlreadyChosenVariationPointForInjectionException {
 		Map<String, VariationPointContentsInjection> functionalityOnVarPointsToPossibilitiesMap 
 				= this.selectContexts(positiveVariationPointCandidatesTemplates);
 		VariationPointContentsInjection variationPointContentInjection;
@@ -218,7 +224,7 @@ public class NewContextsSynthesizer {
 		//content preparation (into map transformation) - extracts selected constructs from each variation point and organizes them in map
 		for (PositiveVariationPointCandidateTemplates positiveVariationPointCandidateTemplate: positiveVariationPointCandidatesTemplates) {
 			actuallyProcessedVariationPointData = positiveVariationPointCandidateTemplate.getVariationPointData();
-			variationPointIDName = (String) actuallyProcessedVariationPointData.get("actuallyProcessedVariationPointData");
+			variationPointIDName = (String) actuallyProcessedVariationPointData.get("actuallyProcessedVariationPointData"); //"variationPointName"
 			
 			if (variationPointIDName != null && !functionalityOnVarPointsToPossibilitiesMap.containsKey(variationPointIDName)) {
 				variationPointContentInjection = new VariationPointContentsInjection(positiveVariationPointCandidateTemplate, new ArrayList<CodeFragment>());
@@ -410,11 +416,12 @@ public class NewContextsSynthesizer {
 	 * @throws VariationPointPlaceInArrayNotFound
 	 * @throws UnknownResourceToProcessException
 	 * @throws AssetMisuse 
+	 * @throws AlreadyChosenVariationPointForInjectionException 
 	 */
 	public List<SynthesizedContent> synthesizeContexts(JSONObject templateAstRoot,
 			Map<String, VariationPointContentsInjection> functionalityOnVarPointsToPossibilitiesMap,
 			boolean processDirectly) throws IOException, 
-			InterruptedException, InvalidSystemVariationPointMarkerException, VariationPointPlaceInArrayNotFound, UnknownResourceToProcessException, AssetMisuse {
+			InterruptedException, InvalidSystemVariationPointMarkerException, VariationPointPlaceInArrayNotFound, UnknownResourceToProcessException, AssetMisuse, AlreadyChosenVariationPointForInjectionException {
 		
 		// synthesis of selected constructs across selected variation points
 		List<VariationPointsContentInjection> variationPointsContentInjections = this.selectionOfConstructsAcrossSelectedVariationPointsStrategy.
@@ -435,6 +442,7 @@ public class NewContextsSynthesizer {
  		for (VariationPointsContentInjection variationPointsContentInjection: variationPointsContentInjections) {
 			synthesizedContent = new SynthesizedContent(templateAstRoot, this.syntetizedContentName, this.derivationResourcesManager.getVariationPointData());
 			newApplicationAst = synthesizedContent.getReferenceToProcessedAST();
+			
 			this.updateAstTreeAccordingInformationFromVariationPoints(
 					templateAstRoot, newApplicationAst, variationPointsContentInjection);
 	

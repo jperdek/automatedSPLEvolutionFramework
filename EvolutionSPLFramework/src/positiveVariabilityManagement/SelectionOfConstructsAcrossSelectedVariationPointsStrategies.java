@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.ExportAssetPlanner;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.AlreadyChosenVariationPointForInjectionException;
 
 
 /**
@@ -23,9 +24,10 @@ public interface SelectionOfConstructsAcrossSelectedVariationPointsStrategies {
 	 * @param exportAssetPlanner - asset planning instance that provides the checking if injection can be created for particular asset
 	 * @return the list of content injection for selected variation points
 	 * @throws InterruptedException
-	 * @throws IOException 
+	 * @throws IOException
+	 * @throws AlreadyChosenVariationPointForInjectionException
 	 */
 	public List<VariationPointsContentInjection> aggregateAllPossibleInjections(
-			Map<String, VariationPointContentsInjection> availableFunctionalitiesToVariationPointsMap, 
-			ExportAssetPlanner exportAssetPlanner) throws InterruptedException, IOException;
+			Map<String, VariationPointContentsInjection> availableFunctionalitiesToVariationPointsMap,
+			ExportAssetPlanner exportAssetPlanner) throws IOException, InterruptedException, AlreadyChosenVariationPointForInjectionException;
 }

@@ -1,4 +1,6 @@
-package positiveVariabilityManagement.callsInstantiationFromTemplateStrategies;
+package positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution;
+
+import static org.junit.Assert.assertNotNull;
 
 import java.util.Map;
 import codeContext.processors.export.ExportedContext;
@@ -16,12 +18,7 @@ public class ParsedTypeOfVariableData {
 	/**
 	 * The counter of the parameters of the same type for particular template (of callable construct) or code construct
 	 */
-	private int numberParametersOfSameType = 1;
-	
-	/**
-	 * The mapping of variable/parameter name to exported context (import/export/dependency)
-	 */
-	private Map<String, ExportedContext> nameToContextMapping;
+	protected int numberParametersOfSameType = 1;
 	
 	
 	/**
@@ -30,8 +27,7 @@ public class ParsedTypeOfVariableData {
 	 * 
 	 * @param nameToContextMapping - the mapping of each variable/parameter name to exported context (import/export/dependency)
 	 */
-	public ParsedTypeOfVariableData(Map<String, ExportedContext> nameToContextMapping) {
-		this.nameToContextMapping = nameToContextMapping;
+	public ParsedTypeOfVariableData() {
 	}
 	
 	/**
@@ -47,9 +43,9 @@ public class ParsedTypeOfVariableData {
 	public int getNumberOccurences() { return this.numberParametersOfSameType; }
 	
 	/**
-	 * Returns the mapping of variable/parameter name to exported context (import/export/dependency)
+	 * Returns null or the mapping carrying exported objects or currently available variables in extensions of this simplyfied version of this class
 	 * 
-	 * @return the mapping of variable/parameter name to exported context (import/export/dependency)
+	 * @return null or the mapping carrying exported objects or currently available variables in extensions of this simplyfied version of this class
 	 */
-	public Map<String, ExportedContext> getNameToContextMapping() { return this.nameToContextMapping; }
+	public Map<String, ? extends ExportedObjectOrAvailableVariable> getNameToContextMapping() { return null;}
 }

@@ -22,6 +22,7 @@ import evolutionSimulation.productAssetsInitialization.SharedConfiguration;
 import evolutionSimulation.productAssetsInitialization.UnknownResourceToProcessException;
 import positiveVariabilityManagement.UnmappedContextException;
 import positiveVariabilityManagement.VariationPointPlaceInArrayNotFound;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.AlreadyChosenVariationPointForInjectionException;
 import positiveVariabilityManagement.entities.DuplicatedContextIdentifier;
 import splEvolutionCore.candidateSelector.AlreadyProvidedArgumentInConfigurationExpressionPlace;
 import splEvolutionCore.candidateSelector.DifferentlyAggregatedLocation;
@@ -90,13 +91,14 @@ public class CompletePositiveVariabilityFocusedEvolutionTest {
 	 * @throws UnknownResourceToProcessException
 	 * @throws AlreadyMappedVariationPointContentsInjection
 	 * @throws AssetMisuse 
+	 * @throws AlreadyChosenVariationPointForInjectionException 
 	 */
 	public static void main(String args[]) throws NotFoundVariableDeclaration, IOException, InterruptedException,
 		InvalidSystemVariationPointMarkerException, DifferentAnnotationTypesOnTheSameVariationPoint,
 		DuplicatedAnnotation, DuplicateCandidateIdentifier, AlreadyProvidedArgumentInConfigurationExpressionPlace,
 		MethodToEvaluateComplexityNotFoundException, DuplicatedContextIdentifier, UnmappedContextException,
 		DifferentlyAggregatedLocation, VariationPointPlaceInArrayNotFound, UnknownResourceToProcessException, 
-		AlreadyMappedVariationPointContentsInjection, AssetMisuse {
+		AlreadyMappedVariationPointContentsInjection, AssetMisuse, AlreadyChosenVariationPointForInjectionException {
 			CompletePositiveVariabilityFocusedEvolutionTest completeIyterativeDevelopment = new  CompletePositiveVariabilityFocusedEvolutionTest();
 			EvolutionConfiguration evolutionConfiguration = completeIyterativeDevelopment.prepareInitialConfiguration();
 			ExportAssetPlanner exportAssetPlanner = new AssetPlannerBaseStrategy(new PlanAssetOnce());

@@ -15,6 +15,7 @@ import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterations
 import evolutionSimulation.productAssetsInitialization.UnknownResourceToProcessException;
 import positiveVariabilityManagement.UnmappedContextException;
 import positiveVariabilityManagement.VariationPointPlaceInArrayNotFound;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.AlreadyChosenVariationPointForInjectionException;
 import positiveVariabilityManagement.entities.DuplicatedContextIdentifier;
 import splEvolutionCore.DebugInformation;
 import splEvolutionCore.EvolutionCoreSettings;
@@ -102,6 +103,7 @@ public class EvolutionIterationsPipeline {
 	 * @throws UnknownResourceToProcessException
 	 * @throws AlreadyMappedVariationPointContentsInjection
 	 * @throws AssetMisuse 
+	 * @throws AlreadyChosenVariationPointForInjectionException 
 	 */
 	public void runEvolutionPipeline(EvolutionConfiguration evolutionConfiguration, 
 			ExportAssetPlanner exportAssetPlanner) throws NotFoundVariableDeclaration, 
@@ -109,7 +111,7 @@ public class EvolutionIterationsPipeline {
 				DuplicatedAnnotation, DuplicateCandidateIdentifier, AlreadyProvidedArgumentInConfigurationExpressionPlace, 
 				MethodToEvaluateComplexityNotFoundException, DuplicatedContextIdentifier, UnmappedContextException,
 				DifferentlyAggregatedLocation, VariationPointPlaceInArrayNotFound, UnknownResourceToProcessException, 
-				AlreadyMappedVariationPointContentsInjection, AssetMisuse {
+				AlreadyMappedVariationPointContentsInjection, AssetMisuse, AlreadyChosenVariationPointForInjectionException {
 		Iterator<EvolutionIteration> evolutionIterationIterator = this.sequenceOfEvolutionIterations.iterator();
 		String pathToEvolvedSPLProjectsDirectory = evolutionConfiguration.getPathToEvolvedSPLProjectDirectory();
 		

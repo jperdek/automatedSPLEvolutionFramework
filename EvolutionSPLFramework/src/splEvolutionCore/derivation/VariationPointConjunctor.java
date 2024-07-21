@@ -83,7 +83,7 @@ public class VariationPointConjunctor {
 	 * @param exportedAggregations
 	 * @return
 	 */
-	private List<Resource> prepareRessourcesFromExportedAggregations(List<ExportLocationAggregation> exportedAggregations) {
+	private List<Resource> prepareResourcesFromExportedAggregations(List<ExportLocationAggregation> exportedAggregations) {
 		Resource importResource;
 		String importPath;
 		Set<String> alreadyPreparedImports = new HashSet<String>();
@@ -121,7 +121,7 @@ public class VariationPointConjunctor {
 		String targetDestinationPath = evolutionConfiguration.getOutputFilePath(projectId);
 		String templateDestinationPath = evolutionConfiguration.getTemplateConfigurationPath(null, projectId);
 		HTMLCanvasToTemplateInjector htmlCanvasToTemplateInjector = new HTMLCanvasToTemplateInjector();
-		List<Resource> usedResources = this.prepareRessourcesFromExportedAggregations(exportedAggregations);
+		List<Resource> usedResources = this.prepareResourcesFromExportedAggregations(exportedAggregations);
 		
 		if(DebugInformation.PROCESS_STEP_INFORMATION || DebugInformation.SHOW_DERIVED_PROJECT_INFORMATION) {
 			System.out.println("Final template path: " + templateDestinationPath);
@@ -243,7 +243,7 @@ public class VariationPointConjunctor {
 			
 			//String canvasElementName, templatePath;
 			System.out.println("Processed resources.");
-			usedResources = new ArrayList<Resource>(this.prepareRessourcesFromExportedAggregations(exportedAggregations));
+			usedResources = new ArrayList<Resource>(this.prepareResourcesFromExportedAggregations(exportedAggregations));
 			Resource canvasResource;
 			for (Resource initialResource: evolutionConfiguration.getInitialResources()) {
 				if (initialResource instanceof CanvasBasedResource) {
@@ -357,7 +357,7 @@ public class VariationPointConjunctor {
 	 */
 	private void updateAstAboutExportedAggregations(String projectId, EvolutionConfiguration evolutionConfiguration, 
 			List<ExportLocationAggregation> exportedAggregations) throws IOException, UnknownResourceToProcessException {
-		List<Resource> usedResources = this.prepareRessourcesFromExportedAggregations(exportedAggregations);
+		List<Resource> usedResources = this.prepareResourcesFromExportedAggregations(exportedAggregations);
 		
 	}
 	

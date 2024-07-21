@@ -1,0 +1,5 @@
+package positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution;
+
+public interface ExportedObjectOrAvailableVariable {
+
+}

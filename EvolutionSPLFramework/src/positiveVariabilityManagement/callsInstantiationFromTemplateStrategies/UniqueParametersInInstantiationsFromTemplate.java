@@ -1,6 +1,8 @@
 package positiveVariabilityManagement.callsInstantiationFromTemplateStrategies;
 
 import java.util.Queue;
+
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.AllVariablesMapper;
 import splEvolutionCore.candidateSelector.PositiveVariationPointCandidateTemplates;
 
 

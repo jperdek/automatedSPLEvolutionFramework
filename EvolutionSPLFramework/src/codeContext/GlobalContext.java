@@ -1,12 +1,17 @@
 package codeContext;
 
+import java.util.AbstractMap;
 import java.util.List;
+import java.util.Set;
+import java.util.Map.Entry;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import codeContext.objects.VariableObject;
 import codeContext.processors.export.ExportAggregator;
 import codeContext.processors.export.ExportedContextInterface;
 import codeContext.processors.export.ExportedObjectInterface;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.ActualScriptVariablesToSubstituteConfiguration;
 
 
 /**
@@ -121,6 +126,18 @@ public class GlobalContext implements ExportedContextInterface {
 		return descriptiveJSON;
 	}
 
+	/**
+	 * Returns usable variables in actual context
+	 * 
+	 * @param globalContext - global context - accessible in all places (such as variables declared as var in JavaScript)
+	 * @param variables that can be used in actual context
+	 */
+	public void getUsableVariablesInActualContext(
+			Set<Entry<String, String>> availableVariablesFromActualContext,
+			ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration, GlobalContext globalContext) {
+		this.globalVariables.getUsableVariablesInActualContext(availableVariablesFromActualContext, actualScriptVariablesToSubstituteConfiguration, globalContext);
+	}
+	
 	@Override
 	public ExportedObjectInterface findDefaultExport(Long startPosition, Long endPosition) {
 		return this.globalVariables.findDefaultExport(startPosition, endPosition);

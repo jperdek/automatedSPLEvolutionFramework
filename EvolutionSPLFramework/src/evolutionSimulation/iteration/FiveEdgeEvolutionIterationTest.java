@@ -13,6 +13,7 @@ import evolutionSimulation.productAssetsInitialization.SharedConfiguration;
 import evolutionSimulation.productAssetsInitialization.UnknownResourceToProcessException;
 import positiveVariabilityManagement.UnmappedContextException;
 import positiveVariabilityManagement.VariationPointPlaceInArrayNotFound;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.AlreadyChosenVariationPointForInjectionException;
 import positiveVariabilityManagement.entities.DuplicatedContextIdentifier;
 import splEvolutionCore.candidateSelector.AlreadyProvidedArgumentInConfigurationExpressionPlace;
 import splEvolutionCore.candidateSelector.DifferentlyAggregatedLocation;
@@ -60,13 +61,14 @@ public class FiveEdgeEvolutionIterationTest extends EvolutionIteration {
 	 * @throws UnknownResourceToProcessException
 	 * @throws AlreadyMappedVariationPointContentsInjection
 	 * @throws AssetMisuse 
+	 * @throws AlreadyChosenVariationPointForInjectionException 
 	 */
 	public static void main(String args[]) throws NotFoundVariableDeclaration, IOException, InterruptedException,
 				InvalidSystemVariationPointMarkerException, DifferentAnnotationTypesOnTheSameVariationPoint,
 				DuplicatedAnnotation, DuplicateCandidateIdentifier, AlreadyProvidedArgumentInConfigurationExpressionPlace,
 				MethodToEvaluateComplexityNotFoundException, DuplicatedContextIdentifier, UnmappedContextException,
 				DifferentlyAggregatedLocation, VariationPointPlaceInArrayNotFound, UnknownResourceToProcessException, 
-				AlreadyMappedVariationPointContentsInjection, AssetMisuse {
+				AlreadyMappedVariationPointContentsInjection, AssetMisuse, AlreadyChosenVariationPointForInjectionException {
 		String inputFilePath = EvolutionSamples.FIVE_EDGE_INPUT_PATHS.get(0);
 		String outputFilePath = SharedConfiguration.PATH_TO_EVOLUTION_DIRECTORY;
 		String currentEvolvedScriptRelativePath = "/js/platnoJS.js"; // this should be changed for each evolved project

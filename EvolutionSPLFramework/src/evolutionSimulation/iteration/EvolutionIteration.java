@@ -21,6 +21,7 @@ import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterations
 import evolutionSimulation.productAssetsInitialization.UnknownResourceToProcessException;
 import positiveVariabilityManagement.UnmappedContextException;
 import positiveVariabilityManagement.VariationPointPlaceInArrayNotFound;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.AlreadyChosenVariationPointForInjectionException;
 import positiveVariabilityManagement.entities.DuplicatedContextIdentifier;
 import splEvolutionCore.EvolutionConfigurations;
 import splEvolutionCore.EvolutionCoreSettings;
@@ -144,6 +145,7 @@ public class EvolutionIteration {
 	 * @throws UnknownResourceToProcessException
 	 * @throws AlreadyMappedVariationPointContentsInjection
 	 * @throws AssetMisuse 
+	 * @throws AlreadyChosenVariationPointForInjectionException 
 	 */
 	public void runEvolutioIteration(EvolutionConfiguration evolutionConfiguration, 
 			ExportAssetPlanner exportAssetPlanner) throws NotFoundVariableDeclaration, IOException, 
@@ -151,7 +153,7 @@ public class EvolutionIteration {
 				DuplicatedAnnotation, DuplicateCandidateIdentifier, AlreadyProvidedArgumentInConfigurationExpressionPlace, 
 				MethodToEvaluateComplexityNotFoundException, DuplicatedContextIdentifier, UnmappedContextException, 
 				DifferentlyAggregatedLocation, VariationPointPlaceInArrayNotFound, UnknownResourceToProcessException, 
-				AlreadyMappedVariationPointContentsInjection, AssetMisuse {
+				AlreadyMappedVariationPointContentsInjection, AssetMisuse, AlreadyChosenVariationPointForInjectionException {
 		if (evolutionConfiguration == null) { evolutionConfiguration = this.associatedEvolutionConfiguration; }
 		
 		String pathToScriptInputFilePath = evolutionConfiguration.getPathToScriptInputFile();
@@ -186,6 +188,7 @@ public class EvolutionIteration {
 	 * @throws UnknownResourceToProcessException
 	 * @throws AlreadyMappedVariationPointContentsInjection
 	 * @throws AssetMisuse 
+	 * @throws AlreadyChosenVariationPointForInjectionException 
 	 */
 	public void runEvolutioIteration(String pathToScriptInputFilePath, 
 			EvolutionConfiguration evolutionConfiguration, 
@@ -195,7 +198,7 @@ public class EvolutionIteration {
 				DuplicatedAnnotation, DuplicateCandidateIdentifier, AlreadyProvidedArgumentInConfigurationExpressionPlace, 
 				MethodToEvaluateComplexityNotFoundException, DuplicatedContextIdentifier, UnmappedContextException, 
 				DifferentlyAggregatedLocation, VariationPointPlaceInArrayNotFound, UnknownResourceToProcessException, 
-				AlreadyMappedVariationPointContentsInjection, AssetMisuse {
+				AlreadyMappedVariationPointContentsInjection, AssetMisuse, AlreadyChosenVariationPointForInjectionException {
 		if (evolutionConfiguration == null) { evolutionConfiguration = this.associatedEvolutionConfiguration; }
 		if (evolutionCoreSettings == null) { evolutionCoreSettings = this.associatedEvolutionCoreSettings; }
 		
@@ -221,6 +224,6 @@ public class EvolutionIteration {
 		
 		evolutionCoreStrategy = evolutionCoreSettings.getEvolutionCoreStrategy();
 		evolutionCoreStrategy.evolve(highlightedAst, harvestedVariationPoints, 
-			availableExportUnits, evolutionCoreSettings, evolutionConfiguration, exportAssetPlanner);
+			availableExportUnits, evolutionCoreSettings, evolutionConfiguration, variationPointDivisioning, exportAssetPlanner);
 	}
 }

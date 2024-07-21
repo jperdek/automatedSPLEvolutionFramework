@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import codeContext.processors.export.ExportLocationAggregation;
 import codeContext.processors.export.ExportedContext;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.ExportedObjectOrAvailableVariable;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.InjectionCandidateVariationPoint;
 
 
 /**
@@ -31,6 +33,15 @@ public class CallableConstruct {
 	 */
 	private List<ExportedContext> exportsMapping;
 	
+	/**
+	 * information if callable constructs must be necessarily injected into specific variation point if true otherwise false
+	 */
+	private boolean belongToParticularVariationPoint = false;
+	
+	/**
+	 * Identifier of variation point that should be used to inject this callable construct
+	 */
+	private String variationPointToInjectCondIdentifier = null;
 	
 	/**
 	 * Instantiates the callable construct representation with related information
@@ -60,6 +71,22 @@ public class CallableConstruct {
 		this.exportsMapping = new ArrayList<ExportedContext>(callableConstruct.getExportsMapping());
 	}
 	
+	
+	/**
+	 * Checks if this callable construct belongs to particular variation point
+	 * 
+	 * @return true if this callable construct belongs to particular variation point
+	 */
+	public boolean belongsToParticularVariationPoint() { return this.belongToParticularVariationPoint; }
+	
+	/**
+	 * Returns the variation point identifier if the callable construct has prescribed it as dependency otherwise null
+	 * - can be checked with belongsToParticularVariationPoint()
+	 * 
+	 * @return the variation point identifier if the callable construct has prescribed it as dependency otherwise null
+	 */
+	public String getVariationPointToInjectIdentifier() { return this.variationPointToInjectCondIdentifier; }
+	
 	/**
 	 * Adds parameter into the list of callable construct parameters and associated exported context related to the parameter type to the mapping of exports
 	 * -function is repeatedly called in the order of parameter chain
@@ -72,6 +99,50 @@ public class CallableConstruct {
 		this.exportsMapping.add(parameterExportedContext);
 	}
 
+	/**
+	 * Adds parameter into the list of callable construct parameters and checks with existing injection dependencies
+	 * -function is repeatedly called in the order of parameter chain
+	 * 
+	 * @param parameterToSubstitute - parameter name
+	 * @param parameterExportedContext - associated exported context/dependency related to the parameter type
+	 * @throws AlreadyChosenVariationPointForInjectionException - exception informing about violating dependency of previously chosen another variation point where content must be injected
+	 */
+	public void addParameter(String parameterToSubstitute, InjectionCandidateVariationPoint parameterExportedContext) throws AlreadyChosenVariationPointForInjectionException {
+		this.substitutedParameters.add(parameterToSubstitute);
+		if (this.belongToParticularVariationPoint) {
+			if (!this.variationPointToInjectCondIdentifier.equals(parameterExportedContext.getVariationPointIdentifier())) {
+				throw new AlreadyChosenVariationPointForInjectionException("Another variation point: " + 
+			this.variationPointToInjectCondIdentifier + " has already been chosen for injection");
+			}
+		} else {
+			this.belongToParticularVariationPoint = true;
+			this.variationPointToInjectCondIdentifier = parameterExportedContext.getVariationPointIdentifier();
+		}
+		this.exportsMapping.add(null);
+	}
+	
+	/**
+	 * Adds parameter into the list of callable construct parameters and associated exported context related to the parameter type to the mapping of exports
+	 * -function is repeatedly called in the order of parameter chain
+	 * 
+	 * @param parameterToSubstitute - parameter name
+	 * @param parameterExportedContext - associated exported context/dependency related to the parameter type
+	 * @return true if parameter is successfully applied/inserted otherwise false
+	 * @throws AlreadyChosenVariationPointForInjectionException  - exception informing about violating dependency of previously chosen another variation point where content must be injected
+	 */
+	public boolean addParameterWithChecking(String parameterToSubstitute, ExportedObjectOrAvailableVariable parameterExportedContext) throws AlreadyChosenVariationPointForInjectionException {
+		if (parameterExportedContext instanceof  InjectionCandidateVariationPoint) {
+			if (!this.variationPointToInjectCondIdentifier.equals(
+					((InjectionCandidateVariationPoint) parameterExportedContext).getVariationPointIdentifier())) {
+				return false;
+			}
+			this.addParameter(parameterToSubstitute, (InjectionCandidateVariationPoint) parameterExportedContext);
+		} else {
+			this.addParameter(parameterToSubstitute, (ExportedContext) parameterExportedContext);
+		}
+		return true;
+	}
+	
 	/**
 	 * Returns the base part of the call such as function or class name without parameters
 	 * 
@@ -117,9 +188,11 @@ public class CallableConstruct {
 	 * @return the aggregation of dependencies from exported contexts/dependencies
 	 */
 	public ExportLocationAggregation getExportedDependenciesOfFutureImports() {
-		ExportLocationAggregation pathsOfExportDependencies = new ExportLocationAggregation();
-		for (ExportedContext exportedContext: this.exportsMapping) { 
-			pathsOfExportDependencies.aggregateLocation(exportedContext.getExportedLocation());
+		ExportLocationAggregation pathsOfExportDependencies = new ExportLocationAggregation(this.variationPointToInjectCondIdentifier);
+		for (ExportedContext exportedContext: this.exportsMapping) {
+			if (exportedContext != null) {
+				pathsOfExportDependencies.aggregateLocation(exportedContext.getExportedLocation());
+			}
 		}
 		return pathsOfExportDependencies;
 	}

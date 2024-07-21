@@ -6,13 +6,15 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
-import codeContext.processors.export.ExportedContext;
 import divisioner.VariationPointDivisionConfiguration;
 
 import java.util.Map.Entry;
 import java.util.Queue;
 
 import positiveVariabilityManagement.UnmappedContextException;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.AllVariablesMapper;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.ExportedObjectOrAvailableVariable;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.ParsedTypeOfVariableData;
 import positiveVariabilityManagement.entities.CallableConstructTemplate;
 import splEvolutionCore.DebugInformation;
 import splEvolutionCore.candidateSelector.PositiveVariationPointCandidateTemplates;
@@ -43,10 +45,11 @@ public class WrapperBasedInstantiationsFromTemplate implements CallsInstantiatio
 	 * @return the queue with instantiated callable constructs
 	 * 
 	 * @throws UnmappedContextException
+	 * @throws AlreadyChosenVariationPointForInjectionException 
 	 */
 	public Queue<CallableConstruct> instantiateCallsFromTemplate(
 			PositiveVariationPointCandidateTemplates variationPointCandidateTemplate,
-			AllVariablesMapper allVariablesMapper) throws UnmappedContextException {
+			AllVariablesMapper allVariablesMapper) throws UnmappedContextException, AlreadyChosenVariationPointForInjectionException {
 		String callableConstructName, callableConstructNameWhole;
 		Queue<CallableConstruct> callableConstructs = null;
 		Queue<CallableConstruct> allCallableConstructs = new LinkedList<CallableConstruct>();
@@ -59,7 +62,8 @@ public class WrapperBasedInstantiationsFromTemplate implements CallsInstantiatio
 			callableConstructNameWhole = callableConstructTemplate.getCallableTemplateForm();
 
 			callableConstructName = callableConstructNameWhole.substring(0, callableConstructNameWhole.indexOf('('));
-			parameterInformation = allVariablesMapper.findParameterInformation(callableConstructTemplate);
+			parameterInformation = allVariablesMapper.findExternalScriptsParameterInformation(callableConstructTemplate);
+			parameterInformation.putAll(allVariablesMapper.findActualContextParameterInformation(callableConstructTemplate));
 			callableConstructs = this.assignParametersForNewVariable(callableConstructName,
 						callableConstructNameWhole, parameterInformation);
 			if (!callableConstructs.isEmpty()) { allCallableConstructs.addAll(callableConstructs); }
@@ -79,20 +83,21 @@ public class WrapperBasedInstantiationsFromTemplate implements CallsInstantiatio
 	 * @param callableConstructNameWhole - the template of callable functionality with parameters or arguments (the call with unsubstituted parameters)
 	 * @param parameterInformation - the mapping of variable names to exported contexts (variableNameToExportedContextMapping)
 	 * @return the queue with instantiated callable constructs
+	 * @throws AlreadyChosenVariationPointForInjectionException 
 	 */
 	private Queue<CallableConstruct> assignParametersForNewVariable(String callableConstructName, String callableConstructNameWhole, 
-			Map<String, ParsedTypeOfVariableData> parameterInformation) {
+			Map<String, ParsedTypeOfVariableData> parameterInformation) throws AlreadyChosenVariationPointForInjectionException {
 		Queue<CallableConstruct> callableConstructsOld = new LinkedList<CallableConstruct>();
 		callableConstructsOld.add(new CallableConstruct(callableConstructName));
 
 		Queue<CallableConstruct> preCallableConstructsNew = new LinkedList<CallableConstruct>();
 		CallableConstruct callableConstructNew;
 		String matchedVariableName;
-		ExportedContext matchedExportedContext;
+		ExportedObjectOrAvailableVariable matchedExportedContext;
 		Set<Entry<String, String>> parameterNamesToTypeMapping;
 		ParsedTypeOfVariableData parsedTypeOfVariableData;
 
-		Map<String, ExportedContext> variableNameToExportedContextMapping;
+		Map<String, ? extends ExportedObjectOrAvailableVariable> variableNameToExportedContextMapping;
 		String variablePart, variableType, variableBase, parameterType;
 		String originalParameters[] = callableConstructNameWhole.split(
 				VariationPointDivisionConfiguration.PARAMETERIZED_FORM_START.replace("[", "\\["));
@@ -107,14 +112,15 @@ public class WrapperBasedInstantiationsFromTemplate implements CallsInstantiatio
 
 			// SIMILARITY MATCHING
 			preCallableConstructsNew = new LinkedList<CallableConstruct>();
-			for (Entry<String, ExportedContext> variableNameToExportedContext: variableNameToExportedContextMapping.entrySet()) {
+			for (Entry<String, ? extends ExportedObjectOrAvailableVariable> variableNameToExportedContext: variableNameToExportedContextMapping.entrySet()) {
 				matchedVariableName = variableNameToExportedContext.getKey();
 				matchedExportedContext = variableNameToExportedContext.getValue();
 				if (matchedVariableName.contains(variablePart) || variablePart.contains(matchedVariableName)) {
 					for (CallableConstruct callableConstructOld: callableConstructsOld) {
 						callableConstructNew = new CallableConstruct(callableConstructOld);
-						callableConstructNew.addParameter(matchedVariableName, matchedExportedContext);
-						preCallableConstructsNew.add(callableConstructNew);
+						if (callableConstructNew.addParameterWithChecking(matchedVariableName, matchedExportedContext)) {
+							preCallableConstructsNew.add(callableConstructNew);
+						}
 					}
 					
 				} 

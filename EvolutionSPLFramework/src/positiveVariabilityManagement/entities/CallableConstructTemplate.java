@@ -22,6 +22,7 @@ public class CallableConstructTemplate {
 	 * Associated callable template form
 	 */
 	private String callableTemplateForm = null;
+	
 	/**
 	 * The mapping of exported name to the type of associated/processed exported object from UsedVariables object
 	 */

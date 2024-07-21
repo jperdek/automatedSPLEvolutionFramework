@@ -8,9 +8,12 @@ import java.util.Queue;
 
 import codeContext.processors.export.exportedFileUnits.FileExportsUnits;
 import positiveVariabilityManagement.UnmappedContextException;
-import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.AllVariablesMapper;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.AlreadyChosenVariationPointForInjectionException;
 import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.CallableConstruct;
 import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.CallsInstantiationFromTemplate;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.ActualScriptVariablesToSubstituteConfiguration;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.AllVariablesMapper;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.ParameterInjectionPositionObservation;
 import positiveVariabilityManagement.callsTemplateSelectionStrategies.CallsFromPositiveVariationPointCreator;
 import positiveVariabilityManagement.entities.DuplicatedContextIdentifier;
 import positiveVariabilityManagement.parameterVaribleMatchingStrategies.ParameterMatchingStrategy;
@@ -77,16 +80,20 @@ public class AssignedValueProcessForPositiveVariability extends AssignedValuePro
 	 * @param callsInstantiationFromTemplateStrategy - strategy to manage instantiation of calls from the template - the parameterized call of function/constructor
 	 * @param chosenValueAssignmentStrategyForNegativeVariabilities - value assignment strategy to assign value/score of given measurement to instantiated callable construct 
 	 * @param availableExportUnits - the entities with the external exported resources, especially variables
+	 * @param parameterInjectionPositionObservation - instance managing injection of actually available parameters/variables
 	 * @throws DuplicatedContextIdentifier - the exception thrown if duplicated identifiers are assigned amongst contexts
 	 */
 	public AssignedValueProcessForPositiveVariability(CallsFromPositiveVariationPointCreator positiveVariabilityCreatorStrategy, 
 			CallsInstantiationFromTemplate callsInstantiationFromTemplateStrategy,
 			List<ChosenValueAssignmentStrategyForPositiveVariability> chosenValueAssignmentStrategyForNegativeVariabilities, 
-			FileExportsUnits availableExportUnits) throws DuplicatedContextIdentifier {
+			FileExportsUnits availableExportUnits,
+			ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration,
+			ParameterInjectionPositionObservation parameterInjectionPositionObservation) throws DuplicatedContextIdentifier {
 		super(chosenValueAssignmentStrategyForNegativeVariabilities);
 		this.positiveVariabilityCreatorStrategy = positiveVariabilityCreatorStrategy;
 		this.callsInstantiationFromTemplateStrategy = callsInstantiationFromTemplateStrategy;
-		this.allVariablesMapper = new AllVariablesMapper(availableExportUnits);
+		this.allVariablesMapper = new AllVariablesMapper(availableExportUnits, 
+				actualScriptVariablesToSubstituteConfiguration, parameterInjectionPositionObservation);
 	}
 	
 	/**
@@ -120,9 +127,10 @@ public class AssignedValueProcessForPositiveVariability extends AssignedValuePro
 	 * @throws InterruptedException - the exception thrown during interruption
 	 * @throws UnmappedContextException - the exception informing about impossibility to map content on the resulting AST of final product in the synthesis process
 	 * @throws DifferentlyAggregatedLocation - the exception referring that aggregated exports for different metrics of the same callable construct are different
+	 * @throws AlreadyChosenVariationPointForInjectionException 
 	 */
 	public void assignValuesProcess(List<PositiveVariationPointCandidateTemplates> positiveVariationPointCandidatesTemplate) throws 
-			MethodToEvaluateComplexityNotFoundException, IOException, InterruptedException, UnmappedContextException, DifferentlyAggregatedLocation {
+			MethodToEvaluateComplexityNotFoundException, IOException, InterruptedException, UnmappedContextException, DifferentlyAggregatedLocation, AlreadyChosenVariationPointForInjectionException {
 		boolean notRejectVariationPoint;
 		List<PositiveVariationPointCandidateTemplates> positiveVariationPointCandidatesTemplateToRemove = new ArrayList<PositiveVariationPointCandidateTemplates>();
 		for (PositiveVariationPointCandidateTemplates positiveVariationPointCandidateTemplates: positiveVariationPointCandidatesTemplate) {
@@ -153,9 +161,10 @@ public class AssignedValueProcessForPositiveVariability extends AssignedValuePro
 	 * @throws InterruptedException - the exception thrown during interruption
 	 * @throws UnmappedContextException - the exception informing about impossibility to map content on the resulting AST of final product in the synthesis process
 	 * @throws DifferentlyAggregatedLocation - the exception referring that aggregated exports for different metrics of the same callable construct are different
+	 * @throws AlreadyChosenVariationPointForInjectionException 
 	 */
 	private boolean assignValues(PositiveVariationPointCandidateTemplates positiveVariationPointCandidateTemplates) throws 
-			MethodToEvaluateComplexityNotFoundException, IOException, InterruptedException, UnmappedContextException, DifferentlyAggregatedLocation {
+			MethodToEvaluateComplexityNotFoundException, IOException, InterruptedException, UnmappedContextException, DifferentlyAggregatedLocation, AlreadyChosenVariationPointForInjectionException {
 		//  Creating code templates started...
 		boolean rejectVariationPointTemplate = positiveVariationPointCandidateTemplates.extractCallTemplatesAccordingToStrategyWithDefaultValue(this.positiveVariabilityCreatorStrategy);
 		if (!rejectVariationPointTemplate) { return false; } // optional removal 

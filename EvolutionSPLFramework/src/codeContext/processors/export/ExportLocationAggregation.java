@@ -10,6 +10,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import astFileProcessor.ASTLoader;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.AlreadyChosenVariationPointForInjectionException;
 
 
 /**
@@ -26,14 +27,49 @@ public class ExportLocationAggregation {
 	 */
 	private Map<String, ExportLocations> fileBasedLocations;
 	
+	/**
+	 * information if callable constructs must be necessarily injected into specific variation point if true otherwise false
+	 */
+	private boolean belongToParticularVariationPoint = false;
+	
+	/**
+	 * Identifier of variation point that should be used to inject the functionality
+	 */
+	private String variationPointToInjectCondIdentifier = null;
 
 	/**
 	 * Initializes the aggregation of export locations
 	 */
-	public ExportLocationAggregation() {
+	public ExportLocationAggregation() { this(null); }
+	
+	/**
+	 * Initializes the aggregation of export locations with possible dependency on particular variation point
+	 * 
+	 * @param variationPointToInjectCondIdentifier - identifier of variation point that should be used to inject the functionality
+	 */
+	public ExportLocationAggregation(String variationPointToInjectCondIdentifier) {
 		this.fileBasedLocations = new HashMap<String, ExportLocations>();
+		this.variationPointToInjectCondIdentifier = variationPointToInjectCondIdentifier;
+		if (this.variationPointToInjectCondIdentifier == null) {
+			this.belongToParticularVariationPoint = true;
+		}
 	}
 	
+	/**
+	 * Checks if this callable construct belongs to particular variation point
+	 * 
+	 * @return true if this callable construct belongs to particular variation point
+	 */
+	public boolean belongsToParticularVariationPoint() { return this.belongToParticularVariationPoint; }
+	
+	/**
+	 * Returns the variation point identifier if the callable construct has prescribed it as dependency otherwise null
+	 * - can be checked with belongsToParticularVariationPoint()
+	 * 
+	 * @return the variation point identifier if the callable construct has prescribed it as dependency otherwise null
+	 */
+	public String getVariationPointToInjectIdentifier() { return this.variationPointToInjectCondIdentifier; }
+
 	/**
 	 * Merges samples from export location aggregation into this one 
 	 * 
@@ -58,6 +94,7 @@ public class ExportLocationAggregation {
 	public void aggregateLocation(ExportLocation exportLocation) {
 		String fileName = exportLocation.getFileName();
 		ExportLocations exportedLocations;
+
 		if (this.fileBasedLocations.containsKey(fileName)) {
 			exportedLocations = this.fileBasedLocations.get(fileName);
 			exportedLocations.addLocation(exportLocation);

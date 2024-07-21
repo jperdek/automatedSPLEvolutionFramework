@@ -2,6 +2,9 @@ package codeContext;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.Map.Entry;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import codeContext.processors.ASTContextProcessor;
@@ -9,6 +12,7 @@ import codeContext.processors.HierarchyContextProcessor;
 import codeContext.processors.export.ExportAggregator;
 import codeContext.processors.export.ExportedFunctionContext;
 import codeContext.processors.export.ExportedObjectInterface;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.ActualScriptVariablesToSubstituteConfiguration;
 
 
 /**
@@ -131,6 +135,22 @@ public class FunctionContext extends InnerContext {
 		return descriptiveJSON;
 	}
 	
+	/**
+	 * Returns usable variables with their type in actual context
+	 * 
+	 * @param availableVariablesFromActualContext - usable variables to be substituted from actual context
+	 * @param actualScriptVariablesToSubstituteConfiguration - configuration for getting actually available functionality that can be substituted in code
+	 * @param globalContext - global context - accessible in all places (such as variables declared as var in JavaScript)
+	 */
+	public void getUsableVariablesInActualContext(Set<Entry<String, String>> availableVariablesFromActualContext,
+			ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration, GlobalContext globalContext) {
+		if (actualScriptVariablesToSubstituteConfiguration.useParameters()) {
+			//CHECK POSITION!!!!!
+			this.members.getUsableVariablesInActualContext(
+					availableVariablesFromActualContext, actualScriptVariablesToSubstituteConfiguration, globalContext);
+		}
+	}
+
 	@Override
 	public String constructCallableForm() {
 		return this.functionName + "(" + this.usedParameters.concatenate(this.useTypes) + ")";

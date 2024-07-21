@@ -1,7 +1,9 @@
 package codeContext;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.Map.Entry;
@@ -13,6 +15,7 @@ import codeContext.processors.export.ExportAggregator;
 import codeContext.processors.export.ExportedContextInterface;
 import codeContext.processors.export.ExportedInterface;
 import codeContext.processors.export.ExportedObjectInterface;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.ActualScriptVariablesToSubstituteConfiguration;
 import splEvolutionCore.DebugInformation;
 
 
@@ -301,6 +304,21 @@ public class InnerContext implements ExportedContextInterface, ExportedObjectInt
 	}
 	
 	/**
+	 * Returns all actual parameters according to currentPosition that is provided as function parameter if are allowed in configuration otherwise empty list
+	 * 
+	 * @param currentPosition - the position in application AST (script) which is used to decide if given variables are available/are already declared
+	 * @param actualScriptVariablesToSubstituteConfiguration
+	 * @return all actual (before or at currentPosition that is provided as function parameter) parameters if are allowed in configuration otherwise empty list
+	 */
+	public List<VariableObject> getActualParameters(long currentPosition, 
+			ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration) {
+		if (actualScriptVariablesToSubstituteConfiguration.useParameters()) {
+			return this.usedParameters.getAllActualVariableObject(currentPosition, actualScriptVariablesToSubstituteConfiguration);
+		}
+		return new ArrayList<VariableObject>();
+	}
+	
+	/**
 	 * Returns all actually declared variables according to currentPosition that is provided as function parameter
 	 * 
 	 * @param currentPosition - the position in application AST (script) which is used to decide if given variables are available/are already declared
@@ -308,6 +326,18 @@ public class InnerContext implements ExportedContextInterface, ExportedObjectInt
 	 */
 	public List<VariableObject> getActualVariables(long currentPosition) { 
 		return this.usedVariables.getAllActualVariableObject(currentPosition); 
+	}
+	
+	/**
+	 * Returns all actually declared variables according to currentPosition that is provided as function parameter
+	 * 
+	 * @param currentPosition - the position in application AST (script) which is used to decide if given variables are available/are already declared
+	 * @param actualScriptVariablesToSubstituteConfiguration
+	 * @return all actually declared (before or at currentPosition that is provided as function parameter) variables
+	 */
+	public List<VariableObject> getActualVariables(long currentPosition, 
+			ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration) { 
+		return this.usedVariables.getAllActualVariableObject(currentPosition, actualScriptVariablesToSubstituteConfiguration); 
 	}
 	
 	/**
@@ -325,6 +355,7 @@ public class InnerContext implements ExportedContextInterface, ExportedObjectInt
 	 * Returns and creates the descriptive JSON represented output from information about the inner context
 	 * 
 	 * @param globalContext - global context - accessible in all places (such as variables declared as var in JavaScript)
+	 * @return created descriptive JSON represented output from information about the inner context
 	 */
 	public JSONObject createDescriptiveJSON(GlobalContext globalContext) {
 		JSONObject descriptiveJSON = new JSONObject();
@@ -340,6 +371,23 @@ public class InnerContext implements ExportedContextInterface, ExportedObjectInt
 			//descriptiveJSON.put("p", this.originalStartPosition);
 		}
 		return descriptiveJSON;
+	}
+	
+	/**
+	 * Returns usable variables with their type in actual context
+	 * 
+	 * @param availableVariablesFromActualContext - usable variables to be substituted from actual context
+	 * @param actualScriptVariablesToSubstituteConfiguration - configuration for getting actually available functionality that can be substituted in code
+	 * @param globalContext - global context - accessible in all places (such as variables declared as var in JavaScript)
+	 */
+	public void getUsableVariablesInActualContext(Set<Entry<String, String>> availableVariablesFromActualContext,
+			ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration, GlobalContext globalContext) {
+		this.usedVariables.getUsableVariablesInActualContext(
+				availableVariablesFromActualContext, actualScriptVariablesToSubstituteConfiguration, globalContext);
+		if (actualScriptVariablesToSubstituteConfiguration.useParameters()) {
+			this.usedParameters.getUsableVariablesInActualContext(
+					availableVariablesFromActualContext, actualScriptVariablesToSubstituteConfiguration, globalContext);
+		}
 	}
 	
 	/**

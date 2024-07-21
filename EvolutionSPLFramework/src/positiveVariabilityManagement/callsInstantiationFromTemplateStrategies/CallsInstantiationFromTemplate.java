@@ -3,6 +3,7 @@ package positiveVariabilityManagement.callsInstantiationFromTemplateStrategies;
 
 import java.util.Queue;
 import positiveVariabilityManagement.UnmappedContextException;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.AllVariablesMapper;
 import splEvolutionCore.candidateSelector.PositiveVariationPointCandidateTemplates;
 
 
@@ -23,8 +24,9 @@ public interface CallsInstantiationFromTemplate {
 	 * @return the queue with instantiated callable constructs
 	 * 
 	 * @throws UnmappedContextException - the exception informing about impossibility to map content on the resulting AST of final product in the synthesis process
+	 * @throws AlreadyChosenVariationPointForInjectionException
 	 */
 	public Queue<CallableConstruct> instantiateCallsFromTemplate(
 			PositiveVariationPointCandidateTemplates variationPointCandidateTemplate, 
-			AllVariablesMapper allVariablesMapper) throws UnmappedContextException;
+			AllVariablesMapper allVariablesMapper) throws UnmappedContextException, AlreadyChosenVariationPointForInjectionException;
 }

@@ -1,15 +1,18 @@
 package codeContext;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import java.util.Map.Entry;
 import codeContext.objects.CodeContextObject;
 import codeContext.objects.ImportObject;
 import codeContext.objects.SortByCodeContext;
@@ -19,6 +22,7 @@ import codeContext.processors.export.ExportedContextInterface;
 import codeContext.processors.export.ExportedInterface;
 import codeContext.processors.export.ExportedObjectInterface;
 import divisioner.VariationPointDivisionConfiguration;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.ActualScriptVariablesToSubstituteConfiguration;
 import splEvolutionCore.DebugInformation;
 
 /**
@@ -59,6 +63,22 @@ public class UsedVariables implements ExportedContextInterface, ExportedInterfac
 		this.duplicatesFilter = new HashSet<String>();
 		for (VariableObject vo: upperContextVariables) {
 			this.duplicatesFilter.add(vo.getVariableName() + vo.getVariableType() + vo.getPosition());
+		}
+	}
+	
+	/**
+	 * Returns usable variables with their type in actual context
+	 * 
+	 * @param availableVariablesFromActualContext - usable variables to be substituted from actual context
+	 * @param actualScriptVariablesToSubstituteConfiguration - configuration for getting actually available functionality that can be substituted in code
+	 * @param globalContext - global context - accessible in all places (such as variables declared as var in JavaScript)
+	 */
+	public void getUsableVariablesInActualContext(
+			Set<Entry<String, String>> availableVariablesFromActualContext,
+			ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration, GlobalContext globalContext) {
+		for (VariableObject processedObject: this.usedVariableObjects) {
+			availableVariablesFromActualContext.add(
+					new AbstractMap.SimpleEntry<String, String>(processedObject.getVariableName(), processedObject.getVariableType()));
 		}
 	}
 	
@@ -196,6 +216,24 @@ public class UsedVariables implements ExportedContextInterface, ExportedInterfac
 		int finalLength = Arrays.binarySearch(
 				(ImportObject[]) this.usedVariableObjects.toArray(new ImportObject[0]), new CodeContextObject(currentPosition));
 		return new ArrayList<VariableObject>(this.usedVariableObjects.subList(0, finalLength));
+	}
+
+	/**
+	 * Returns all actually declared variables according to currentPosition that is provided as function parameter
+	 * 
+	 * @param currentPosition - the position in application ASt (script) which is used to decide if given variables are available/are already declared
+	 * @param actualScriptVariablesToSubstituteConfiguration
+	 * @return all actually declared (before or at currentPosition that is provided as function parameter) variables
+	 */
+	public List<VariableObject> getAllActualVariableObject(long currentPosition,
+			ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration) {
+		int finalLength = Arrays.binarySearch(
+				(ImportObject[]) this.usedVariableObjects.toArray(new ImportObject[0]), new CodeContextObject(currentPosition));
+		ArrayList<VariableObject> collectedVariables = new ArrayList<VariableObject>();
+		for (VariableObject processedVariable: this.usedVariableObjects.subList(0, finalLength)) {
+			collectedVariables.add(processedVariable);
+		}
+		return collectedVariables;
 	}
 	
 	/**

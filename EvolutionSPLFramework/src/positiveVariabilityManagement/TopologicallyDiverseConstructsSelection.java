@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.ExportAssetPlanner;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.AlreadyChosenVariationPointForInjectionException;
 
 
 /**
@@ -25,13 +26,14 @@ public class TopologicallyDiverseConstructsSelection implements SelectionOfConst
 	 * Selects code injections according to similarities between dependencies (semantic nature) between selected code constructs (content) in place of selected variation points
 	 * 
 	 * @param availableFunctionalitiesToVariationPointsMap - the maping of particular variation point identifier to selected and applicable injections of code contents
+	 * @param exportAssetPlanner
 	 * @return the list of content injection for selected variation points
 	 * @throws InterruptedException 
 	 * @throws IOException 
 	 */
 	public List<VariationPointsContentInjection> aggregateAllPossibleInjections(
 			Map<String, VariationPointContentsInjection> availableFunctionalitiesToVariationPointsMap,
-			ExportAssetPlanner exportAssetPlanner) throws IOException, InterruptedException {
+			ExportAssetPlanner exportAssetPlanner) throws IOException, InterruptedException, AlreadyChosenVariationPointForInjectionException {
 		
 		Map<String, VariationPointContentsInjection> topologicallyDiverseConstructsSelection 
 				= new HashMap<String, VariationPointContentsInjection>(availableFunctionalitiesToVariationPointsMap);	

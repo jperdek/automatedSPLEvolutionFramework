@@ -7,6 +7,7 @@ import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.Al
 import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.CallsInstantiationFromTemplate;
 import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.UniqueParametersInInstantiationsFromTemplate;
 import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.WrapperBasedInstantiationsFromTemplate;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.ActualScriptVariablesToSubstituteConfiguration;
 import positiveVariabilityManagement.callsTemplateSelectionStrategies.AllCallsFromPositiveVariationPointCreator;
 import positiveVariabilityManagement.callsTemplateSelectionStrategies.CallsFromPositiveVariationPointCreator;
 import positiveVariabilityManagement.callsTemplateSelectionStrategies.NoneEntityCreationFromPositiveVariationPointCreator;
@@ -34,7 +35,6 @@ import splEvolutionCore.SPLEvolutionCore.FeatureSelectionStrategies;
 import splEvolutionCore.SPLEvolutionCore.ParameterMatchingStrategyStrategies;
 import splEvolutionCore.SPLEvolutionCore.SyntetizeConstructsOptions;
 import splEvolutionCore.SPLEvolutionCore.VariationPointDivisionConfigurationStrategies;
-import divisioner.VariationPointDivisionConfiguration;
 import divisioner.VariationPointDivisioning;
 import divisioner.divisionStrategies.RecallStrategy;
 import java.util.ArrayList;
@@ -63,44 +63,31 @@ public class EvolutionCoreSettings {
 	private SelectionOfConstructsAcrossSelectedVariationPointsStrategies selectionOfConstructsAcrossSelectedVariationPointsStrategies;
 	private VariationPointDivisioning variationPointDivisioning;
 	private EvolutionCoreStrategies evolutionCoreStrategy;
-	
-	private boolean notLogObjects = false;
-	private boolean notLogFunctions = false;
-	private boolean notLogClassFunctions = false;
-	private boolean notLogClassConstructorFunctions = false;
 
+	
+	/**
+	 * Configuration to get actually available functionality that can be substituted or directly create it
+	 */
+	private ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration;
 	
 	/**
 	 * Creates evolution phase configuration according to settings (of variables) from SPLEvolutionCore 
 	 */
 	public EvolutionCoreSettings() {
-		this.evolutionCoreStrategy = this.createSelectedEvolutionCoreStrategy();
-		this.positiveVariabilityCreatorStrategy = this.createSelectedCallsFromPositiveVariationPointCreator();
-		this.callsInstantiationFromTemplateStrategy = this.createSelectedCallsInstantiationFromTemplate();
-		this.parameterMatchingStrategy = this.createSelectedCallsForParameterMatchingStrategy();
-		this.negativeVariabilityValueAssignmentStrategies = this.createChosenValueAssignmentStrategiesForNegativeVariability();
-		this.positiveVariabilityValueAssignmentStrategies = this.createChosenValueAssignmentStrategiesForPositiveVariability();
-		this.featureSelectionStrategy = this.createSelectedFeatureSelectionStrategy();
-		this.featureConstructsSelectionStrategy = this.createSelectedFeatureConstructsSelectionStrategy(
+		this.evolutionCoreStrategy = EvolutionCoreSettings.createSelectedEvolutionCoreStrategy();
+		this.positiveVariabilityCreatorStrategy = EvolutionCoreSettings.createSelectedCallsFromPositiveVariationPointCreator();
+		this.callsInstantiationFromTemplateStrategy = EvolutionCoreSettings.createSelectedCallsInstantiationFromTemplate();
+		this.parameterMatchingStrategy = EvolutionCoreSettings.createSelectedCallsForParameterMatchingStrategy();
+		this.negativeVariabilityValueAssignmentStrategies = EvolutionCoreSettings.createChosenValueAssignmentStrategiesForNegativeVariability();
+		this.positiveVariabilityValueAssignmentStrategies = EvolutionCoreSettings.createChosenValueAssignmentStrategiesForPositiveVariability();
+		this.featureSelectionStrategy = EvolutionCoreSettings.createSelectedFeatureSelectionStrategy();
+		this.featureConstructsSelectionStrategy = EvolutionCoreSettings.createSelectedFeatureConstructsSelectionStrategy(
 				SyntetizeConstructsOptions.TOPOLOGICALLY_DIVERSE_SELECTED);
-		this.codeIncrementGranularityManagementStrategy = this.createSelectedCodeGranularityManagementStrategy();
-		this.variationPointDivisioning = this.createVariationPointDivisioning();
+		this.codeIncrementGranularityManagementStrategy = EvolutionCoreSettings.createSelectedCodeGranularityManagementStrategy();
+		this.variationPointDivisioning = EvolutionCoreSettings.createVariationPointDivisioning();
 		this.selectionOfConstructsAcrossSelectedVariationPointsStrategies = 
-				this.createSelectionOfConstructsAcrossSelectedVariationPointsStrategies();
-	}
-	
-	public void turnOffDataExtensions() {
-		this.notLogObjects = false;
-		this.notLogFunctions = false;
-		this.notLogClassFunctions = false;
-		this.notLogClassConstructorFunctions = false;
-	}
-	
-	public void setDefaultDataExtensions() {
-		this.notLogObjects = DefaultDataRepresentations.NOT_LOG_OBJECTS;
-		this.notLogFunctions = DefaultDataRepresentations.NOT_LOG_FUNCTIONS;
-		this.notLogClassFunctions = false;
-		this.notLogClassConstructorFunctions = false;
+				EvolutionCoreSettings.createSelectionOfConstructsAcrossSelectedVariationPointsStrategies();
+		this.actualScriptVariablesToSubstituteConfiguration = EvolutionCoreSettings.createActualScriptVariablesToSubstituteConfiguration();
 	}
 	
 	/**
@@ -117,6 +104,7 @@ public class EvolutionCoreSettings {
 	 * @param codeIncrementGranularityManagementStrategy
 	 * @param selectionOfConstructsAcrossSelectedVariationPointsStrategies
 	 * @param variationPointDivisionConfiguration
+	 * @param actualScriptVariablesToSubstituteConfiguration
 	 */
 	public EvolutionCoreSettings(
 			EvolutionCoreStrategies evolutionCoreStrategy,
@@ -129,7 +117,8 @@ public class EvolutionCoreSettings {
 			FeatureConstructsSelectionStrategy featureConstructsSelectionStrategy,
 			CodeIncrementGranularityManagementStrategy codeIncrementGranularityManagementStrategy,
 			SelectionOfConstructsAcrossSelectedVariationPointsStrategies selectionOfConstructsAcrossSelectedVariationPointsStrategies,
-			VariationPointDivisioning variationPointDivisioning) {
+			VariationPointDivisioning variationPointDivisioning, 
+			ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration) {
 		this.evolutionCoreStrategy = evolutionCoreStrategy;
 		this.positiveVariabilityCreatorStrategy = positiveVariabilityCreatorStrategy;
 		this.callsInstantiationFromTemplateStrategy = callsInstantiationFromTemplateStrategy;
@@ -144,6 +133,7 @@ public class EvolutionCoreSettings {
 		this.variationPointDivisioning = variationPointDivisioning;
 		this.selectionOfConstructsAcrossSelectedVariationPointsStrategies = 
 				selectionOfConstructsAcrossSelectedVariationPointsStrategies;
+		this.actualScriptVariablesToSubstituteConfiguration = actualScriptVariablesToSubstituteConfiguration;
 	}
 	
 	/**
@@ -283,6 +273,18 @@ public class EvolutionCoreSettings {
 	}
 	
 	/**
+	 * Instantiates strategy to manage variation points selection according to to settings (of variables) from SPLEvolutionCore 
+	 * 
+	 * @return strategy to manage variation points selection according to to settings (of variables) from SPLEvolutionCore 
+	 */
+	private static ActualScriptVariablesToSubstituteConfiguration createActualScriptVariablesToSubstituteConfiguration() { 
+		return new ActualScriptVariablesToSubstituteConfiguration(
+				SPLEvolutionCore.USE_ACTUAL_SCRIPT_VARIABLES, SPLEvolutionCore.USE_PARAMETERS, 
+				SPLEvolutionCore.USE_GLOBAL_VARIABLES, SPLEvolutionCore.USE_CURRENT_LEVEL_VARIABLES_ONLY, 
+				SPLEvolutionCore.INSTANTIATE_NEW_ENTITIES_ACCORDING_TO_TYPE);
+	}
+	
+	/**
 	 * Instantiates strategy to select code callable constructs for each selected variation point according to 
 	 * settings (of variables) from SPLEvolutionCore 
 	 * 
@@ -401,5 +403,9 @@ public class EvolutionCoreSettings {
 	
 	public SelectionOfConstructsAcrossSelectedVariationPointsStrategies getSelectionOfConstructsSelectionStrategies() {
 		return this.selectionOfConstructsAcrossSelectedVariationPointsStrategies;
+	}
+	
+	public ActualScriptVariablesToSubstituteConfiguration getActualScriptVariablesToSubstituteConfiguration() {
+		return this.actualScriptVariablesToSubstituteConfiguration;
 	}
 }

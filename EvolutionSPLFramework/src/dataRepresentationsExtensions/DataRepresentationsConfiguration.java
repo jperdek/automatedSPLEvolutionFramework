@@ -21,7 +21,7 @@ public class DataRepresentationsConfiguration {
 	private boolean simulateStack = DefaultDataRepresentations.SIMULATE_STACK;
 	
 	
-
+	
 	/**
 	 * Decides about injection of functionality to (not) log objects
 	 */
@@ -142,4 +142,22 @@ public class DataRepresentationsConfiguration {
 	 * @return the maximum number of variables to be logged with particular variable as their dependencies
 	 */
 	public int getMaximumVariableCombinationsToLog() { return this.maximumVariableCombinationsToLog;}
+	
+	/**
+	 * Turns off data extensions
+	 */
+	public void turnOffDataExtensions() {
+		this.notLogObjects = false;
+		this.notLogFunctions = false;
+		this.notLogClassFunctions = false;
+	}
+	
+	/**
+	 * Sets default values for data extensions
+	 */
+	public void setDefaultDataExtensions() {
+		this.notLogObjects = DefaultDataRepresentations.NOT_LOG_OBJECTS;
+		this.notLogFunctions = DefaultDataRepresentations.NOT_LOG_FUNCTIONS;
+		this.notLogClassFunctions = false;
+	}
 }

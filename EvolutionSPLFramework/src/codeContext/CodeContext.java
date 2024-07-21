@@ -2,6 +2,8 @@ package codeContext;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.json.simple.JSONObject;
@@ -9,6 +11,8 @@ import codeContext.objects.VariableObject;
 import codeContext.processors.NotFoundVariableDeclaration;
 import codeContext.processors.export.ExportedObjectInterface;
 import codeContext.processors.export.ExportsProcessor;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.ActualScriptVariablesToSubstituteConfiguration;
+import positiveVariabilityManagement.entities.CallableConstructTemplate;
 
 
 /**
@@ -125,6 +129,23 @@ public class CodeContext {
 	}
 	
 	/**
+	 * Harvests variables, parameters including global ones to "actual"/specified position in this inner code context 
+	 * 
+	 * @param currentPosition - the current position in the aplication AST to decide about what is "actual"
+	 * @param actualScriptVariablesToSubstituteConfiguration
+	 * @return the list of actual variables, parameters of previously accessible from this inner context to actual position and global variables
+	 */
+	public List<VariableObject> getActualVariables(long currentPosition, 
+			ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration) {
+		List<VariableObject> actualVariables = new ArrayList<VariableObject>(this.globalContext.getActualGlobalVariables(currentPosition));
+		if (actualScriptVariablesToSubstituteConfiguration.useGlobalVariables()) {
+			actualVariables.addAll(this.innerContext.getActualVariables(currentPosition));
+		}
+		actualVariables.addAll(this.innerContext.getActualParameters(currentPosition));
+		return actualVariables;
+	}
+	
+	/**
 	 * Returns the global context (with global variable, accessible on various places in the script)
 	 * 
 	 * @return the global context (with global variable, accessible on various places in the script)
@@ -156,4 +177,22 @@ public class CodeContext {
 		}
 		return descriptiveJSON;
 	}
+	
+	/**
+	 * Returns usable variables with their type in actual context
+	 * 
+	 * @param availableVariablesFromActualContext - usable variables to be substituted from actual context
+	 * @param actualScriptVariablesToSubstituteConfiguration - configuration for getting actually available functionality that can be substituted in code
+	 * @param globalContext - global context - accessible in all places (such as variables declared as var in JavaScript)
+	 */
+	public void getUsableVariablesInActualContext(Set<Entry<String, String>> availableVariablesFromActualContext,
+			ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration) {
+		if (actualScriptVariablesToSubstituteConfiguration.useGlobalVariables()) {
+			this.globalContext.getUsableVariablesInActualContext(
+					availableVariablesFromActualContext, actualScriptVariablesToSubstituteConfiguration, this.globalContext);
+		}
+		this.innerContext.getUsableVariablesInActualContext(
+				availableVariablesFromActualContext, actualScriptVariablesToSubstituteConfiguration, this.globalContext);
+	}
+
 }

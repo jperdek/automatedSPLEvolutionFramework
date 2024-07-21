@@ -7,11 +7,13 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import codeConstructsEvaluation.transformation.ASTConverterClient;
+import codeContext.CodeContext;
 import codeContext.persistence.UpdatedTreePersistence;
 import codeContext.processors.NotFoundVariableDeclaration;
 import codeContext.processors.export.exportedFileUnits.FileExportsUnits;
 import dividedAstExport.InvalidSystemVariationPointMarkerException;
 import divisioner.VariationPointDivisionConfiguration;
+import divisioner.VariationPointDivisioning;
 import evolutionSimulation.EvolutionConfiguration;
 import evolutionSimulation.iteration.AlreadyMappedVariationPointContentsInjection;
 import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.ExportAssetPlanner;
@@ -22,6 +24,9 @@ import positiveVariabilityManagement.NewContextsSynthesizer;
 import positiveVariabilityManagement.SynthesizedContent;
 import positiveVariabilityManagement.UnmappedContextException;
 import positiveVariabilityManagement.VariationPointPlaceInArrayNotFound;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.AlreadyChosenVariationPointForInjectionException;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.ActualScriptVariablesToSubstituteConfiguration;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.ParameterInjectionPositionObservation;
 import positiveVariabilityManagement.entities.DuplicatedContextIdentifier;
 import splEvolutionCore.candidateSelector.AlreadyProvidedArgumentInConfigurationExpressionPlace;
 import splEvolutionCore.candidateSelector.DifferentlyAggregatedLocation;
@@ -57,6 +62,7 @@ public class DefaultEvolutionCore implements EvolutionCoreStrategies {
 	 * @param availableExportUnits - available exports
 	 * @param evolutionCoreSettings - strategies instantiated for given evolution phase/phases
 	 * @param evolutionConfiguration - the configuration for given evolution phase
+	 * @param variationPointDivisioning - 
 	 * @param exportAssetPlanner
 	 * @throws DuplicateCandidateIdentifier
 	 * @throws IOException
@@ -74,16 +80,17 @@ public class DefaultEvolutionCore implements EvolutionCoreStrategies {
 	 * @throws UnknownResourceToProcessException
 	 * @throws AlreadyMappedVariationPointContentsInjection
 	 * @throws AssetMisuse 
+	 * @throws AlreadyChosenVariationPointForInjectionException 
 	 */
 	public void evolve(JSONObject splAstTree, JSONArray variationPointsArray, 
 			FileExportsUnits availableExportUnits, EvolutionCoreSettings evolutionCoreSettings, 
-			EvolutionConfiguration evolutionConfiguration, ExportAssetPlanner exportAssetPlanner) throws DuplicateCandidateIdentifier, 
+			EvolutionConfiguration evolutionConfiguration, VariationPointDivisioning variationPointDivisioning, ExportAssetPlanner exportAssetPlanner) throws DuplicateCandidateIdentifier, 
 			IOException, InterruptedException, InvalidSystemVariationPointMarkerException, 
 			DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation, 
 			AlreadyProvidedArgumentInConfigurationExpressionPlace, NotFoundVariableDeclaration, 
 			MethodToEvaluateComplexityNotFoundException, DuplicatedContextIdentifier, 
 			UnmappedContextException, DifferentlyAggregatedLocation, VariationPointPlaceInArrayNotFound,
-			UnknownResourceToProcessException, AlreadyMappedVariationPointContentsInjection, AssetMisuse {
+			UnknownResourceToProcessException, AlreadyMappedVariationPointContentsInjection, AssetMisuse, AlreadyChosenVariationPointForInjectionException {
 		
 		int numberSelectedCandidates = 3;
 		List<ChosenValueAssignmentStrategyForNegativeVariability> chosenValueAssignmentStrategyForNegativeVariabilities = 
@@ -119,14 +126,25 @@ public class DefaultEvolutionCore implements EvolutionCoreStrategies {
 			UpdatedTreePersistence.persistsAstInFile(SharedConfiguration.PROJECT_PATH + "/evolutionDirectory/evolNum1/conccustom/ast.txt",
 				ASTConverterClient.convertFromASTToCode(splAstTree.toString()));
 		}
+		List<PositiveVariationPointCandidateTemplates> positiveVariationPointCandidatesTemplates = 
+				PositiveVariationPointCandidateSelection.createPositiveVariabilityCandidates(variationPointsArray);
+		
+		ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration =
+				evolutionCoreSettings.getActualScriptVariablesToSubstituteConfiguration();
+		CodeContext codeContext = variationPointDivisioning.getCodeContextFromDivision();
+		ParameterInjectionPositionObservation parameterInjectionPositionObservation = new ParameterInjectionPositionObservation();
+		parameterInjectionPositionObservation.extractRelatedVariationPointData(codeContext, 
+				positiveVariationPointCandidatesTemplates, actualScriptVariablesToSubstituteConfiguration);
 		
 		AssignedValueProcessForPositiveVariability assignedValuePositiveVariabilityProcess = new AssignedValueProcessForPositiveVariability(
 				evolutionCoreSettings.getCallsFromPositiveVariationPointCreator(), 
 				evolutionCoreSettings.getCallsInstantiationFromTemplate(),
 				evolutionCoreSettings.getChosenValueAssignmentStrategiesForPositiveVariability(), 
-				availableExportUnits);
-		List<PositiveVariationPointCandidateTemplates> positiveVariationPointCandidatesTemplates = 
-				PositiveVariationPointCandidateSelection.createPositiveVariabilityCandidates(variationPointsArray);
+				availableExportUnits,
+				actualScriptVariablesToSubstituteConfiguration,
+				parameterInjectionPositionObservation);
+		
+		
 		if (DebugInformation.PROCESS_STEP_INFORMATION) {
 			System.out.println("Number of positive variation point candidates are: " + positiveVariationPointCandidatesTemplates.size());
 		}
@@ -137,6 +155,7 @@ public class DefaultEvolutionCore implements EvolutionCoreStrategies {
 				evolutionCoreSettings.getCodeIncrementGranularityManagementStrategy(),
 				evolutionCoreSettings.getSelectionOfConstructsSelectionStrategies(),
 				derivationResourcesManager, evolutionConfiguration.getEvolvedContentName(), exportAssetPlanner);
+		
 		List<SynthesizedContent> synthesizedContents = newContextsSynthesizer.selectAndSynthetizeContexts(
 				splAstTree, positiveVariationPointCandidatesTemplates, true);
 		DefaultEvolutionCore.clearNegativeVariabilityAnnotationsAndMarkers(synthesizedContents);

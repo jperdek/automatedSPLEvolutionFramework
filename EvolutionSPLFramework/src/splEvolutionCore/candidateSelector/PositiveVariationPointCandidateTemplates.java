@@ -108,7 +108,7 @@ public class PositiveVariationPointCandidateTemplates extends VariationPointCand
 	 * Returns callable construct template according its string representation of parameterized/template code call
 	 * 
 	 * @param executedCodeTemplate - the string representation of parameterized/template code call
-	 * @return
+	 * @return callable construct template according its string representation of parameterized/template code call
 	 */
 	public CallableConstructTemplate getCallableConstructTemplate(String executedCodeTemplate) {
 		return this.callableConstructTemplates.get(executedCodeTemplate);

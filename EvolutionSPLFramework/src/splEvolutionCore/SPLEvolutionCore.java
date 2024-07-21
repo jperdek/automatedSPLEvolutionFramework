@@ -360,4 +360,34 @@ public interface SPLEvolutionCore {
 	 * The list of functions that cannot be instantiated into code fragment
 	 */
 	public final static List<String> FORBIDDEN_FUNCTIONS_IN_PROCESSED_SPLS = List.of("popData()", "harvestStackData()");
+	
+	/**
+	 * Allows to use actual/currently available script variables, parameters and directly created particular types if true otherwise not
+	 */
+	public final static boolean USE_ACTUAL_SCRIPT_VARIABLES = true;
+	
+	/**
+	 * Allows to harvest method or class parameters and optionally to use them for substitution if true otherwise not if true otherwise not
+	 */
+	public final static boolean USE_PARAMETERS = true;
+	
+	/**
+	 * Allows to harvest global variables and to use them for substitution if true otherwise not
+	 */
+	public final static boolean USE_GLOBAL_VARIABLES = true;
+	
+	/**
+	 * Restricts the harvesting only the variables on current hierarchy level if true otherwise not
+	 */
+	public final static boolean USE_CURRENT_LEVEL_VARIABLES_ONLY = true;
+	
+	/**
+	 * Allows to instantiate new entities according to type if true otherwise not
+	 */
+	public final static boolean INSTANTIATE_NEW_ENTITIES_ACCORDING_TO_TYPE = true;
+	
+	/**
+	 * Separates the currently available variable from the name/identifier of variation point to manage both
+	 */
+	public final static String CURRENTLY_AVAILABLE_VARIABLE_DELIMITER = "_YYY_";
 }
