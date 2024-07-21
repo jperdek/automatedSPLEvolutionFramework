@@ -142,7 +142,7 @@ public class CallableConstruct {
 			}
 			this.addParameter(parameterToSubstitute, (InjectionCandidateVariationPoint) parameterExportedContext);
 		} else {
-			if (SPLEvolutionCore.DISABLE_EXTERNAL_VARIABLE_INJECTIONS) { return true; }
+			if (SPLEvolutionCore.DISABLE_EXTERNAL_VARIABLE_INJECTIONS) { return false; }
 			this.addParameter(parameterToSubstitute, (ExportedContext) parameterExportedContext);
 		}
 		return true;
