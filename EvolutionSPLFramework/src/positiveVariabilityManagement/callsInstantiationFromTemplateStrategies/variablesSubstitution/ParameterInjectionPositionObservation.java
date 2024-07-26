@@ -1,6 +1,5 @@
 package positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution;
 
-import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +7,7 @@ import java.util.Map;
 import org.json.simple.JSONObject;
 
 import codeContext.CodeContext;
+import codeContext.InnerContext.Direction;
 import codeContext.objects.VariableObject;
 import splEvolutionCore.SPLEvolutionCore;
 import splEvolutionCore.candidateSelector.PositiveVariationPointCandidateTemplates;
@@ -33,15 +33,18 @@ public class ParameterInjectionPositionObservation {
 		String variationPointNameWithVariableType;
 		InjectionCandidateVariationPoint injectionCandidateVariationPoint;
 		Map<String, InjectionCandidateVariationPoint> variableTypeToInjectedVariableMap;
-		long searchPosition;
-		
+		long searchPosition, startSearchPosition, endSearchPosition;
+
 		for (PositiveVariationPointCandidateTemplates positiveVariationPointCandidateTemplate: positiveVariationPointCandidatesTemplates) {
 			actuallyProcessedVariationPointData = positiveVariationPointCandidateTemplate.getVariationPointData();
 			variationPointIDName = (String) actuallyProcessedVariationPointData.get("variationPointName");
-			searchPosition = (long) actuallyProcessedVariationPointData.get("startPosition");
-			System.out.println(actuallyProcessedVariationPointData.toString());
-			for (VariableObject processedVariable: codeContext.getActualVariables(
-					searchPosition, actualScriptVariablesToSubstituteConfiguration)) {
+			startSearchPosition = searchPosition = (long) actuallyProcessedVariationPointData.get("startPosition");
+			endSearchPosition = (long) actuallyProcessedVariationPointData.get("startPosition");
+			System.out.println("Used position to get inner data from variables and parameters: " +  actuallyProcessedVariationPointData.toString());
+			for (VariableObject processedVariable: codeContext.getActualVariables(null,
+					searchPosition, startSearchPosition, endSearchPosition, Direction.RIGHT_FROM_POSITION, actualScriptVariablesToSubstituteConfiguration)) {
+				System.out.println("HEEEEEEEEEEEEEEEEERE");
+				//System.exit(0);
 				variableName = processedVariable.getExportName();
 				variableType = processedVariable.getExportType();
 				if (!this.extractedVariablesOrganizedAccoringType.containsKey(variableType)) {

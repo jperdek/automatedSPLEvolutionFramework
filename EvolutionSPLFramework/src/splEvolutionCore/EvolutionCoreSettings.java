@@ -8,6 +8,7 @@ import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.Ca
 import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.UniqueParametersInInstantiationsFromTemplate;
 import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.WrapperBasedInstantiationsFromTemplate;
 import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.ActualScriptVariablesToSubstituteConfiguration;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.LanguageSpecificVariableSubstitutionConfiguration;
 import positiveVariabilityManagement.callsTemplateSelectionStrategies.AllCallsFromPositiveVariationPointCreator;
 import positiveVariabilityManagement.callsTemplateSelectionStrategies.CallsFromPositiveVariationPointCreator;
 import positiveVariabilityManagement.callsTemplateSelectionStrategies.NoneEntityCreationFromPositiveVariationPointCreator;
@@ -281,7 +282,8 @@ public class EvolutionCoreSettings {
 		return new ActualScriptVariablesToSubstituteConfiguration(
 				SPLEvolutionCore.USE_ACTUAL_SCRIPT_VARIABLES, SPLEvolutionCore.USE_PARAMETERS, 
 				SPLEvolutionCore.USE_GLOBAL_VARIABLES, SPLEvolutionCore.USE_CURRENT_LEVEL_VARIABLES_ONLY, 
-				SPLEvolutionCore.INSTANTIATE_NEW_ENTITIES_ACCORDING_TO_TYPE);
+				SPLEvolutionCore.INSTANTIATE_NEW_ENTITIES_ACCORDING_TO_TYPE, 
+				new LanguageSpecificVariableSubstitutionConfiguration(true, 1, false, 0, true));
 	}
 	
 	/**

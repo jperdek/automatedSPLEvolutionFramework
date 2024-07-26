@@ -7,12 +7,14 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.json.simple.JSONObject;
+
+import codeContext.InnerContext.Direction;
 import codeContext.objects.VariableObject;
 import codeContext.processors.NotFoundVariableDeclaration;
 import codeContext.processors.export.ExportedObjectInterface;
 import codeContext.processors.export.ExportsProcessor;
 import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.ActualScriptVariablesToSubstituteConfiguration;
-import positiveVariabilityManagement.entities.CallableConstructTemplate;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.VariableObjectCollector;
 
 
 /**
@@ -119,30 +121,18 @@ public class CodeContext {
 	 * Harvests variables, parameters including global ones to "actual"/specified position in this inner code context 
 	 * 
 	 * @param currentPosition - the current position in the aplication AST to decide about what is "actual"
-	 * @return the list of actual variables, parameters of previously accessible from this inner context to actual position and global variables
-	 */
-	public List<VariableObject> getActualVariables(long currentPosition) {
-		List<VariableObject> actualVariables = new ArrayList<VariableObject>(this.globalContext.getActualGlobalVariables(currentPosition));
-		actualVariables.addAll(this.innerContext.getActualVariables(currentPosition));
-		actualVariables.addAll(this.innerContext.getActualParameters(currentPosition));
-		return actualVariables;
-	}
-	
-	/**
-	 * Harvests variables, parameters including global ones to "actual"/specified position in this inner code context 
-	 * 
-	 * @param currentPosition - the current position in the aplication AST to decide about what is "actual"
 	 * @param actualScriptVariablesToSubstituteConfiguration
 	 * @return the list of actual variables, parameters of previously accessible from this inner context to actual position and global variables
 	 */
-	public List<VariableObject> getActualVariables(long currentPosition, 
+	public List<VariableObject> getActualVariables(InnerContext searchedContext, long currentPosition, long startSearchPosition, long endSearchPosition, Direction direction, 
 			ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration) {
-		List<VariableObject> actualVariables = new ArrayList<VariableObject>(this.globalContext.getActualGlobalVariables(currentPosition));
+		VariableObjectCollector variableObjectCollector = this.innerContext.collectVariableObjects(
+				searchedContext, currentPosition, startSearchPosition, endSearchPosition, direction, actualScriptVariablesToSubstituteConfiguration);
+		
 		if (actualScriptVariablesToSubstituteConfiguration.useGlobalVariables()) {
-			actualVariables.addAll(this.innerContext.getActualVariables(currentPosition));
+			variableObjectCollector.addGlobalVariables(this.globalContext.getActualGlobalVariables(currentPosition));
 		}
-		actualVariables.addAll(this.innerContext.getActualParameters(currentPosition));
-		return actualVariables;
+		return variableObjectCollector.getMergedCollectedVariables();
 	}
 	
 	/**

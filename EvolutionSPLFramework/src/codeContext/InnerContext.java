@@ -3,6 +3,7 @@ package codeContext;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -16,6 +17,9 @@ import codeContext.processors.export.ExportedContextInterface;
 import codeContext.processors.export.ExportedInterface;
 import codeContext.processors.export.ExportedObjectInterface;
 import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.ActualScriptVariablesToSubstituteConfiguration;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.LanguageSpecificVariableSubstitutionConfiguration;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.VariableObjectCollector;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.VariableObjectInHierarchyCollector;
 import splEvolutionCore.DebugInformation;
 
 
@@ -293,24 +297,264 @@ public class InnerContext implements ExportedContextInterface, ExportedObjectInt
 	 */
 	public UsedVariables getUsedVariables() { return this.usedVariables; }
 	
+	
 	/**
-	 * Returns all actual parameters according to currentPosition that is provided as function parameter
+	 * Collects variable objects such as local variables and parameters from the hierarchy of contexts according to provided configuration
 	 * 
-	 * @param currentPosition - the position in application AST (script) which is used to decide if given variables are available/are already declared
-	 * @return all actual (before or at currentPosition that is provided as function parameter) parameters
+	 * @param searchedChildContext - the child context which is processed and variable objects on the path to it have to be found in hierarchy
+	 * @param currentPosition - position of search object/context, behind this position variable objects are unknown
+	 * @param startSearchPosition - the start position in AST of searched object if this object is not provided (null)
+	 * @param endSearchPosition - the end position in AST of searched object if this object is not provided (null)
+	 * @param direction - the direction how search is applied to get all sorted elements from the sorted tree
+	 * @param actualScriptVariablesToSubstituteConfiguration
+	 * @return object with collected variables and parameters in flattened form and applied restrictions holding for depth in AST
 	 */
-	public List<VariableObject> getActualParameters(long currentPosition) { 
-		return this.usedParameters.getAllActualVariableObject(currentPosition); 
+	public VariableObjectCollector collectVariableObjects(InnerContext searchedChildContext,
+			long currentPosition, long startSearchPosition, long endSearchPosition, Direction direction, 
+			ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration) {
+		// CURRENT OBJECT'S DATA
+		List<VariableObject> currentlyAvailableVariables = new ArrayList<VariableObject>();
+		List<VariableObject> extractedVariables = this.usedParameters.getAllActualVariableObject(currentPosition, actualScriptVariablesToSubstituteConfiguration); 
+		currentlyAvailableVariables.addAll(extractedVariables);
+		
+		// PARENTS - DATA OF PREVIOUSLY DECLARED OBJECTS
+		VariableObjectInHierarchyCollector variableObjectInHierarchyCollector = new VariableObjectInHierarchyCollector(actualScriptVariablesToSubstituteConfiguration);
+		InnerContext rootContext = this.getBaseContext(); //to capture real context data
+		if (rootContext == null) { System.out.println("Error: root context is unavailable!"); }
+		rootContext.collectVariableObjectsInAllParents(variableObjectInHierarchyCollector, null, currentPosition, 
+				startSearchPosition, endSearchPosition, direction, actualScriptVariablesToSubstituteConfiguration);
+		variableObjectInHierarchyCollector.setCurrentObjectDepthForCollectedObjectsInHierarhy(); //to correctly filter objects according to the depth
+			
+		// CHILDREN - DECLARED OBJECTS ON THE LEVEL OF CURRENT OBJECT - inner entity
+		if (searchedChildContext == null) {
+			System.out.print("Searched context is null. Getting observed context according to position...");
+			searchedChildContext = variableObjectInHierarchyCollector.getSearchedContextIfExists(); 
+		} 
+		if (searchedChildContext != null) {
+			searchedChildContext.collectVariableObjectsInAllChildren(variableObjectInHierarchyCollector, 
+					searchedChildContext, currentPosition, direction, actualScriptVariablesToSubstituteConfiguration);
+		}
+		
+		return variableObjectInHierarchyCollector.prepareCollectedVariableObjects();
 	}
 	
 	/**
-	 * Returns all actual parameters according to currentPosition that is provided as function parameter if are allowed in configuration otherwise empty list
+	 * Collects variable objects such as local variables and parameters from the parents of searched object in the hierarchy of contexts according to provided configuration
+	 * 
+	 * @param variableObjectInHierarchyCollector - the collector of variable objects from the hierarchy with mapped depth
+	 * @param searchedChildContext - the child context which is processed and variable objects on the path to it have to be found in hierarchy
+	 * @param currentPosition - position of search object/context, behind this position variable objects are unknown
+	 * @param startSearchPosition - the start position in AST of searched object if this object is not provided (null)
+	 * @param endSearchPosition - the end position in AST of searched object if this object is not provided (null)
+	 * @param direction - the direction how search is applied to get all sorted elements from the sorted tree
+	 * @param actualScriptVariablesToSubstituteConfiguration
+	 */
+	public void collectVariableObjectsInAllParents(VariableObjectInHierarchyCollector variableObjectInHierarchyCollector, InnerContext searchedChildContext,
+			long currentPosition, long startSearchPosition, long endSearchPosition, Direction direction, 
+			ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration) {
+		this.searchVariableObjectsInAllParents(searchedChildContext, currentPosition, startSearchPosition, endSearchPosition,
+				direction, variableObjectInHierarchyCollector, actualScriptVariablesToSubstituteConfiguration, 0);
+	}
+	
+	/**
+	 * Collects variable objects such as local variables and parameters from the children of searched object in the hierarchy of contexts according to provided configuration
+	 * 
+	 * @param variableObjectInHierarchyCollector - the collector of variable objects from the hierarchy with mapped depth
+	 * @param searchedChildContext - the child context which is processed and variable objects on the path to it have to be found in hierarchy
+	 * @param currentPosition - position of search object/context, behind this position variable objects are unknown
+	 * @param direction - the direction how search is applied to get all sorted elements from the sorted tree
+	 * @param actualScriptVariablesToSubstituteConfiguration
+	 * @param depth - currently processed depth in hierarchy of contexts
+	 */
+	public void collectVariableObjectsInAllChildren(VariableObjectInHierarchyCollector variableObjectInHierarchyCollector, 
+			InnerContext searchedChildContext, long currentPosition, Direction direction, 
+			ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration, int depth) {
+		List<VariableObject> childParameters, childLocalVariables;
+		SortedMap<Long, InnerContext> currentlyAvailableContexts = this.getActualContext(currentPosition, direction);
+		
+		int parametersDepth = variableObjectInHierarchyCollector.getMaximalReachedDepthDuringCollectionOfParameters() + 2;
+		int localVariablesDepth = variableObjectInHierarchyCollector.getMaximalReachedDepthDuringCollectionOfLocalVariables() + 2;
+		for (InnerContext currentlyAvailableContext: currentlyAvailableContexts.values()) {
+			if (currentPosition <= currentlyAvailableContext.getActualEndPosition()) {
+				childParameters = currentlyAvailableContext.getParameters(currentPosition, actualScriptVariablesToSubstituteConfiguration);
+				variableObjectInHierarchyCollector.collectParameters(childParameters, parametersDepth);
+				
+				childLocalVariables = currentlyAvailableContext.getVariables(currentPosition);
+				variableObjectInHierarchyCollector.collectLocalVariables(childLocalVariables, localVariablesDepth);
+				
+				currentlyAvailableContext.collectVariableObjectsInAllChildren(
+						variableObjectInHierarchyCollector, searchedChildContext, currentPosition,
+						direction, actualScriptVariablesToSubstituteConfiguration);
+			}
+		}
+	}
+	
+	/**
+	 * Collects variable objects such as local variables and parameters from the previously declared child objects/contexts  
+	 * 
+	 * @param variableObjectInHierarchyCollector - the collector of variable objects from the hierarchy with mapped depth
+	 * @param searchedChildContext - the child context which is processed and variable objects on the path to it have to be found in hierarchy
+	 * @param currentPosition - position of search object/context, behind this position variable objects are unknown
+	 * @param direction - the direction how search is applied to get all sorted elements from the sorted tree
+	 * @param actualScriptVariablesToSubstituteConfiguration
+	 */
+	public void collectVariableObjectsInAllChildren(VariableObjectInHierarchyCollector variableObjectInHierarchyCollector, 
+			InnerContext searchedChildContext, long currentPosition, Direction direction, 
+			ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration) {
+		this.collectVariableObjectsInAllChildren(variableObjectInHierarchyCollector, searchedChildContext, currentPosition, direction, 
+				actualScriptVariablesToSubstituteConfiguration, 0);
+	}
+	
+	/**
+	 * Collects context information about declared local variables and parameters
+	 * - optionally prints their name and type in particular depth
+	 * 
+	 * @param observedChildContext
+	 * @param currentPosition - position of search object/context, behind this position variable objects are unknown
+	 * @param depth - currently processed depth in hierarchy of contexts
+	 * @param variableObjectInHierarchyCollector - the collector of variable objects from the hierarchy with mapped depth
+	 * @param actualScriptVariablesToSubstituteConfiguration - the configuration for extraction of parameters and variables for further substitution
+	 * @param languageSpecificVariablesToSubstituteConfiguration - the programming language specific configuration for extracting local variables and parameters
+	 * @param onPath - if information is extracted from contexts on the path from the root to the searched context in the hierarchy
+	 */
+	private void collectContextInformation(InnerContext observedChildContext, long currentPosition,  int depth, VariableObjectInHierarchyCollector variableObjectInHierarchyCollector, 
+			ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration, LanguageSpecificVariableSubstitutionConfiguration languageSpecificVariablesToSubstituteConfiguration, boolean onPath) {
+		List<VariableObject> extractedParameters, extractedLocalVariables;
+		if (onPath) {
+			if (languageSpecificVariablesToSubstituteConfiguration.isHarvestingParameterDepthLevelAllowed()) {
+				extractedParameters = observedChildContext.getParameters(currentPosition, actualScriptVariablesToSubstituteConfiguration);
+				if (DebugInformation.SHOW_POLLUTING_INFORMATION) {
+					if (extractedParameters.size() > 0) {
+						System.out.println("Harvested parameters in depth " + depth + " :");
+						for (VariableObject vo: extractedParameters) {
+							System.out.println(vo.getExportName() + " ___ " + vo.getExportType());
+						}
+					}
+				}
+				variableObjectInHierarchyCollector.collectParameters(extractedParameters, depth);
+			}
+		}
+		if (languageSpecificVariablesToSubstituteConfiguration.isHarvestingLocalVariablesDepthLevelAllowed() &&
+				!actualScriptVariablesToSubstituteConfiguration.useCurrentLevelVariablesOnly()) {
+			//local variables higher/in parent are usually not accessible
+			extractedLocalVariables = observedChildContext.getVariables(currentPosition);
+			if (DebugInformation.SHOW_POLLUTING_INFORMATION) {
+				if (extractedLocalVariables.size() > 0) {
+					System.out.println("Harvested variables in depth " + depth + " :");
+					for (VariableObject vo: extractedLocalVariables) {
+						System.out.println(vo.getExportName() + " ___ " + vo.getExportType());
+					}
+				}
+			}
+			variableObjectInHierarchyCollector.collectLocalVariables(extractedLocalVariables, depth);
+		}
+	}
+	
+	/**
+	 * Collects variable objects such as local variables and parameters from the parents of searched object in the hierarchy of contexts according to provided configuration
+	 *  
+	 * @param searchedChildContext - the child context which is processed and variable objects on the path to it have to be found in hierarchy
+	 * @param currentPosition - position of search object/context, behind this position variable objects are unknown
+	 * @param startSearchPosition - the start position in AST of searched object if this object is not provided (null)
+	 * @param endSearchPosition - the end position in AST of searched object if this object is not provided (null)
+	 * @param direction - the direction how search is applied to get all sorted elements from the sorted tree
+	 * @param variableObjectInHierarchyCollector
+	 * @param actualScriptVariablesToSubstituteConfiguration
+	 * @param depth - currently processed depth in hierarchy of contexts
+	 */
+	public void searchVariableObjectsInAllParents(InnerContext searchedChildContext,
+			long currentPosition, long startSearchPosition, long endSearchPosition, Direction direction, VariableObjectInHierarchyCollector variableObjectInHierarchyCollector, 
+			ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration, int depth) {
+		Long startSearchedObjectPosition, endSearchObjectPosition;
+		LanguageSpecificVariableSubstitutionConfiguration languageSpecificVariablesToSubstituteConfiguration = 
+				actualScriptVariablesToSubstituteConfiguration.getLanguageSpecificVariableSubstitutionConfiguration();
+		List<VariableObject> classVariables;
+		if (searchedChildContext != null) {
+			startSearchedObjectPosition = searchedChildContext.getActualStartPosition();
+			endSearchObjectPosition = searchedChildContext.getActualEndPosition();
+		} else {
+			startSearchedObjectPosition = startSearchPosition;
+			endSearchObjectPosition = endSearchPosition;
+		}
+		Long startSearchedChildPosition, endSearchedChildPosition;
+		ClassContext identifiedClassContext;
+		// no child and no parents exist
+		if (searchedChildContext != null && this == searchedChildContext) { return; } 
+		
+		SortedMap<Long, InnerContext> currentlyAvailableContexts = this.getActualContext(currentPosition, direction);
+		System.out.println("CAndidates KKKKK: " + currentlyAvailableContexts.values().size());
+		for (InnerContext observedChildContext: currentlyAvailableContexts.values()) {
+			// child is (equals to) searched object, [this - parent, searchedChildContext - child]
+			System.out.println("CURRENT: " + currentPosition + " REQUESTED OBJECT: [" + startSearchedObjectPosition + " , " + endSearchObjectPosition + "]  CHILD: " + observedChildContext.getActualStartPosition() + " ,  " + observedChildContext.getActualEndPosition() );
+			if ((searchedChildContext != null && observedChildContext == searchedChildContext) || 
+					(searchedChildContext == null && 
+					observedChildContext.getActualStartPosition() == startSearchedObjectPosition 
+					&& observedChildContext.getActualEndPosition() == endSearchObjectPosition)) {
+				System.out.println("FOUNDDDDDDDDDDDDDDDDDD....................................");
+				variableObjectInHierarchyCollector.addContextToPath(observedChildContext);
+				
+				if (observedChildContext instanceof ClassContext) {
+					identifiedClassContext = (ClassContext) observedChildContext;
+					classVariables = identifiedClassContext.getClassVariables(currentPosition, actualScriptVariablesToSubstituteConfiguration);
+					//harvestedLocalVariables.addAll(classVariables);
+					variableObjectInHierarchyCollector.collectLocalVariables(classVariables, depth);
+				}
+				
+				this.collectContextInformation(observedChildContext, currentPosition, depth, 
+						variableObjectInHierarchyCollector, actualScriptVariablesToSubstituteConfiguration, 
+						languageSpecificVariablesToSubstituteConfiguration, true);
+				return;
+
+			// child can be in hierarchy on path to his declaration
+			} else {
+				startSearchedChildPosition = observedChildContext.getActualStartPosition();
+				endSearchedChildPosition = observedChildContext.getActualEndPosition();
+				
+				
+				if (startSearchedChildPosition <= startSearchedObjectPosition 
+						&& endSearchedChildPosition >= endSearchObjectPosition) {
+					System.out.println("On Path....................................");
+					variableObjectInHierarchyCollector.addContextToPath(observedChildContext);
+					this.collectContextInformation(observedChildContext, currentPosition, depth, 
+							variableObjectInHierarchyCollector, actualScriptVariablesToSubstituteConfiguration, 
+							languageSpecificVariablesToSubstituteConfiguration, true);
+					
+					observedChildContext.searchVariableObjectsInAllParents(searchedChildContext, currentPosition, startSearchPosition, endSearchPosition,
+							direction, variableObjectInHierarchyCollector, actualScriptVariablesToSubstituteConfiguration, depth + 1);
+					return; //in sorted way contexts not interfere with their positions into each other
+				} else if (startSearchedChildPosition > currentPosition) {
+					// BEHIND SEARCHED POSITION
+					// still relations valid in current entity (this) can apply
+					//break; //can break, is sorted
+					continue; // if children weren't sorted
+					
+				} else { // object is in sorted child objects somewhere before:
+						 //               endSearchObjectPosition < startSearchedObjectPosition
+					// CONTEXT IS NOT ON PATH, BUT SOME OF GLOBAL SETTINGS CAN APPLY
+					
+					// NO PARAMETERS CAN AFFECT CURRENT INSTANCE - parameters of other objects
+					// can change for other programming languages
+					if (!languageSpecificVariablesToSubstituteConfiguration.shouldOmitParsingSideInnerContexts()) {
+						this.collectContextInformation(observedChildContext, currentPosition, depth, 
+								variableObjectInHierarchyCollector, actualScriptVariablesToSubstituteConfiguration, 
+								languageSpecificVariablesToSubstituteConfiguration, false);
+						observedChildContext.searchVariableObjectsInAllParents(searchedChildContext, currentPosition, startSearchPosition, endSearchPosition,
+								direction, variableObjectInHierarchyCollector, actualScriptVariablesToSubstituteConfiguration, depth + 1);
+					}
+					continue;
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Returns parameters that belongs to current entity according to currentPosition that is provided as function parameter if are allowed in configuration otherwise empty list
 	 * 
 	 * @param currentPosition - the position in application AST (script) which is used to decide if given variables are available/are already declared
 	 * @param actualScriptVariablesToSubstituteConfiguration
 	 * @return all actual (before or at currentPosition that is provided as function parameter) parameters if are allowed in configuration otherwise empty list
 	 */
-	public List<VariableObject> getActualParameters(long currentPosition, 
+	public List<VariableObject> getParameters(long currentPosition, 
 			ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration) {
 		if (actualScriptVariablesToSubstituteConfiguration.useParameters()) {
 			return this.usedParameters.getAllActualVariableObject(currentPosition, actualScriptVariablesToSubstituteConfiguration);
@@ -319,25 +563,38 @@ public class InnerContext implements ExportedContextInterface, ExportedObjectInt
 	}
 	
 	/**
-	 * Returns all actually declared variables according to currentPosition that is provided as function parameter
+	 * Returns declared variables for this context according to currentPosition that is provided as function parameter
 	 * 
 	 * @param currentPosition - the position in application AST (script) which is used to decide if given variables are available/are already declared
 	 * @return all actually declared (before or at currentPosition that is provided as function parameter) variables
 	 */
-	public List<VariableObject> getActualVariables(long currentPosition) { 
+	public List<VariableObject> getVariables(long currentPosition) { 
 		return this.usedVariables.getAllActualVariableObject(currentPosition); 
 	}
 	
 	/**
 	 * Returns all actually declared variables according to currentPosition that is provided as function parameter
 	 * 
-	 * @param currentPosition - the position in application AST (script) which is used to decide if given variables are available/are already declared
+	 * @param currentPosition -  the position in application AST (script) which is used to decide if given variables are available/are already declared
+	 * @param direction - 
 	 * @param actualScriptVariablesToSubstituteConfiguration
+	 * @param depth
 	 * @return all actually declared (before or at currentPosition that is provided as function parameter) variables
 	 */
-	public List<VariableObject> getActualVariables(long currentPosition, 
-			ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration) { 
-		return this.usedVariables.getAllActualVariableObject(currentPosition, actualScriptVariablesToSubstituteConfiguration); 
+	public List<VariableObject> getActualVariables(long currentPosition, Direction direction, 
+			ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration, int depth) { 
+		List<VariableObject> currentlyAvailableVariables = new ArrayList<VariableObject>();
+		List<VariableObject> extractedVariables = this.usedVariables.getAllActualVariableObject(currentPosition, actualScriptVariablesToSubstituteConfiguration); 
+		
+		currentlyAvailableVariables.addAll(extractedVariables);
+		
+		SortedMap<Long, InnerContext> currentlyAvailableContexts = this.getActualContext(currentPosition, direction);
+		for (InnerContext currentlyAvailableContext: currentlyAvailableContexts.values()) {
+			extractedVariables = currentlyAvailableContext.getActualVariables(
+					currentPosition, direction, actualScriptVariablesToSubstituteConfiguration, depth + 1);
+			currentlyAvailableVariables.addAll(extractedVariables);
+		}
+		return currentlyAvailableVariables;
 	}
 	
 	/**

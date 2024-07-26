@@ -234,13 +234,12 @@ public class UsedVariables implements ExportedContextInterface, ExportedInterfac
 	 */
 	public List<VariableObject> getAllActualVariableObject(long currentPosition,
 			ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration) {
-		int finalLength = Arrays.binarySearch(
-				(ImportObject[]) this.usedVariableObjects.toArray(new ImportObject[0]), new CodeContextObject(currentPosition));
-		ArrayList<VariableObject> collectedVariables = new ArrayList<VariableObject>();
-		for (VariableObject processedVariable: this.usedVariableObjects.subList(0, finalLength)) {
-			collectedVariables.add(processedVariable);
-		}
-		return collectedVariables;
+		CodeContextObject[] cco = new CodeContextObject[this.usedVariableObjects.size()];
+		cco = (CodeContextObject[]) this.usedVariableObjects.toArray(cco);
+		int finalLength = Arrays.binarySearch(cco, new CodeContextObject(currentPosition));
+		if (finalLength == -1) { finalLength = this.usedVariableObjects.size(); }
+		if (Math.abs(finalLength) >= this.usedVariableObjects.size() - 1 && this.usedVariableObjects.size() != 0) { finalLength = Math.abs(finalLength) - 1; }
+		return new ArrayList<VariableObject>(this.usedVariableObjects.subList(0, Math.abs(finalLength)));
 	}
 	
 	/**

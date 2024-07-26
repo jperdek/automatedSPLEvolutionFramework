@@ -7,6 +7,8 @@ import java.util.Map.Entry;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+
+import codeContext.objects.VariableObject;
 import codeContext.processors.ASTContextProcessor;
 import codeContext.processors.HierarchyContextProcessor;
 import codeContext.processors.export.ExportAggregator;
@@ -208,5 +210,25 @@ public class FunctionContext extends InnerContext {
 	public ExportedObjectInterface getExtendableInnerObjectAccordingToType(String innerObjectType) {
 		if (this.functionName.equals(innerObjectType)) { return this; }
 		return super.getExtendableInnerObjectAccordingToType(innerObjectType);
+	}
+	
+	/**
+	 * Harvests variables, parameters including global ones to "actual"/specified position in this inner code context 
+	 * 
+	 * @param currentPosition - the current position in the application AST to decide about what is "actual"
+	 * @param actualScriptVariablesToSubstituteConfiguration
+	 * @return the list of actual variables, parameters of previously accessible from this inner context to actual position and global variables
+	 */
+	public List<VariableObject> getActualVariables(long currentPosition, 
+			ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration) {
+		List<VariableObject> actualVariables = super.getVariables(currentPosition);
+		List<VariableObject> functionParametersAndVariables = this.members.getAllActualVariableObject(currentPosition, actualScriptVariablesToSubstituteConfiguration);
+		actualVariables.addAll(functionParametersAndVariables);
+		System.out.println("----------Printing function parameters and declared variables and data structures: ");
+		for (VariableObject vo: functionParametersAndVariables) {
+			System.out.println(vo.getExportName() +  " --- called as --> " + vo.getCallableStr());
+		}
+		System.out.println("-----------------------------------------------------------------------------------");
+		return actualVariables;
 	}
 }
