@@ -23,8 +23,7 @@ public class PositiveVariationPointCandidateSelection {
 	/**
 	 * Creates the instance of PositiveVariationPointCandidateSelection
 	 */
-	public PositiveVariationPointCandidateSelection() {
-	}
+	public PositiveVariationPointCandidateSelection() {}
 	
 	/**
 	 * Extracts the variation point and associates all available data to it if the given variation point is positive
@@ -36,7 +35,6 @@ public class PositiveVariationPointCandidateSelection {
 		List<PositiveVariationPointCandidateTemplates> positiveVariationCandidates = new ArrayList<PositiveVariationPointCandidateTemplates>();
 		PositiveVariationPointCandidateTemplates createdCandidate;
 		
-		String affectedCode;
 		JSONObject variationPointData;
 		for (Object variationPointObject: variationPointArray) {
 			variationPointData = (JSONObject) variationPointObject;

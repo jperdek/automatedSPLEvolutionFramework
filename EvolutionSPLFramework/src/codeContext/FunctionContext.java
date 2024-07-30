@@ -31,9 +31,9 @@ public class FunctionContext extends InnerContext {
 	private String functionName;
 	
 	/**
-	 * The variables declared inside function
+	 * The function parameters, declared variables are contained into inner context instance
 	 */
-	private UsedVariables members;
+	private UsedVariables functionParameters;
 	
 	/**
 	 * Return type of the function, which object is returned to extend it further
@@ -56,7 +56,7 @@ public class FunctionContext extends InnerContext {
 			String functionName, boolean useTypes, String returnType, boolean isExported) {
 		super(baseFirstInnerContext, originalStartPosition, originalEndPosition, useTypes, isExported);
 		this.functionName = functionName;
-		this.members = new UsedVariables();
+		this.functionParameters = new UsedVariables();
 		this.returnType = returnType;
 	}
 	
@@ -77,24 +77,35 @@ public class FunctionContext extends InnerContext {
 	public FunctionContext(InnerContext baseFirstInnerContext, long originalStartPosition, long originalEndPosition, 
 			UsedVariables upperInnerContextParameters, UsedVariables upperInnerContextVariables, 
 			String functionName, UsedVariables upperInnerContextMembers, boolean useTypes, String returnType, boolean isExported) {
-		super(baseFirstInnerContext, originalStartPosition, originalEndPosition, upperInnerContextParameters, 
-				upperInnerContextVariables, useTypes, isExported);
+		super(baseFirstInnerContext, originalStartPosition, originalEndPosition, upperInnerContextVariables, useTypes, isExported);
 		this.functionName = functionName;
-		this.members = new UsedVariables(upperInnerContextMembers.getUsedVariableObjects());
+		this.functionParameters = new UsedVariables(upperInnerContextMembers.getUsedVariableObjects());
 		this.returnType = returnType;
 	}
 	
 	/**
-	 * Adds class member to function variables
+	 * Adds function parameter to function parameters
 	 * 
 	 * @param partOfVariable - the part AST that contains the variable
 	 * @param astRoot - the root of application AST
 	 * @param variableName - the name of the variable
 	 * @param isDirectlyExported - information if member is directly exported, true if variable is directly exported otherwise false
 	 */
-	public void addMember(JSONObject partOfVariable, JSONObject astRoot, String variableName, boolean isDirectlyExported) {
-		this.members.addVariable(variableName, (long) partOfVariable.get(ASTContextProcessor.SearchPositions.END.label), 
+	public void addFunctionParameter(JSONObject partOfVariable, JSONObject astRoot, String variableName, boolean isDirectlyExported) {
+		this.functionParameters.addVariable(variableName, (long) partOfVariable.get(ASTContextProcessor.SearchPositions.END.label), 
 				astRoot, partOfVariable, true, false, isDirectlyExported);
+	}
+	
+	/**
+	 * Inserts/adds the parameter to used parameters in this context
+	 * 
+	 * @param partOfVariable - the part AST that contains the variable/parameter
+	 * @param astRoot - the root of application AST
+	 * @param variableName - the name of the variable/parameter
+	 */
+	public void addFunctionParameter(JSONObject partOfVariable, JSONObject astRoot, String variableName) {
+		this.functionParameters.addVariable(variableName, (long) partOfVariable.get(ASTContextProcessor.SearchPositions.END.label), 
+				astRoot, partOfVariable, false, false, false);
 	}
 	
 	/**
@@ -113,7 +124,14 @@ public class FunctionContext extends InnerContext {
 	public ContextOptions insertAllInstantiations(String baseExecutable, InnerContext actualContext) {
 		return new ContextOptions(actualContext, this);
 	}
-	
+
+	/**
+	 * Returns the used parameters representation
+	 * 
+	 * @return the used parameters representation
+	 */
+	public UsedVariables getFunctionParameters() { System.out.println("Getting function parameters from" + this.functionName); return this.functionParameters; }
+
 	/**
 	 * Returns and creates the descriptive JSON represented output from information about the function context
 	 * 
@@ -125,7 +143,7 @@ public class FunctionContext extends InnerContext {
 		descriptiveJSON.put("contextType", "Function");
 		descriptiveJSON.put("functionName", this.functionName);
 		descriptiveJSON.put("returnType", this.returnType);
-		JSONArray membersArray = this.members.createDescriptiveJSON();
+		JSONArray membersArray = this.functionParameters.createDescriptiveJSON();
 		if (!membersArray.isEmpty()) {
 			descriptiveJSON.put("functionMembers", membersArray);
 		}
@@ -146,16 +164,32 @@ public class FunctionContext extends InnerContext {
 	 */
 	public void getUsableVariablesInActualContext(Set<Entry<String, String>> availableVariablesFromActualContext,
 			ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration, GlobalContext globalContext) {
+		super.getUsableVariablesInActualContext(availableVariablesFromActualContext, actualScriptVariablesToSubstituteConfiguration, globalContext);
 		if (actualScriptVariablesToSubstituteConfiguration.useParameters()) {
 			//CHECK POSITION!!!!!
-			this.members.getUsableVariablesInActualContext(
+			this.functionParameters.getUsableVariablesInActualContext(
 					availableVariablesFromActualContext, actualScriptVariablesToSubstituteConfiguration, globalContext);
 		}
 	}
 
+	/**
+	 * Returns the function parameters that belongs to current function according to currentPosition that is provided as function parameter if are allowed in configuration otherwise empty list
+	 * 
+	 * @param currentPosition - the position in application AST (script) which is used to decide if given variables are available/are already declared
+	 * @param actualScriptVariablesToSubstituteConfiguration
+	 * @return all actual (before or at currentPosition that is provided as function parameter) parameters if are allowed in configuration otherwise empty list
+	 */
+	public List<VariableObject> getFunctionParameters(long currentPosition, 
+			ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration) {
+		if (actualScriptVariablesToSubstituteConfiguration.useParameters()) {
+			return this.functionParameters.getAllActualVariableObject(currentPosition, actualScriptVariablesToSubstituteConfiguration);
+		}
+		return new ArrayList<VariableObject>();
+	}
+	
 	@Override
 	public String constructCallableForm() {
-		return this.functionName + "(" + this.usedParameters.concatenate(this.useTypes) + ")";
+		return this.functionName + "(" + this.functionParameters.concatenate(this.useTypes) + ")";
 	}
 
 	@Override
@@ -222,7 +256,7 @@ public class FunctionContext extends InnerContext {
 	public List<VariableObject> getActualVariables(long currentPosition, 
 			ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration) {
 		List<VariableObject> actualVariables = super.getVariables(currentPosition);
-		List<VariableObject> functionParametersAndVariables = this.members.getAllActualVariableObject(currentPosition, actualScriptVariablesToSubstituteConfiguration);
+		List<VariableObject> functionParametersAndVariables = this.functionParameters.getAllActualVariableObject(currentPosition, actualScriptVariablesToSubstituteConfiguration);
 		actualVariables.addAll(functionParametersAndVariables);
 		System.out.println("----------Printing function parameters and declared variables and data structures: ");
 		for (VariableObject vo: functionParametersAndVariables) {
@@ -230,5 +264,15 @@ public class FunctionContext extends InnerContext {
 		}
 		System.out.println("-----------------------------------------------------------------------------------");
 		return actualVariables;
+	}
+	
+	public void printContextSpecifics() {
+		System.out.println("-->===>---> FUNCTION PARAMETERS: ");
+		for (String extractedVariableString: this.functionParameters.getUsedVariableObjectsStrings()) {
+			System.out.println("-->===> " + extractedVariableString);
+		}
+		System.out.println();
+		System.out.println("RETURN TYPE: " + this.returnType);
+		System.out.println();
 	}
 }

@@ -3,6 +3,7 @@ package codeContext.processors;
 import org.json.simple.JSONObject;
 import codeContext.ClassContext;
 import codeContext.CodeContext;
+import codeContext.FunctionContext;
 import codeContext.GlobalContext;
 import codeContext.InnerContext;
 
@@ -63,7 +64,7 @@ public class ASTContextProcessor {
 	public static CodeContext initializeCodeContext(JSONObject astRoot, JSONObject analyzedAstPlace, 
 			String fileName, boolean useTypes) {
 		GlobalContext globalContext = new GlobalContext();
-		InnerContext innerContext = new InnerContext(null, 0, 0, useTypes, false);
+		InnerContext innerContext = new InnerContext(null, 0, Integer.MAX_VALUE, useTypes, false);
 		CodeContext initialCodeContext = new CodeContext(globalContext, innerContext, fileName);
 		ImportProcessor.processImportsInAstPart(astRoot, analyzedAstPlace, initialCodeContext);
 		return initialCodeContext;

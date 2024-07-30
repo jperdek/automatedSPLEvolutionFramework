@@ -11,6 +11,8 @@ import org.json.simple.JSONObject;
 
 import astFileProcessor.ASTLoader;
 import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.AlreadyChosenVariationPointForInjectionException;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.CallableConstructDependency;
+import splEvolutionCore.DebugInformation;
 
 
 /**
@@ -27,15 +29,10 @@ public class ExportLocationAggregation {
 	 */
 	private Map<String, ExportLocations> fileBasedLocations;
 	
-	/**
-	 * information if callable constructs must be necessarily injected into specific variation point if true otherwise false
+	/** 
+	 * Possible dependency of callable construct due to its position in AST tree and programming language restrictions
 	 */
-	private boolean belongToParticularVariationPoint = false;
-	
-	/**
-	 * Identifier of variation point that should be used to inject the functionality
-	 */
-	private String variationPointToInjectCondIdentifier = null;
+	private CallableConstructDependency callableConstructDependency = null;
 
 	/**
 	 * Initializes the aggregation of export locations
@@ -47,29 +44,26 @@ public class ExportLocationAggregation {
 	 * 
 	 * @param variationPointToInjectCondIdentifier - identifier of variation point that should be used to inject the functionality
 	 */
-	public ExportLocationAggregation(String variationPointToInjectCondIdentifier) {
+	public ExportLocationAggregation(CallableConstructDependency callableConstructDependency) {
 		this.fileBasedLocations = new HashMap<String, ExportLocations>();
-		System.out.println("------------------------------------> Dependecy: " + variationPointToInjectCondIdentifier);
-		this.variationPointToInjectCondIdentifier = variationPointToInjectCondIdentifier;
-		if (this.variationPointToInjectCondIdentifier != null) {
-			this.belongToParticularVariationPoint = true;
-		}
+		if (DebugInformation.SHOW_POLLUTING_INFORMATION) { System.out.println("-> Callable construct Dependecy: " + callableConstructDependency); }
+		this.callableConstructDependency = callableConstructDependency;
 	}
 	
 	/**
-	 * Checks if this callable construct belongs to particular variation point
+	 * Checks if this callable construct has dependency on its usage
 	 * 
-	 * @return true if this callable construct belongs to particular variation point
+	 * @return true if this callable construct has dependency on its usage
 	 */
-	public boolean belongsToParticularVariationPoint() { return this.belongToParticularVariationPoint; }
+	public boolean hasDependency() { return this.callableConstructDependency != null; }
 	
 	/**
-	 * Returns the variation point identifier if the callable construct has prescribed it as dependency otherwise null
-	 * - can be checked with belongsToParticularVariationPoint()
+	 * Returns the dependency of callable construct on particular variation point otherwise null
+	 * - can be checked with hasDependencyOnParticularVariationPoint()
 	 * 
-	 * @return the variation point identifier if the callable construct has prescribed it as dependency otherwise null
+	 * @return the dependency of callable construct on particular variation point otherwise null
 	 */
-	public String getVariationPointToInjectIdentifier() { return this.variationPointToInjectCondIdentifier; }
+	public CallableConstructDependency getVariationPointDependency() { return this.callableConstructDependency; }
 
 	/**
 	 * Merges samples from export location aggregation into this one 

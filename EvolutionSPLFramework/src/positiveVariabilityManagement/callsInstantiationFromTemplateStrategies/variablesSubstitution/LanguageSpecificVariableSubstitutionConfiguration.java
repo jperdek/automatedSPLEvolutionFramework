@@ -43,7 +43,7 @@ public class LanguageSpecificVariableSubstitutionConfiguration {
 	 * @param maxHarvestingParametersDepthLevelAcrossHierarchies - the maximally allowed harvesting depth level to restrict application of parameters declared in nested structures
 	 * @param canApplyMaxHarvestingDepthLevelForLocalVariables - true if max harvesting depth level of variables should be applied to omit declared local variables in nested structures otherwise false
 	 * @param maxHarvestingLocalVariablesDepthLevelAcrossHierarchies - the maximally allowed harvesting depth level to restrict application of variables declared in nested structures
-	 * @param omitParsingSideInnerContexts - omits parsing side inner context while getting parameters and variables for substitution if true otherwise false
+	 * @param omitParsingSideInnerContexts - omits parsing side inner context while getting parameters and variables for substitution if true otherwise false, if true execution is faster
 	 */
 	public LanguageSpecificVariableSubstitutionConfiguration(
 			boolean canApplyMaxHarvestingDepthLevelForParameters, int maxHarvestingParametersDepthLevelAcrossHierarchies,

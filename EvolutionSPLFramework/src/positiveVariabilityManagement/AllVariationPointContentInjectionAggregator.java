@@ -62,8 +62,12 @@ public class AllVariationPointContentInjectionAggregator implements SelectionOfC
 			variationPointMarkerName = availableFunctionalitiesEntry.getKey();
 			variationPointContentsInjection = availableFunctionalitiesEntry.getValue();
 			if(DebugInformation.PROCESS_STEP_INFORMATION) {
+				if (variationPointContentsInjection.getCodeFragments().size() == 0 
+						&& !DebugInformation.SHOW_POLLUTING_INFORMATION) { continue; }
+				
 				System.out.println("Added vp name: " + variationPointMarkerName + " with fragments: " + 
 						variationPointContentsInjection.getCodeFragments().size());
+				
 			}
 					
 			for (CodeFragment codeFragment: variationPointContentsInjection.getCodeFragments()) {

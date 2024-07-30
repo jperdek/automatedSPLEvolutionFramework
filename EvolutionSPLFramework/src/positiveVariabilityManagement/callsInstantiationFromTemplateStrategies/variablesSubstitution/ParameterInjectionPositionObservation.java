@@ -1,8 +1,11 @@
 package positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.json.simple.JSONObject;
 
@@ -15,12 +18,12 @@ import splEvolutionCore.candidateSelector.PositiveVariationPointCandidateTemplat
 
 public class ParameterInjectionPositionObservation {
 	
-	private Map<String, Map<String, InjectionCandidateVariationPoint>> extractedVariablesOrganizedAccoringType;
-	private Map<String, InjectionCandidateVariationPoint> variationPointToVariablesMap;
+	private Map<String, Set<VariableAggregationUnderVariationPoint>> extractedVariablesOrganizedAccoringType;
+	private Map<String, VariableAggregationUnderVariationPoint> variationPointIdentifierToAggregationMap;
 	
 	public ParameterInjectionPositionObservation() {
-		this.extractedVariablesOrganizedAccoringType = new HashMap<String, Map<String, InjectionCandidateVariationPoint>>();
-		this.variationPointToVariablesMap = new HashMap<String, InjectionCandidateVariationPoint>();
+		this.extractedVariablesOrganizedAccoringType = new HashMap<String, Set<VariableAggregationUnderVariationPoint>>();
+		this.variationPointIdentifierToAggregationMap = new HashMap<String, VariableAggregationUnderVariationPoint>();
 	}
 	
 	public void extractRelatedVariationPointData(CodeContext codeContext, 
@@ -29,44 +32,63 @@ public class ParameterInjectionPositionObservation {
 		JSONObject actuallyProcessedVariationPointData;
 		String variationPointIDName;
 		String variableName, variableType;
-		String variableNameWithVariationPointName;
-		String variationPointNameWithVariableType;
-		InjectionCandidateVariationPoint injectionCandidateVariationPoint;
-		Map<String, InjectionCandidateVariationPoint> variableTypeToInjectedVariableMap;
+		Set<VariableAggregationUnderVariationPoint> variableTypeToInjectedVariableMap;
+		VariableAggregationUnderVariationPoint variableAggregationUnderVariationPoint;
 		long searchPosition, startSearchPosition, endSearchPosition;
-
+		
+		codeContext.getInnerContext().printTree(0);
+		//System.exit(8);
 		for (PositiveVariationPointCandidateTemplates positiveVariationPointCandidateTemplate: positiveVariationPointCandidatesTemplates) {
 			actuallyProcessedVariationPointData = positiveVariationPointCandidateTemplate.getVariationPointData();
 			variationPointIDName = (String) actuallyProcessedVariationPointData.get("variationPointName");
-			startSearchPosition = searchPosition = (long) actuallyProcessedVariationPointData.get("startPosition");
-			endSearchPosition = (long) actuallyProcessedVariationPointData.get("startPosition");
-			System.out.println("Used position to get inner data from variables and parameters: " +  actuallyProcessedVariationPointData.toString());
+		
+			startSearchPosition = (long) actuallyProcessedVariationPointData.get("startPosition");
+			searchPosition = endSearchPosition = (long) actuallyProcessedVariationPointData.get("endPosition");
+			System.out.println("Used position: [" + startSearchPosition + ", " + endSearchPosition + "] to get inner data from variation point: " + variationPointIDName + " variables and parameters: " +  actuallyProcessedVariationPointData.toString());
 			for (VariableObject processedVariable: codeContext.getActualVariables(null,
 					searchPosition, startSearchPosition, endSearchPosition, Direction.RIGHT_FROM_POSITION, actualScriptVariablesToSubstituteConfiguration)) {
-				System.out.println("HEEEEEEEEEEEEEEEEERE");
-				//System.exit(0);
-				variableName = processedVariable.getExportName();
-				variableType = processedVariable.getExportType();
+				variableName = processedVariable.getExportName().strip() + SPLEvolutionCore.CODE_FRAGMENT_SEPARATOR.strip();
+				variableType = processedVariable.getExportType().strip();
+				
+				// GETIING MAPS AGGREGATED ACCORDING TO VARIATION POINT IDENTIFIER/NAME 
 				if (!this.extractedVariablesOrganizedAccoringType.containsKey(variableType)) {
-					variableTypeToInjectedVariableMap = new HashMap<String, InjectionCandidateVariationPoint>();
+					variableTypeToInjectedVariableMap = new HashSet<VariableAggregationUnderVariationPoint>();
 				} else {
 					variableTypeToInjectedVariableMap = this.extractedVariablesOrganizedAccoringType.get(variableType);
 				}
-				variableNameWithVariationPointName = variableName + SPLEvolutionCore.CURRENTLY_AVAILABLE_VARIABLE_DELIMITER + variationPointIDName;
-				variationPointNameWithVariableType = variableType + SPLEvolutionCore.CURRENTLY_AVAILABLE_VARIABLE_DELIMITER + variationPointIDName;
-				if (this.variationPointToVariablesMap.containsKey(variationPointNameWithVariableType)) {
-					injectionCandidateVariationPoint = this.variationPointToVariablesMap.get(variationPointNameWithVariableType);
+				
+				if (!this.variationPointIdentifierToAggregationMap.containsKey(variationPointIDName)) {
+					variableAggregationUnderVariationPoint = new VariableAggregationUnderVariationPoint(variationPointIDName);
 				} else {
-					injectionCandidateVariationPoint = new InjectionCandidateVariationPoint(variationPointIDName);
-				}
-				injectionCandidateVariationPoint.insertVariableNameUnderSharedType(variableName);
-				variableTypeToInjectedVariableMap.put(variableNameWithVariationPointName, injectionCandidateVariationPoint);
+					variableAggregationUnderVariationPoint = this.variationPointIdentifierToAggregationMap.get(variationPointIDName);
+				}	
+				variableTypeToInjectedVariableMap.add(variableAggregationUnderVariationPoint);
+				variableAggregationUnderVariationPoint.putTypeAndVariableName(variableType, variableName);
+				this.variationPointIdentifierToAggregationMap.put(variationPointIDName, variableAggregationUnderVariationPoint);
 				this.extractedVariablesOrganizedAccoringType.put(variableType, variableTypeToInjectedVariableMap);
 			}
 		}
+		
+		this.printAggregatedVariablesUnderType();
+		System.exit(5);
 	}
 	
-	public  Map<String, InjectionCandidateVariationPoint> getVariableToVariationPointMappping(String parameterType) {
-		return this.extractedVariablesOrganizedAccoringType.get(parameterType);
+	public void printAggregatedVariablesUnderType() {
+		Set<VariableAggregationUnderVariationPoint> parameterDependencySet;
+		String variableType;
+		for (Entry<String, Set<VariableAggregationUnderVariationPoint>> parameter: 
+			this.extractedVariablesOrganizedAccoringType.entrySet()) {
+			variableType = parameter.getKey();
+			System.out.println("|====== EXTRACTED VARIABLE AGGREGATED UNDER TYPE ========> " + variableType + " <======= |");
+			parameterDependencySet = parameter.getValue();
+			for (VariableAggregationUnderVariationPoint aggregationUnderVariationPoint: parameterDependencySet) {
+				aggregationUnderVariationPoint.printVariablesUnderThisVariationPoint();
+			}
+			System.out.println("| <===========================================================================> |");
+		}
+	}
+	
+	public Set<VariableAggregationUnderVariationPoint> getVariableToVariationPointMappping(String parameterType) {
+		return this.extractedVariablesOrganizedAccoringType.get(parameterType.strip());
 	}	
 }

@@ -36,6 +36,10 @@ public class ClassContext extends InnerContext {
 	 */
 	private UsedVariables members;
 	
+	/**
+	 * The constructor parameters, declared variables are contained into inner context instance
+	 */
+	private UsedVariables constructorParameters;
 	
 	/**
 	 * Creates the class code context
@@ -52,6 +56,7 @@ public class ClassContext extends InnerContext {
 		super(baseFirstInnerContext, originalStartPosition, originalEndPosition, useTypes, isExported);
 		this.className = className;
 		this.members = new UsedVariables();
+		this.constructorParameters = new UsedVariables();
 	}
 	
 	/**
@@ -70,10 +75,22 @@ public class ClassContext extends InnerContext {
 	public ClassContext(InnerContext baseFirstInnerContext, long originalStartPosition, long originalEndPosition, 
 			UsedVariables upperInnerContextParameters, UsedVariables upperInnerContextVariables, 
 			String className, UsedVariables upperInnerContextMembers, boolean useTypes, boolean isExported) {
-		super(baseFirstInnerContext, originalStartPosition, originalEndPosition, upperInnerContextParameters, 
-				upperInnerContextVariables, useTypes, isExported);
+		super(baseFirstInnerContext, originalStartPosition, originalEndPosition, upperInnerContextVariables, useTypes, isExported);
 		this.className = className;
 		this.members = new UsedVariables(upperInnerContextMembers.getUsedVariableObjects());
+		this.constructorParameters = new UsedVariables(upperInnerContextParameters.getUsedVariableObjects());
+	}
+	
+	/**
+	 * Inserts/adds the parameter to used parameters in this context
+	 * 
+	 * @param partOfVariable - the part AST that contains the variable/parameter
+	 * @param astRoot - the root of application AST
+	 * @param variableName - the name of the variable/parameter
+	 */
+	public void addConstructorParameter(JSONObject partOfVariable, JSONObject astRoot, String variableName) {
+		this.constructorParameters.addVariable(variableName, (long) partOfVariable.get(ASTContextProcessor.SearchPositions.END.label), 
+				astRoot, partOfVariable, false, false, false);
 	}
 	
 	/**
@@ -134,6 +151,13 @@ public class ClassContext extends InnerContext {
 	public String getClassName() { return this.className; }
 	
 	/**
+	 * Returns the class constructor parameters representation
+	 * 
+	 * @return  the class constructor parameters representation
+	 */
+	public UsedVariables getConstructorParameters() { return this.constructorParameters; }
+	
+	/**
 	 * Adds class member with priority to class variables/members
 	 * 
 	 * @param partOfVariable - the part AST that contains the variable
@@ -157,6 +181,21 @@ public class ClassContext extends InnerContext {
 	public void addMember(JSONObject partOfVariable, JSONObject astRoot, String variableName, boolean isDirectlyExported) {
 		this.members.addVariable(variableName, (long) partOfVariable.get(ASTContextProcessor.SearchPositions.END.label), 
 				astRoot, partOfVariable, true, false, isDirectlyExported);
+	}
+	
+	/**
+	 * Returns the class constructor parameters that belongs to current class according to currentPosition that is provided as function parameter if are allowed in configuration otherwise empty list
+	 * 
+	 * @param currentPosition - the position in application AST (script) which is used to decide if given variables are available/are already declared
+	 * @param actualScriptVariablesToSubstituteConfiguration
+	 * @return all actual (before or at currentPosition that is provided as function parameter) parameters if are allowed in configuration otherwise empty list
+	 */
+	public List<VariableObject> getConstructorParameters(long currentPosition, 
+			ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration) {
+		if (actualScriptVariablesToSubstituteConfiguration.useParameters()) {
+			return this.constructorParameters.getAllActualVariableObject(currentPosition, actualScriptVariablesToSubstituteConfiguration);
+		}
+		return new ArrayList<VariableObject>();
 	}
 	
 	/**
@@ -202,7 +241,7 @@ public class ClassContext extends InnerContext {
 	public String constructCallableForm() {
 		FunctionContext constructor = this.findFunctionContext("constructor");
 		if (constructor == null) { return ""; }
-		return "new " + this.className + "(" + constructor.usedParameters.concatenate(this.useTypes) + ")";
+		return "new " + this.className + "(" + this.constructorParameters.concatenate(this.useTypes) + ")";
 	}
 	
 	/**
@@ -305,5 +344,13 @@ public class ClassContext extends InnerContext {
 	public List<VariableObject> getClassVariables(long currentPosition, 
 			ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration) {
 		return this.usedVariables.getAllActualVariableObject(currentPosition, actualScriptVariablesToSubstituteConfiguration);
+	}
+	
+	public void printContextSpecifics() {
+		System.out.println("-->===>---> CLASS VARIABLES: ");
+		for (String extractedVariableString: this.members.getUsedVariableObjectsStrings()) {
+			System.out.println("-->===> " + extractedVariableString);
+		}
+		System.out.println();
 	}
 }

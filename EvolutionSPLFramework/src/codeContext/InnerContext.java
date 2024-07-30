@@ -1,9 +1,7 @@
 package codeContext;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -34,7 +32,7 @@ public class InnerContext implements ExportedContextInterface, ExportedObjectInt
 	/**
 	 * Used parameters of inner context
 	 */
-	protected UsedVariables usedParameters;
+	//protected UsedVariables usedParameters;
 	
 	/**
 	 * Used variables that are declared in inner context
@@ -99,7 +97,7 @@ public class InnerContext implements ExportedContextInterface, ExportedObjectInt
 		this.useTypes = useTypes;
 		this.isExported = isExported;
 
-		this.usedParameters = new UsedVariables();
+		//this.usedParameters = new UsedVariables();
 		this.usedVariables = new UsedVariables();
 		if (baseFirstInnerContext == null) {
 			this.baseFirstInnerContext = this;
@@ -114,13 +112,12 @@ public class InnerContext implements ExportedContextInterface, ExportedObjectInt
 	 * @param baseFirstInnerContext - the actually processed/parent inner context
 	 * @param originalStartPosition - the start position of the inner context in the application AST
 	 * @param originalEndPosition - the end position of the inner context in the application AST
-	 * @param upperInnerContextParameters - the parameters accessible from the upper contexts (are propagated to this context)
 	 * @param upperInnerContextVariables - the variables declared in upper contexts (are propagated to this context)
 	 * @param useTypes - information if the types are used - true if types are used otherwise not
 	 * @param isExported - information if this inner context is exported, true if this inner context is exported otherwise false
 	 */
 	public InnerContext(InnerContext baseFirstInnerContext, long originalStartPosition, long originalEndPosition,
-			UsedVariables upperInnerContextParameters, UsedVariables upperInnerContextVariables, 
+			UsedVariables upperInnerContextVariables, 
 			boolean useTypes, boolean isExported) {
 		this.useTypes = useTypes;
 		this.originalStartPosition = originalStartPosition;
@@ -129,7 +126,6 @@ public class InnerContext implements ExportedContextInterface, ExportedObjectInt
 		this.baseFirstInnerContext = baseFirstInnerContext;
 		this.isExported = isExported;
 
-		this.usedParameters = new UsedVariables(upperInnerContextParameters.getUsedVariableObjects());
 		this.usedVariables = new UsedVariables(upperInnerContextVariables.getUsedVariableObjects());
 	}
 	
@@ -217,6 +213,7 @@ public class InnerContext implements ExportedContextInterface, ExportedObjectInt
 	 * @return the actual contexts up to given position
 	 */
 	public SortedMap<Long, InnerContext> getActualContext(long position, Direction direction) {
+		//return this.orderedContexts;
 		if (direction == Direction.LEFT_FROM_POSITION) {
 			return this.orderedContexts.headMap(position);
 		}
@@ -272,25 +269,6 @@ public class InnerContext implements ExportedContextInterface, ExportedObjectInt
 	}
 	
 	/**
-	 * Inserts/adds the parameter to used parameters in this context
-	 * 
-	 * @param partOfVariable - the part AST that contains the variable/parameter
-	 * @param astRoot - the root of application AST
-	 * @param variableName - the name of the variable/parameter
-	 */
-	public void addParameter(JSONObject partOfVariable, JSONObject astRoot, String variableName) {
-		this.usedParameters.addVariable(variableName, (long) partOfVariable.get(ASTContextProcessor.SearchPositions.END.label), 
-				astRoot, partOfVariable, false, false, false);
-	}
-
-	/**
-	 * Returns the used parameters representation
-	 * 
-	 * @return the used parameters representation
-	 */
-	public UsedVariables getUsedParameters() { return this.usedParameters; }
-	
-	/**
 	 * Returns the used variables representation
 	 * 
 	 * @return the used variables representation
@@ -313,18 +291,24 @@ public class InnerContext implements ExportedContextInterface, ExportedObjectInt
 			long currentPosition, long startSearchPosition, long endSearchPosition, Direction direction, 
 			ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration) {
 		// CURRENT OBJECT'S DATA
-		List<VariableObject> currentlyAvailableVariables = new ArrayList<VariableObject>();
-		List<VariableObject> extractedVariables = this.usedParameters.getAllActualVariableObject(currentPosition, actualScriptVariablesToSubstituteConfiguration); 
-		currentlyAvailableVariables.addAll(extractedVariables);
+		//List<VariableObject> extractedParameters = this.usedParameters.getAllActualVariableObject(currentPosition, actualScriptVariablesToSubstituteConfiguration); 
+		//List<VariableObject> extractedLocalVariables = this.usedVariables.getAllActualVariableObject(currentPosition, actualScriptVariablesToSubstituteConfiguration); 
 		
-		// PARENTS - DATA OF PREVIOUSLY DECLARED OBJECTS
+		
+		// CURRENT OBJECT'S DATA + PARENTS - DATA OF PREVIOUSLY DECLARED OBJECTS
 		VariableObjectInHierarchyCollector variableObjectInHierarchyCollector = new VariableObjectInHierarchyCollector(actualScriptVariablesToSubstituteConfiguration);
 		InnerContext rootContext = this.getBaseContext(); //to capture real context data
 		if (rootContext == null) { System.out.println("Error: root context is unavailable!"); }
 		rootContext.collectVariableObjectsInAllParents(variableObjectInHierarchyCollector, null, currentPosition, 
 				startSearchPosition, endSearchPosition, direction, actualScriptVariablesToSubstituteConfiguration);
-		variableObjectInHierarchyCollector.setCurrentObjectDepthForCollectedObjectsInHierarhy(); //to correctly filter objects according to the depth
-			
+		// after current position in hierarchy is found - inserts data
+		//variableObjectInHierarchyCollector.setCurrentObjectDepthForCollectedObjectsInHierarhy(-1); //to correctly filter objects according to the depth
+		//variableObjectInHierarchyCollector.collectParametersOnCurrentDepth(extractedParameters);
+		//variableObjectInHierarchyCollector.collectLocalVariablesOnCurrentDepth(extractedLocalVariables);
+		//System.out.println("Local depth for parameters: " + variableObjectInHierarchyCollector.getMaximalReachedDepthDuringParameterCollection());
+		//System.out.println("Local depth for local variables: " + variableObjectInHierarchyCollector.getMaximalReachedDepthDuringCollectionOfLocalVariables());
+		
+		
 		// CHILDREN - DECLARED OBJECTS ON THE LEVEL OF CURRENT OBJECT - inner entity
 		if (searchedChildContext == null) {
 			System.out.print("Searched context is null. Getting observed context according to position...");
@@ -376,8 +360,14 @@ public class InnerContext implements ExportedContextInterface, ExportedObjectInt
 		int localVariablesDepth = variableObjectInHierarchyCollector.getMaximalReachedDepthDuringCollectionOfLocalVariables() + 2;
 		for (InnerContext currentlyAvailableContext: currentlyAvailableContexts.values()) {
 			if (currentPosition <= currentlyAvailableContext.getActualEndPosition()) {
-				childParameters = currentlyAvailableContext.getParameters(currentPosition, actualScriptVariablesToSubstituteConfiguration);
-				variableObjectInHierarchyCollector.collectParameters(childParameters, parametersDepth);
+				if (currentlyAvailableContext instanceof FunctionContext) {
+					childParameters = ((FunctionContext) currentlyAvailableContext).getFunctionParameters(currentPosition, actualScriptVariablesToSubstituteConfiguration);
+					variableObjectInHierarchyCollector.collectParameters(childParameters, parametersDepth);
+				} else if (currentlyAvailableContext instanceof ClassContext) { 
+					childParameters = ((ClassContext) currentlyAvailableContext).getConstructorParameters(currentPosition, actualScriptVariablesToSubstituteConfiguration);
+					variableObjectInHierarchyCollector.collectParameters(childParameters, parametersDepth);
+				}
+				
 				
 				childLocalVariables = currentlyAvailableContext.getVariables(currentPosition);
 				variableObjectInHierarchyCollector.collectLocalVariables(childLocalVariables, localVariablesDepth);
@@ -417,20 +407,26 @@ public class InnerContext implements ExportedContextInterface, ExportedObjectInt
 	 * @param languageSpecificVariablesToSubstituteConfiguration - the programming language specific configuration for extracting local variables and parameters
 	 * @param onPath - if information is extracted from contexts on the path from the root to the searched context in the hierarchy
 	 */
-	private void collectContextInformation(InnerContext observedChildContext, long currentPosition,  int depth, VariableObjectInHierarchyCollector variableObjectInHierarchyCollector, 
+	private static void collectContextInformation(InnerContext observedChildContext, long currentPosition,  int depth, VariableObjectInHierarchyCollector variableObjectInHierarchyCollector, 
 			ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration, LanguageSpecificVariableSubstitutionConfiguration languageSpecificVariablesToSubstituteConfiguration, boolean onPath) {
 		List<VariableObject> extractedParameters, extractedLocalVariables;
 		if (onPath) {
 			if (languageSpecificVariablesToSubstituteConfiguration.isHarvestingParameterDepthLevelAllowed()) {
-				extractedParameters = observedChildContext.getParameters(currentPosition, actualScriptVariablesToSubstituteConfiguration);
-				if (DebugInformation.SHOW_POLLUTING_INFORMATION) {
-					if (extractedParameters.size() > 0) {
+				if (observedChildContext instanceof FunctionContext) {
+					extractedParameters = ((FunctionContext) observedChildContext).getFunctionParameters(currentPosition, actualScriptVariablesToSubstituteConfiguration);
+				} else if (observedChildContext instanceof ClassContext) {
+					extractedParameters = ((ClassContext) observedChildContext).getConstructorParameters(currentPosition, actualScriptVariablesToSubstituteConfiguration);
+				} else {
+					extractedParameters = null;
+				}
+					//if (DebugInformation.SHOW_POLLUTING_INFORMATION) {
+					if (extractedParameters != null && extractedParameters.size() > 0) {
 						System.out.println("Harvested parameters in depth " + depth + " :");
 						for (VariableObject vo: extractedParameters) {
 							System.out.println(vo.getExportName() + " ___ " + vo.getExportType());
 						}
 					}
-				}
+				//}
 				variableObjectInHierarchyCollector.collectParameters(extractedParameters, depth);
 			}
 		}
@@ -480,29 +476,43 @@ public class InnerContext implements ExportedContextInterface, ExportedObjectInt
 		ClassContext identifiedClassContext;
 		// no child and no parents exist
 		if (searchedChildContext != null && this == searchedChildContext) { return; } 
+		if (this.originalStartPosition == startSearchPosition && this.originalEndPosition == endSearchPosition) {
+			InnerContext.collectContextInformation(this, currentPosition, depth, 
+					variableObjectInHierarchyCollector, actualScriptVariablesToSubstituteConfiguration, 
+					languageSpecificVariablesToSubstituteConfiguration, true);
+			
+			System.out.println("Searched objects depth: " + depth);
+			variableObjectInHierarchyCollector.setCurrentObjectDepthForCollectedObjectsInHierarhy(depth);
+			return;
+		}
 		
-		SortedMap<Long, InnerContext> currentlyAvailableContexts = this.getActualContext(currentPosition, direction);
-		System.out.println("CAndidates KKKKK: " + currentlyAvailableContexts.values().size());
+		SortedMap<Long, InnerContext> currentlyAvailableContexts = this.orderedContexts;// this.getActualContext(currentPosition, direction);
+		if (DebugInformation.SHOW_POLLUTING_INFORMATION) {
+			System.out.println("Number candidates in hiearachy tree to process: " + currentlyAvailableContexts.values().size());
+		}
 		for (InnerContext observedChildContext: currentlyAvailableContexts.values()) {
 			// child is (equals to) searched object, [this - parent, searchedChildContext - child]
-			System.out.println("CURRENT: " + currentPosition + " REQUESTED OBJECT: [" + startSearchedObjectPosition + " , " + endSearchObjectPosition + "]  CHILD: " + observedChildContext.getActualStartPosition() + " ,  " + observedChildContext.getActualEndPosition() );
+			//if (DebugInformation.SHOW_POLLUTING_INFORMATION) {
+				System.out.println("CURRENT: " + currentPosition + " REQUESTED OBJECT: [" + startSearchedObjectPosition + " , " + endSearchObjectPosition + "]  CHILD: " + observedChildContext.getActualStartPosition() + " ,  " + observedChildContext.getActualEndPosition() );
+			//}
 			if ((searchedChildContext != null && observedChildContext == searchedChildContext) || 
 					(searchedChildContext == null && 
 					observedChildContext.getActualStartPosition() == startSearchedObjectPosition 
 					&& observedChildContext.getActualEndPosition() == endSearchObjectPosition)) {
-				System.out.println("FOUNDDDDDDDDDDDDDDDDDD....................................");
 				variableObjectInHierarchyCollector.addContextToPath(observedChildContext);
 				
-				if (observedChildContext instanceof ClassContext) {
-					identifiedClassContext = (ClassContext) observedChildContext;
+				if (this instanceof ClassContext) {
+					identifiedClassContext = (ClassContext) this;
 					classVariables = identifiedClassContext.getClassVariables(currentPosition, actualScriptVariablesToSubstituteConfiguration);
-					//harvestedLocalVariables.addAll(classVariables);
-					variableObjectInHierarchyCollector.collectLocalVariables(classVariables, depth);
+					variableObjectInHierarchyCollector.collectLocalVariables(classVariables, depth + 1);
 				}
 				
-				this.collectContextInformation(observedChildContext, currentPosition, depth, 
+				InnerContext.collectContextInformation(observedChildContext, currentPosition, depth + 1, 
 						variableObjectInHierarchyCollector, actualScriptVariablesToSubstituteConfiguration, 
 						languageSpecificVariablesToSubstituteConfiguration, true);
+				
+				System.out.println("Searched objects depth: " + (depth + 1));
+				variableObjectInHierarchyCollector.setCurrentObjectDepthForCollectedObjectsInHierarhy(depth + 1);
 				return;
 
 			// child can be in hierarchy on path to his declaration
@@ -513,12 +523,12 @@ public class InnerContext implements ExportedContextInterface, ExportedObjectInt
 				
 				if (startSearchedChildPosition <= startSearchedObjectPosition 
 						&& endSearchedChildPosition >= endSearchObjectPosition) {
-					System.out.println("On Path....................................");
+					if (DebugInformation.SHOW_POLLUTING_INFORMATION) { System.out.println("Found instance on path."); }
 					variableObjectInHierarchyCollector.addContextToPath(observedChildContext);
-					this.collectContextInformation(observedChildContext, currentPosition, depth, 
+					InnerContext.collectContextInformation(observedChildContext, currentPosition, depth + 1, 
 							variableObjectInHierarchyCollector, actualScriptVariablesToSubstituteConfiguration, 
 							languageSpecificVariablesToSubstituteConfiguration, true);
-					
+					variableObjectInHierarchyCollector.setCurrentObjectDepthForCollectedObjectsInHierarhy(depth + 1);
 					observedChildContext.searchVariableObjectsInAllParents(searchedChildContext, currentPosition, startSearchPosition, endSearchPosition,
 							direction, variableObjectInHierarchyCollector, actualScriptVariablesToSubstituteConfiguration, depth + 1);
 					return; //in sorted way contexts not interfere with their positions into each other
@@ -535,7 +545,7 @@ public class InnerContext implements ExportedContextInterface, ExportedObjectInt
 					// NO PARAMETERS CAN AFFECT CURRENT INSTANCE - parameters of other objects
 					// can change for other programming languages
 					if (!languageSpecificVariablesToSubstituteConfiguration.shouldOmitParsingSideInnerContexts()) {
-						this.collectContextInformation(observedChildContext, currentPosition, depth, 
+						InnerContext.collectContextInformation(observedChildContext, currentPosition, depth + 1, 
 								variableObjectInHierarchyCollector, actualScriptVariablesToSubstituteConfiguration, 
 								languageSpecificVariablesToSubstituteConfiguration, false);
 						observedChildContext.searchVariableObjectsInAllParents(searchedChildContext, currentPosition, startSearchPosition, endSearchPosition,
@@ -545,21 +555,6 @@ public class InnerContext implements ExportedContextInterface, ExportedObjectInt
 				}
 			}
 		}
-	}
-	
-	/**
-	 * Returns parameters that belongs to current entity according to currentPosition that is provided as function parameter if are allowed in configuration otherwise empty list
-	 * 
-	 * @param currentPosition - the position in application AST (script) which is used to decide if given variables are available/are already declared
-	 * @param actualScriptVariablesToSubstituteConfiguration
-	 * @return all actual (before or at currentPosition that is provided as function parameter) parameters if are allowed in configuration otherwise empty list
-	 */
-	public List<VariableObject> getParameters(long currentPosition, 
-			ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration) {
-		if (actualScriptVariablesToSubstituteConfiguration.useParameters()) {
-			return this.usedParameters.getAllActualVariableObject(currentPosition, actualScriptVariablesToSubstituteConfiguration);
-		}
-		return new ArrayList<VariableObject>();
 	}
 	
 	/**
@@ -617,14 +612,9 @@ public class InnerContext implements ExportedContextInterface, ExportedObjectInt
 	public JSONObject createDescriptiveJSON(GlobalContext globalContext) {
 		JSONObject descriptiveJSON = new JSONObject();
 		JSONArray availableVariablesJSON = this.usedVariables.createDescriptiveJSON();
-		JSONArray availableParametersJSON = this.usedParameters.createDescriptiveJSON();
 		descriptiveJSON.put("p", this.originalEndPosition);
 		if (!availableVariablesJSON.isEmpty()) {
 			descriptiveJSON.put("availableVariables", availableVariablesJSON);
-			//descriptiveJSON.put("p", this.originalStartPosition);
-		}
-		if (!availableParametersJSON.isEmpty()) {
-			descriptiveJSON.put("availableParameters", availableParametersJSON);
 			//descriptiveJSON.put("p", this.originalStartPosition);
 		}
 		return descriptiveJSON;
@@ -642,7 +632,7 @@ public class InnerContext implements ExportedContextInterface, ExportedObjectInt
 		this.usedVariables.getUsableVariablesInActualContext(
 				availableVariablesFromActualContext, actualScriptVariablesToSubstituteConfiguration, globalContext);
 		if (actualScriptVariablesToSubstituteConfiguration.useParameters()) {
-			this.usedParameters.getUsableVariablesInActualContext(
+			this.usedVariables.getUsableVariablesInActualContext(
 					availableVariablesFromActualContext, actualScriptVariablesToSubstituteConfiguration, globalContext);
 		}
 	}
@@ -740,4 +730,49 @@ public class InnerContext implements ExportedContextInterface, ExportedObjectInt
 
 	@Override
 	public String getIdentificationAST() { return this.createDescriptiveJSON(null).toJSONString(); }
+	
+	public void printContextSpecifics() {}
+	
+	protected void addIdentiation(int depth) {
+		for (int i=0;  i <= depth; i++) {
+			if (i % 2 == 0) {
+				System.out.print("--->");
+			} else {
+				System.out.print("===>");
+			}
+		}
+	}
+	public void printTree(int depth) {
+		String contextType = "UNKNOWN";
+		String contextName = "Unknown";
+		if (this instanceof ClassContext) {
+			contextType = "CLASS";
+			contextName = ((ClassContext) this).getClassName();
+		} else if (this instanceof FunctionContext) {
+			contextType = "FUNCTION";
+			contextName = ((FunctionContext) this).getFunctionName();
+		}
+		this.addIdentiation(depth); System.out.println();
+		this.addIdentiation(depth); System.out.println();
+		this.addIdentiation(depth); System.out.println();
+		this.addIdentiation(depth); System.out.println("=-=-=-=-=-= {" + depth + "} =-=-=-=-=-=-= INNER ENTITY: " + contextName + " (" +contextType + ") [" + this.originalStartPosition + ", " + this.originalEndPosition + "]=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+		List<String> extractedVariables = this.usedVariables.getUsedVariableObjectsStrings();
+		this.addIdentiation(depth); System.out.println("-->===>---> USED VARIABLES: ");
+		for (String extractedVariableString: extractedVariables) {
+			this.addIdentiation(depth); System.out.println("-->===> " + extractedVariableString);
+		}
+		this.addIdentiation(depth); System.out.println();
+		
+		System.out.println("-->===>---> CONTEXT SPECIFICS: ");
+		this.addIdentiation(depth); this.printContextSpecifics();
+		
+		if ( this.orderedContexts.size() > 0) {
+			this.addIdentiation(depth); System.out.println("-->===>---> CHILD CONTEXTS: ");
+			for (InnerContext currentlyAvailableContext: this.orderedContexts.values()) {
+				currentlyAvailableContext.printTree(depth + 1);
+			}
+			this.addIdentiation(depth); System.out.println();
+		}
+		this.addIdentiation(depth); System.out.println("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+	}
 }

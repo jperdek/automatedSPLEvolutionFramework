@@ -48,7 +48,7 @@ public class ActualScriptVariablesToSubstituteConfiguration {
 	 * @param useActualScriptVariables
 	 */
 	public ActualScriptVariablesToSubstituteConfiguration(boolean useActualScriptVariables) {
-		this(useActualScriptVariables, true, true, true, false, new LanguageSpecificVariableSubstitutionConfiguration(true, 1, false, 1, true));
+		this(useActualScriptVariables, true, true, true, false, new LanguageSpecificVariableSubstitutionConfiguration(true, 1, false, 0, true));
 		this.useActualScriptVariables = useActualScriptVariables;
 	}
 	

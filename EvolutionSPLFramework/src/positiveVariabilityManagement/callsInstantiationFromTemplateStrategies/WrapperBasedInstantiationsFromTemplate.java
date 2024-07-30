@@ -17,6 +17,7 @@ import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.va
 import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.ParsedTypeOfVariableData;
 import positiveVariabilityManagement.entities.CallableConstructTemplate;
 import splEvolutionCore.DebugInformation;
+import splEvolutionCore.SPLEvolutionCore;
 import splEvolutionCore.candidateSelector.PositiveVariationPointCandidateTemplates;
 
 
@@ -62,8 +63,16 @@ public class WrapperBasedInstantiationsFromTemplate implements CallsInstantiatio
 			callableConstructNameWhole = callableConstructTemplate.getCallableTemplateForm();
 
 			callableConstructName = callableConstructNameWhole.substring(0, callableConstructNameWhole.indexOf('('));
-			parameterInformation = allVariablesMapper.findExternalScriptsParameterInformation(callableConstructTemplate);
-			parameterInformation.putAll(allVariablesMapper.findActualContextParameterInformation(callableConstructTemplate));
+			//parameterInformation = allVariablesMapper.findExternalScriptsParameterInformation(callableConstructTemplate);
+			parameterInformation= allVariablesMapper.findActualContextParameterInformation(callableConstructTemplate);
+			System.out.println("-----------------------> PARAM NAMSES");
+			for (ParsedTypeOfVariableData matchedVariableNameT: parameterInformation.values()) {
+				for (String matchedVariableName: matchedVariableNameT.getNameToContextMapping().keySet()) {
+					System.out.println(matchedVariableName);
+				}
+			}
+			System.out.println("-----------------------> PARAM NAMSE EndS");
+			//parameterInformation = allVariablesMapper.findActualContextParameterInformation(callableConstructTemplate);
 			callableConstructs = this.assignParametersForNewVariable(callableConstructName,
 						callableConstructNameWhole, parameterInformation);
 			if (!callableConstructs.isEmpty()) { allCallableConstructs.addAll(callableConstructs); }
@@ -103,27 +112,32 @@ public class WrapperBasedInstantiationsFromTemplate implements CallsInstantiatio
 				VariationPointDivisionConfiguration.PARAMETERIZED_FORM_START.replace("[", "\\["));
 		for (int index = 1; index < originalParameters.length; index++) {
 			variablePart = originalParameters[index];
+			
 			variableBase = variablePart.split(VariationPointDivisionConfiguration.PARAMETERIZED_FORM_END)[0];
 			variablePart = variableBase.split(":")[0];	
 			
 			variableType =  variableBase.split(":")[1];
-			parsedTypeOfVariableData = parameterInformation.get(variableType);
-			variableNameToExportedContextMapping = parsedTypeOfVariableData.getNameToContextMapping();
-
-			// SIMILARITY MATCHING
-			preCallableConstructsNew = new LinkedList<CallableConstruct>();
-			for (Entry<String, ? extends ExportedObjectOrAvailableVariable> variableNameToExportedContext: variableNameToExportedContextMapping.entrySet()) {
-				matchedVariableName = variableNameToExportedContext.getKey();
-				matchedExportedContext = variableNameToExportedContext.getValue();
-				if (matchedVariableName.contains(variablePart) || variablePart.contains(matchedVariableName)) {
-					for (CallableConstruct callableConstructOld: callableConstructsOld) {
-						callableConstructNew = new CallableConstruct(callableConstructOld);
-						if (callableConstructNew.addParameterWithChecking(matchedVariableName, matchedExportedContext)) {
-							preCallableConstructsNew.add(callableConstructNew);
+			variableType = variableType.split(SPLEvolutionCore.CODE_FRAGMENT_SEPARATOR)[0].strip();
+			if (parameterInformation.containsKey(variableType)) { //selecting parameters should be strong enough
+				parsedTypeOfVariableData = parameterInformation.get(variableType.split(SPLEvolutionCore.CODE_FRAGMENT_SEPARATOR)[0].strip());
+				variableNameToExportedContextMapping = parsedTypeOfVariableData.getNameToContextMapping();
+	
+				// SIMILARITY MATCHING
+				preCallableConstructsNew = new LinkedList<CallableConstruct>();
+				for (Entry<String, ? extends ExportedObjectOrAvailableVariable> variableNameToExportedContext: variableNameToExportedContextMapping.entrySet()) {
+					matchedVariableName = variableNameToExportedContext.getKey();
+					matchedExportedContext = variableNameToExportedContext.getValue();
+					if (matchedVariableName.contains(variablePart) || variablePart.contains(matchedVariableName)) {
+						for (CallableConstruct callableConstructOld: callableConstructsOld) {
+							callableConstructNew = new CallableConstruct(callableConstructOld);
+							if (callableConstructNew.addParameterWithChecking(matchedVariableName, matchedExportedContext)) {
+								//System.out.println("Found construct: " + matchedVariableName);
+								preCallableConstructsNew.add(callableConstructNew);
+							}
 						}
-					}
-					
-				} 
+						
+					} 
+				}
 			}
 			
 			callableConstructsOld.clear();

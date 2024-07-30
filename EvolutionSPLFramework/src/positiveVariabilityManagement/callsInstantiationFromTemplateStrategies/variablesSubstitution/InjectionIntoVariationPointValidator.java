@@ -5,6 +5,7 @@ import java.util.Map.Entry;
 
 import codeContext.processors.export.ExportLocationAggregation;
 import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.AlreadyChosenVariationPointForInjectionException;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.CallableConstructDependency;
 import positiveVariabilityManagement.fragmentManagement.model.CodeFragment;
 
 
@@ -42,10 +43,10 @@ public class InjectionIntoVariationPointValidator {
 	 * @param variationPointNameInnerDependency - the name/identifier of dependent variation point restrictively to where code fragment must be injected
 	 * @throws AlreadyChosenVariationPointForInjectionException - exception thrown in case of violating injection dependency where these identifiers not match
 	 */
-	public static void checkDependencies(String variationPointNameAssociatedToCodeFragment, String variationPointNameInnerDependency) throws AlreadyChosenVariationPointForInjectionException {
-		if (!variationPointNameAssociatedToCodeFragment.equals(variationPointNameInnerDependency)) {
+	public static void checkDependencies(String variationPointNameAssociatedToCodeFragment, CallableConstructDependency callableConstructDependency) throws AlreadyChosenVariationPointForInjectionException {
+		if (callableConstructDependency!= null && !callableConstructDependency.fitsAllDependencies(variationPointNameAssociatedToCodeFragment)) {
 			throw new AlreadyChosenVariationPointForInjectionException("Another variation point: " + 
-					variationPointNameAssociatedToCodeFragment + " has conflict with " + variationPointNameInnerDependency + " been chosen for injection. Occured in exported dependencies.");
+					variationPointNameAssociatedToCodeFragment + " has conflict with " + callableConstructDependency + " been chosen for injection. Occured in exported dependencies.");
 		}
 	}
 	
@@ -58,15 +59,15 @@ public class InjectionIntoVariationPointValidator {
 	 */
 	public static void checkDependencies(String variationPointMarkerName, CodeFragment codeFragmentToCheck) throws AlreadyChosenVariationPointForInjectionException {
 		ExportLocationAggregation exportLocationAggregation = codeFragmentToCheck.getExportLocationAggregation();
-		String variationPointNameInnerDependency;
-		if (exportLocationAggregation.belongsToParticularVariationPoint()) {
-			variationPointNameInnerDependency = exportLocationAggregation.getVariationPointToInjectIdentifier();
-			InjectionIntoVariationPointValidator.checkDependencies(variationPointMarkerName, variationPointNameInnerDependency);
+		CallableConstructDependency callableConstructDependency;
+		if (exportLocationAggregation.hasDependency()) {
+			callableConstructDependency = exportLocationAggregation.getVariationPointDependency();
+			InjectionIntoVariationPointValidator.checkDependencies(variationPointMarkerName, callableConstructDependency);
 		}
 	}
 	
 	/**
-	 * Returns information if conditions to inject content on variation point hold
+	 * Returns information if conditions to inject content according to dependencies on callable construct hold
 	 * 
 	 * @param variationPointMarkerName - the name/identifier of dependent variation point restrictively to where code fragment must be injected
 	 * @param associatedAggregatedLocationExports - object with exports belonging to callable construct with information about 
@@ -74,10 +75,10 @@ public class InjectionIntoVariationPointValidator {
 	 * @throws AlreadyChosenVariationPointForInjectionException
 	 */
 	public static boolean canBeInjectedIntoVariationPoint(String variationPointMarkerName, ExportLocationAggregation associatedAggregatedLocationExports) {
-		String variationPointNameInnerDependency;
-		if (associatedAggregatedLocationExports.belongsToParticularVariationPoint()) {
-			variationPointNameInnerDependency = associatedAggregatedLocationExports.getVariationPointToInjectIdentifier();
-			if (!variationPointMarkerName.equals(variationPointNameInnerDependency)) { return false; }
+		CallableConstructDependency callableConstructDependency;
+		if (associatedAggregatedLocationExports.hasDependency()) {
+			callableConstructDependency = associatedAggregatedLocationExports.getVariationPointDependency();
+			if (!callableConstructDependency.fitsAllDependencies(variationPointMarkerName)) { return false; }
 		}
 		return true;
 	}

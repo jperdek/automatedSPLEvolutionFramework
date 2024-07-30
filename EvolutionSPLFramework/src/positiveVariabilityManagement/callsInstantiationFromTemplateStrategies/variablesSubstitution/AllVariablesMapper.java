@@ -1,10 +1,7 @@
 package positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution;
 
-import codeContext.CodeContext;
-import codeContext.objects.VariableObject;
 import codeContext.processors.export.ExportedContext;
 import codeContext.processors.export.exportedFileUnits.FileExportsUnits;
-import divisioner.VariationPointDivisioning;
 import positiveVariabilityManagement.UnmappedContextException;
 import positiveVariabilityManagement.entities.CallableConstructTemplate;
 import positiveVariabilityManagement.entities.DuplicatedContextIdentifier;
@@ -12,7 +9,6 @@ import positiveVariabilityManagement.entities.VariablesForSubstantiation;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -129,27 +125,40 @@ public class AllVariablesMapper {
 	 */
 	public Map<String, ParsedTypeOfVariableData> findActualContextParameterInformation(CallableConstructTemplate callableConstructTemplate) throws UnmappedContextException { 
 		Set<Entry<String, String>> parameterNamesToTypeMapping = callableConstructTemplate.getParameterNamesToTypeMappingEntries();
-		Set<Entry<String, String>> variableNamesWithVariationPointSet;
-		Map<String, InjectionCandidateVariationPoint> nameToContextMapping;
+		Set<VariableAggregationUnderVariationPoint> nameToContextMappingDependenciesSet;
 		String parameterType;
 		
 		Map<String, ParsedTypeOfVariableData> parsedTypesMapping = new HashMap<String, ParsedTypeOfVariableData>(); 
 		ParsedTypeOfVariableData parsedTypeOfVariableData;
+		Set<VariableAggregationUnderVariationPoint> usableVariationPointsSet = new HashSet<VariableAggregationUnderVariationPoint>();
 		for(Entry<String, String> parameterNamesToTypeEntry: parameterNamesToTypeMapping) {
 			parameterType = parameterNamesToTypeEntry.getValue();
 			if (!parsedTypesMapping.containsKey(parameterType)) {
-				parameterType = parameterNamesToTypeEntry.getValue();
+				parameterType = parameterNamesToTypeEntry.getValue().strip();
 				
-				nameToContextMapping = this.parameterInjectionPositionObservation.getVariableToVariationPointMappping(parameterType);
-				if (nameToContextMapping != null) {
-					parsedTypeOfVariableData = new ParsedTypeOfVariableDataWithVPMapping(nameToContextMapping);
+				//SEARCH SHOULD BE DONE ACCORDING TO VALIDITY RANGE
+				nameToContextMappingDependenciesSet = this.parameterInjectionPositionObservation.getVariableToVariationPointMappping(parameterType);
+				if (nameToContextMappingDependenciesSet != null) {
+					if (usableVariationPointsSet.isEmpty()) {
+						usableVariationPointsSet.addAll(nameToContextMappingDependenciesSet);
+					} else {
+						usableVariationPointsSet.retainAll(nameToContextMappingDependenciesSet);
+					}
+					// if no elements satisfied condition then simply continues
+					if (usableVariationPointsSet.isEmpty()) { System.out.println("Necessary to skip .............................................."); continue; }
+
+					parsedTypeOfVariableData = new ParsedTypeOfVariableDataWithVPMapping(parameterType, nameToContextMappingDependenciesSet);
+					System.out.println("---->" + parameterType + " " + parsedTypeOfVariableData);
 					parsedTypesMapping.put(parameterType, parsedTypeOfVariableData);
+				} else {
+					System.out.println("No data were found for type: " + parameterType);
 				}
 			} else {
 				parsedTypeOfVariableData = parsedTypesMapping.get(parameterType);
 				parsedTypeOfVariableData.increaseOccurence();
 			}
 		}
+		
 		return parsedTypesMapping;
 	}
 }

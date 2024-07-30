@@ -121,7 +121,7 @@ public class PositiveVariationPointCandidateTemplates extends VariationPointCand
 	 */
 	public double evaluateCandidateValue() {
 		double candidateValue = 0;
-		for(AssignedValue processedAssignedValue: assignedValues.values()) {
+		for(AssignedValue processedAssignedValue: this.assignedValues.values()) {
 			candidateValue = candidateValue + processedAssignedValue.calculateOverallValue();
 		}
 		return candidateValue;

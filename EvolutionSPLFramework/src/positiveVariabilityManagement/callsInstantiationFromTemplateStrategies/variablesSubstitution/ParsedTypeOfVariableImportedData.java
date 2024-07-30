@@ -18,7 +18,6 @@ public class ParsedTypeOfVariableImportedData extends ParsedTypeOfVariableData {
 	 */
 	private Map<String, ExportedContext> nameToContextMapping;
 	
-	
 	/**
 	 * Instantiates and initializes the entity to manage parsed type of variable data with the mapping 
 	 * of each variable/parameter name to exported context (import/export/dependency)
@@ -36,5 +35,4 @@ public class ParsedTypeOfVariableImportedData extends ParsedTypeOfVariableData {
 	 * @return the mapping of variable/parameter name to exported context (import/export/dependency)
 	 */
 	public Map<String, ? extends ExportedObjectOrAvailableVariable> getNameToContextMapping() { return  this.nameToContextMapping; }
-	
 }

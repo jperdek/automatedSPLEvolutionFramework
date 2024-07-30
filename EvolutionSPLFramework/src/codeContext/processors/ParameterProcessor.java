@@ -2,6 +2,9 @@ package codeContext.processors;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+
+import codeContext.ClassContext;
+import codeContext.FunctionContext;
 import codeContext.InnerContext;
 
 
@@ -32,7 +35,11 @@ public class ParameterProcessor {
 				} else {
 					declarationName = (String) textObject.get("text");
 				}
-				innerContext.addParameter((JSONObject) declarationAst, astRoot, declarationName);
+				if (innerContext instanceof FunctionContext) {
+					((FunctionContext) innerContext).addFunctionParameter((JSONObject) declarationAst, astRoot, declarationName);
+				} else if (innerContext instanceof ClassContext) {
+					((ClassContext) innerContext).addConstructorParameter((JSONObject) declarationAst, astRoot, declarationName);
+				}
 			}
 		}
 	}

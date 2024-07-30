@@ -2,10 +2,13 @@ package positiveVariabilityManagement.callsInstantiationFromTemplateStrategies;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+
 import codeContext.processors.export.ExportLocationAggregation;
 import codeContext.processors.export.ExportedContext;
 import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.ExportedObjectOrAvailableVariable;
 import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.InjectionCandidateVariationPoint;
+import splEvolutionCore.DebugInformation;
 import splEvolutionCore.SPLEvolutionCore;
 
 
@@ -34,15 +37,10 @@ public class CallableConstruct {
 	 */
 	private List<ExportedContext> exportsMapping;
 	
-	/**
-	 * information if callable constructs must be necessarily injected into specific variation point if true otherwise false
+	/** 
+	 * Possible dependency of callable construct due to its position in AST tree and programming language restrictions
 	 */
-	private boolean belongToParticularVariationPoint = false;
-	
-	/**
-	 * Identifier of variation point that should be used to inject this callable construct
-	 */
-	private String variationPointToInjectCondIdentifier = null;
+	private CallableConstructDependency callableConstructDependency = null;
 	
 	/**
 	 * Instantiates the callable construct representation with related information
@@ -74,19 +72,19 @@ public class CallableConstruct {
 	
 	
 	/**
-	 * Checks if this callable construct belongs to particular variation point
+	 * Checks if this callable construct has dependency on its usage
 	 * 
-	 * @return true if this callable construct belongs to particular variation point
+	 * @return true if this callable construct has dependency on its usage
 	 */
-	public boolean belongsToParticularVariationPoint() { return this.belongToParticularVariationPoint; }
+	public boolean hasDependency() { return this.callableConstructDependency != null; }
 	
 	/**
-	 * Returns the variation point identifier if the callable construct has prescribed it as dependency otherwise null
-	 * - can be checked with belongsToParticularVariationPoint()
+	 * Returns the dependency of callable construct on particular variation point otherwise null
+	 * - can be checked with hasDependencyOnParticularVariationPoint()
 	 * 
-	 * @return the variation point identifier if the callable construct has prescribed it as dependency otherwise null
+	 * @return the dependency of callable construct on particular variation point otherwise null
 	 */
-	public String getVariationPointToInjectIdentifier() { return this.variationPointToInjectCondIdentifier; }
+	public CallableConstructDependency getVariationPointDependency() { return this.callableConstructDependency; }
 	
 	/**
 	 * Adds parameter into the list of callable construct parameters and associated exported context related to the parameter type to the mapping of exports
@@ -110,16 +108,19 @@ public class CallableConstruct {
 	 * @throws AlreadyChosenVariationPointForInjectionException - exception informing about violating dependency of previously chosen another variation point where content must be injected
 	 */
 	public void addParameter(String parameterToSubstitute, InjectionCandidateVariationPoint parameterExportedContext) throws AlreadyChosenVariationPointForInjectionException {
+		
 		if (SPLEvolutionCore.DISABLE_INTERNAL_VARIABLE_INJECTIONS) { throw new AlreadyChosenVariationPointForInjectionException("Injection of inner variables is disabled!"); }
+		System.out.println("Added: " + parameterToSubstitute);
 		this.substitutedParameters.add(parameterToSubstitute);
-		if (this.belongToParticularVariationPoint) {
-			if (!this.variationPointToInjectCondIdentifier.equals(parameterExportedContext.getVariationPointIdentifier())) {
-				throw new AlreadyChosenVariationPointForInjectionException("Another variation point: " + 
-			this.variationPointToInjectCondIdentifier + " has already been chosen for injection");
+		Set<String> variationPointIdentifiers = parameterExportedContext.getVariationPointIdentifiers();
+		if (this.callableConstructDependency != null) {
+			for (String variationPointIdentifier: variationPointIdentifiers) {
+				if (!this.callableConstructDependency.fitsAllDependencies(variationPointIdentifier)) {
+					throw new AlreadyChosenVariationPointForInjectionException("Another variation points have already been chosen for injection");
+				}
 			}
 		} else {
-			this.belongToParticularVariationPoint = true;
-			this.variationPointToInjectCondIdentifier = parameterExportedContext.getVariationPointIdentifier();
+			this.callableConstructDependency = new CallableConstructDependency(variationPointIdentifiers);
 		}
 		this.exportsMapping.add(null);
 	}
@@ -133,13 +134,20 @@ public class CallableConstruct {
 	 * @return true if parameter is successfully applied/inserted otherwise false
 	 * @throws AlreadyChosenVariationPointForInjectionException  - exception informing about violating dependency of previously chosen another variation point where content must be injected
 	 */
-	public boolean addParameterWithChecking(String parameterToSubstitute, ExportedObjectOrAvailableVariable parameterExportedContext) throws AlreadyChosenVariationPointForInjectionException {
+	public boolean addParameterWithChecking(String parameterToSubstitute, 
+			ExportedObjectOrAvailableVariable parameterExportedContext) throws AlreadyChosenVariationPointForInjectionException {
+		
 		if (parameterExportedContext instanceof  InjectionCandidateVariationPoint) {
 			if (SPLEvolutionCore.DISABLE_INTERNAL_VARIABLE_INJECTIONS) { return false; }
-			if (!this.variationPointToInjectCondIdentifier.equals(
+			parameterToSubstitute = parameterToSubstitute.split(SPLEvolutionCore.CODE_FRAGMENT_SEPARATOR)[0].strip();
+			/*if (this.variationPointToInjectCondIdentifier == null) {
+				this.variationPointToInjectCondIdentifier = ((InjectionCandidateVariationPoint) parameterExportedContext).getVariationPointIdentifier();
+			} else if (!this.variationPointToInjectCondIdentifier.equals(
 					((InjectionCandidateVariationPoint) parameterExportedContext).getVariationPointIdentifier())) {
 				return false;
-			}
+			}*/
+			System.out.println("HEEEEEEEEEEEEEEEEEEEEEEEREEEEEEEEEEEEEEEEEE");
+			if (DebugInformation.SHOW_POLLUTING_INFORMATION) { System.out.println("Added parameter " + parameterToSubstitute + " with dependency: " + this.callableConstructDependency); } 
 			this.addParameter(parameterToSubstitute, (InjectionCandidateVariationPoint) parameterExportedContext);
 		} else {
 			if (SPLEvolutionCore.DISABLE_EXTERNAL_VARIABLE_INJECTIONS) { return false; }
@@ -193,7 +201,7 @@ public class CallableConstruct {
 	 * @return the aggregation of dependencies from exported contexts/dependencies
 	 */
 	public ExportLocationAggregation getExportedDependenciesOfFutureImports() {
-		ExportLocationAggregation pathsOfExportDependencies = new ExportLocationAggregation(this.variationPointToInjectCondIdentifier);
+		ExportLocationAggregation pathsOfExportDependencies = new ExportLocationAggregation(this.callableConstructDependency);
 		for (ExportedContext exportedContext: this.exportsMapping) {
 			if (exportedContext != null) {
 				pathsOfExportDependencies.aggregateLocation(exportedContext.getExportedLocation());

@@ -58,7 +58,7 @@ public class SelectUpToConstantConstructsAsFeatures implements FeatureSelectionS
 	 */
 	public List<PositiveVariationPointCandidateTemplates> selectFeatures(
 			List<PositiveVariationPointCandidateTemplates> positiveVariationPointCandidates) {
-		this.sort(positiveVariationPointCandidates); //good to put empty code candidates to the end
+		SelectUpToConstantConstructsAsFeatures.sort(positiveVariationPointCandidates); //good to put empty code candidates to the end
 		int maxFeatureCandidates = this.numberSelectedFeatures;
 		if (positiveVariationPointCandidates.size() < this.numberSelectedFeatures) {
 			maxFeatureCandidates = positiveVariationPointCandidates.size() - 1;

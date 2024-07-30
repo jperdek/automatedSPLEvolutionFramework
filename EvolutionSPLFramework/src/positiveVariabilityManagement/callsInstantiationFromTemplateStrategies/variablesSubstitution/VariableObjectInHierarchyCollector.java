@@ -1,8 +1,11 @@
 package positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import codeContext.InnerContext;
 import codeContext.objects.VariableObject;
@@ -31,22 +34,18 @@ public class VariableObjectInHierarchyCollector {
 	/**
 	 * The aggregation of all collected parameters for particular point in the program aggregated according to depth in the hierarchy
 	 */
-	private List<List<VariableObject>> collectedParametersInHierarchy;
+	private Map<Integer, List<VariableObject>> collectedParametersInHierarchy;
 	
 	/**
 	 * The aggregation of all collected local variables for particular point in the program aggregated according to depth in the hierarchy
 	 */
-	private List<List<VariableObject>> collectedLocalVariablesInHierarchy;
+	private Map<Integer, List<VariableObject>> collectedLocalVariablesInHierarchy;
 	
 	/**
-	 * Depth of current searched object for stored parameters
+	 * Depth of current searched object
 	 */
-	private int currentSearchedObjectParametersDepth = 0;
+	private int currentSearchedObjectDepth = -1;
 	
-	/**
-	 * Depth of current searched object for local variables
-	 */
-	private int currentSearchedObjectLocalVariablesDepth = 0;
 	
 	
 	//global variables are not persisted in hierarchy but they are determined with their position
@@ -58,16 +57,15 @@ public class VariableObjectInHierarchyCollector {
 	public VariableObjectInHierarchyCollector(ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration) {
 		this.actualScriptVariablesToSubstituteConfiguration = actualScriptVariablesToSubstituteConfiguration;
 		this.pathInHierarchyToCurrentPosition = new ArrayList<InnerContext>();
-		this.collectedLocalVariablesInHierarchy = new ArrayList<List<VariableObject>>();
-		this.collectedParametersInHierarchy = new ArrayList<List<VariableObject>>();
+		this.collectedLocalVariablesInHierarchy = new HashMap<Integer, List<VariableObject>>();
+		this.collectedParametersInHierarchy = new HashMap<Integer, List<VariableObject>>();
 	}
 	
 	/**
 	 * Observed the current depth of searched object for collected objects in hierarchy
 	 */
-	public void setCurrentObjectDepthForCollectedObjectsInHierarhy() {
-		this.currentSearchedObjectParametersDepth = this.getMaximalReachedDepthDuringCollectionOfParameters();
-		this.currentSearchedObjectLocalVariablesDepth = this.getMaximalReachedDepthDuringCollectionOfLocalVariables();
+	public void setCurrentObjectDepthForCollectedObjectsInHierarhy(int currentSearchedObjectDepth) {
+		this.currentSearchedObjectDepth = currentSearchedObjectDepth;
 	}
 	
 	/**
@@ -99,18 +97,14 @@ public class VariableObjectInHierarchyCollector {
 	 */
 	public void collectParameters(List<VariableObject> harvestedParameters, int currentDepth) {
 		List<VariableObject> collectedParametersFromCurrentLayer;
-		int arraySize;
-		if (this.collectedParametersInHierarchy.size() <= currentDepth) {
+		
+		if (!this.collectedParametersInHierarchy.containsKey(currentDepth)) {
 			collectedParametersFromCurrentLayer = new ArrayList<VariableObject>();
 		} else {
 			collectedParametersFromCurrentLayer = this.collectedParametersInHierarchy.get(currentDepth);
 		}
 		collectedParametersFromCurrentLayer.addAll(harvestedParameters);
-		arraySize = this.collectedParametersInHierarchy.size();
-		for (int uncoveredIndex = arraySize; uncoveredIndex < currentDepth; uncoveredIndex++) {
-			this.collectedParametersInHierarchy.add(uncoveredIndex, new ArrayList<VariableObject>());
-		}
-		this.collectedParametersInHierarchy.add(currentDepth, collectedParametersFromCurrentLayer);
+		this.collectedParametersInHierarchy.put(currentDepth, collectedParametersFromCurrentLayer);
 	}
 	
 	/**
@@ -128,19 +122,14 @@ public class VariableObjectInHierarchyCollector {
 	 */
 	public void collectLocalVariables(List<VariableObject> harvestedLocalVariables, int currentDepth) {
 		List<VariableObject> collectedLocalVariablesFromCurrentLayer;
-		int arraySize;
 		
-		if (this.collectedLocalVariablesInHierarchy.size() < currentDepth) {
+		if (!this.collectedLocalVariablesInHierarchy.containsKey(currentDepth)) {
 			collectedLocalVariablesFromCurrentLayer = new ArrayList<VariableObject>();
 		} else {
 			collectedLocalVariablesFromCurrentLayer = this.collectedLocalVariablesInHierarchy.get(currentDepth);
 		}
 		collectedLocalVariablesFromCurrentLayer.addAll(harvestedLocalVariables);
-		arraySize = this.collectedLocalVariablesInHierarchy.size();
-		for (int uncoveredIndex = arraySize; uncoveredIndex < currentDepth; uncoveredIndex++) {
-			this.collectedLocalVariablesInHierarchy.add(uncoveredIndex, new ArrayList<VariableObject>());
-		}
-		this.collectedLocalVariablesInHierarchy.add(currentDepth, collectedLocalVariablesFromCurrentLayer);
+		this.collectedLocalVariablesInHierarchy.put(currentDepth, collectedLocalVariablesFromCurrentLayer);
 	}
 	
 	/**
@@ -183,7 +172,7 @@ public class VariableObjectInHierarchyCollector {
 	 * @return variable objects according to configuration settings (if they fit requirements on depth)
 	 */
 	private List<VariableObject> getVariableObjectsAccordingToConfiguration(
-			List<List<VariableObject>> foundParametersInHierarchy,
+			Map<Integer, List<VariableObject>> foundParametersInHierarchy,
 			ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration, 
 			boolean parametersProcessed) {
 		LanguageSpecificVariableSubstitutionConfiguration languageSpecificVariableSubstitutionConfiguration = 
@@ -191,31 +180,40 @@ public class VariableObjectInHierarchyCollector {
 		
 		List<VariableObject> foundParameters = new ArrayList<VariableObject>();
 		List<VariableObject> parametersInHierarchy;
-		ListIterator<List<VariableObject>> listIterator;
-		int depth = 0;
+		Iterator<List<VariableObject>> listIterator;
+		int depth;
 		int parametersDepth, localVariablesDepth;
 		if ((parametersProcessed && languageSpecificVariableSubstitutionConfiguration.isHarvestingParameterDepthLevelAllowed()) 
 				|| (!parametersProcessed && languageSpecificVariableSubstitutionConfiguration.isHarvestingLocalVariablesDepthLevelAllowed())) {
-			listIterator = foundParametersInHierarchy.listIterator(foundParametersInHierarchy.size());
 
 			// Iterate in reverse.
-			while(listIterator.hasPrevious()) {
-				parametersDepth = this.currentSearchedObjectParametersDepth + languageSpecificVariableSubstitutionConfiguration.getMaxHarvestingParametersDepthLevelAcrossHierarchies() + 1;
-				localVariablesDepth =  this.currentSearchedObjectLocalVariablesDepth + languageSpecificVariableSubstitutionConfiguration.getMaxHarvestingLocalVariablesDepthLevelAcrossHierarchies() + 1;
-				System.out.println("Allowed parameters depth: " + this.currentSearchedObjectParametersDepth + " to " + parametersDepth + " Depth: " + depth);
-				System.out.println("Allowed local variables depth: " + this.currentSearchedObjectLocalVariablesDepth + " to " + localVariablesDepth + " Depth: " + depth);
-				parametersInHierarchy = listIterator.previous();
-				if ((parametersProcessed && depth > this.currentSearchedObjectParametersDepth && parametersDepth < depth) || 
-						(parametersProcessed && depth > this.currentSearchedObjectLocalVariablesDepth && localVariablesDepth < depth)) {
-					  
-					  foundParameters.addAll(parametersInHierarchy);
+			for (Entry<Integer, List<VariableObject>> parametersInDepth: foundParametersInHierarchy.entrySet()) {
+				depth = parametersInDepth.getKey();
+				parametersDepth = this.currentSearchedObjectDepth + languageSpecificVariableSubstitutionConfiguration.getMaxHarvestingParametersDepthLevelAcrossHierarchies();
+				localVariablesDepth =  this.currentSearchedObjectDepth + languageSpecificVariableSubstitutionConfiguration.getMaxHarvestingLocalVariablesDepthLevelAcrossHierarchies();
+				System.out.println("Current hierarchy depth parameters: " + this.currentSearchedObjectDepth + " variables: " + this.currentSearchedObjectDepth);
+				System.out.println("Allowed parameters depth: " + this.currentSearchedObjectDepth + " to " + parametersDepth + " Depth: " + depth);
+				System.out.println("Allowed local variables depth: " + this.currentSearchedObjectDepth + " to " + localVariablesDepth + " Depth: " + depth);
+				parametersInHierarchy = parametersInDepth.getValue();
+				
+				for (VariableObject vo: parametersInHierarchy) {
+					  System.out.println("Test Depth: " + depth + " Taken variable/parameter name: " + vo.getExportName() + " as " + vo.getExportType());
 				  }
-				  depth++;
+				if ((parametersProcessed && depth >= this.currentSearchedObjectDepth && depth < parametersDepth)
+						 || (!parametersProcessed && depth >= this.currentSearchedObjectDepth && depth < localVariablesDepth)
+						) {
+					  for (VariableObject vo: parametersInHierarchy) {
+						 System.out.println("Depth: " + depth + " Taken variable/parameter name: " + vo.getExportName() + " as " + vo.getExportType());
+					  }
+					  foundParameters.addAll(parametersInHierarchy);
 				}
-				return foundParameters;
+				depth--;
+			}
+			//if (foundParameters.size() > 0) { System.exit(5); }
+			return foundParameters;
 		} 
 		
-		for(List<VariableObject> parametersInHierarchyEntity: foundParametersInHierarchy) {
+		for(List<VariableObject> parametersInHierarchyEntity: foundParametersInHierarchy.values()) {
 			foundParameters.addAll(parametersInHierarchyEntity);
 		}
 		return foundParameters;

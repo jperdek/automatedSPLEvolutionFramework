@@ -13,6 +13,7 @@ import codeContext.InnerContext;
 import codeContext.processors.ASTContextInjector;
 import codeContext.processors.ASTContextProcessor;
 import codeContext.processors.AnnotationInjector;
+import codeContext.processors.FunctionProcessor;
 import codeContext.processors.HierarchyContextProcessor;
 import codeContext.processors.NotFoundVariableDeclaration;
 import divisioner.divisionStrategies.RecallStrategy;
@@ -131,7 +132,7 @@ public class Divisioner implements DivisioningInterface {
 		JSONArray duplicatedNewAstArray, originalArray;
 		ASTContextInjector.injectNegativeVariabilityContextForMembers(globalContext, usedContext, newAstPart, newAstParent);
 		if (usedContext instanceof FunctionContext) {
-			AnnotationInjector.processAnnotationForNotClassFunctionInAstPart(globalContext, usedContext, newAstPart, newAstParent);
+			FunctionProcessor.processFunctionASTContext(astPart, astRoot, globalContext,(FunctionContext) usedContext, newAstPart, newAstParent);
 		}
 		for(Object entryKey: astPart.keySet()) {
 			key = (String) entryKey;
