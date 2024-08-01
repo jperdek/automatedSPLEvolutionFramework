@@ -28,6 +28,8 @@ public class ParsedTypeOfVariableDataWithVPMapping extends ParsedTypeOfVariableD
 	 */
 	private String variableType;
 	
+	private Set<String> allowedVariableNames;
+	
 	/**
 	 * Instantiates and initializes the entity to manage parsed type of variable data with the mapping 
 	 * of each variable/parameter name to exported context (import/export/dependency)
@@ -35,9 +37,12 @@ public class ParsedTypeOfVariableDataWithVPMapping extends ParsedTypeOfVariableD
 	 * @param variableType - the variable type which should be injected in form of one of its parameters
 	 * @param nameToContextMappingDependenciesSet - the set of the currently satisfying variation points with their variables"
 	 */
-	public ParsedTypeOfVariableDataWithVPMapping(String variableType, Set<VariableAggregationUnderVariationPoint> nameToContextMappingDependenciesSet) {
+	public ParsedTypeOfVariableDataWithVPMapping(String variableType, Set<String> allowedVariableNames,
+			Set<VariableAggregationUnderVariationPoint> nameToContextMappingDependenciesSet) {
 		super();
 		this.variableType = variableType;
+		this.allowedVariableNames = allowedVariableNames;
+		
 		// if (randomInjectionCandidate != null) { this.variationPointName = randomInjectionCandidate.getVariationPointIdentifier(); }
 		this.nameToContextMappingDependenciesSet = nameToContextMappingDependenciesSet;
 	}
@@ -56,23 +61,30 @@ public class ParsedTypeOfVariableDataWithVPMapping extends ParsedTypeOfVariableD
 	 */
 	public Map<String, ? extends ExportedObjectOrAvailableVariable> getNameToContextMapping() {
 		Map<String, InjectionCandidateVariationPoint> variableNameToVariationPointNameMapping = new HashMap<String, InjectionCandidateVariationPoint>();
-		Map<String, InjectionCandidateVariationPoint> extractedMapping;
+		Map<String, InjectionCandidateVariationPoint> extractedMapping = new HashMap<String, InjectionCandidateVariationPoint>();
+		InjectionCandidateVariationPoint injectionCandidateVariationPoint;
 		String processedVariationPoint;
 		Set<String> possibleVariationPointDependencies = new HashSet<String>();
 		for (VariableAggregationUnderVariationPoint processedVariationPointDependency: this.nameToContextMappingDependenciesSet) {
-			extractedMapping = processedVariationPointDependency.getVariationPointDependenciesAccordingToType(this.variableType);
-			if (extractedMapping != null) {
-				variableNameToVariationPointNameMapping.putAll(extractedMapping);
-				
-				processedVariationPoint = processedVariationPointDependency.getVariationPointIdentifier();
-				possibleVariationPointDependencies.add(processedVariationPoint);
-			} else {
-				System.out.println("Fatal error: mapping for type not found: " + this.variableType);
+			processedVariationPoint = processedVariationPointDependency.getVariationPointIdentifier();
+			
+			for (String allowedVariableName: this.allowedVariableNames) {
+				injectionCandidateVariationPoint = new InjectionCandidateVariationPoint(processedVariationPoint);
+				extractedMapping.put(allowedVariableName, injectionCandidateVariationPoint);
 			}
+			variableNameToVariationPointNameMapping.putAll(extractedMapping);
+				
+			possibleVariationPointDependencies.add(processedVariationPoint);
 		}
 		
+		
 		for (InjectionCandidateVariationPoint processedInjection: variableNameToVariationPointNameMapping.values()) {
-			processedInjection.insertDependenciesOnVariationPoints(possibleVariationPointDependencies);
+			//for (String possibleVariationPointDependency: possibleVariationPointDependencies) {
+			//	if (this.allowedDependencies.contains(possibleVariationPointDependency)) {
+					processedInjection.insertDependenciesOnVariationPoints(possibleVariationPointDependencies);
+			//		processedInjection.insertDependencyOnVariationPoints(possibleVariationPointDependency);
+			//	}
+			//}
 		}
 		if (DebugInformation.SHOW_POLLUTING_INFORMATION) {
 			System.out.println("Dependencies..................................: " + possibleVariationPointDependencies.size());

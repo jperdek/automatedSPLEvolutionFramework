@@ -65,7 +65,7 @@ export function drawCover2(context: CanvasRenderingContext2D, radius: number) {
 }
 
 @DecoratorTypesService.wholeBlockMethod({"drawCircleFromPreviousCoords": "true"})
-export function drawCover3(context: CanvasRenderingContext2D, x4: number) {
+export function drawCover3(context: CanvasRenderingContext2D, x: number) {
 	let r = x;
     if (context.currentX !== undefined && context.currentY !== undefined) {
         context.fillStyle = "rgba(300, 250, 0, .9)";

@@ -1,7 +1,9 @@
 package positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -40,20 +42,54 @@ public class VariableAggregationUnderVariationPoint {
 		} else {
 			injectionCandidateVariationPoint = new InjectionCandidateVariationPoint(this.variationPointIdentifier);
 		}
-		injectionCandidateVariationPoint.insertVariableNameUnderSharedType(variableName);
+		//injectionCandidateVariationPoint.insertVariableNameUnderSharedType(variableName);
 		variableTypeToInjectionMap.put(variableName, injectionCandidateVariationPoint);
 		
 		this.variationPointToVariablesMap.put(variableName, injectionCandidateVariationPoint);
 		this.extractedVariablesOrganizedAccordingToType.put(variableType, variableTypeToInjectionMap);
+		if(this.variationPointIdentifier.contains("VP238")) {
+			System.out.println("--------------------------------------------->" +variableType + " VP  " +  variableName);
+			if(variableName.contains("radius")) {
+				System.exit(5);
+			}
+		}
+	}
+	
+	/**
+	 * Checks if variable/parameter name is available
+	 * -variable names must match exactly with all characters with available parameter names
+	 *  
+	 * @param variableName - variable/parameter name to check if variable or parameter exists for it
+	 * @return true if variable or parameter exists for it otherwise false
+	 */
+	public boolean checkVariableName(String variableName) {
+		for (String variableNameInCollection: this.variationPointToVariablesMap.keySet()) {
+			if (variableNameInCollection.contains(variableName)) { return true; }
+		}
+		return false;
+	}
+	
+	public Set<String> getAllowedVariablesToSubstitute(String variableName) {
+		Set<String> allowedVariablesToSubstitute = new HashSet<String>();
+		for (String variableNameInCollection: this.variationPointToVariablesMap.keySet()) {
+			if (variableNameInCollection.contains(variableName)) { 
+				allowedVariablesToSubstitute.add(variableNameInCollection); 
+			}
+		}
+		return allowedVariablesToSubstitute;
 	}
 	
 	public Map<String, InjectionCandidateVariationPoint> getVariationPointDependenciesAccordingToType(String variableType) {
 		return this.extractedVariablesOrganizedAccordingToType.get(variableType.strip());
 	}
 	
+	public InjectionCandidateVariationPoint getVariationPointDependenciesAccordingToVariableName(String variableName) {
+		return this.variationPointToVariablesMap.get(variableName);
+	}
+	
 	public void printVariablesUnderThisVariationPoint() {
 		System.out.println("Available variables falling under: " + this.variationPointIdentifier);
-		for (String variableName: variationPointToVariablesMap.keySet()) {
+		for (String variableName: this.variationPointToVariablesMap.keySet()) {
 			System.out.println(variableName);
 		}
 		System.out.println("-------------------------------------------------------------------->");

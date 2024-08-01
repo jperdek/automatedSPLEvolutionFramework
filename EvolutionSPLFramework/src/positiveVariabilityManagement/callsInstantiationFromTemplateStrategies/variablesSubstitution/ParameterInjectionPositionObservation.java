@@ -57,7 +57,8 @@ public class ParameterInjectionPositionObservation {
 		if (DebugInformation.SHOW_CREATED_ENTITIES) { this.printRangesAndParsedData(codeContext, positiveVariationPointCandidatesTemplates); }
 		//this.printRangesAndParsedData(codeContext, positiveVariationPointCandidatesTemplates); 
 		VariabilityToAntagonistVariationPointMappings variabilityToAntagonistVariationPointMappings = new VariabilityToAntagonistVariationPointMappings();
-		variabilityToAntagonistVariationPointMappings.loadAntagonistBoundaries(positiveVariationPointCandidatesTemplates, codeContext.getInnerContext());
+		boolean onlyToBlockTransformation = true;
+		variabilityToAntagonistVariationPointMappings.loadAntagonistBoundaries(positiveVariationPointCandidatesTemplates, codeContext.getInnerContext(), onlyToBlockTransformation);
 		
 		for (VariationPointTransformationBetweenAsts variationPointTransformationBetweenAsts: 
 			               variabilityToAntagonistVariationPointMappings.getVariationPointTransformationBetweenAsts()) {
@@ -84,15 +85,16 @@ public class ParameterInjectionPositionObservation {
 					variableAggregationUnderVariationPoint = this.variationPointIdentifierToAggregationMap.get(variationPointIDName);
 				}	
 				variableTypeToInjectedVariableMap.add(variableAggregationUnderVariationPoint);
+		
 				variableAggregationUnderVariationPoint.putTypeAndVariableName(variableType, variableName);
 				this.variationPointIdentifierToAggregationMap.put(variationPointIDName, variableAggregationUnderVariationPoint);
 				this.extractedVariablesOrganizedAccoringType.put(variableType, variableTypeToInjectedVariableMap);
 			}
+		
 		}
-		// TO PRINT RESULT OF COLLECTED AND AGGREGATED PARAMETERS (during errros fixing and debugging)
+		// TO PRINT RESULT OF COLLECTED AND AGGREGATED PARAMETERS (during errors fixing and debugging)
 		if (DebugInformation.SHOW_CREATED_ENTITIES) { this.printAggregatedVariablesUnderType(); }
-		//this.printAggregatedVariablesUnderType(); 
-		//System.exit(5);
+		//this.printAggregatedVariablesUnderType(); System.exit(5);
 	}
 	
 	private void printAggregatedVariablesUnderType() {

@@ -419,14 +419,14 @@ public class InnerContext implements ExportedContextInterface, ExportedObjectInt
 				} else {
 					extractedParameters = null;
 				}
-					//if (DebugInformation.SHOW_POLLUTING_INFORMATION) {
+				if (DebugInformation.SHOW_POLLUTING_INFORMATION) {
 					if (extractedParameters != null && extractedParameters.size() > 0) {
 						System.out.println("Harvested parameters in depth " + depth + " :");
 						for (VariableObject vo: extractedParameters) {
 							System.out.println(vo.getExportName() + " ___ " + vo.getExportType());
 						}
 					}
-				//}
+				}
 				variableObjectInHierarchyCollector.collectParameters(extractedParameters, depth);
 			}
 		}
@@ -481,7 +481,7 @@ public class InnerContext implements ExportedContextInterface, ExportedObjectInt
 					variableObjectInHierarchyCollector, actualScriptVariablesToSubstituteConfiguration, 
 					languageSpecificVariablesToSubstituteConfiguration, true);
 			
-			System.out.println("Searched objects depth: " + depth);
+			if (DebugInformation.SHOW_POLLUTING_INFORMATION) { System.out.println("Searched objects depth: " + depth); }
 			variableObjectInHierarchyCollector.setCurrentObjectDepthForCollectedObjectsInHierarhy(depth);
 			return;
 		}
@@ -492,9 +492,9 @@ public class InnerContext implements ExportedContextInterface, ExportedObjectInt
 		}
 		for (InnerContext observedChildContext: currentlyAvailableContexts.values()) {
 			// child is (equals to) searched object, [this - parent, searchedChildContext - child]
-			//if (DebugInformation.SHOW_POLLUTING_INFORMATION) {
+			if (DebugInformation.SHOW_POLLUTING_INFORMATION) {
 				System.out.println("CURRENT: " + currentPosition + " REQUESTED OBJECT: [" + startSearchedObjectPosition + " , " + endSearchObjectPosition + "]  CHILD: " + observedChildContext.getActualStartPosition() + " ,  " + observedChildContext.getActualEndPosition() );
-			//}
+			}
 			if ((searchedChildContext != null && observedChildContext == searchedChildContext) || 
 					(searchedChildContext == null && 
 					observedChildContext.getActualStartPosition() == startSearchedObjectPosition 
@@ -511,7 +511,7 @@ public class InnerContext implements ExportedContextInterface, ExportedObjectInt
 						variableObjectInHierarchyCollector, actualScriptVariablesToSubstituteConfiguration, 
 						languageSpecificVariablesToSubstituteConfiguration, true);
 				
-				System.out.println("Searched objects depth: " + (depth + 1));
+				if (DebugInformation.SHOW_POLLUTING_INFORMATION) { System.out.println("Searched objects depth: " + (depth + 1)); }
 				variableObjectInHierarchyCollector.setCurrentObjectDepthForCollectedObjectsInHierarhy(depth + 1);
 				return;
 

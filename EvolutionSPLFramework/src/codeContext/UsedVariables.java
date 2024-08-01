@@ -213,9 +213,11 @@ public class UsedVariables implements ExportedContextInterface, ExportedInterfac
 	 * @return all actually declared (before or at currentPosition that is provided as function parameter) variables
 	 */
 	public List<VariableObject> getAllActualVariableObject(long currentPosition) {
-		System.out.println("Current position: " + currentPosition);
-		for (VariableObject vo: this.usedVariableObjects) {
-			System.out.println(vo.getExportName() + "  " + vo.getCallableStr());
+		if (DebugInformation.SHOW_POLLUTING_INFORMATION) {
+			System.out.println("Current position: " + currentPosition);
+			for (VariableObject vo: this.usedVariableObjects) {
+				System.out.println(vo.getExportName() + "  " + vo.getCallableStr());
+			}
 		}
 		CodeContextObject[] cco = new CodeContextObject[this.usedVariableObjects.size()];
 		cco = (CodeContextObject[]) this.usedVariableObjects.toArray(cco);

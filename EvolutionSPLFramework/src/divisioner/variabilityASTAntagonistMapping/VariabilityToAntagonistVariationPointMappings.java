@@ -36,7 +36,8 @@ public class VariabilityToAntagonistVariationPointMappings {
 		this.relationshipMappings = new HashMap<String, Set<VariationPointTransformationBetweenAsts>>();
 	}
 	
-	public void loadAntagonistBoundaries(List<PositiveVariationPointCandidateTemplates> positiveVariationPointCandidatesTemplates, InnerContext innerContextRoot) {
+	public void loadAntagonistBoundaries(List<PositiveVariationPointCandidateTemplates> 
+	positiveVariationPointCandidatesTemplates, InnerContext innerContextRoot, boolean onlyToBlockTransformation) {
 		Long endSearchPosition, startSearchPosition;
 		JSONObject actuallyProcessedVariationPointData;
 		String variationPointIDName;
@@ -48,11 +49,10 @@ public class VariabilityToAntagonistVariationPointMappings {
 			actuallyProcessedVariationPointData = positiveVariationPointCandidateTemplate.getVariationPointData();
 			variationPointIDName = (String) actuallyProcessedVariationPointData.get("variationPointName");
 		
-			startSearchPosition = (long) actuallyProcessedVariationPointData.get("originalASTStartPosition");
-			endSearchPosition = (long) actuallyProcessedVariationPointData.get("originalASTEndPosition");
+			startSearchPosition = (long) actuallyProcessedVariationPointData.get("startPosition");
+			endSearchPosition = (long) actuallyProcessedVariationPointData.get("endPosition");
 			hierarchicIdentifier = (String) actuallyProcessedVariationPointData.get("hierarchicIdentifier");
 			
-			System.out.println(hierarchicIdentifier);
 			variationPointTransformationBetweenAsts = new VariationPointTransformationBetweenAsts(variationPointIDName, startSearchPosition, endSearchPosition);
 			if (this.relationshipMappings.containsKey(hierarchicIdentifier)) {
 				variationPointTransformationBetweenAstsSet = this.relationshipMappings.get(hierarchicIdentifier);
@@ -63,16 +63,16 @@ public class VariabilityToAntagonistVariationPointMappings {
 			this.relationshipMappings.put(hierarchicIdentifier, variationPointTransformationBetweenAstsSet);
 		}
 		
-		this.loadAndTransformVariationPointsData(innerContextRoot, "");
+		this.loadAndTransformVariationPointsData(innerContextRoot, "", onlyToBlockTransformation);
 	}
 	
-	private void loadAndTransformVariationPointsData(InnerContext innerContext, String hierarchicIdentifier) {
+	private void loadAndTransformVariationPointsData(InnerContext innerContext, String hierarchicIdentifier, boolean onlyToBlockTransformation) {
 		long processedAntagonistContextStartPosition = innerContext.getActualStartPosition();
 		long processedAntagonistContextEndPosition = innerContext.getActualEndPosition();
 		String childHierarchicIdentifier = hierarchicIdentifier;
 		String entityName;
+		long startMinimum, endMaximum, currentStartPosition, currentEndPosition;
 		
-		System.out.println(hierarchicIdentifier);
 		if (hierarchicIdentifier.contains("[F|constructor]")) {
 			System.out.println("Skipping class constructor....");
 			return;
@@ -81,9 +81,26 @@ public class VariabilityToAntagonistVariationPointMappings {
 		if (!hierarchicIdentifier.equals("")) {
 			Set<VariationPointTransformationBetweenAsts> variationPointTransformationBetweenAstsSet = 
 					this.relationshipMappings.get(hierarchicIdentifier);
+			startMinimum = -1;
+			endMaximum = -1;
+			if (!onlyToBlockTransformation) {
+				for (VariationPointTransformationBetweenAsts variationPointTransformationBetweenAsts: variationPointTransformationBetweenAstsSet) {
+					currentStartPosition = variationPointTransformationBetweenAsts.getTransformedStartPosition();
+					if (startMinimum == -1 || startMinimum > currentStartPosition) { startMinimum = currentStartPosition; }
+					currentEndPosition = variationPointTransformationBetweenAsts.getTransformedEndPosition();
+					if (endMaximum == -1 || endMaximum < currentEndPosition) { endMaximum = currentEndPosition; }
+				}
+			}
+
 			for (VariationPointTransformationBetweenAsts variationPointTransformationBetweenAsts:variationPointTransformationBetweenAstsSet) {
-				variationPointTransformationBetweenAsts.doTransformation(
-						processedAntagonistContextStartPosition, processedAntagonistContextEndPosition);
+				// length of whole AST is intended to consist from the 0 to endMaximum, where length of block is ranging from endMinimum to endMaximum 
+				if (onlyToBlockTransformation) {
+					variationPointTransformationBetweenAsts.doTransformationOnBlocks(
+							processedAntagonistContextStartPosition, processedAntagonistContextEndPosition);
+				} else {
+					variationPointTransformationBetweenAsts.doTransformation(
+						processedAntagonistContextStartPosition, processedAntagonistContextEndPosition, endMaximum - startMinimum);
+				}
 			}
 		}
 		
@@ -95,7 +112,7 @@ public class VariabilityToAntagonistVariationPointMappings {
 				entityName = ((ClassContext) childContext).getClassName();
 				childHierarchicIdentifier = hierarchicIdentifier + HierarchyEntityConstructor.createClassLabel(entityName);
 			}
-			this.loadAndTransformVariationPointsData(childContext, childHierarchicIdentifier);
+			this.loadAndTransformVariationPointsData(childContext, childHierarchicIdentifier, onlyToBlockTransformation);
 		}
 	}
 	

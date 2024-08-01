@@ -53,7 +53,6 @@ public class CallableConstructDependency {
 				System.out.println(param);
 			}
 		}
-		//return true;
 		return this.variationPointIdentifierNames.contains(requestedVariationPointName);
 	}
 }
