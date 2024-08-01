@@ -146,7 +146,6 @@ public class CallableConstruct {
 					((InjectionCandidateVariationPoint) parameterExportedContext).getVariationPointIdentifier())) {
 				return false;
 			}*/
-			System.out.println("HEEEEEEEEEEEEEEEEEEEEEEEREEEEEEEEEEEEEEEEEE");
 			if (DebugInformation.SHOW_POLLUTING_INFORMATION) { System.out.println("Added parameter " + parameterToSubstitute + " with dependency: " + this.callableConstructDependency); } 
 			this.addParameter(parameterToSubstitute, (InjectionCandidateVariationPoint) parameterExportedContext);
 		} else {

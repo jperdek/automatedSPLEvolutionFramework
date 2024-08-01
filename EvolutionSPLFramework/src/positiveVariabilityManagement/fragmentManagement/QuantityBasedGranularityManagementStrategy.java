@@ -77,7 +77,6 @@ public class QuantityBasedGranularityManagementStrategy implements CodeIncrement
 
 			associatedAggregatedLocationExports = positiveVariationPointCandidate.
 					getExportLocationAggregationsAccordingToInstantiatedCallableForm(instantiatedCodeForm);
-			System.out.println("TESTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
 			if (!InjectionIntoVariationPointValidator.canBeInjectedIntoVariationPoint(selectedVariationPointToInjectContent, associatedAggregatedLocationExports)) {
 				System.out.println("Code fragment: " + instantiatedCodeForm + " is violating dependency injection issue: " + selectedVariationPointToInjectContent + " <> " + associatedAggregatedLocationExports.getVariationPointDependency() + "  ! Returning null!");
 				return null;
@@ -92,7 +91,6 @@ public class QuantityBasedGranularityManagementStrategy implements CodeIncrement
 				instantiatedCodeForm = featureConstruct.getKey();
 				associatedAggregatedLocationExports = positiveVariationPointCandidate.
 						getExportLocationAggregationsAccordingToInstantiatedCallableForm(instantiatedCodeForm);
-				System.out.println("TESTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
 				if (!InjectionIntoVariationPointValidator.canBeInjectedIntoVariationPoint(selectedVariationPointToInjectContent, associatedAggregatedLocationExports)) {
 					System.out.println("Omitting code fragment: " + instantiatedCodeForm + " from aggregated code fragment due to dependency injection issue!");
 					continue;

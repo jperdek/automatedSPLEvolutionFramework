@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import splEvolutionCore.DebugInformation;
+
 
 /**
  * Dependency introduced using particular callable construct
@@ -45,9 +47,11 @@ public class CallableConstructDependency {
 	 * @return true if all dependencies fits requested requirements otherwise false
 	 */
 	public boolean fitsAllDependencies(String requestedVariationPointName) {
-		System.out.println("MATCHING >" + requestedVariationPointName + "< IN: ");
-		for (String param: this.variationPointIdentifierNames) {
-			System.out.println(param);
+		if (DebugInformation.SHOW_POLLUTING_INFORMATION) {
+			System.out.println("MATCHING >" + requestedVariationPointName + "< IN: ");
+			for (String param: this.variationPointIdentifierNames) {
+				System.out.println(param);
+			}
 		}
 		//return true;
 		return this.variationPointIdentifierNames.contains(requestedVariationPointName);

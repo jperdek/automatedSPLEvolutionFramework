@@ -57,23 +57,6 @@ public interface VariationPointsDivisioningStrategy {
 			InvalidSystemVariationPointMarkerException, DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation;
 
 	/**
-	 * Loads and divisions the code in form of application AST into variation points (negative and/or positive variability) and returns the resulting highlighted/marked/annotated AST
-	 * -includes transformation of the code into the application AST
-	 * 
-	 * @param divisioner - object instance to manage and customize division process into variation points
-	 * @param inputCodeFilePath - the path to the JavaScript/TypeScript script that is going to be loaded
-	 * @return the resulting highlighted/marked/annotated AST
-	 * @throws NotFoundVariableDeclaration
-	 * @throws IOException
-	 * @throws InterruptedException
-	 * @throws InvalidSystemVariationPointMarkerException
-	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint
-	 * @throws DuplicatedAnnotation
-	 */
-	public JSONObject divisionAndGetHighlightedAst(DivisioningInterface divisioner, String inputCodeFilePath) throws NotFoundVariableDeclaration, IOException, InterruptedException, 
-			InvalidSystemVariationPointMarkerException, DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation;
-
-	/**
 	 * Loads and divisions the application/script AST into variation points (negative and/or positive variability) 
 	 * and returns the resulting highlighted/marked/annotated AST
 	 * 
@@ -96,6 +79,7 @@ public interface VariationPointsDivisioningStrategy {
 	 * Exports and collects information about variation points (variation points data) from highlighted.annotated/marked application AST
 	 * 
 	 * @param highlightedAst - the AST of the original application with inserted markers and annotations - marked nagative and positive variability
+	 * @param originalAst - 
 	 * @return information about variation points - variation points data (for both variability - positive and negative)
 	 * @throws NotFoundVariableDeclaration
 	 * @throws IOException
@@ -104,7 +88,7 @@ public interface VariationPointsDivisioningStrategy {
 	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint
 	 * @throws DuplicatedAnnotation
 	 */
-	public JSONArray getVariationPointsData(JSONObject highlightedAst) throws NotFoundVariableDeclaration, 
+	public JSONArray getVariationPointsData(JSONObject highlightedAst, JSONObject originalAst) throws NotFoundVariableDeclaration, 
 			IOException, InterruptedException, InvalidSystemVariationPointMarkerException, 
 			DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation;
 

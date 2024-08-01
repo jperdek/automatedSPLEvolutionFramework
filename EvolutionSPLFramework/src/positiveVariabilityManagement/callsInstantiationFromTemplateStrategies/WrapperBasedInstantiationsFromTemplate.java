@@ -36,6 +36,16 @@ public class WrapperBasedInstantiationsFromTemplate implements CallsInstantiatio
 	 */
 	private static HashSet<String> messageOnOutput = new HashSet<String>();
 	
+	private void printParameterNames(Map<String, ParsedTypeOfVariableData> parameterInformation) {
+		System.out.println("-----------------------> PARAM NAMES");
+		for (ParsedTypeOfVariableData matchedVariableNameT: parameterInformation.values()) {
+			for (String matchedVariableName: matchedVariableNameT.getNameToContextMapping().keySet()) {
+				System.out.println(matchedVariableName);
+			}
+		}
+		System.out.println("-----------------------> PARAM NAMES Ends");
+	}
+
 	@Override
 	/**
 	 * Prescribe the function to perform instantiations where the name of one variable is as substring inside another variable (wrapper-based) 
@@ -65,13 +75,7 @@ public class WrapperBasedInstantiationsFromTemplate implements CallsInstantiatio
 			callableConstructName = callableConstructNameWhole.substring(0, callableConstructNameWhole.indexOf('('));
 			//parameterInformation = allVariablesMapper.findExternalScriptsParameterInformation(callableConstructTemplate);
 			parameterInformation= allVariablesMapper.findActualContextParameterInformation(callableConstructTemplate);
-			System.out.println("-----------------------> PARAM NAMSES");
-			for (ParsedTypeOfVariableData matchedVariableNameT: parameterInformation.values()) {
-				for (String matchedVariableName: matchedVariableNameT.getNameToContextMapping().keySet()) {
-					System.out.println(matchedVariableName);
-				}
-			}
-			System.out.println("-----------------------> PARAM NAMSE EndS");
+			if (DebugInformation.SHOW_POLLUTING_INFORMATION) { this.printParameterNames(parameterInformation); }
 			//parameterInformation = allVariablesMapper.findActualContextParameterInformation(callableConstructTemplate);
 			callableConstructs = this.assignParametersForNewVariable(callableConstructName,
 						callableConstructNameWhole, parameterInformation);
@@ -138,7 +142,10 @@ public class WrapperBasedInstantiationsFromTemplate implements CallsInstantiatio
 						
 					} 
 				}
-			}
+			} 
+			//else {
+			//	break;
+			//}
 			
 			callableConstructsOld.clear();
 			if (preCallableConstructsNew.isEmpty()) { //one of parameters is not matched, skipping template matches

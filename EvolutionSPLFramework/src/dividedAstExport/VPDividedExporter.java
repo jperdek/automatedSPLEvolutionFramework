@@ -2,7 +2,10 @@ package dividedAstExport;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import astFileProcessor.ASTLoader;
@@ -11,6 +14,7 @@ import codeContext.processors.ASTTextExtractorTools;
 import codeContext.processors.AnnotationProcessor;
 import dividedAstExport.recursionCycleFinder.RecursionCycleFinder;
 import divisioner.VariationPointDivisionConfiguration;
+import divisioner.variabilityASTAntagonistMapping.HierarchyEntityConstructor;
 import splEvolutionCore.DebugInformation;
 import splEvolutionCore.DefaultEvolutionCore;
 import variationPointsVisualization.AnnotationExtensionMarker;
@@ -46,23 +50,33 @@ public class VPDividedExporter {
 	
 	/**
 	 * Collects, process and returns all variation points - associated information (positive and negative variability)
-	 * @param astRoot - the root of processed AST
+	 * @param highlightedAstRoot - the root of processed AST with inserted positive and negative variability markers and annotations
+	 * @param originalAstRoot - the root of original AST
 	 * @return the array of all variation points - associated information (positive and negative variability)
 	 * 
 	 * @throws IOException
 	 * @throws InterruptedException
 	 * @throws InvalidSystemVariationPointMarkerException
 	 */
-	public JSONArray collectAndProcessAllVariationPoints(JSONObject astRoot) throws IOException, InterruptedException, InvalidSystemVariationPointMarkerException {
+	public JSONArray collectAndProcessAllVariationPoints(JSONObject highlightedAstRoot, JSONObject originalAstRoot) throws IOException, InterruptedException, InvalidSystemVariationPointMarkerException {
 		List<JSONObject> orderedVariationPoints = new ArrayList<JSONObject>();
-		if (VariationPointDivisionConfiguration.PREFER_POSITION_UPDATES_BEFORE_PERSISTING_ILLEGAL_DECORATORS_INFORMATION) {
-			astRoot = (JSONObject) this.convertRepeatedlyToVerifyPositionNumbering(astRoot).get("ast");
-			this.recursionCycleFinder = new RecursionCycleFinder(astRoot);
-			this.harvestVariationPoints(astRoot, astRoot, astRoot, "", orderedVariationPoints);
+		JSONObject originalAstRootFiltered;
+		if (originalAstRoot.containsKey("ast")) { 
+			originalAstRootFiltered = (JSONObject) originalAstRoot.get("ast"); 
 		} else {
-			JSONObject newAstRoot = (JSONObject) this.convertRepeatedlyToVerifyPositionNumbering(astRoot).get("ast");
+			originalAstRootFiltered = originalAstRoot;
+		}
+		System.out.println(originalAstRootFiltered.toString());
+		System.out.println("--------------------------------------->");
+		//JSONObject astRootCopy = ASTLoader.loadASTFromString(astRoot.toString());
+		if (VariationPointDivisionConfiguration.PREFER_POSITION_UPDATES_BEFORE_PERSISTING_ILLEGAL_DECORATORS_INFORMATION) {
+			highlightedAstRoot = (JSONObject) this.convertRepeatedlyToVerifyPositionNumbering(highlightedAstRoot).get("ast");
+			this.recursionCycleFinder = new RecursionCycleFinder(highlightedAstRoot);
+			this.harvestVariationPoints(highlightedAstRoot, highlightedAstRoot, highlightedAstRoot, "", "", orderedVariationPoints, originalAstRootFiltered);
+		} else {
+			JSONObject newAstRoot = (JSONObject) this.convertRepeatedlyToVerifyPositionNumbering(highlightedAstRoot).get("ast");
 			this.recursionCycleFinder = new RecursionCycleFinder(newAstRoot);
-			this.harvestVariationPoints(newAstRoot, newAstRoot, newAstRoot, "", orderedVariationPoints);
+			this.harvestVariationPoints(newAstRoot, newAstRoot, newAstRoot, "", "", orderedVariationPoints, originalAstRootFiltered);
 		}
 		
 		JSONArray orderedVariationPointsJsonArray = new JSONArray();
@@ -334,13 +348,14 @@ public class VPDividedExporter {
 	 * @param astPart - actually processed AST part
 	 * @param astParent - the parent of actually processed AST part
 	 * @param contextStringIdentifier - string with sequence of inner wrapper objects such as classes (in case of class function) and methods
+	 * @param originalAstPart - 
 	 * @return harvested information about newly available positive variability variation point
 	 * @throws IOException
 	 * @throws InterruptedException
 	 * @throws InvalidSystemVariationPointMarkerException
 	 */
 	private JSONObject harvestNewlyAvailableVariationPoint(JSONObject astPart, JSONObject astParent, 
-			String contextStringIdentifier) throws IOException, InterruptedException, InvalidSystemVariationPointMarkerException {
+			String contextStringIdentifier, String hierarchicIdentifier, JSONObject originalAstPart) throws IOException, InterruptedException, InvalidSystemVariationPointMarkerException {
 		JSONObject harvestedVariationPoint = null;
 		JSONArray variabilityDecoratorSelectionMarkups;
 		JSONArray markerDeclarationList;
@@ -386,6 +401,10 @@ public class VPDividedExporter {
 		
 		Long startPosition = (Long) astPart.get("pos");
 		Long endPosition = (Long) astPart.get("end");
+
+		Long originalASTStartPosition = (Long) originalAstPart.get("pos");
+		Long originalASTEndPosition = (Long) originalAstPart.get("end");
+		
 		if (this.recursionCycleFinder != null) {
 			boolean isInsideRecursion = this.recursionCycleFinder.checkIfIsInsideRecursion(startPosition, endPosition, this.astRoot);
 			if (DebugInformation.SHOW_POLLUTING_INFORMATION) { System.out.println("IS inside: " + isInsideRecursion+ ":" + contextStringIdentifier); }
@@ -393,8 +412,15 @@ public class VPDividedExporter {
 		}
 		
 		harvestedVariationPoint.put("newVariationPoint", true);
+		harvestedVariationPoint.put("hierarchicIdentifier", hierarchicIdentifier);
+		
 		harvestedVariationPoint.put("startPosition", startPosition);
 		harvestedVariationPoint.put("endPosition", endPosition);
+		
+		
+		harvestedVariationPoint.put("originalASTStartPosition", originalASTStartPosition);
+		harvestedVariationPoint.put("originalASTEndPosition", originalASTEndPosition);
+		
 		harvestedVariationPoint.put("classRelated", isClassRelated);
 		harvestedVariationPoint.put("contextStringIdentifier", contextStringIdentifier);
 		
@@ -421,10 +447,10 @@ public class VPDividedExporter {
 	 * @throws InvalidSystemVariationPointMarkerException
 	 */
 	private JSONObject harvestVariationPoint(JSONObject astRoot, JSONObject astPart, JSONObject astParent, 
-			String contextStringIdentifier) throws IOException, InterruptedException, InvalidSystemVariationPointMarkerException {
-		JSONObject variationPoint = this.harvestNewlyAvailableVariationPoint(astPart, astParent, contextStringIdentifier);
+			String contextStringIdentifier, String hierarchicIdentifier, JSONObject originalAstPart) throws IOException, InterruptedException, InvalidSystemVariationPointMarkerException {
+		JSONObject variationPoint = this.harvestNewlyAvailableVariationPoint(astPart, astParent, contextStringIdentifier, hierarchicIdentifier, originalAstPart);
 		if (variationPoint != null) { return variationPoint; }
-		variationPoint = this.harvestAlreadyAvailableVariationPoint(astPart, astParent, contextStringIdentifier, astRoot);
+		variationPoint = this.harvestAlreadyAvailableVariationPoint(astPart, astParent, contextStringIdentifier, hierarchicIdentifier, astRoot, originalAstPart);
 		return variationPoint;
 	}
 	
@@ -444,14 +470,14 @@ public class VPDividedExporter {
 	 * @throws InvalidSystemVariationPointMarkerException
 	 */
 	private void harvestAndClasifyVariationPoint(JSONObject astRoot, JSONObject astPart, JSONObject astParent, 
-			String contextStringIdentifier, JSONArray positiveVariability, 
-			JSONArray negativeVariability) throws IOException, InterruptedException, InvalidSystemVariationPointMarkerException {
-		JSONObject variationPoint = this.harvestNewlyAvailableVariationPoint(astPart, astParent, contextStringIdentifier);
+			String contextStringIdentifier, String hierarchicIdentifier, JSONArray positiveVariability, 
+			JSONArray negativeVariability, JSONObject originalAstPart) throws IOException, InterruptedException, InvalidSystemVariationPointMarkerException {
+		JSONObject variationPoint = this.harvestNewlyAvailableVariationPoint(astPart, astParent, contextStringIdentifier, hierarchicIdentifier, originalAstPart);
 		if (variationPoint != null) { 
 			positiveVariability.add(variationPoint);
 			return;
 		}
-		variationPoint = this.harvestAlreadyAvailableVariationPoint(astPart, astParent, contextStringIdentifier, astRoot);
+		variationPoint = this.harvestAlreadyAvailableVariationPoint(astPart, astParent, contextStringIdentifier, hierarchicIdentifier, astRoot, originalAstPart);
 		if (variationPoint != null) {
 			negativeVariability.add(variationPoint);
 		}
@@ -480,12 +506,14 @@ public class VPDividedExporter {
 	 * @param astParent - the parent of actually processed AST part
 	 * @param contextStringIdentifier - string with sequence of inner wrapper objects such as classes (in case of class function) and methods
 	 * @param astRoot - the root of processed AST
+	 * @param originalAstPart - 
 	 * @return the harvested information associated with existing negative variability variation point
 	 * 
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	private JSONObject harvestAlreadyAvailableVariationPoint(JSONObject astPart, JSONObject astParent, String contextStringIdentifier, JSONObject astRoot) throws IOException, InterruptedException {
+	private JSONObject harvestAlreadyAvailableVariationPoint(JSONObject astPart, JSONObject astParent, 
+			String contextStringIdentifier, String hierarchicIdentifier, JSONObject astRoot, JSONObject originalAstPart) throws IOException, InterruptedException {
 		JSONObject harvestedVariationPoint = new JSONObject();
 		JSONArray variabilityDecoratorSelectionMarkups;
 		String variableAnnotationName, affectedCode;
@@ -590,6 +618,12 @@ public class VPDividedExporter {
 			if (DebugInformation.SHOW_POLLUTING_INFORMATION) { System.out.println("IS inside: " + isInsideRecursion+ ":" + contextStringIdentifier);}
 		}
 		
+		Long originalASTStartPosition = (Long) originalAstPart.get("pos");
+		Long originalASTEndPosition = (Long) originalAstPart.get("end");
+		harvestedVariationPoint.put("hierarchicIdentifier", hierarchicIdentifier);
+		harvestedVariationPoint.put("originalASTStartPosition", startPosition);
+		harvestedVariationPoint.put("originalASTEndPosition", endPosition);
+		
 		harvestedVariationPoint.put("newVariationPoint", false);
 		harvestedVariationPoint.put("variationPointName", variableAnnotationName);
 		harvestedVariationPoint.put("startPosition", startPosition);
@@ -624,6 +658,33 @@ public class VPDividedExporter {
 	}
 	
 	/**
+	 * Checks positive variability marker as part of destination AST
+	 * 
+	 * @param entryJSONObject
+	 * @return
+	 */
+	private boolean checkPositiveVariabilityMarker(JSONObject entryJSONObject) {
+		JSONObject declarationList = (JSONObject) entryJSONObject.get("declarationList");
+		JSONObject declaration;
+		String declarationName;
+		if (entryJSONObject.containsKey("declarationList")) {
+			for (Object declarationObject: (JSONArray) declarationList.get("declarations")) {
+				declaration = (JSONObject) declarationObject;
+				JSONObject textObject = ((JSONObject) ((JSONObject) declaration).get("name"));
+				if (textObject.containsKey("escapedText")) {
+					declarationName = (String) textObject.get("escapedText");
+				} else {
+					declarationName = (String) textObject.get("text");
+				}
+				if (declarationName.startsWith(VariationPointDivisionConfiguration.MARKER_VP_NAME)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	/**
 	 * Recursively harvests positive and negative variation points from divisioned AST
 	 * 
 	 * @param astRoot - the root of processed AST
@@ -631,34 +692,66 @@ public class VPDividedExporter {
 	 * @param astParent - the parent of actually processed AST part
 	 * @param contextStringIdentifier - string with sequence of inner wrapper objects such as classes (in case of class function) and methods
 	 * @param harvestedVariationPoints - the list of representations where each has associated information about positive and negative variability variation points
+	 * @param originalAstPart - 
 	 * 
 	 * @throws IOException
 	 * @throws InterruptedException
 	 * @throws InvalidSystemVariationPointMarkerException
 	 */
 	private void harvestVariationPoints(JSONObject astRoot, JSONObject astPart, JSONObject astParent,
-			String contextStringIdentifier, List<JSONObject> harvestedVariationPoints) throws IOException, InterruptedException, InvalidSystemVariationPointMarkerException {
+			String contextStringIdentifier, String hierarchicIdentifier, List<JSONObject> harvestedVariationPoints, JSONObject originalAstPart) throws IOException, InterruptedException, InvalidSystemVariationPointMarkerException {
 		String key;
 		if (astPart == null) { return; }
 		contextStringIdentifier = this.updateContextStringIdentifier(contextStringIdentifier, astPart);
-		
-		JSONObject variationPointData = this.harvestVariationPoint(astRoot, astPart, astParent, contextStringIdentifier);
-		if (variationPointData != null) {
-			harvestedVariationPoints.add(variationPointData);
-		}
-		Object entryValue;
-		JSONObject entryJSONObject;
+		hierarchicIdentifier = HierarchyEntityConstructor.createLabelForParticularEntityInAST(hierarchicIdentifier, astPart);
+		JSONObject variationPointData = this.harvestVariationPoint(
+				astRoot, astPart, astParent, contextStringIdentifier, hierarchicIdentifier, originalAstPart);
+		if (variationPointData != null) { harvestedVariationPoints.add(variationPointData); }
+	
+		Object entryValue, originalAstValue;
+		JSONObject entryJSONObject, originalAstEntryJSONObject;
+		int index;
 		for(Object entryKey: astPart.keySet()) {
 			key = (String) entryKey;
 			entryValue = astPart.get(key);
+			Set<String> resultingSet = new HashSet<String>(astPart.keySet());
+			resultingSet.removeAll(originalAstPart.keySet());
+			if (resultingSet.isEmpty() && originalAstPart.containsKey(key)) {
+				if (entryValue instanceof JSONObject) {
+					resultingSet = new HashSet<String>(((JSONObject) entryValue).keySet());
+					resultingSet.removeAll(((JSONObject) originalAstPart.get(key)).keySet());
+					if (resultingSet.isEmpty()) {
+						originalAstValue = originalAstPart.get(key);
+					} else {
+						originalAstValue = originalAstPart;
+					}
+				} else {
+					originalAstValue = originalAstPart.get(key);
+				}
+			} else {
+				originalAstValue = originalAstPart;
+			}
 			//if (key.equals("illegalDecorators")) {	continue; }
 			if (entryValue instanceof JSONObject) {
 				entryJSONObject = (JSONObject) entryValue;
-				this.harvestVariationPoints(astRoot, entryJSONObject, astPart, contextStringIdentifier, harvestedVariationPoints);
+				this.harvestVariationPoints(astRoot, entryJSONObject, astPart, 
+						contextStringIdentifier, hierarchicIdentifier, 
+						harvestedVariationPoints, (JSONObject) originalAstValue);
 			} else if(entryValue instanceof JSONArray) {
+				index = 0;
 				for (Object arrayPart: ((JSONArray) entryValue)) {
 					entryJSONObject = (JSONObject) arrayPart;
-					this.harvestVariationPoints(astRoot, entryJSONObject, astPart, contextStringIdentifier, harvestedVariationPoints);
+				
+					if (originalAstValue instanceof JSONArray && ((JSONArray) originalAstValue).size() != 0) {
+						if (index >= ((JSONArray) originalAstValue).size()) { index = ((JSONArray) originalAstValue).size() - 1; }
+						originalAstEntryJSONObject = (JSONObject) ((JSONArray) originalAstValue).get(index);
+						if (this.checkPositiveVariabilityMarker(entryJSONObject)) { index = index + 1; }
+					} else {
+						originalAstEntryJSONObject = originalAstPart;
+					}
+					this.harvestVariationPoints(astRoot, entryJSONObject, astPart, 
+							contextStringIdentifier, hierarchicIdentifier, 
+							harvestedVariationPoints, originalAstEntryJSONObject);
 				}
 			}
 		}

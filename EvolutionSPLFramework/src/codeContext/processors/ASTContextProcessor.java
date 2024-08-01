@@ -64,7 +64,7 @@ public class ASTContextProcessor {
 	public static CodeContext initializeCodeContext(JSONObject astRoot, JSONObject analyzedAstPlace, 
 			String fileName, boolean useTypes) {
 		GlobalContext globalContext = new GlobalContext();
-		InnerContext innerContext = new InnerContext(null, 0, Integer.MAX_VALUE, useTypes, false);
+		InnerContext innerContext = new InnerContext(null, 0, (Long) ((JSONObject) astRoot.get("endOfFileToken")).get("end"), useTypes, false);
 		CodeContext initialCodeContext = new CodeContext(globalContext, innerContext, fileName);
 		ImportProcessor.processImportsInAstPart(astRoot, analyzedAstPlace, initialCodeContext);
 		return initialCodeContext;

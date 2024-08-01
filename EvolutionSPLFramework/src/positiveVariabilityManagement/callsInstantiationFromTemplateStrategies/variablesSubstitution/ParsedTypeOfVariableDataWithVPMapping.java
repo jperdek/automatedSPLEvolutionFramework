@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import splEvolutionCore.DebugInformation;
+
 
 /**
  * The manager of dependencies for used functionality from additional scripts 
@@ -72,8 +74,10 @@ public class ParsedTypeOfVariableDataWithVPMapping extends ParsedTypeOfVariableD
 		for (InjectionCandidateVariationPoint processedInjection: variableNameToVariationPointNameMapping.values()) {
 			processedInjection.insertDependenciesOnVariationPoints(possibleVariationPointDependencies);
 		}
-		System.out.println("Dependencies..................................: " + possibleVariationPointDependencies.size());
-		System.out.println("Preparing..................................: " + variableNameToVariationPointNameMapping.size());
+		if (DebugInformation.SHOW_POLLUTING_INFORMATION) {
+			System.out.println("Dependencies..................................: " + possibleVariationPointDependencies.size());
+			System.out.println("Preparing..................................: " + variableNameToVariationPointNameMapping.size());
+		}
 		return variableNameToVariationPointNameMapping;
 	}
 }

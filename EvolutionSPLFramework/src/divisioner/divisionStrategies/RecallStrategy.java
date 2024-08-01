@@ -48,9 +48,10 @@ public class RecallStrategy implements VariationPointsDivisioningStrategy {
 	public void division(DivisioningInterface divisioner, String inputCodeFilePath, String outputVisualizedAstPath, 
 			String fileOutputVariationPointsPath) throws NotFoundVariableDeclaration, IOException, 
 	InterruptedException, InvalidSystemVariationPointMarkerException, DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation {
-		JSONObject highlightedAst = this.divisionAndGetHighlightedAst(divisioner, inputCodeFilePath);
+		JSONObject astTreeRoot = ASTConverterClient.convertFromCodeToASTJSON(PostRequester.loadFileContent(inputCodeFilePath));
+		JSONObject highlightedAst = this.divisionAndGetHighlightedAst(divisioner, astTreeRoot, inputCodeFilePath);
 		this.persistsHighlightedAst(inputCodeFilePath, highlightedAst, outputVisualizedAstPath);
-		JSONArray harvestedVariationPoints = this.getVariationPointsData(highlightedAst);
+		JSONArray harvestedVariationPoints = this.getVariationPointsData(highlightedAst, astTreeRoot);
 		UpdatedTreePersistence.persistsAstInFile(fileOutputVariationPointsPath, 
 				harvestedVariationPoints.toString());
 	}
@@ -77,25 +78,6 @@ public class RecallStrategy implements VariationPointsDivisioningStrategy {
 		JSONObject highlightedAst = divisioner.divisionToVPHierarchic(
 				astTreeRoot, fileName, VariationPointDivisionConfiguration.USE_TYPES);
 		return highlightedAst;
-	}
-	
-	/**
-	 * Loads and divisions the code in form of application AST into variation points (negative and/or positive variability) and returns the resulting highlighted/marked/annotated AST
-	 * -includes transformation of the code into the application AST
-	 * 
-	 * @param divisioner - object instance to manage and customize division process into variation points
-	 * @param inputCodeFilePath - the path to the JavaScript/TypeScript script that is going to be loaded
-	 * @throws NotFoundVariableDeclaration
-	 * @throws IOException
-	 * @throws InterruptedException
-	 * @throws InvalidSystemVariationPointMarkerException
-	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint
-	 * @throws DuplicatedAnnotation
-	 */
-	public JSONObject divisionAndGetHighlightedAst(DivisioningInterface divisioner, String inputCodeFilePath) throws NotFoundVariableDeclaration, IOException, InterruptedException, 
-			InvalidSystemVariationPointMarkerException, DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation {
-		JSONObject astTreeRoot = ASTConverterClient.convertFromCodeToASTJSON(PostRequester.loadFileContent(inputCodeFilePath));
-		return this.divisionAndGetHighlightedAst(divisioner, astTreeRoot, inputCodeFilePath);
 	}
 	
 	/**
@@ -147,6 +129,7 @@ public class RecallStrategy implements VariationPointsDivisioningStrategy {
 	 * Exports and collects information about variation points (variation points data) from highlighted.annotated/marked application AST
 	 * 
 	 * @param highlightedAst - the AST of the original application with inserted markers and annotations - marked nagative and positive variability
+	 * @param originalAst
 	 * @throws NotFoundVariableDeclaration
 	 * @throws IOException
 	 * @throws InterruptedException
@@ -154,16 +137,17 @@ public class RecallStrategy implements VariationPointsDivisioningStrategy {
 	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint
 	 * @throws DuplicatedAnnotation
 	 */
-	public JSONArray getVariationPointsData(JSONObject highlightedAst) throws NotFoundVariableDeclaration, IOException, 
+	public JSONArray getVariationPointsData(JSONObject highlightedAst, JSONObject originalAst) throws NotFoundVariableDeclaration, IOException, 
 			InterruptedException, InvalidSystemVariationPointMarkerException, DifferentAnnotationTypesOnTheSameVariationPoint,
 			DuplicatedAnnotation {
 		VPDividedExporter vpDividedExporter = new VPDividedExporter();
-		return vpDividedExporter.collectAndProcessAllVariationPoints(highlightedAst);
+		return vpDividedExporter.collectAndProcessAllVariationPoints(highlightedAst, originalAst);
 	}
 	
 	/**
 	 * Divisions the content of base script/evolved file and extracts, collects, and returns information about variation points - variation points data
 	 * 
+	 * @param divisioner - 
 	 * @param inputCodeFilePath - the path to the JavaScript/TypeScript script that is going to be loaded
 	 * @throws NotFoundVariableDeclaration
 	 * @throws IOException
@@ -174,8 +158,9 @@ public class RecallStrategy implements VariationPointsDivisioningStrategy {
 	 */
 	public JSONArray divisionAndGetVariationPointsData(DivisioningInterface divisioner, String inputCodeFilePath) throws NotFoundVariableDeclaration, IOException, InterruptedException, 
 			InvalidSystemVariationPointMarkerException, DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation {
-		JSONObject highlightedAst = this.divisionAndGetHighlightedAst(divisioner, inputCodeFilePath);
-		JSONArray harvestedVariationPoints = this.getVariationPointsData(highlightedAst);
+		JSONObject astTreeRoot = ASTConverterClient.convertFromCodeToASTJSON(PostRequester.loadFileContent(inputCodeFilePath));
+		JSONObject highlightedAst = this.divisionAndGetHighlightedAst(divisioner, astTreeRoot, inputCodeFilePath);
+		JSONArray harvestedVariationPoints = this.getVariationPointsData(highlightedAst, astTreeRoot);
 		return harvestedVariationPoints;
 	}
 }

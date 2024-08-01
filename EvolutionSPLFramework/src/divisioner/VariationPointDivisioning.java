@@ -5,6 +5,8 @@ import java.io.IOException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import codeConstructsEvaluation.transformation.ASTConverterClient;
+import codeConstructsEvaluation.transformation.PostRequester;
 import codeContext.CodeContext;
 import codeContext.processors.NotFoundVariableDeclaration;
 import dividedAstExport.InvalidSystemVariationPointMarkerException;
@@ -102,6 +104,7 @@ public class VariationPointDivisioning {
 	 * 
 	 * @param divisioner - object instance to manage and customize division process into variation points
 	 * @param inputCodeFilePath - the path to the JavaScript/TypeScript script that is going to be loaded
+	 * @param originalAst - 
 	 * @return the resulting highlighted/marked/annotated AST
 	 * @throws NotFoundVariableDeclaration
 	 * @throws IOException
@@ -110,9 +113,11 @@ public class VariationPointDivisioning {
 	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint
 	 * @throws DuplicatedAnnotation
 	 */
-	public JSONObject divisionAndGetHighlightedAst(String inputCodeFilePath) throws NotFoundVariableDeclaration, IOException, InterruptedException, 
+	public JSONObject divisionAndGetHighlightedAst(String inputCodeFilePath, JSONObject originalAst) throws NotFoundVariableDeclaration, IOException, InterruptedException, 
 			InvalidSystemVariationPointMarkerException, DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation {
-		return this.variationPointsDivisioningStrategy.divisionAndGetHighlightedAst(this.divisioner, inputCodeFilePath);
+		JSONObject astTreeRoot = ASTConverterClient.convertFromCodeToASTJSON(PostRequester.loadFileContent(inputCodeFilePath));
+		JSONObject highlightedAst = this.variationPointsDivisioningStrategy.divisionAndGetHighlightedAst(this.divisioner, astTreeRoot, inputCodeFilePath);
+		return highlightedAst;
 	}
 
 	/**
@@ -139,6 +144,7 @@ public class VariationPointDivisioning {
 	 * Exports and collects information about variation points (variation points data) from highlighted.annotated/marked application AST
 	 * 
 	 * @param highlightedAst - the AST of the original application with inserted markers and annotations - marked nagative and positive variability
+	 * @param originalAst
 	 * @return information about variation points - variation points data (for both variability - positive and negative)
 	 * @throws NotFoundVariableDeclaration
 	 * @throws IOException
@@ -147,10 +153,10 @@ public class VariationPointDivisioning {
 	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint
 	 * @throws DuplicatedAnnotation
 	 */
-	public JSONArray getVariationPointsData(JSONObject highlightedAst) throws NotFoundVariableDeclaration, 
+	public JSONArray getVariationPointsData(JSONObject highlightedAst, JSONObject originalAst) throws NotFoundVariableDeclaration, 
 			IOException, InterruptedException, InvalidSystemVariationPointMarkerException, 
 			DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation {
-		return this.variationPointsDivisioningStrategy.getVariationPointsData(highlightedAst);
+		return this.variationPointsDivisioningStrategy.getVariationPointsData(highlightedAst, originalAst);
 	}
 
 	/**
