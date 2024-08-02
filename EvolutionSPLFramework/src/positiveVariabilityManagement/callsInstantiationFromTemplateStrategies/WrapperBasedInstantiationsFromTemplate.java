@@ -36,6 +36,11 @@ public class WrapperBasedInstantiationsFromTemplate implements CallsInstantiatio
 	 */
 	private static HashSet<String> messageOnOutput = new HashSet<String>();
 	
+	/**
+	 * Prints chosen parameter names which will be tried in substitution process
+	 * 
+	 * @param parameterInformation - the mapping of variable/parameter names in substitution mapping into type of particular parameter
+	 */
 	private void printParameterNames(Map<String, ParsedTypeOfVariableData> parameterInformation) {
 		System.out.println("-----------------------> PARAM NAMES");
 		for (ParsedTypeOfVariableData matchedVariableNameT: parameterInformation.values()) {

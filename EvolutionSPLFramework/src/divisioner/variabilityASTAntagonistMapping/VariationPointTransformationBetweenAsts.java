@@ -66,7 +66,7 @@ public class VariationPointTransformationBetweenAsts {
 	 *  
 	 * @param antagonistBlockAstStartPosition - start position of particular entity/part of antagonist AST (the AST without system annotations)
 	 * @param antagonistBlockAstEndPosition - end position of particular entity/part of antagonist AST (the AST without system annotations)
-	 * @param wholeVariableAstLength
+	 * @param wholeVariableAstLength - the length of processed block
 	 */
 	public void doTransformation(long antagonistBlockAstStartPosition, long antagonistBlockAstEndPosition, long wholeVariableAstLength) {
 		if (antagonistBlockAstStartPosition == 0) { 

@@ -1,7 +1,6 @@
 package divisioner.variabilityASTAntagonistMapping;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -25,17 +24,24 @@ import splEvolutionCore.candidateSelector.PositiveVariationPointCandidateTemplat
 public class VariabilityToAntagonistVariationPointMappings {
 
 	/**
-	 * Mapping of hierarchic identifiers into their object representation which implements transformation functionality
+	 * Mapping of hierarchical identifiers into their object representation which implements transformation functionality
 	 */
 	private Map<String, Set<VariationPointTransformationBetweenAsts>> relationshipMappings;
 	
 	/**
-	 * Initializes the trasformation class
+	 * Initializes the transformation class
 	 */
 	public VariabilityToAntagonistVariationPointMappings() {
 		this.relationshipMappings = new HashMap<String, Set<VariationPointTransformationBetweenAsts>>();
 	}
 	
+	/**
+	 * Loads data from variation points data including their start and end positions from variability annotated AST with system annotations
+	 * 
+	 * @param positiveVariationPointCandidatesTemplates - the list consisting of available variation points representation (variation points data) 
+	 * @param innerContextRoot - the root of inner context hierarchy covering all code structures built on top of it (classes and functions) 
+	 * @param onlyToBlockTransformation - if true then start and end positions will be assigned to variation points according to the entity mapping otherwise transformation will be applied
+	 */
 	public void loadAntagonistBoundaries(List<PositiveVariationPointCandidateTemplates> 
 	positiveVariationPointCandidatesTemplates, InnerContext innerContextRoot, boolean onlyToBlockTransformation) {
 		Long endSearchPosition, startSearchPosition;
@@ -66,6 +72,14 @@ public class VariabilityToAntagonistVariationPointMappings {
 		this.loadAndTransformVariationPointsData(innerContextRoot, "", onlyToBlockTransformation);
 	}
 	
+	/**
+	 * Loads variation point data in recursion from the hierarchy, applies transformation of start and 
+	 * end position, and associates them with code entities (classes and functions)
+	 * 
+	 * @param innerContext - the processed inner context in the hierarchy of contexts
+	 * @param hierarchicIdentifier - the hierarchical identifier expressing the actual entity from the hierarchy (is extended in each nesting)
+	 * @param onlyToBlockTransformation - if true then start and end positions will be assigned to variation points according to the entity mapping otherwise transformation will be applied
+	 */
 	private void loadAndTransformVariationPointsData(InnerContext innerContext, String hierarchicIdentifier, boolean onlyToBlockTransformation) {
 		long processedAntagonistContextStartPosition = innerContext.getActualStartPosition();
 		long processedAntagonistContextEndPosition = innerContext.getActualEndPosition();
@@ -116,6 +130,11 @@ public class VariabilityToAntagonistVariationPointMappings {
 		}
 	}
 	
+	/**
+	 * Returns the list of variation point representations after transformation of start and end positions in performed 
+	 *  
+	 * @return the list of variation point representations after transformation of start and end positions in performed 
+	 */
 	public List<VariationPointTransformationBetweenAsts> getVariationPointTransformationBetweenAsts() { 
 		List<VariationPointTransformationBetweenAsts> variationPointTransformationBetweenAstsEntities = new ArrayList<VariationPointTransformationBetweenAsts>();
 		for (Set<VariationPointTransformationBetweenAsts> variationPointTransformationBetweenAstsSet: this.relationshipMappings.values()) {

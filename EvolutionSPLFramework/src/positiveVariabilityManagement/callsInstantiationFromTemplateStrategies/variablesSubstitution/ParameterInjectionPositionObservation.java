@@ -19,16 +19,40 @@ import splEvolutionCore.SPLEvolutionCore;
 import splEvolutionCore.candidateSelector.PositiveVariationPointCandidateTemplates;
 
 
+/**
+ * Entity managing harvesting, collection and aggregation of variables and parameters according to their observed type, name,
+ *  and dependency on particular variation point with bindings to particular programming language
+ * 
+ * @author Jakub Perdek
+ *
+ */
 public class ParameterInjectionPositionObservation {
 	
+	/**
+	 * Aggregation of all existing aggregations of variables/parameters (under variation point and variable names) according to their observed type
+	 */
 	private Map<String, Set<VariableAggregationUnderVariationPoint>> extractedVariablesOrganizedAccoringType;
+	
+	/**
+	 * Aggregation of particular aggregation of variables/parameters (under variation point and variable names) according to variation point name/identifier
+	 */
 	private Map<String, VariableAggregationUnderVariationPoint> variationPointIdentifierToAggregationMap;
 	
+	/**
+	 * Instantiates and initializes entity used to manage harvesting, collection and aggregation of variables and parameters according to their observed type, name,
+	 *  and dependency on particular variation point with bindings to particular programming language
+	 */
 	public ParameterInjectionPositionObservation() {
 		this.extractedVariablesOrganizedAccoringType = new HashMap<String, Set<VariableAggregationUnderVariationPoint>>();
 		this.variationPointIdentifierToAggregationMap = new HashMap<String, VariableAggregationUnderVariationPoint>();
 	}
 	
+	/**
+	 * Prints ranges of particular variation points together with their associated names harvested in form of variation point data
+	 * 
+	 * @param codeContext - the code context with prepared hierarchy during previous AST parsing and global variables
+	 * @param positiveVariationPointCandidatesTemplates - the list of templates with associated variation point data for positive variability handling
+	 */
 	private void printRangesAndParsedData(CodeContext codeContext, List<PositiveVariationPointCandidateTemplates> positiveVariationPointCandidatesTemplates) {
 		Long endSearchPosition, startSearchPosition;
 		JSONObject actuallyProcessedVariationPointData;
@@ -42,20 +66,26 @@ public class ParameterInjectionPositionObservation {
 			endSearchPosition = (long) actuallyProcessedVariationPointData.get("originalASTEndPosition");
 			System.out.println("Used position: [" + startSearchPosition + ", " + endSearchPosition + "] to get inner data from variation point: " + variationPointIDName + " variables and parameters: " +  actuallyProcessedVariationPointData.toString());	
 		}
-		//System.exit(8);
 	}
 	
+	/**
+	 * Extracts variation points data and uses them to harvest parameters/variables from processed script to substitute them further
+	 *  
+	 * @param codeContext - the code context with prepared hierarchy during previous AST parsing and global variables
+	 * @param positiveVariationPointCandidatesTemplates - the list of templates with associated variation point data for positive variability handling
+	 * @param actualScriptVariablesToSubstituteConfiguration - the configuration for harvesting with followed substitution of variables and parameters from processed script
+	 */
 	public void extractRelatedVariationPointData(CodeContext codeContext, 
 			List<PositiveVariationPointCandidateTemplates> positiveVariationPointCandidatesTemplates,
 			ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration) {
-		JSONObject actuallyProcessedVariationPointData;
+
 		String variationPointIDName;
 		String variableName, variableType;
 		Set<VariableAggregationUnderVariationPoint> variableTypeToInjectedVariableMap;
 		VariableAggregationUnderVariationPoint variableAggregationUnderVariationPoint;
 		long searchPosition, startSearchPosition, endSearchPosition;
 		if (DebugInformation.SHOW_CREATED_ENTITIES) { this.printRangesAndParsedData(codeContext, positiveVariationPointCandidatesTemplates); }
-		//this.printRangesAndParsedData(codeContext, positiveVariationPointCandidatesTemplates); 
+		// this.printRangesAndParsedData(codeContext, positiveVariationPointCandidatesTemplates); 
 		VariabilityToAntagonistVariationPointMappings variabilityToAntagonistVariationPointMappings = new VariabilityToAntagonistVariationPointMappings();
 		boolean onlyToBlockTransformation = true;
 		variabilityToAntagonistVariationPointMappings.loadAntagonistBoundaries(positiveVariationPointCandidatesTemplates, codeContext.getInnerContext(), onlyToBlockTransformation);
@@ -97,6 +127,10 @@ public class ParameterInjectionPositionObservation {
 		//this.printAggregatedVariablesUnderType(); System.exit(5);
 	}
 	
+	/**
+	 * Prints information about aggregation of found variables/parameters from code entities 
+	 *  under their observed/determined type and dependency on variation point
+	 */
 	private void printAggregatedVariablesUnderType() {
 		Set<VariableAggregationUnderVariationPoint> parameterDependencySet;
 		String variableType;
@@ -112,6 +146,14 @@ public class ParameterInjectionPositionObservation {
 		}
 	}
 	
+	/**
+	 * Returns the aggregation/set of variation point dependency entity holding aggregation of found variables, 
+	 * their type under particular variation point dependency
+	 * 
+	 * @param parameterType - the observed type which has to be substituted during instantiation of call of particular functionality
+	 * @return the aggregation/set of variation point dependency entity holding aggregation of found variables, 
+	 * their type under particular variation point dependency
+	 */
 	public Set<VariableAggregationUnderVariationPoint> getVariableToVariationPointMappping(String parameterType) {
 		return this.extractedVariablesOrganizedAccoringType.get(parameterType.strip());
 	}	
