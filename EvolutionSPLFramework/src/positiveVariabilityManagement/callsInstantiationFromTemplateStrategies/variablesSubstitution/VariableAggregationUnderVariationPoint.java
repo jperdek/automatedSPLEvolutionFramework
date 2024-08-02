@@ -42,17 +42,10 @@ public class VariableAggregationUnderVariationPoint {
 		} else {
 			injectionCandidateVariationPoint = new InjectionCandidateVariationPoint(this.variationPointIdentifier);
 		}
-		//injectionCandidateVariationPoint.insertVariableNameUnderSharedType(variableName);
 		variableTypeToInjectionMap.put(variableName, injectionCandidateVariationPoint);
 		
 		this.variationPointToVariablesMap.put(variableName, injectionCandidateVariationPoint);
 		this.extractedVariablesOrganizedAccordingToType.put(variableType, variableTypeToInjectionMap);
-		if(this.variationPointIdentifier.contains("VP238")) {
-			System.out.println("--------------------------------------------->" +variableType + " VP  " +  variableName);
-			if(variableName.contains("radius")) {
-				System.exit(5);
-			}
-		}
 	}
 	
 	/**

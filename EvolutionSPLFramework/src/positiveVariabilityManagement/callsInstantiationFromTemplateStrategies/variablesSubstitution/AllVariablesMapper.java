@@ -137,8 +137,7 @@ public class AllVariablesMapper {
 		Set<String> supportedParameterNames, supportedParameterNamesAll;
 		Set<VariableAggregationUnderVariationPoint> usableVariationPointsSet = new HashSet<VariableAggregationUnderVariationPoint>();
 		variationPointDependencies = new HashSet<String>();
-		
-		System.out.println("PArameter mapping size: " + parameterNamesToTypeMapping.size());
+
 		for(Entry<String, String> parameterNamesToTypeEntry: parameterNamesToTypeMapping) {
 			parameterType = parameterNamesToTypeEntry.getValue().strip();
 			parameterNameToCheck = parameterNamesToTypeEntry.getKey().strip();
@@ -152,37 +151,20 @@ public class AllVariablesMapper {
 			//SEARCH SHOULD BE DONE ACCORDING TO VALIDITY RANGE
 			nameToContextMappingDependenciesSet = this.parameterInjectionPositionObservation.getVariableToVariationPointMappping(parameterType);
 			if (nameToContextMappingDependenciesSet != null) {
-				System.out.println(parameterNameToCheck);
-				
 				supportedParameterNamesAll = new HashSet<String>();
 				if (variationPointDependencies.isEmpty()) {
-					System.out.println("AGAIN EMPTY./...");
 					for (VariableAggregationUnderVariationPoint variableAggregation: nameToContextMappingDependenciesSet) {
 						if (variableAggregation.checkVariableName(parameterNameToCheck)) {
-							if(variableAggregation.getVariationPointIdentifier().contains("VP238")) {
-								System.out.println("NAAAAAAAAAAAAAAAAAAAAAAAAAAME" + parameterNameToCheck);
-								if (parameterNameToCheck.contains("iterations")) { System.exit(5); }
-								if (parameterNameToCheck.equals("ratio")) { System.exit(5); }
-								if (parameterNameToCheck.contains("radius")) { System.exit(5); }
-							}
 							supportedParameterNames = variableAggregation.getAllowedVariablesToSubstitute(parameterNameToCheck);
 							supportedParameterNamesAll.addAll(supportedParameterNames);
 							
 							variationPointDependencies.add(variableAggregation.getVariationPointIdentifier());
 						}
 					}
-					//usableVariationPointsSet.addAll(nameToContextMappingDependenciesSet);
 				} else {
 					variationPointDependenciesToRetain = new HashSet<String>();
 					for (VariableAggregationUnderVariationPoint variableAggregation: nameToContextMappingDependenciesSet) {
-						if (variableAggregation.checkVariableName(parameterNameToCheck)) {
-							if(variableAggregation.getVariationPointIdentifier().contains("VP238")) {
-								System.out.println("NAAAAAAAAAAAAAAAAAAAAAAAAAAME" + parameterNameToCheck);
-								if (parameterNameToCheck.contains("iterations")) { System.exit(5); }
-								if (parameterNameToCheck.equals("ratio")) { System.exit(5); }
-								if (parameterNameToCheck.contains("radius")) { System.exit(5); }
-							}
-							
+						if (variableAggregation.checkVariableName(parameterNameToCheck)) {		
 							supportedParameterNames = variableAggregation.getAllowedVariablesToSubstitute(parameterNameToCheck);
 							supportedParameterNamesAll.addAll(supportedParameterNames);
 						
@@ -190,14 +172,9 @@ public class AllVariablesMapper {
 						}
 					}
 					variationPointDependencies.retainAll(variationPointDependenciesToRetain);
-					//System.out.println("RETAINED VALUES");
-					//for (String vp: variationPointDependencies) {
-					//	System.out.println("Remained: " + vp);
-					//}
-					//usableVariationPointsSet.retainAll(nameToContextMappingDependenciesSet);
+
 				}
-				// if no elements satisfied condition then simply continues
-				//if (usableVariationPointsSet.isEmpty()) { System.out.println("Necessary to skip .............................................."); continue; }
+				
 				if (variationPointDependencies.isEmpty()) { System.out.println("Necessary to skip .............................................."); return new HashMap<String, ParsedTypeOfVariableData>(); }
 				nameToContextMappingDependenciesSetAfterValidation = new HashSet<>();
 				for (VariableAggregationUnderVariationPoint variableAggregationUnderVariationPoint: nameToContextMappingDependenciesSet) {
