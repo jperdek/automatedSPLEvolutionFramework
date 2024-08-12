@@ -8,6 +8,7 @@ import codeContext.processors.ASTTextExtractorTools;
 import codeContext.processors.NotFoundVariableDeclaration;
 import dividedAstExport.InvalidSystemVariationPointMarkerException;
 import divisioner.VariationPointDivisionConfiguration;
+import splEvolutionCore.SPLEvolutionCore;
 import splEvolutionCore.candidateSelector.AlreadyProvidedArgumentInConfigurationExpressionPlace;
 import splEvolutionCore.candidateSelector.NegativeVariationPointCandidate;
 import splEvolutionCore.candidateSelector.valueAssignment.cleaning.AnnotationsFromCodeRemover;
@@ -38,6 +39,7 @@ public class VariationPointUpdater {
 	 * @param astParent - the parent of actually processed AST element
 	 * @param foundNegativeVariationPointCandidate - selected variation point candidate who is annotated
 	 * @param associatedType - type of candidate to select appropriate user negative variability annotation
+	 * @param isUserAnnotation - to decide which type of annotations should be inserted - if true user annotations helps to preserve content further for next iterations otherwise system annotations allows to mark variable places that are found and treated
 	 * @throws IOException
 	 * @throws InterruptedException
 	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint
@@ -47,21 +49,21 @@ public class VariationPointUpdater {
 	 */
 	private void processAnnotationAccordingType(JSONObject astRoot, JSONObject astPart, JSONObject astParent,
 			NegativeVariationPointCandidate foundNegativeVariationPointCandidate, 
-			AnnotationExtensionMarker.SystemAnnotationType associatedType) throws IOException, InterruptedException, 
+			AnnotationExtensionMarker.SystemAnnotationType associatedType, boolean isUserAnnotation) throws IOException, InterruptedException, 
 				DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation, 
 				AlreadyProvidedArgumentInConfigurationExpressionPlace, NotFoundVariableDeclaration {
 		if (associatedType == AnnotationExtensionMarker.SystemAnnotationType.FUNCTION) {
-			UserAnnotationInjector.processAnnotationForClassFunctionsInAstPart(astPart, astParent);
+			AnnotationInjector.processAnnotationForClassFunctionsInAstPart(astPart, astParent, isUserAnnotation);
 		} else if (associatedType == AnnotationExtensionMarker.SystemAnnotationType.CLASS_VARIABLE) {
-			UserAnnotationInjector.processAnnotationForClassVariablesInAstPart(astPart, astParent);
+			AnnotationInjector.processAnnotationForClassVariablesInAstPart(astPart, astParent, isUserAnnotation);
 		} else if (associatedType == AnnotationExtensionMarker.SystemAnnotationType.CLASS_FUNCTION) {
-			UserAnnotationInjector.processAnnotationForClassFunctionsInAstPart(astPart, astParent);
+			AnnotationInjector.processAnnotationForClassFunctionsInAstPart(astPart, astParent, isUserAnnotation);
 		} else if (associatedType ==  AnnotationExtensionMarker.SystemAnnotationType.VARIABLE) {
-			UserAnnotationInjector.processAnnotationForVariablesInAstPart(astRoot, astPart);
+			AnnotationInjector.processAnnotationForVariablesInAstPart(astRoot, astPart, isUserAnnotation);
 		} else if (associatedType == AnnotationExtensionMarker.SystemAnnotationType.PARAMETER) {
-			UserAnnotationInjector.processAnnotationForParameterInAstPart(astPart, astParent);
+			AnnotationInjector.processAnnotationForParameterInAstPart(astPart, astParent, isUserAnnotation);
 		} else if (associatedType == AnnotationExtensionMarker.SystemAnnotationType.CLASS) {
-			UserAnnotationInjector.processAnnotationForClassInAstPart(astPart, foundNegativeVariationPointCandidate);
+			AnnotationInjector.processAnnotationForClassInAstPart(astPart, foundNegativeVariationPointCandidate, isUserAnnotation);
 		}
 	}
 	
@@ -74,6 +76,7 @@ public class VariationPointUpdater {
 	 * @param astParent - the parent of actually processed AST element
 	 * @param chosenVariationPointsMap - selected variation points that should be updated (their names are mapped to their representation) 
 	 * @param associatedType - type of candidate to select appropriate user negative variability annotation
+	 * @param isUserAnnotation - to decide which type of annotations should be inserted - if true user annotations helps to preserve content further for next iterations otherwise system annotations allows to mark variable places that are found and treated
 	 * @throws IOException
 	 * @throws InterruptedException
 	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint
@@ -83,7 +86,7 @@ public class VariationPointUpdater {
 	 */
 	private void identifyCandidateAndInsertUserAnnotation(JSONObject astRoot, JSONObject astPart, JSONObject astParent,
 			Map<String, NegativeVariationPointCandidate> chosenVariationPointsMap, 
-			AnnotationExtensionMarker.SystemAnnotationType associatedType) throws IOException, InterruptedException, 
+			AnnotationExtensionMarker.SystemAnnotationType associatedType, boolean isUserAnnotation) throws IOException, InterruptedException, 
 			DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation, 
 			AlreadyProvidedArgumentInConfigurationExpressionPlace, NotFoundVariableDeclaration {
 		String actualAstIdentifier = NegativeVariationPointCandidate.getIdentifierFromAst(astPart);
@@ -94,7 +97,7 @@ public class VariationPointUpdater {
 				AnnotationsFromCodeRemover.removeActualLayerVariabilityAnnotations(astPart);
 			}
 			
-			this.processAnnotationAccordingType(astRoot, astPart, astParent, foundNegativeVariationPointCandidate, associatedType);
+			this.processAnnotationAccordingType(astRoot, astPart, astParent, foundNegativeVariationPointCandidate, associatedType, isUserAnnotation);
 		} else {
 			//clear annotations - especially removed ones
 			if (!VariationPointDivisionConfiguration.REMOVE_ALL_VARIABILITY_ANNOTATIOS_BEFORE_UPDATE) {
@@ -111,6 +114,7 @@ public class VariationPointUpdater {
 	 * @param contextStringIdentifier - identifier that reflects position of given entity inside other entities
 	 * @param astRoot - the root of AST
 	 * @param chosenVariationPointsMap - selected variation points that should be updated (their names are mapped to their representation) 
+	 * @param isUserAnnotation - to decide which type of annotations should be inserted - if true user annotations helps to preserve content further for next iterations otherwise system annotations allows to mark variable places that are found and treated
 	 * @throws IOException
 	 * @throws InterruptedException
 	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint
@@ -120,26 +124,26 @@ public class VariationPointUpdater {
 	 */
 	private void updateVariationPoint(JSONObject astPart, JSONObject astParent, 
 			String contextStringIdentifier, JSONObject astRoot, 
-			Map<String, NegativeVariationPointCandidate> chosenVariationPointsMap) throws IOException, 
+			Map<String, NegativeVariationPointCandidate> chosenVariationPointsMap, boolean isUserAnnotation) throws IOException, 
 			InterruptedException, DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation, 
 			AlreadyProvidedArgumentInConfigurationExpressionPlace, NotFoundVariableDeclaration {
 		if (astParent.containsKey("members") && astPart.containsKey("parameters") && astPart.containsKey("name")) { //GET ANNOTATIONS FOR CLASS FUNCTION DECORATORS
-			this.identifyCandidateAndInsertUserAnnotation(astRoot, astPart, astParent, chosenVariationPointsMap, AnnotationExtensionMarker.SystemAnnotationType.CLASS_FUNCTION);
+			this.identifyCandidateAndInsertUserAnnotation(astRoot, astPart, astParent, chosenVariationPointsMap, AnnotationExtensionMarker.SystemAnnotationType.CLASS_FUNCTION, isUserAnnotation);
 		} else if (astParent.containsKey("members") && !astPart.containsKey("parameters") && astPart.containsKey("name")) { //GET ANNOTATIONS FOR CLASS VARIABLES
-			this.identifyCandidateAndInsertUserAnnotation(astRoot,astPart, astParent, chosenVariationPointsMap, AnnotationExtensionMarker.SystemAnnotationType.CLASS_VARIABLE);
+			this.identifyCandidateAndInsertUserAnnotation(astRoot,astPart, astParent, chosenVariationPointsMap, AnnotationExtensionMarker.SystemAnnotationType.CLASS_VARIABLE, isUserAnnotation);
 		} else if (!astPart.containsKey("members") && astPart.containsKey("parameters") && astPart.containsKey("body")) { //GET ANNOTATIONS FOR FUNCTION DECORATORS //directly from part
 			if (!astPart.containsKey("name")) { // CLASS CONSTRUCTOR
-				this.identifyCandidateAndInsertUserAnnotation(astRoot, astPart, astParent, chosenVariationPointsMap, AnnotationExtensionMarker.SystemAnnotationType.CLASS_FUNCTION);
+				this.identifyCandidateAndInsertUserAnnotation(astRoot, astPart, astParent, chosenVariationPointsMap, AnnotationExtensionMarker.SystemAnnotationType.CLASS_FUNCTION, isUserAnnotation);
 			} else {
-				this.identifyCandidateAndInsertUserAnnotation(astRoot, astPart, astParent, chosenVariationPointsMap, AnnotationExtensionMarker.SystemAnnotationType.FUNCTION);
+				this.identifyCandidateAndInsertUserAnnotation(astRoot, astPart, astParent, chosenVariationPointsMap, AnnotationExtensionMarker.SystemAnnotationType.FUNCTION, isUserAnnotation);
 			}
 		}  else if (astParent.containsKey("declarationList") && astPart.containsKey("declarations")){	//GET ANNOTATION FOR GLOBAL CONTEXT VARIABLES
-			this.identifyCandidateAndInsertUserAnnotation(astRoot, astPart, astParent, chosenVariationPointsMap, AnnotationExtensionMarker.SystemAnnotationType.VARIABLE);
+			this.identifyCandidateAndInsertUserAnnotation(astRoot, astPart, astParent, chosenVariationPointsMap, AnnotationExtensionMarker.SystemAnnotationType.VARIABLE, isUserAnnotation);
 		} else if (astPart.containsKey("members") && astPart.containsKey("name")){	//CLASS ANNOTATION - processed directly
-			this.identifyCandidateAndInsertUserAnnotation(astRoot, astPart, astParent, chosenVariationPointsMap, AnnotationExtensionMarker.SystemAnnotationType.CLASS);
+			this.identifyCandidateAndInsertUserAnnotation(astRoot, astPart, astParent, chosenVariationPointsMap, AnnotationExtensionMarker.SystemAnnotationType.CLASS, isUserAnnotation);
 		} else if (astPart.containsKey("parameters")){	//PARAMETER ANNOTATION - processed directly
 			if (VariationPointDivisionConfiguration.ALLOW_NEGATIVE_VARIABILITY_PARAMETERS) {
-				this.identifyCandidateAndInsertUserAnnotation(astRoot, astPart, astParent, chosenVariationPointsMap, AnnotationExtensionMarker.SystemAnnotationType.PARAMETER);
+				this.identifyCandidateAndInsertUserAnnotation(astRoot, astPart, astParent, chosenVariationPointsMap, AnnotationExtensionMarker.SystemAnnotationType.PARAMETER, isUserAnnotation);
 			} 
 		} else {
 			return; 
@@ -173,6 +177,7 @@ public class VariationPointUpdater {
 	 * @param previousParent - the grand parent of actually processed AST element
 	 * @param contextStringIdentifier - identifier that reflects position of given entity inside other entities
 	 * @param chosenVariationPoints - selected variation points that should be updated (their names are mapped to their representation) 
+	 * @param isUserAnnotation - to decide which type of annotations should be inserted - if true user annotations helps to preserve content further for next iterations otherwise system annotations allows to mark variable places that are found and treated
 	 * @throws IOException
 	 * @throws InterruptedException
 	 * @throws InvalidSystemVariationPointMarkerException
@@ -185,7 +190,7 @@ public class VariationPointUpdater {
 			JSONObject astRoot, JSONObject astPart, 
 			JSONObject astParent, JSONObject previousParent, 
 			String contextStringIdentifier, 
-			Map<String, NegativeVariationPointCandidate> chosenVariationPoints) throws IOException, 
+			Map<String, NegativeVariationPointCandidate> chosenVariationPoints, boolean isUserAnnotation) throws IOException, 
 				InterruptedException, InvalidSystemVariationPointMarkerException, 
 				DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation, 
 				AlreadyProvidedArgumentInConfigurationExpressionPlace, NotFoundVariableDeclaration {
@@ -193,7 +198,7 @@ public class VariationPointUpdater {
 		if (astPart == null) { return; }
 		contextStringIdentifier = this.updateContextStringIdentifier(contextStringIdentifier, astPart);
 		
-		this.updateVariationPoint(astPart, astParent, contextStringIdentifier, astRoot, chosenVariationPoints);
+		this.updateVariationPoint(astPart, astParent, contextStringIdentifier, astRoot, chosenVariationPoints, isUserAnnotation);
 		Object entryValue;
 		JSONObject entryJSONObject;
 		for(Object entryKey: astPart.keySet()) {
@@ -203,12 +208,12 @@ public class VariationPointUpdater {
 			if (entryValue instanceof JSONObject) {
 				entryJSONObject = (JSONObject) entryValue;
 				this.updateAstAccordingToNegativeVariabilitySelections(
-						astRoot, entryJSONObject, astPart, astParent, contextStringIdentifier, chosenVariationPoints);
+						astRoot, entryJSONObject, astPart, astParent, contextStringIdentifier, chosenVariationPoints, isUserAnnotation);
 			} else if(entryValue instanceof JSONArray) {
 				for (Object arrayPart: ((JSONArray) entryValue)) {
 					entryJSONObject = (JSONObject) arrayPart;
 					this.updateAstAccordingToNegativeVariabilitySelections(
-							astRoot, entryJSONObject, astPart, astParent, contextStringIdentifier, chosenVariationPoints);
+							astRoot, entryJSONObject, astPart, astParent, contextStringIdentifier, chosenVariationPoints, isUserAnnotation);
 				}
 			}
 		}
@@ -232,7 +237,8 @@ public class VariationPointUpdater {
 			JSONObject splAstTree, Map<String, NegativeVariationPointCandidate> chosenVariationPoints) throws IOException, 
 			InterruptedException, InvalidSystemVariationPointMarkerException, DifferentAnnotationTypesOnTheSameVariationPoint, 
 			DuplicatedAnnotation, AlreadyProvidedArgumentInConfigurationExpressionPlace, NotFoundVariableDeclaration {
+
 		this.updateAstAccordingToNegativeVariabilitySelections(splAstTree, splAstTree, 
-				splAstTree, splAstTree, "", chosenVariationPoints);
+				splAstTree, splAstTree, "", chosenVariationPoints, true);
 	}
 }

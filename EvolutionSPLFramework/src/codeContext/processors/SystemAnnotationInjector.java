@@ -19,12 +19,12 @@ import variationPointsVisualization.NegativeVariabilityDecoratorConsistenceVerif
  * @author Jakub Perdek
  *
  */
-public class AnnotationInjector {
+public class SystemAnnotationInjector {
 
 	/**
 	 * Instantiates AnnotationInjector 
 	 */
-	public AnnotationInjector() {}
+	public SystemAnnotationInjector() {}
 	
 	/**
 	 * Generates annotation/decorates particular variables in AST part
@@ -92,6 +92,7 @@ public class AnnotationInjector {
 		JSONArray decoratorsList;
 		if (membersList != null) {
 			alreadyProvidedVariabilityAnnotations = AnnotationProcessor.getAllAnnotationsFromProcessedBlockRoot(processedBlock);
+
 			if (processedBlock.containsKey("modifiers")) {
 				decoratorsList = (JSONArray) processedBlock.get("modifiers");
 			} else {
@@ -103,8 +104,8 @@ public class AnnotationInjector {
 					variabilityAnnotationAst = AnnotationExtensionMarker.generateMarkerForVariableInAst(SystemAnnotationType.CLASS);
 					decoratorsList.add(variabilityAnnotationAst);
 				}
-			}
-		}
+			} 
+		} 
 	}
 	
 	/**

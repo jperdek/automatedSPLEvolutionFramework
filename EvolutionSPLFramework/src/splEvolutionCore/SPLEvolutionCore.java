@@ -13,7 +13,11 @@ import java.util.List;
  */
 public interface SPLEvolutionCore {
 	
-	public static boolean APPLY_TO_TEMPLATE = true;
+	public static final boolean SHOW_ALL_SYSTEM_ANNOTATIONS_ON_DEBUG = true;
+	/**
+	 * Is evolution should be applied in form of HTML template //false is not direclty supported
+	 */
+	public static final boolean APPLY_TO_TEMPLATE = true;
 	
 	/**
 	 * Strategies to manage the divisions into positive and negative variability in the whole evolution

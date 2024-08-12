@@ -10,12 +10,11 @@ import org.junit.jupiter.api.Test;
 
 import codeContext.processors.NotFoundVariableDeclaration;
 import dividedAstExport.InvalidSystemVariationPointMarkerException;
-import divisioner.Divisioner;
-import divisioner.DivisioningInterface;
 import divisioner.VariationPointDivisionConfiguration;
 import divisioner.VariationPointDivisioning;
 import divisioner.divisionStrategies.RecallStrategy;
 import evolutionSimulation.productAssetsInitialization.SharedConfiguration;
+import splEvolutionCore.DebugInformation;
 import variationPointsVisualization.AnnotationExtensionMarker;
 import variationPointsVisualization.DifferentAnnotationTypesOnTheSameVariationPoint;
 import variationPointsVisualization.DuplicatedAnnotation;
@@ -32,7 +31,10 @@ class RecallDivisionerStrategyTest {
 
 	/**
 	 * Testing found cardinalities of harvested negative variation points in case when Recall strategy is applied
-	 * 
+	 * -all variation points that are tested has to be annotated with user annotations - otherwise testing fails
+	 * - recommending set DebugInformation.OUTPIT_FILES_AS_ANNOTATED_AST_AND_CODE to true to see annotated file
+	 * - only positive variability annotations will be added and remained only supported annotations (in TypeScript only supported decorators are visible)
+	 *   
 	 * @throws NotFoundVariableDeclaration
 	 * @throws IOException
 	 * @throws InterruptedException
@@ -43,7 +45,7 @@ class RecallDivisionerStrategyTest {
 	@Test
 	void test() throws NotFoundVariableDeclaration, IOException, InterruptedException, 
 						InvalidSystemVariationPointMarkerException, DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation {
-		String filePath = SharedConfiguration.PROJECT_PATH + "\\src\\testFiles\\platnoJSIndirrectAll.js";
+		String filePath = SharedConfiguration.PROJECT_PATH + "\\src\\testFiles\\platnoJSIndirrectAll.js"; //"\\src\\testFiles\\platnoJSIndirrectAllAnnotFree.js"
 		RecallStrategy recallStrategyToDivision = new RecallStrategy();
 		VariationPointDivisioning variationPointDivisioning = new VariationPointDivisioning(recallStrategyToDivision);
 		JSONArray harvestedVariationPoints = variationPointDivisioning.divisionAndGetVariationPointsData(filePath);
@@ -94,14 +96,11 @@ class RecallDivisionerStrategyTest {
 		}
 		assertEquals(numberPositiveVariabilityPlaces, 38);
 		
-		if (VariationPointDivisionConfiguration.PREFER_POSITION_UPDATES_BEFORE_PERSISTING_ILLEGAL_DECORATORS_INFORMATION) {
-			assertEquals(numberClassFunctions, 3); 		//without constructor
-		} else {
-			assertEquals(numberClassFunctions, 4); 		//with constructor
-		}
-		assertEquals(numberNonClassFunctions, 3); 	//also nested functions
+		assertEquals(numberClassFunctions, 3); 		//without constructor
+
+		assertEquals(numberNonClassFunctions, 0); 	//also nested functions
 		assertEquals(numberClasses, 2); 
-		assertEquals(numberNonClassVariables, 6);
+		assertEquals(numberNonClassVariables, 0);
 		assertEquals(numberClassVariables, 2);
 		assertEquals(numberParameters, 0);
 		assert(nothingExceptional);

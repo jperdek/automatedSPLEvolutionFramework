@@ -1,6 +1,8 @@
 package divisioner.divisionStrategies;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import codeConstructsEvaluation.transformation.ASTConverterClient;
@@ -12,6 +14,7 @@ import dividedAstExport.VPDividedExporter;
 import divisioner.DivisioningInterface;
 import divisioner.VariationPointDivisionConfiguration;
 import divisioner.VariationPointsDivisioningStrategy;
+import splEvolutionCore.DebugInformation;
 import variationPointsVisualization.DifferentAnnotationTypesOnTheSameVariationPoint;
 import variationPointsVisualization.DuplicatedAnnotation;
 
@@ -160,7 +163,15 @@ public class RecallStrategy implements VariationPointsDivisioningStrategy {
 			InvalidSystemVariationPointMarkerException, DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation {
 		JSONObject astTreeRoot = ASTConverterClient.convertFromCodeToASTJSON(PostRequester.loadFileContent(inputCodeFilePath));
 		JSONObject highlightedAst = this.divisionAndGetHighlightedAst(divisioner, astTreeRoot, inputCodeFilePath);
+		
+		// this command will remove all negative variability annotations
 		JSONArray harvestedVariationPoints = this.getVariationPointsData(highlightedAst, astTreeRoot);
+		
+		if (DebugInformation.OUTPUT_DEBUG_FILES) {
+			System.out.println("Debug file on output (positive variation point annotations only): positiveVariationVariationPointsOnly.txt");
+			String modifiedContent = ASTConverterClient.convertFromASTToCode(highlightedAst.toString());
+			try (PrintWriter out = new PrintWriter("positiveVariationVariationPointsOnly.txt")) { out.println(modifiedContent); }
+		}
 		return harvestedVariationPoints;
 	}
 }

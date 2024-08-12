@@ -1,10 +1,13 @@
 package divisioner;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import astFileProcessor.ASTLoader;
+import codeConstructsEvaluation.transformation.ASTConverterClient;
 import codeContext.ClassContext;
 import codeContext.CodeContext;
 import codeContext.FunctionContext;
@@ -12,11 +15,12 @@ import codeContext.GlobalContext;
 import codeContext.InnerContext;
 import codeContext.processors.ASTContextInjector;
 import codeContext.processors.ASTContextProcessor;
-import codeContext.processors.AnnotationInjector;
+import codeContext.processors.SystemAnnotationInjector;
 import codeContext.processors.FunctionProcessor;
 import codeContext.processors.HierarchyContextProcessor;
 import codeContext.processors.NotFoundVariableDeclaration;
 import divisioner.divisionStrategies.RecallStrategy;
+import splEvolutionCore.DebugInformation;
 import variationPointsVisualization.DifferentAnnotationTypesOnTheSameVariationPoint;
 import variationPointsVisualization.DuplicatedAnnotation;
 
@@ -242,6 +246,14 @@ public class Divisioner implements DivisioningInterface {
 		GlobalContext globalContext = this.divisionerContext.getGlobalContext();
 		this.searchVariationPointPositionsHierarchic(astRoot, astRoot, astRoot, dividedAst, dividedAst, 
 				globalContext, innerContext, innerContext, useTypes);
+		
+		if (DebugInformation.OUTPUT_DEBUG_FILES) {
+			System.out.println("Debug file on output: labeledVariationPoints.txt");
+			try (PrintWriter out = new PrintWriter("labeledVariationPointsAst.txt")) { out.println(dividedAst.toString()); }
+			String modifiedContent = ASTConverterClient.convertFromASTToCode(dividedAst.toString());
+			try (PrintWriter out = new PrintWriter("labeledVariationPoints.txt")) { out.println(modifiedContent); }
+		}
+		
 		innerContext.printOrderedStructure(globalContext);
 		return dividedAst;
 	}

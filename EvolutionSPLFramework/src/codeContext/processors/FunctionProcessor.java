@@ -48,6 +48,6 @@ public class FunctionProcessor {
 			}
 		}
 
-		AnnotationInjector.processAnnotationForNotClassFunctionInAstPart(globalContext, functionContext, newAstPart, newAstParent);
+		SystemAnnotationInjector.processAnnotationForNotClassFunctionInAstPart(globalContext, functionContext, newAstPart, newAstParent);
 	}
 }

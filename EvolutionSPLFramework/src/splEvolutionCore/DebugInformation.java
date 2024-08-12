@@ -10,6 +10,11 @@ package splEvolutionCore;
 public interface DebugInformation {
 
 	/**
+	 * Outputs files during execution
+	 */
+	public static boolean OUTPUT_DEBUG_FILES = true;
+	
+	/**
 	 * Persists the configuration output files of annotated/marked/highlighted AST for further processing and debugging 
 	 */
 	public static boolean OUTPIT_FILES_AS_ANNOTATED_AST_AND_CODE = false;

@@ -93,7 +93,7 @@ public class ASTContextInjector {
 	 */
 	public static void injectNegativeVariabilityContextForStatements(GlobalContext globalContext, InnerContext usedInnerContext, 
 			JSONObject newVersionProcessedJSONObject) throws IOException, InterruptedException, DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation {
-		AnnotationInjector.processAnnotationForVariablesInAstPart(globalContext, usedInnerContext, newVersionProcessedJSONObject);
+		SystemAnnotationInjector.processAnnotationForVariablesInAstPart(globalContext, usedInnerContext, newVersionProcessedJSONObject);
 	}
 	
 	/**
@@ -112,10 +112,10 @@ public class ASTContextInjector {
 	public static void injectNegativeVariabilityContextForMembersBetweenParentAndArrayMember(GlobalContext globalContext, InnerContext usedInnerContext, 
 			JSONObject newVersionProcessedJSONObject, JSONObject parentAstObject, JSONObject insertedVPElement) throws IOException, InterruptedException, DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation {
 		if (insertedVPElement != null) {
-			AnnotationInjector.processAnnotationForClassVariablesInAstPart(globalContext, usedInnerContext, insertedVPElement, parentAstObject);
+			SystemAnnotationInjector.processAnnotationForClassVariablesInAstPart(globalContext, usedInnerContext, insertedVPElement, parentAstObject);
 		}
 		if (newVersionProcessedJSONObject != null) {
-			AnnotationInjector.processAnnotationForClassVariablesInAstPart(globalContext, usedInnerContext, newVersionProcessedJSONObject, parentAstObject);
+			SystemAnnotationInjector.processAnnotationForClassVariablesInAstPart(globalContext, usedInnerContext, newVersionProcessedJSONObject, parentAstObject);
 		}
 	}
 	
@@ -137,8 +137,8 @@ public class ASTContextInjector {
 			JSONObject newVersionProcessedJSONObject, 
 			JSONObject parentAstObject) throws IOException, InterruptedException, 
 			DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation {
-		AnnotationInjector.processAnnotationForClassInAstPart(globalContext, usedInnerContext, newVersionProcessedJSONObject);
-		AnnotationInjector.processAnnotationForClassFunctionsInAstPart(globalContext, usedInnerContext, newVersionProcessedJSONObject, parentAstObject);
+		SystemAnnotationInjector.processAnnotationForClassInAstPart(globalContext, usedInnerContext, newVersionProcessedJSONObject);
+		SystemAnnotationInjector.processAnnotationForClassFunctionsInAstPart(globalContext, usedInnerContext, newVersionProcessedJSONObject, parentAstObject);
 	}
 
 	/**
@@ -230,7 +230,7 @@ public class ASTContextInjector {
 	 */
 	public static void injectNegativeVariabilityContextForParameters(GlobalContext globalContext, InnerContext usedInnerContext, 
 			JSONArray parentArrayObject, int position, JSONObject newVersionProcessedJSONObject, JSONObject parentAstObject) throws IOException, InterruptedException, DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation {
-		AnnotationInjector.processAnnotationForParameterInAstPart(globalContext, usedInnerContext, newVersionProcessedJSONObject, parentAstObject);
+		SystemAnnotationInjector.processAnnotationForParameterInAstPart(globalContext, usedInnerContext, newVersionProcessedJSONObject, parentAstObject);
 	}
 
 	/**

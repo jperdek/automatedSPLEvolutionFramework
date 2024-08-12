@@ -16,29 +16,30 @@ import variationPointsVisualization.NegativeVariabilityDecoratorConsistenceVerif
 
 
 /**
- * Inserts selected user annotations for variable code fragments
+ * Inserts selected user/system annotations for variable code fragments
  * 
  * @author Jakub Perdek
  *
  */
-public class UserAnnotationInjector {
+public class AnnotationInjector {
 	
 	/**
-	 * Creation of user annotation injector
+	 * Creation of annotation injector
 	 */
-	public UserAnnotationInjector() {}
+	public AnnotationInjector() {}
 	
 	/**
 	 * Determines how is variable declared and returns appropriate annotation
 	 * 
 	 * @param astRoot - the root of processed AST
 	 * @param astVariable - processed AST part with declared variable 
+	 * @param isUserAnnotation - if created annotation should belong/be marked and treated as user otherwise will be treated as system
 	 * @return associated annotation to given annotation type
 	 * 
 	 * @throws NotFoundVariableDeclaration
 	 */
 	private static JSONObject determineAndGetUsedVariableTypeAst(JSONObject astRoot, 
-			JSONObject astVariable) throws NotFoundVariableDeclaration {
+			JSONObject astVariable, boolean isUserAnnotation) throws NotFoundVariableDeclaration {
 		String contentText = (String) astRoot.get("text");
 		String declarationName = ASTTextExtractorTools.getTextFromAstIncludingNameAndExpressions(astVariable);
 		Pattern pattern = Pattern.compile("(var|let|const)(\\s+|\\s+[^;]+,\\s*)" + declarationName, Pattern.CASE_INSENSITIVE);
@@ -49,9 +50,9 @@ public class UserAnnotationInjector {
 	    if(matchFound) {
 	      matchedResult = matcher.group();
 	      if(matchedResult.toLowerCase().startsWith("var")) {
-	    	  return UserAnnotationStubs.getGlobalVariableAnnotationAst();
+	    	  return AnnotationStubs.getGlobalVariableAnnotationAst(isUserAnnotation);
 	      } 
-	      return UserAnnotationStubs.getLocalVariableAnnotationAst();
+	      return AnnotationStubs.getLocalVariableAnnotationAst(isUserAnnotation);
 	    } else {
 	    	throw new NotFoundVariableDeclaration("Variable declaration not found in AST text: " + declarationName);
 	    }
@@ -63,6 +64,7 @@ public class UserAnnotationInjector {
 	 * 
 	 * @param astRoot - the root of processed AST
 	 * @param processedBlock - the AST block that is actually processed 
+	 * @param isUserAnnotation - if created annotation should belong/be marked and treated as user otherwise will be treated as system
 	 * @throws IOException
 	 * @throws InterruptedException
 	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint
@@ -70,7 +72,7 @@ public class UserAnnotationInjector {
 	 * @throws NotFoundVariableDeclaration
 	 */
 	public static void processAnnotationForVariablesInAstPart(JSONObject astRoot, 
-			JSONObject processedBlock) throws IOException, InterruptedException, 
+			JSONObject processedBlock, boolean isUserAnnotation) throws IOException, InterruptedException, 
 			DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation, NotFoundVariableDeclaration {
 		JSONObject declarationList = (JSONObject) processedBlock.get("declarationList");
 		JSONObject variableAnnotationAst;
@@ -92,7 +94,7 @@ public class UserAnnotationInjector {
 				}
 			}
 
-			variableAnnotationAst = UserAnnotationInjector.determineAndGetUsedVariableTypeAst(astRoot, processedBlock);
+			variableAnnotationAst = AnnotationInjector.determineAndGetUsedVariableTypeAst(astRoot, processedBlock, isUserAnnotation);
 			illegalDecoratorsList.add(variableAnnotationAst); // all variability annotations should be removed - no checking is necessary
 			if (VariationPointDivisionConfiguration.INJECT_UNSUPPORTED_VP_MARKS) {
 				if (NegativeVariabilityDecoratorConsistenceVerifier.areDecoratorsConsistent(modifiersList, true)) {
@@ -108,6 +110,7 @@ public class UserAnnotationInjector {
 	 * 
 	 * @param processedBlock - the AST block that is actually processed 
 	 * @param negativeVariationPointCandidate
+	 * @param isUserAnnotation - if created annotation should belong/be marked and treated as user otherwise will be treated as system
 	 * @throws IOException
 	 * @throws InterruptedException
 	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint
@@ -115,7 +118,7 @@ public class UserAnnotationInjector {
 	 * @throws AlreadyProvidedArgumentInConfigurationExpressionPlace
 	 */
 	public static void processAnnotationForClassInAstPart(JSONObject processedBlock, 
-			NegativeVariationPointCandidate negativeVariationPointCandidate) throws IOException, 
+			NegativeVariationPointCandidate negativeVariationPointCandidate, boolean isUserAnnotation) throws IOException, 
 			InterruptedException, DifferentAnnotationTypesOnTheSameVariationPoint, 
 			DuplicatedAnnotation, AlreadyProvidedArgumentInConfigurationExpressionPlace {
 		JSONArray membersList = (JSONArray) processedBlock.get("members");
@@ -123,14 +126,14 @@ public class UserAnnotationInjector {
 		JSONObject classAnnotationAst;
 		JSONArray decoratorsList;
 		if (membersList != null) {
-			classAnnotationAst = UserAnnotationStubs.getClassAnnotationAst();
+			classAnnotationAst = AnnotationStubs.getClassAnnotationAst(isUserAnnotation);
 			if (processedBlock.containsKey("modifiers")) {
 				decoratorsList = (JSONArray) processedBlock.get("modifiers");
 			} else {
 				decoratorsList = new JSONArray();
 				processedBlock.put("modifiers", decoratorsList);
 			}
-			classAnnotationAst = UserAnnotationStubs.getClassAnnotationAst();
+			classAnnotationAst = AnnotationStubs.getClassAnnotationAst(isUserAnnotation);
 			if (VariationPointDivisionConfiguration.PRESERVE_MULTIPLE_USER_ANNOTATIONS) {
 				negativeVariationPointCandidate.injectAndInsertAllConfigurationExpressions(classAnnotationAst, decoratorsList);
 			} else {
@@ -146,13 +149,14 @@ public class UserAnnotationInjector {
 	 * 
 	 * @param processedBlock  - the AST block that is actually processed 
 	 * @param processedBlockParent  - the parent of AST block that is actually processed 
+	 * @param isUserAnnotation - if created annotation should belong/be marked and treated as user otherwise will be treated as system
 	 * @throws IOException
 	 * @throws InterruptedException
 	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint
 	 * @throws DuplicatedAnnotation
 	 */
 	public static void processAnnotationForClassVariablesInAstPart(JSONObject processedBlock, 
-			JSONObject processedBlockParent) throws IOException, InterruptedException, 
+			JSONObject processedBlockParent, boolean isUserAnnotation) throws IOException, InterruptedException, 
 			DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation {
 		JSONArray membersList = (JSONArray) processedBlockParent.get("members");
 		JSONObject variabilityAnnotationAst;
@@ -165,7 +169,7 @@ public class UserAnnotationInjector {
 				processedBlock.put("modifiers", decoratorsList);
 			}
 			//all variability annotations should be removed - no checking is necessary
-			variabilityAnnotationAst = UserAnnotationStubs.getClassVariableAnnotationAst();
+			variabilityAnnotationAst = AnnotationStubs.getClassVariableAnnotationAst(isUserAnnotation);
 			decoratorsList.add(variabilityAnnotationAst);
 		}
 	}
@@ -176,13 +180,14 @@ public class UserAnnotationInjector {
 	 * 
 	 * @param processedBlock - the AST block that is actually processed 
 	 * @param processedBlockParent - the parent of AST block that is actually processed 
+	 * @param isUser - if created annotation should belong/be marked and treated as user otherwise will be treated as system
 	 * @throws IOException
 	 * @throws InterruptedException
 	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint
 	 * @throws DuplicatedAnnotation
 	 */
 	public static void processAnnotationForNotClassFunctionInAstPart(JSONObject processedBlock, 
-			JSONObject processedBlockParent) throws IOException, InterruptedException, 
+			JSONObject processedBlockParent, boolean isUserAnnotation) throws IOException, InterruptedException, 
 			DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation {
 		JSONObject nonClassFunctionAnnotationAst;
 		JSONArray illegalDecoratorsList, decoratorsList;
@@ -203,7 +208,7 @@ public class UserAnnotationInjector {
 				}
 			}
 			//all variability annotations should be removed - no checking is necessary
-			nonClassFunctionAnnotationAst = UserAnnotationStubs.getMethodAnnotationAst();
+			nonClassFunctionAnnotationAst = AnnotationStubs.getMethodAnnotationAst(isUserAnnotation);
 			illegalDecoratorsList.add(nonClassFunctionAnnotationAst);
 			if (VariationPointDivisionConfiguration.INJECT_UNSUPPORTED_VP_MARKS) {
 				if (NegativeVariabilityDecoratorConsistenceVerifier.areDecoratorsConsistent(decoratorsList, true)) {
@@ -219,13 +224,14 @@ public class UserAnnotationInjector {
 	 * 
 	 * @param processedBlock - the AST block that is actually processed 
 	 * @param processedBlockParent - the parent of AST block that is actually processed
+	 * @param isUserAnnotation - if created annotation should belong/be marked and treated as user otherwise will be treated as system
 	 * @throws IOException
 	 * @throws InterruptedException
 	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint
 	 * @throws DuplicatedAnnotation
 	 */
 	public static void processAnnotationForClassFunctionsInAstPart(JSONObject processedBlock, 
-			JSONObject processedBlockParent) throws IOException, InterruptedException, 
+			JSONObject processedBlockParent, boolean isUserAnnotation) throws IOException, InterruptedException, 
 			DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation {
 		JSONArray membersList = (JSONArray) processedBlockParent.get("members");
 		
@@ -243,7 +249,7 @@ public class UserAnnotationInjector {
 				processedBlock.put("modifiers", decoratorsList);
 			}
 			
-			variabilityAnnotationAst = UserAnnotationStubs.getClassMethodAnnotationAst();
+			variabilityAnnotationAst = AnnotationStubs.getClassMethodAnnotationAst(isUserAnnotation);
 			decoratorsList.add(variabilityAnnotationAst);
 		}
 	}
@@ -254,13 +260,14 @@ public class UserAnnotationInjector {
 	 * 
 	 * @param processedBlock - the AST block that is actually processed
 	 * @param processedBlockParent - the parent of AST block that is actually processed
+	 * @param isUserAnnotation - if created annotation should belong/be marked and treated as user otherwise will be treated as system
 	 * @throws IOException
 	 * @throws InterruptedException
 	 * @throws DifferentAnnotationTypesOnTheSameVariationPoint
 	 * @throws DuplicatedAnnotation
 	 */
 	public static void processAnnotationForParameterInAstPart(JSONObject processedBlock, 
-			JSONObject processedBlockParent) throws IOException, InterruptedException, 
+			JSONObject processedBlockParent, boolean isUserAnnotation) throws IOException, InterruptedException, 
 			DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation {
 		JSONArray parametersList = (JSONArray) processedBlockParent.get("parameters");
 		
@@ -278,9 +285,9 @@ public class UserAnnotationInjector {
 			}
 
 			if (functionName.equals("constructor")) { //omits constructor - decorators cannot be applied
-				variabilityAnnotationAst = UserAnnotationStubs.getConstructorParameterAnnotationAst();
+				variabilityAnnotationAst = AnnotationStubs.getConstructorParameterAnnotationAst(isUserAnnotation);
 			} else {
-				variabilityAnnotationAst = UserAnnotationStubs.getParameterAnnotationAst();
+				variabilityAnnotationAst = AnnotationStubs.getParameterAnnotationAst(isUserAnnotation);
 			}
 			decoratorsList.add(variabilityAnnotationAst);
 		}
