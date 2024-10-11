@@ -147,16 +147,16 @@ Automated SPL evolution framework - evolving variability on code level: Applicat
   	``` evolutionIterationsPipeline.addEvolutionIterationToSequence(evolutionIteration2); ```  
   	``` evolutionIterationsPipeline.addEvolutionIterationToSequence(evolutionIteration3); ```  
 
-- 5.1b.) Preparing assets planner to manage injection of the same functionality accross the evolution (configuration of how assets are planned)
+- 5.1b.) Preparing assets planner to manage injection of the same functionality accross the evolution (configuration of how assets are planned)  
 	- Strategies for planning assets are available in evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.strategies: 	
-  		- new PlanAssetOnce() - particular exported assets can be injected only once - in the one evolution iteration for entire instantiated pipeline
-  		- new PlanAssetWithSkips(5) - particular exported assets can be injected multiple times, but after injection the following n iterations is forbidden to use previously injected asset (5 - in this case) for entire instantiated pipeline
+  		- new PlanAssetOnce() - particular exported assets can be injected only once - in the one evolution iteration for entire instantiated pipeline  
+  		- new PlanAssetWithSkips(5) - particular exported assets can be injected multiple times, but after injection the following n iterations is forbidden to use previously injected asset (5 - in this case) for entire instantiated pipeline  
     		- new NonRestrictiveAssetPlanning - particular exported assets can be injected without restriction - as default, no restrictions  
   	``` ExportAssetPlanner exportAssetPlanner = new AssetPlannerBaseStrategy(new PlanAssetOnce()); ```  
 
-- 6.1b.) Preparing strategies for variability handling - (the presented example si focused on positive variability handling)
-  	``` CompletePositiveVariabilityFocusedEvolutionTest completeIyterativeDevelopment = new  CompletePositiveVariabilityFocusedEvolutionTest(); ```
-  	``` EvolutionConfiguration evolutionConfiguration = completeIyterativeDevelopment.prepareInitialConfiguration(); ```
+- 6.1b.) Preparing strategies for variability handling - (the presented example si focused on positive variability handling)  
+  	``` CompletePositiveVariabilityFocusedEvolutionTest completeIyterativeDevelopment = new  CompletePositiveVariabilityFocusedEvolutionTest(); ```  
+  	``` EvolutionConfiguration evolutionConfiguration = completeIyterativeDevelopment.prepareInitialConfiguration(); ```  
   
 - 7.1b.) Running (variability handling/software product line evolution) pipeline  
   	``` evolutionIterationsPipeline.runEvolutionPipeline(evolutionConfiguration, exportAssetPlanner); ```  
