@@ -115,13 +115,51 @@ Automated SPL evolution framework - evolving variability on code level: Applicat
  	- manage CantoJS extension from ./EvolutionSPLFramework/src/evolutionSimulation/CanvasBasedApplicationConfiguration.java   
   	- manage the configuration of divisioning process and recognition of your own annotations and markers from ./EvolutionSPLFramework/src/divisioner/VariationPointDivisionConfiguration.java  
  
-- 6b.) Run test evolution iteration:  
+- 6b.) a) Run test evolution iteration:  
 	- left click on one ./EvolutionSPLFramework/src/evolutionSimulation/tests/EvolutionSimulationTest.java -> run > EvolutionSimulationTest.java      
+
+       b.) Run sample evolution pipeline:  
+	- left click on one ./EvolutionSPLFramework/src/evolutionSimulation/orchestrationOfEvolutionIterations/test/CompletePositiveVariabilityEvolutionFocusedEvolutionTest.java -> run > CompletePositiveVariabilityEvolutionFocusedEvolutionTest.java
 
 - 7b.) See results/SPL products/derived products in:  
 	- open ./EvolutionSPLFramework/evolutionDirectory and launch one of the index.html files from SPL project directories inside
  	- if logging is set to true, then it will take a few seconds more  
 
+
+#### b) CONFIGURING EVOLUTION PIPELINE  
+
+- 1.1b.) Creating configuration for each evolution iteration  
+	``` SPLNextEvolutionIterationCandidateSelectionStrategy evolution2IterationStrategy = new RandomCandidateSelection(); ```  
+	``` SPLNextEvolutionIterationCandidateSelectionStrategy evolution3IterationStrategy = new RandomCandidateSelection(); ```  
+	``` ... ```  
+
+- 2.1b.) Instantiating each evolution iteration that will be inserted into sequence/pipeline  
+  	``` EvolutionIteration evolutionIteration1 = new EvolutionIteration(); ```  
+  	+ applying customized configurations:     
+  	``` EvolutionIteration evolutionIteration2 = new EvolutionIteration(evolution2IterationStrategy); ```  
+  	``` EvolutionIteration evolutionIteration3 = new EvolutionIteration(evolution3IterationStrategy); ```  
+
+- 3.1b.) Preparing/instantiating object handling the execution of strategies in sequence  
+  	``` EvolutionIterationsPipeline evolutionIterationsPipeline = new EvolutionIterationsPipeline(); ```  
+
+- 4.1b.) Connecting iterations in the sequence as part of evolution pipeline  
+  	``` evolutionIterationsPipeline.addEvolutionIterationToSequence(evolutionIteration1); ```  
+  	``` evolutionIterationsPipeline.addEvolutionIterationToSequence(evolutionIteration2); ```  
+  	``` evolutionIterationsPipeline.addEvolutionIterationToSequence(evolutionIteration3); ```  
+
+- 5.1b.) Preparing assets planner to manage injection of the same functionality accross the evolution (configuration of how assets are planned)  
+	- Strategies for planning assets are available in evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.strategies: 	
+  		- new PlanAssetOnce() - particular exported assets can be injected only once - in the one evolution iteration for entire instantiated pipeline  
+  		- new PlanAssetWithSkips(5) - particular exported assets can be injected multiple times, but after injection the following n iterations is forbidden to use previously injected asset (5 - in this case) for entire instantiated pipeline
+     	- new NonRestrictiveAssetPlanning - particular exported assets can be injected without restriction - as default, no restrictions  
+  	``` ExportAssetPlanner exportAssetPlanner = new AssetPlannerBaseStrategy(new PlanAssetOnce()); ```  
+
+- 6.1b.) Preparing strategies for variability handling - (the presented example si focused on positive variability handling)  
+  	``` CompletePositiveVariabilityFocusedEvolutionTest completeIyterativeDevelopment = new  CompletePositiveVariabilityFocusedEvolutionTest(); ```  
+  	``` EvolutionConfiguration evolutionConfiguration = completeIyterativeDevelopment.prepareInitialConfiguration(); ```  
+  
+- 7.1b.) Running (variability handling/software product line evolution) pipeline  
+  	``` evolutionIterationsPipeline.runEvolutionPipeline(evolutionConfiguration, exportAssetPlanner); ```  
 
 
 ### c) DATA EXTRACTION AND PROCESSING   
