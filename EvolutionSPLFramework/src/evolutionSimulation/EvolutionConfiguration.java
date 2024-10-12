@@ -553,7 +553,7 @@ public class EvolutionConfiguration {
 	 * @param globalEvolutionConfiguration - evolution configuration from previous iterations 
 	 */
 	public void setPathToEvolvedSPLProjectDirectoryFromLatestEvolution(EvolutionConfiguration globalEvolutionConfiguration) {
-		System.out.println("--------------------------------------------->  SETTINGSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
+		System.out.println("--------------------------------------------->  SETTINGS");
 		System.out.println(globalEvolutionConfiguration.getConcernName());
 		System.out.println(this.concernName);
 		if (this.concernName != null) {

@@ -110,7 +110,7 @@ public class CallableConstruct {
 	public void addParameter(String parameterToSubstitute, InjectionCandidateVariationPoint parameterExportedContext) throws AlreadyChosenVariationPointForInjectionException {
 		
 		if (SPLEvolutionCore.DISABLE_INTERNAL_VARIABLE_INJECTIONS) { throw new AlreadyChosenVariationPointForInjectionException("Injection of inner variables is disabled!"); }
-		System.out.println("Added: " + parameterToSubstitute);
+		if (DebugInformation.SHOW_POLLUTING_INFORMATION) { System.out.println("Added: " + parameterToSubstitute); }
 		this.substitutedParameters.add(parameterToSubstitute);
 		Set<String> variationPointIdentifiers = parameterExportedContext.getVariationPointIdentifiers();
 		if (this.callableConstructDependency != null) {

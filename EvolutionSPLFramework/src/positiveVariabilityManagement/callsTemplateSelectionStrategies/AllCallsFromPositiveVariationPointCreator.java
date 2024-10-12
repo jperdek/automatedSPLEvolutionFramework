@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+
+import splEvolutionCore.DebugInformation;
 import splEvolutionCore.candidateSelector.PositiveVariationPointCandidateTemplates;
 
 
@@ -46,7 +48,7 @@ public class AllCallsFromPositiveVariationPointCreator implements CallsFromPosit
 					//continue;
 					callTemplate = callTemplate.strip().substring(1);
 				}
-				System.out.println(callTemplate);
+				if (DebugInformation.SHOW_POLLUTING_INFORMATION) { System.out.println("Extracted template call: " + callTemplate); }
 				calls.add(callTemplate);
 			}
 		}

@@ -66,8 +66,11 @@ public class VPDividedExporter {
 		} else {
 			originalAstRootFiltered = originalAstRoot;
 		}
-		System.out.println(originalAstRootFiltered.toString());
-		System.out.println("--------------------------------------->");
+		if (DebugInformation.SHOW_POLLUTING_INFORMATION) {
+			System.out.println("Original Filtered AST:");
+			System.out.println(originalAstRootFiltered.toString());
+			System.out.println("--------------------------------------->");
+		}
 		//JSONObject astRootCopy = ASTLoader.loadASTFromString(astRoot.toString());
 		if (VariationPointDivisionConfiguration.PREFER_POSITION_UPDATES_BEFORE_PERSISTING_ILLEGAL_DECORATORS_INFORMATION) {
 			highlightedAstRoot = (JSONObject) this.convertRepeatedlyToVerifyPositionNumbering(highlightedAstRoot).get("ast");

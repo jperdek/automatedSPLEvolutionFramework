@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
-import codeContext.processors.export.ExportedContext;
 import divisioner.VariationPointDivisionConfiguration;
 
 import java.util.Map.Entry;
@@ -56,8 +55,8 @@ public class AllInstantiationsFromTemplate implements CallsInstantiationFromTemp
 	public Queue<CallableConstruct> instantiateCallsFromTemplate(
 			PositiveVariationPointCandidateTemplates variationPointCandidateTemplate,
 			AllVariablesMapper allVariablesMapper) throws UnmappedContextException, AlreadyChosenVariationPointForInjectionException {
-		ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration = 
-				allVariablesMapper.getActualScriptVariablesToSubstituteConfiguration();
+		//ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration = 
+		//		allVariablesMapper.getActualScriptVariablesToSubstituteConfiguration();
 		String callableConstructName, callableConstructNameWhole;
 		Queue<CallableConstruct> callableConstructs = null;
 		Queue<CallableConstruct> allCallableConstructs = new LinkedList<CallableConstruct>();

@@ -43,7 +43,7 @@ public class RecursionCallsFromPositiveVariationPointCreator implements CallsFro
 					//continue;
 					callTemplate = callTemplate.strip().substring(1);
 				}
-				System.out.println("Available template: " + callTemplate);
+				System.out.println("Extracted template call: " + callTemplate);
 				calls.add(callTemplate);
 			}
 			if (calls.size() > 0) {

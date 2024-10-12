@@ -183,7 +183,7 @@ public class SPLCandidateLoadingMechanism {
 		    	vpDataAbsolutePath2ToCompare = pathAndVersion[0];
 		    	if (pathAndVersion.length > 1) { vpDataAbsolutePath2ToCompare = vpDataAbsolutePath2ToCompare + "_XXX_" + pathAndVersion[1]; }
 		    	
-		    	System.out.println(pathAndVersion.length);
+		    	System.out.println("Path version length: " + pathAndVersion.length);
 		    	System.out.println("IN: " + vpDataAbsolutePath2 + " for comparison is used: " + vpDataAbsolutePath2ToCompare);
 		    	if (!vpDataAbsolutePath.equals(vpDataAbsolutePath2ToCompare) && vpDataAbsolutePath.contains(vpDataAbsolutePath2ToCompare)) {
 		    		insertedPath = vpDataAbsolutePath2;

@@ -6,6 +6,7 @@ import positiveVariabilityManagement.UnmappedContextException;
 import positiveVariabilityManagement.entities.CallableConstructTemplate;
 import positiveVariabilityManagement.entities.DuplicatedContextIdentifier;
 import positiveVariabilityManagement.entities.VariablesForSubstantiation;
+import splEvolutionCore.DebugInformation;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -142,7 +143,7 @@ public class AllVariablesMapper {
 			parameterType = parameterNamesToTypeEntry.getValue().strip();
 			parameterNameToCheck = parameterNamesToTypeEntry.getKey().strip();
 			
-			System.out.println(parameterNameToCheck);
+			if (DebugInformation.SHOW_POLLUTING_INFORMATION) { System.out.println("Checked parameter: " + parameterNameToCheck); }
 			
 			if (parsedTypesMapping.containsKey(parameterType)) {
 				parsedTypeOfVariableData = parsedTypesMapping.get(parameterType);
@@ -194,7 +195,7 @@ public class AllVariablesMapper {
 		if (variationPointDependencies.contains("markerVP238")) { 
 			
 			System.out.println("Satisfies .......................................... : "  + callableConstructTemplate.getCallableTemplateForm());
-			if(callableConstructTemplate.getCallableTemplateForm().contains("radius")) { System.exit(5); }
+			//if(callableConstructTemplate.getCallableTemplateForm().contains("radius")) { System.exit(5); }
 		} 
 		return parsedTypesMapping;
 	}

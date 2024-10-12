@@ -57,7 +57,7 @@ public class TopologicallyDiverseConstructsSelection implements SelectionOfConst
 				}
 			}
 		}
-		System.out.println(topologicallyDiverseConstructsSelection.size());
+		System.out.println("Number of topologically diverse construct to injected" + topologicallyDiverseConstructsSelection.size());
 		return new AllVariationPointContentInjectionAggregator().aggregateAllPossibleInjections(topologicallyDiverseConstructsSelection, exportAssetPlanner);
 	}
 }

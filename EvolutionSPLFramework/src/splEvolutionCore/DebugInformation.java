@@ -12,7 +12,7 @@ public interface DebugInformation {
 	/**
 	 * Outputs files during execution
 	 */
-	public static boolean OUTPUT_DEBUG_FILES = true;
+	public static boolean OUTPUT_DEBUG_FILES = false;
 	
 	/**
 	 * Persists the configuration output files of annotated/marked/highlighted AST for further processing and debugging 

@@ -39,7 +39,7 @@ public class ProjectCopier {
 	
 			if(Files.isDirectory(actualPath)) {
 				actualDirectoryOrFileString = actualPath.toAbsolutePath().toString();
-				System.out.println(actualDirectoryOrFileString);
+				System.out.println("Directory: " + actualDirectoryOrFileString);
 				directory = new File(actualDirectoryOrFileString);
 				if (directory.listFiles() == null || directory.listFiles().length == 0) { Files.delete(actualPath); } else { 
 					System.out.println("Not empty directory " + actualDirectoryOrFileString + " cannot be deleted.");

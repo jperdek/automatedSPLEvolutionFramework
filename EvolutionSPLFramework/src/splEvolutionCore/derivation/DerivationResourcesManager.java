@@ -144,12 +144,12 @@ public class DerivationResourcesManager {
 			//converting message digest into hex value  
 			sourceAstHash = no.toString(16);  
 			while (sourceAstHash.length() < 32)   {  sourceAstHash = "0" + sourceAstHash;  }  
-			System.out.println(sourceAstHash);
+			System.out.println("Source app hash:" + sourceAstHash);
 			concatenatedContent = variationPointsHash + sourceAstHash;
 			byte[] overallBytes = msgDst.digest(concatenatedContent.getBytes(StandardCharsets.UTF_8));
 			overallHash = no.toString(16);  
 			while (overallHash.length() < 32)   {  overallHash = "0" + overallHash;  }
-			System.out.println(overallHash);
+			System.out.println("Overall app hash:" + overallHash);
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}

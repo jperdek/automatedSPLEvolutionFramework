@@ -22,70 +22,290 @@ export function drawCirclePrevCoords(context: CanvasRenderingContext2D, radius: 
     }
 }
 
-@DecoratorTypesService.wholeBlockMethod({"drawCircleFromPreviousCoords": "true"})
-export function drawCover1(context: CanvasRenderingContext2D, radius: number) {
-    if (context.currentX !== undefined && context.currentY !== undefined) {
-        context.fillStyle = "rgba(0, 0, 250, .9)";
-		let x1 = context.currentX;
-		let y1 = context.currentY;
-		let x2 = x1 - 2*radius;
-		let y2 = y1 - 2*radius;
-        context.beginPath();
-        context.moveTo(x1, y1 - radius);
-		context.lineTo(x2, y2 - radius);
-		context.lineTo(x2 + radius, y2);
-		context.lineTo(x2, y2 + radius);
-		context.lineTo(x1, y1 + radius);
-		context.lineTo(x1 - radius, y1 - radius);
-		context.lineTo(x1, y1 - radius);
-        context.closePath();
-        context.fill();
+function propagateCoordinatesThreePositions(context: CanvasRenderingContext2D) {
+	let x1 = context.currentX;
+	let y1 = context.currentY;
+	let x2 = context.currentX2;
+	let y2 = context.currentY2;
+	let x3 = context.currentX3;
+	let y3 = context.currentY3;
+	let x4 = context.currentX4;
+	let y4 = context.currentY4;
+	let threshold = 50;
+	if (Math.abs(Math.abs(x1) - Math.abs(x3)) > threshold || Math.abs(Math.abs(y1) - Math.abs(y3)) > threshold || 
+	    Math.abs(Math.abs(y1) - Math.abs(y4)) > threshold || Math.abs(Math.abs(x1) - Math.abs(x4)) > threshold ||
+		Math.abs(Math.abs(y2) - Math.abs(y3)) > threshold || Math.abs(Math.abs(x2) - Math.abs(x3)) > threshold) {
+		context.currentX4 = undefined;
+		context.currentY4 = undefined;
+		context.currentX3 = undefined;
+		context.currentY3 = undefined;
+		context.currentX2 = undefined;
+		context.currentY2 = undefined;
+		context.currentX = undefined;
+		context.currentY = undefined;
+	} else {
+		context.currentX4 = x3;
+		context.currentY4 = y3;
+		context.currentX3 = x2;
+		context.currentY3 = y2;
+		context.currentX2 = x1;
+		context.currentY2 = y1; 
+	}
+}
+
+
+function saveState(context: CanvasRenderingContext2D, unused: number) {
+    context.savedX = context.currentX;
+    context.savedY = context.currentY;
+    context.savedX2 = context.currentX2;
+    context.savedY2 = context.currentY2;
+    context.savedX3 = context.currentX3;
+    context.savedY3 = context.currentY3;
+    context.savedX4 = context.currentX4;
+	context.savedY4 = context.currentY4;
+	context.savedX5 = context.currentX5;
+    context.savedY5 = context.currentY5;
+	context.savedX6 = context.currentX6;
+    context.savedY6 = context.currentY6;
+	context.savedX7 = context.currentX7;
+    context.savedY7 = context.currentY7;
+}
+
+
+function loadState(context: CanvasRenderingContext2D, unused: number) {
+    context.currentX = context.savedX;
+    context.currentY = context.savedY;
+    context.currentX2 = context.savedX2;
+    context.currentY2 = context.savedY2;
+    context.currentX3 = context.savedX3;
+    context.currentY3 = context.savedY3;
+    context.currentX4 = context.savedX4;
+    context.currentY4 = context.savedY4;
+	context.currentX5 = context.savedX5;
+    context.currentY5 = context.savedY5;
+	context.currentX6 = context.savedX6;
+    context.currentY6 = context.savedY6;
+	context.currentX7 = context.savedX7;
+    context.currentY7 = context.savedY7;
+}
+
+
+function propagateCoordinatesSixPositions(context: CanvasRenderingContext2D) {
+	let x1 = context.currentX;
+    let y1 = context.currentY;
+    let x2 = context.currentX2;
+    let y2 = context.currentY2;
+    let x3 = context.currentX3;
+    let y3 = context.currentY3;
+    let x4 = context.currentX4;
+    let y4 = context.currentY4;
+    let x5 = context.currentX5;
+    let y5 = context.currentY5;
+    let x6 = context.currentX6;
+    let y6 = context.currentY6;
+	let x7 = context.currentX7;
+	let y7 = context.currentY7;
+    let threshold = 60;
+    if (//Math.abs(Math.abs(x1) - Math.abs(x5)) > threshold || Math.abs(Math.abs(y1) - Math.abs(y5)) > threshold ||
+        //Math.abs(Math.abs(x1) - Math.abs(x6)) > threshold || Math.abs(Math.abs(y1) - Math.abs(y6)) > threshold ||
+        Math.abs(Math.abs(x1) - Math.abs(x3)) > threshold || Math.abs(Math.abs(y1) - Math.abs(y3)) > threshold ||
+        Math.abs(Math.abs(y1) - Math.abs(y4)) > threshold || Math.abs(Math.abs(x1) - Math.abs(x4)) > threshold ||
+        Math.abs(Math.abs(y2) - Math.abs(y3)) > threshold || Math.abs(Math.abs(x2) - Math.abs(x3)) > threshold) {
+
+		context.currentX7 = undefined;
+        context.currentY7 = undefined;
+        context.currentX6 = undefined;
+        context.currentY6 = undefined;
+        context.currentX5 = undefined;
+        context.currentY5 = undefined;
+        context.currentX4 = undefined;
+        context.currentY4 = undefined;
+        context.currentX3 = undefined;
+        context.currentY3 = undefined;
+        context.currentX2 = undefined;
+        context.currentY2 = undefined;
+        context.currentX = undefined;
+        context.currentY = undefined;
+    }
+    else {
+		context.currentX7 = x6;
+        context.currentY7 = y6;
+        context.currentX6 = x5;
+        context.currentY6 = y5;
+        context.currentX5 = x4;
+        context.currentY5 = y4;
+        context.currentX4 = x3;
+        context.currentY4 = y3;
+        context.currentX3 = x2;
+        context.currentY3 = y2;
+        context.currentX2 = x1;
+        context.currentY2 = y1;
+		context.currentX = x7;
+        context.currentY = y7;
     }
 }
+
 
 @DecoratorTypesService.wholeBlockMethod({"drawCircleFromPreviousCoords": "true"})
 export function drawCover2(context: CanvasRenderingContext2D, radius: number) {
     if (context.currentX !== undefined && context.currentY !== undefined) {
-        context.fillStyle = "rgba(300, 250, 150, .9)";
+		propagateCoordinatesThreePositions(context);
+	}
+	
+	saveState(context);
+	context.beginPath();
+	context.moveTo(x1, y1 - radius);
+	context.lineTo(x2, y2 - radius);
+	context.lineTo(x2 + radius, y2);
+	context.lineTo(x2, y2);
+	context.lineTo(x1, y1);
+	context.closePath();
+	context.fill();
+	loadState(context);
+}
+
+
+@DecoratorTypesService.wholeBlockMethod({"drawCircleFromPreviousCoords": "true"})
+export function drawCover7(context: CanvasRenderingContext2D) {
+	if (context.currentX !== undefined && context.currentY !== undefined) {
+		propagateCoordinatesSixPositions(context);
+	}
+	console.log("1c " + context.currentX + " <----> " + context.currentY);
+	console.log("1c " + context.currentX2 + " <----> " + context.currentY2);
+	console.log("1c " + context.currentX3 + " <----> " + context.currentY3);
+	console.log("1c " + context.currentX4 + " <----> " + context.currentY4);
+	console.log("------------------------------------------------------");
+	if (context.currentX !== undefined && context.currentY !== undefined && 
+	context.currentX3 !== undefined && context.currentY3 !== undefined) {
 		let x1 = context.currentX;
 		let y1 = context.currentY;
-		let x2 = x1 - 2*radius;
-		let y2 = y1 - 2*radius;
-        context.beginPath();
-        context.moveTo(x1, y1 - radius);
-		context.lineTo(x2, y2 - radius);
-		context.lineTo(x2 + radius, y2);
-		context.lineTo(x2, y2 + radius);
-		context.lineTo(x1, y1 + radius);
-		context.lineTo(x1 - radius, y1 - radius);
-		context.lineTo(x1, y1 - radius);
-        context.closePath();
-        context.fill();
+		let x2 = context.currentX3;
+		let y2 = context.currentY3;
+		let x3 = context.currentX4;
+		let y3 = context.currentY4;
+		let x4 = context.currentX5;
+		let y4 = context.currentY5;
+		let x5 = context.currentX6;
+		let y5 = context.currentY6;
+		
+		saveState(context);
+		context.beginPath();
+		context.strokeStyle = "rgba(250, 0, 0, .9)";
+		context.moveTo(y1, x1);
+		context.lineTo(y2, x2);
+		context.lineTo(y3, x3);
+		context.lineTo(y4, x4);
+		context.lineTo(y5, x5);
+		context.lineTo(y1, x1);
+		context.closePath();
+		context.stroke();
+		loadState(context);
     }
 }
 
 @DecoratorTypesService.wholeBlockMethod({"drawCircleFromPreviousCoords": "true"})
-export function drawCover3(context: CanvasRenderingContext2D, x4: number) {
-	let r = x4;
+export function drawCover5(context: CanvasRenderingContext2D) {
     if (context.currentX !== undefined && context.currentY !== undefined) {
-        context.fillStyle = "rgba(300, 250, 0, .9)";
+		propagateCoordinatesSixPositions(context);
+	}
+
+	console.log("1b " + context.currentX + " <----> " + context.currentY);
+	console.log("1b " + context.currentX2 + " <----> " + context.currentY2);
+	console.log("1b " + context.currentX3 + " <----> " + context.currentY3);
+	
+	if (context.currentX !== undefined && context.currentY !== undefined && 
+	context.currentX2 !== undefined && context.currentY2 !== undefined && 
+	context.currentX3 !== undefined && context.currentY3 !== undefined) {
 		let x1 = context.currentX;
 		let y1 = context.currentY;
-		let x2 = x1 - 2*r;
-		let y2 = y1 - 2*r;
-        context.beginPath();
-       	context.moveTo(x1, y1);
-		context.lineTo(x1, y1 + r);
-		context.lineTo(x2, y2 - r);
-		context.lineTo(x2, y2);
-		context.lineTo(x1, y1 - r);
-		context.lineTo(x2, y2 + r);
-		context.lineTo(x1, y1);
+		let x2 = context.currentX3;
+		let y2 = context.currentY3;
+		let x3 = context.currentX4;
+		let y3 = context.currentY4;
+		let x4 = context.currentX5;
+		let y4 = context.currentY5;
+		let x5 = context.currentX6;
+		let y5 = context.currentY6;
 		
-        context.closePath();
-        context.fill();
+		saveState(context);
+		context.beginPath();
+		context.moveTo(x1, y1);
+		context.lineTo(x2, y2);
+		context.lineTo(x3, y3);
+		context.lineTo(x4, y4);
+		context.lineTo(x5, y5);
+		context.lineTo(x1, y1);
+		context.strokeStyle = "rgba(50, 50, 250, .9)";
+		context.closePath();
+		context.stroke();
+		loadState(context);
     }
 }
+
+@DecoratorTypesService.wholeBlockMethod({"drawCircleFromPreviousCoords": "true"})
+export function drawCover3(context: CanvasRenderingContext2D, x4: number, y4: number) {
+    if (context.currentX !== undefined && context.currentY !== undefined) {
+		propagateCoordinatesThreePositions(context);
+	}
+	
+	if (context.currentX !== undefined && context.currentY !== undefined && 
+	context.currentX2 !== undefined && context.currentY2 !== undefined && 
+	context.currentX3 !== undefined && context.currentY3 !== undefined) {
+		let x1 = x4;
+		let y1 = y4;
+		let x2 = context.currentX;
+		let y2 = context.currentY;
+		let x3 = context.currentX4;
+		let y3 = context.currentY4;
+		saveState(context);
+		context.beginPath();
+		context.strokeStyle = "rgba(0, 0, 250, .9)";
+		context.moveTo(x1, y1);
+		context.lineTo(x2, y2);
+		context.lineTo(x3, y3);
+		context.lineTo(x1, y1);
+		
+		context.closePath();
+		context.stroke();
+		loadState(context);
+	}
+}
+
+
+@DecoratorTypesService.wholeBlockMethod({"drawCircleFromPreviousCoords": "true"})
+export function drawRectFromPrev(context: CanvasRenderingContext2D) {
+    if (context.currentX !== undefined && context.currentY !== undefined) {
+		propagateCoordinatesSixPositions(context);
+	}
+	
+	if (context.currentX !== undefined && context.currentY !== undefined && 
+	context.currentX2 !== undefined && context.currentY2 !== undefined && 
+	context.currentX3 !== undefined && context.currentY3 !== undefined) {
+		let x1 = context.currentX;
+		let y1 = context.currentY;
+		let x2 = context.currentX3;
+		let y2 = context.currentY3;
+		let x3 = context.currentX4;
+		let y3 = context.currentY4;
+		let x4 = context.currentX5;
+		let y4 = context.currentY5;
+		let x5 = context.currentX6;
+		let y5 = context.currentY6;
+		saveState(context);
+		context.beginPath();
+		context.strokeStyle = "rgba(50, 100, 250, .9)";
+		context.moveTo(x1, y1);
+		context.lineTo(x2, y2);
+		context.lineTo(x3, y3);
+		context.lineTo(x4, y4);
+		context.lineTo(x1, y1);
+		context.closePath();
+		context.stroke();
+		loadState(context);
+	}
+}
+
+
 
 /*
 	CIRCLE OBJECT - definition
