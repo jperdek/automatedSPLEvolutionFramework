@@ -29,6 +29,19 @@ class ImageProcessor:
         ImageProcessor.save_image_using_PIL(image_content, image_location, max_size)
 
     @staticmethod
+    def automatically_trim_and_get_image(
+            image_content: bytes,
+            added_borders: int = 15,
+            color_to_trip=None,
+    ) -> bytes:
+        if color_to_trip is None:
+            color_to_trip = [51, 51, 51]
+        image_content = ImageProcessor.trim_image_according_observed_boundaries(
+            image_content, added_borders=added_borders, color_to_trip=color_to_trip
+        )
+        return image_content
+
+    @staticmethod
     def convert_from_svg(image_content: bytes) -> bytes:
         u_image_file = pyvips.Image.new_from_buffer(
             image_content, "", access="sequential"
@@ -108,6 +121,11 @@ class ImageProcessor:
 
         if top + height > original_height:
             top = original_height - height
+
+        left = 0 if left <= 0 else left
+        top = 0 if top <= 0 else top
+        width = original_width if left + width > original_width else width
+        height = original_height if top + height > original_height else height
 
         u_image_file = u_image_file.crop(left, top, width, height)
         image_file = u_image_file.write_to_buffer(".png")

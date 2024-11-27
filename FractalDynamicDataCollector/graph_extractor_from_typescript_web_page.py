@@ -2,7 +2,7 @@ import json
 
 from graphSimulation.graphExtractor.process_graphs import GraphProcessor
 from graphSimulation.graphMerger.merge_configuration import ImageSettings
-from screenshooter import PlaywrightScreenshooter
+from server.apis.http.api.screenshoting.screenshooter import PlaywrightScreenshooter
 from analyzer import DynamicFractalAnalyzer
 from typing import Dict, Optional
 import os

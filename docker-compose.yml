@@ -1,0 +1,37 @@
+version: "3.8"
+services:
+  dynamicDataCollectorService:
+    build: ./FractalDynamicDataCollector
+    command: python FractalDynamicDataCollector/server/apis/http/api/endpoints.py
+    image: jperdek/dynamic-data-collector
+    ports:
+      - "5000:5000"
+    extra_hosts:
+        - "hostname1  localhost:127.0.0.1"
+    container_name: dynamicDataCollector
+    volumes:
+      - app-volume:/
+    environment:
+      FLASK_ENV: development
+    networks:
+      - buildernet
+  fullyAutomatedEvolution:
+    build:
+      context: ./frontend/semanticAspects
+      dockerfile: Dockerfile
+    image: jperdek/fully-automated-evolution
+    ports:
+      - "5001:5001"
+    container_name: fully-automated-evolution
+    volumes:
+      - app-volume:/
+    environment:
+      FLASK_ENV: development
+    networks:
+      - buildernet
+volumes:
+     dataset-products-volume: 
+networks:
+  buildernet:
+    driver: "bridge"
+    

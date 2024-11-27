@@ -1,5 +1,5 @@
-from screenshooter import PlaywrightScreenshooter
-from image_processor import ImageProcessor
+from server.apis.http.api.screenshoting.screenshooter import PlaywrightScreenshooter
+from server.apis.http.api.processors.image_processor import ImageProcessor
 from typing import Optional
 from PIL import Image
 import io

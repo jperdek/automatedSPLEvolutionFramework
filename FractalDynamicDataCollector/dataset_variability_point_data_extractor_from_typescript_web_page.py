@@ -1,5 +1,5 @@
 import os
-from screenshooter import PlaywrightScreenshooter
+from server.apis.http.api.screenshoting.screenshooter import PlaywrightScreenshooter
 
 
 class DatasetVariabilityPointDataExtractor:
