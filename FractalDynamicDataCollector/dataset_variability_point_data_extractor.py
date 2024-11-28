@@ -1,4 +1,4 @@
-from analyzer import DynamicFractalAnalyzer
+from server.apis.http.api.processors.analyzer import DynamicFractalAnalyzer
 import os
 
 

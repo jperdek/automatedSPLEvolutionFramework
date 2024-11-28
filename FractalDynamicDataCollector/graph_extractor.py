@@ -1,6 +1,6 @@
 from graphSimulation.graphExtractor.graph_scheme import FractalGraphScheme
 from graphSimulation.graphExtractor.process_graphs import GraphProcessor
-from analyzer import DynamicFractalAnalyzer
+from server.apis.http.api.processors.analyzer import DynamicFractalAnalyzer
 import json
 import os
 

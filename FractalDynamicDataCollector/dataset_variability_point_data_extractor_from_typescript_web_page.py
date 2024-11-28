@@ -24,7 +24,7 @@ class DatasetVariabilityPointDataExtractor:
                 vp_data_file_name = derivation_name + ".json"
                 final_image_path = os.path.join(absolute_final_path, vp_data_file_name)
                 variability_point_data = self.page.evaluate(
-                    "() => JSON.stringify(globalResult);"
+                    "() => JSON.stringify(initialGraphRoot);"
                 )
                 self.__save_json_data_to_file(variability_point_data, final_image_path)
 

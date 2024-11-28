@@ -1,3 +1,4 @@
+import time
 
 from flask import Blueprint, request
 
@@ -26,7 +27,10 @@ def take_screenshot_from_mhtml():
         focus_element_selector=focus_element_selector, timeout=browser_timeout
     )
     resulting_image = ImageProcessor.automatically_trim_and_get_image(image_content, added_borders=image_borders)
-    screenshooter.close()
+    try:
+        screenshooter.close()
+    except:
+        pass
     return image_png_response(resulting_image)
 
 
@@ -35,11 +39,13 @@ def take_screenshot_from_page():
     web_page_location = request.args.get("url")
     focus_element_selector = request.args.get("screenshot_element_selector", "body")
     browser_timeout = request.args.get("browser_timeout", 10000)
+    time_to_wait = int(request.args.get("time_to_wait", 10))
     image_borders = request.args.get("image_borders", 35)
 
     screenshooter = PlaywrightScreenshooter("chromium")
     page = screenshooter.new_page()
     page.goto(web_page_location, wait_until="networkidle")
+    time.sleep(time_to_wait)
     image_content = screenshooter.take_screenshoot_according_locator(
         focus_element_selector=focus_element_selector, timeout=browser_timeout
     )
@@ -49,4 +55,3 @@ def take_screenshot_from_page():
     except:
         pass
     return image_png_response(resulting_image)
-

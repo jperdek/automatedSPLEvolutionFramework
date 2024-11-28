@@ -3,6 +3,7 @@ from flask import Flask
 import flask_cors
 from screenshot.take_screenshot_api import screenshot_api
 from tools.single_file_adaptations import singlefile_api as tools_api
+from graph_extractor.extract_graph_api import graph_extractor_api
 
 app = Flask(__name__, static_url_path='',
             static_folder='web/static',
@@ -11,6 +12,7 @@ app = Flask(__name__, static_url_path='',
 flask_cors.CORS(app)
 app.register_blueprint(screenshot_api, url_prefix="/api/screenshoter")
 app.register_blueprint(tools_api, url_prefix="/api/tools")
+app.register_blueprint(graph_extractor_api, url_prefix="/api/graph-extraction")
 
 
 with app.app_context():

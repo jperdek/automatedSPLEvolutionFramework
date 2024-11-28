@@ -16,7 +16,7 @@ from graphSimulation.graphExtractor.geometry_data_to_image import GeometryDataTo
 from graphSimulation.graphExtractor.graph_scheme import FractalGraphScheme
 from graphSimulation.graphMerger.node_verifier import NodeVerifier
 from merge_aggregations import MergeAggregations
-from analyzer import DynamicFractalAnalyzer
+from server.apis.http.api.processors.analyzer import DynamicFractalAnalyzer
 from typing import Optional
 import csv
 import os
