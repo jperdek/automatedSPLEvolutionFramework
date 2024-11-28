@@ -317,7 +317,7 @@ if __name__ == "__main__":
     # insert_merged_graph(url1, user1, password1)
     # insert_small_graph(url1, user1, password1)
     GraphConnector.insert_graph_without_scheme_for_dataset(
-        dataset_directory_path="../../generated_dataset_vp_graph_data",
+        dataset_directory_path="../../../../../../generated_dataset_vp_graph_data",
         url=url1,
         user=user1,
         password=password1,

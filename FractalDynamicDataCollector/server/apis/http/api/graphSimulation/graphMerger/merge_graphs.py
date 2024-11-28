@@ -2,19 +2,19 @@ import sys
 import os
 
 # for Windows only
-from graphSimulation.graphMerger.merge_configuration import (
+from server.apis.http.api.graphSimulation.graphMerger.merge_configuration import (
     MergeConfiguration,
     ImageSettings,
     StrategyOnIntersection,
 )
-from graphSimulation.graphMerger.related_data_manager import RelatedDataManager
+from server.apis.http.api.graphSimulation.graphMerger.related_data_manager import RelatedDataManager
 
 if hasattr(sys, "getwindowsversion"):
     os.environ["PATH"] += r";" + os.getcwd() + "\\..\\..\\vips-dev-8.12\\bin"
 
-from graphSimulation.graphExtractor.geometry_data_to_image import GeometryDataToImage
-from graphSimulation.graphExtractor.graph_scheme import FractalGraphScheme
-from graphSimulation.graphMerger.node_verifier import NodeVerifier
+from server.apis.http.api.graphSimulation.graphExtractor.geometry_data_to_image import GeometryDataToImage
+from server.apis.http.api.graphSimulation.graphExtractor.graph_scheme import FractalGraphScheme
+from server.apis.http.api.graphSimulation.graphMerger.node_verifier import NodeVerifier
 from merge_aggregations import MergeAggregations
 from server.apis.http.api.processors.analyzer import DynamicFractalAnalyzer
 from typing import Optional
@@ -496,7 +496,7 @@ class GraphMerger:
 
 
 if __name__ == "__main__":
-    instance_related_data = GraphMerger.load_instance_related_data("./annotated.csv")
+    instance_related_data = GraphMerger.load_instance_related_data("annotated.csv")
     merge_configuration = MergeConfiguration(StrategyOnIntersection.CONCAT, None)
     GraphMerger.merge_dataset(
         "E://aspects/src/derived2",

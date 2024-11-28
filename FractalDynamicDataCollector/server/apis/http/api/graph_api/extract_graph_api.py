@@ -62,13 +62,14 @@ def extract_graph_from_browser_object():
     time_to_wait = int(request.args.get("time_to_wait", 10))
     extension_key = request.args.get("extension_key", "pointsTo")
     max_depth = int(request.args.get("max_depth", -1))
+    into_array = request.args.get("into_array", True)
 
     screenshooter = PlaywrightScreenshooter("chromium")
     page = screenshooter.new_page()
     page.goto(web_page_location, wait_until="networkidle")
     time.sleep(time_to_wait)
     variability_point_data = {}
-    DynamicFractalAnalyzer.get_graph(0, max_depth, variability_point_data, page, "", extension_key)
+    DynamicFractalAnalyzer.get_graph(0, max_depth, variability_point_data, page, "", extension_key, into_array)
     try:
         screenshooter.close()
     except:

@@ -1,5 +1,5 @@
-from graphSimulation.graphExtractor.graph_scheme import FractalGraphScheme
-from graphSimulation.graphExtractor.process_graphs import GraphProcessor
+from server.apis.http.api.graphSimulation.graphExtractor.graph_scheme import FractalGraphScheme
+from server.apis.http.api.graphSimulation.graphExtractor.process_graphs import GraphProcessor
 from server.apis.http.api.processors.analyzer import DynamicFractalAnalyzer
 import json
 import os
@@ -42,7 +42,6 @@ class DatasetVariabilityPointGraphDataExtractor:
                     is_typescript=is_typescript,
                 )
             )
-            print(graph_root)
             absolute_derivation_path = os.path.join(
                 absolute_final_path, derivation_name
             )

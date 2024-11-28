@@ -1,7 +1,7 @@
 from typing import Optional
 
 from graphSimulation.graphMerger.merge_configuration import ImageSettings
-from server.apis.http.processors.image_processor import ImageProcessor
+from processors.image_processor import ImageProcessor
 from PIL import Image, ImageDraw
 import base64
 import io

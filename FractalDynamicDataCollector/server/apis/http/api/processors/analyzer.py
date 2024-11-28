@@ -135,18 +135,21 @@ class DynamicFractalAnalyzer:
 
     @staticmethod
     def get_graph(depth: int, max_depth: int, processed_object: Dict, page: any, extension_array_string: str = "",
-                  extension_key: str = "pointsTo") -> None:
+                  extension_key: str = "pointsTo", into_array: bool = True) -> None:
         for object_key in page.evaluate("() => Object.keys(initialGraphRoot" + extension_array_string + ")"):
             if object_key == extension_key and depth + 1 < max_depth:
-                processed_object[extension_key] = {}
+                processed_object[extension_key] = [] if into_array else {}
                 array_length_script = "() => initialGraphRoot" + extension_array_string + "['" + object_key + "'].length"
                 array_length = page.evaluate(array_length_script)
                 for index in range(array_length):
                     extension_array_string_deeper = extension_array_string + "['" + extension_key + "'][" + str(
                         index) + "]"
+                    managed_object = {} if into_array else processed_object[extension_key]
+                    if into_array:
+                        processed_object[extension_key].append(managed_object)
                     try:
-                        DynamicFractalAnalyzer.get_graph(depth + 1, max_depth, processed_object[extension_key], page,
-                                  extension_array_string_deeper, extension_key)
+                        DynamicFractalAnalyzer.get_graph(depth + 1, max_depth, managed_object, page,
+                                  extension_array_string_deeper, extension_key, into_array)
                     except Exception as e:
                         print(e)
             else:

@@ -1,7 +1,7 @@
 import json
 
-from graphSimulation.graphExtractor.process_graphs import GraphProcessor
-from graphSimulation.graphMerger.merge_configuration import ImageSettings
+from server.apis.http.api.graphSimulation.graphExtractor.process_graphs import GraphProcessor
+from server.apis.http.api.graphSimulation.graphMerger.merge_configuration import ImageSettings
 from server.apis.http.api.screenshoting.screenshooter import PlaywrightScreenshooter
 from server.apis.http.api.processors.analyzer import DynamicFractalAnalyzer
 from typing import Dict, Optional
@@ -38,7 +38,7 @@ class DatasetVariabilityPointGraphDataExtractor:
     def process_dataset(
         self,
         dataset_directory_path: str,
-        final_location_path: str = "./generated_dataset_vp_graph_data",
+        final_location_path: str = "../../../../../../generated_dataset_vp_graph_data",
         graph_schema: dict = None,
         connector_list_name: str = "pointsTo",
         connector_type_name: str = "fname",

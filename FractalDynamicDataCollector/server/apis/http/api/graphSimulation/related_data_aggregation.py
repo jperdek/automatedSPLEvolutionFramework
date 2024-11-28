@@ -78,11 +78,11 @@ def aggregate_related_data(
 if __name__ == "__main__":
     aggregate_related_data(
         "../generated_dataset_vp_graph_data_merged/function drawWCurve.csv",
-        "./drawWCurveProcessed1.csv",
+        "drawWCurveProcessed1.csv",
         True,
     )
     aggregate_related_data(
         "../generated_dataset_vp_graph_data_merged/function drawWCurve.csv",
-        "./drawWCurveProcessed2.csv",
+        "drawWCurveProcessed2.csv",
         False,
     )

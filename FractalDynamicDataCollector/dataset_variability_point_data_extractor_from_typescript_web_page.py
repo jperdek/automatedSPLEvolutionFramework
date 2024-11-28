@@ -12,6 +12,7 @@ class DatasetVariabilityPointDataExtractor:
         dataset_directory_path: str,
         final_location_path: str = "./generated_dataset_vp_data",
         browser_timeout=30000,
+        graph_object_name: str = "initialGraphRoot"
     ) -> None:
         absolute_dataset_path = os.path.abspath(dataset_directory_path)
         absolute_final_path = os.path.abspath(final_location_path)
@@ -24,7 +25,7 @@ class DatasetVariabilityPointDataExtractor:
                 vp_data_file_name = derivation_name + ".json"
                 final_image_path = os.path.join(absolute_final_path, vp_data_file_name)
                 variability_point_data = self.page.evaluate(
-                    "() => JSON.stringify(initialGraphRoot);"
+                    "() => JSON.stringify(" + graph_object_name + ");"
                 )
                 self.__save_json_data_to_file(variability_point_data, final_image_path)
 

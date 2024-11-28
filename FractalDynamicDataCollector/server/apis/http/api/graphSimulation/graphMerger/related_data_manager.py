@@ -1,4 +1,4 @@
-from graphSimulation.graphMerger.merge_configuration import (
+from server.apis.http.api.graphSimulation.graphMerger.merge_configuration import (
     MergeConfiguration,
     StrategyOnIntersection,
 )

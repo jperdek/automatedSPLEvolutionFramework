@@ -1,4 +1,5 @@
-from typing import Optional
+import io
+from typing import Optional, Dict
 
 from typing_extensions import deprecated
 
@@ -226,10 +227,8 @@ class GraphProcessor:
                     drawing,
                     image_settings,
                 )
-
             node_number_id["id"] = node_number_id["id"] + 1
             result_nodes[node_type].append(node_content)
-
             # manage connections
             parent_node_content = processed_node["previously_processed_node_content"]
             if parent_node_content:
@@ -336,3 +335,48 @@ class GraphProcessor:
         GraphProcessor.create_csv_from_results(
             connector_result_file_path, connections, list(connections[0].keys())
         )
+
+    @staticmethod
+    def create_csv_from_results_to_ram(data: list[dict], field_names: list[str]) -> str:
+        buffer = io.BytesIO()
+        with io.TextIOWrapper(buffer, encoding="utf-8") as wrapper:
+            dict_writer = csv.DictWriter(wrapper, fieldnames=field_names, delimiter="$")
+            dict_writer.writeheader()
+            dict_writer.writerows(data)
+            return buffer.read().decode("UTF-8")
+
+    @staticmethod
+    def process_graph_to_ram(
+            graph_root: dict,
+            graph_schema: Optional[dict] = None,
+            connector_list_name: str = "pointsTo",
+            connector_type_name: str = "fname",
+            drawing: bool = True,
+            image_settings: Optional[ImageSettings] = None,
+            skip_nodes_used_to_draw_image: bool = True,
+    ) -> Dict:
+
+        (
+            connections,
+            result_nodes,
+        ) = GraphProcessor.get_nodes_and_connectors_from_graph_in_JSON(
+            graph_root,
+            graph_schema,
+            connector_list_name,
+            connector_type_name,
+            drawing,
+            image_settings,
+            skip_nodes_used_to_draw_image,
+        )
+        resulting_csvs = {}
+        for node_type_name, result_nodes_type in result_nodes.items():
+            result_nodes_keys = list(result_nodes_type[0].keys())
+            if not graph_schema:
+                for result_nodes_instance in result_nodes_type:
+                    for result_nodes_instance_key in result_nodes_instance.keys():
+                        if result_nodes_instance_key not in result_nodes_keys:
+                            result_nodes_keys.append(result_nodes_instance_key)
+            resulting_csvs[node_type_name] = {"data": result_nodes_type, "field_names": result_nodes_keys}
+        if len(connections) > 0:
+            resulting_csvs["connectors"] = {"data": connections, "field_names": list(connections[0].keys())}
+        return resulting_csvs
