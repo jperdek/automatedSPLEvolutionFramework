@@ -150,27 +150,13 @@ class SVGTransform:
             page_body.append(new_script)
             page_body.append(new_script2)
         file_name = web_page_location[web_page_location.rfind("/") + 1:]
-        file_path = web_page_location[:web_page_location.rfind("/")]
-        #new_file_name = web_page_location.replace(file_name, "") + "__COPY__" + file_name
-        #with open(new_file_name, "w", encoding="utf-8") as file:
-        #    file.write(str(page_soup))
-        #page.goto(new_file_name, wait_until="networkidle")
-        for script in page_soup.select("script"):
-            script_url = script.get("src")
-            if script_url and (script_url.startswith("/") or not script_url.startswith("http")):
-                script["src"] = "file:///" + file_path + "/" + script_url
-        page.set_content(str(page_soup), wait_until="load")
-        print("--------------<<<<<")
-        print(page_soup)
-        print("----------------->")
-        try:
-            page.locator("svg").wait_for()
-        except:
-            pass
+        new_file_name = web_page_location.replace(file_name, "") + "__COPY__" + file_name
+        with open(new_file_name, "w", encoding="utf-8") as file:
+            file.write(str(page_soup))
+        page.goto(new_file_name, wait_until="networkidle")
+
         time.sleep(time_to_wait)
-        svg_element = page.locator("svg").evaluate("el => el.outerHTML")
-        print(svg_element)
-        print(SVGTransform.__get_finalizing_svg_script(generated_svg_id))
+
         page.evaluate(SVGTransform.__get_finalizing_svg_script(generated_svg_id))
         svg_element = page.locator("#" + generated_svg_id).evaluate("el => el.outerHTML")
         return svg_element
