@@ -1,4 +1,5 @@
 import time
+from typing import Tuple, Dict
 
 from flask import Blueprint, request
 
@@ -6,7 +7,7 @@ from processors.image_processor import ImageProcessor
 from screenshoting.screenshooter import PlaywrightScreenshooter
 
 
-def image_png_response(payload: bytes, status: int = 200):
+def image_png_response(payload: bytes, status: int = 200) -> Tuple[str, int, Dict]:
     return payload, status, {"content-type": "image/png"}
 
 

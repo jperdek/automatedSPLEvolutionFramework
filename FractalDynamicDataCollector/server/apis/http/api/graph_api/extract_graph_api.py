@@ -56,6 +56,7 @@ def extract_graph_from_script():
     return json_response_str(json.loads(variability_point_data))
 
 
+# use this method for large data
 @graph_extractor_api.route("/extractObject", methods=["GET"])
 def extract_graph_from_browser_object():
     web_page_location = request.args.get("url")

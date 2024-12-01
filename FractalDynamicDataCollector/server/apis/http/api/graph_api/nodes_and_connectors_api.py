@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Tuple
 
 from flask import Blueprint, request
 import json
@@ -6,7 +6,7 @@ import json
 from graphSimulation.graphExtractor.process_graphs import GraphProcessor
 
 
-def json_response(payload: Dict, status: int = 200):
+def json_response(payload: Dict, status: int = 200) -> Tuple[str, int, Dict]:
     return json.dumps(payload), status, {"content-type": "application/json" }
 
 

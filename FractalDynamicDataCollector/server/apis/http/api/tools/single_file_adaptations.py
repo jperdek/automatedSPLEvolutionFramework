@@ -1,5 +1,5 @@
 import time
-from typing import Dict
+from typing import Dict, Tuple
 
 from flask import Blueprint, request
 import json
@@ -7,11 +7,11 @@ import json
 from screenshoting.screenshooter import PlaywrightScreenshooter
 
 
-def json_response(payload: Dict, status: int = 200):
+def json_response(payload: Dict, status: int = 200) -> Tuple[str, int, Dict]:
     return json.dumps(payload), status, {"content-type": "application/json" }
 
 
-def text_response(payload: str, status: int = 200):
+def text_response(payload: str, status: int = 200) -> Tuple[str, int, Dict]:
     return payload, status, {"content-type": "text/plain"}
 
 

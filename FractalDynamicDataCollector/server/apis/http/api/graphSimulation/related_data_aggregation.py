@@ -1,5 +1,6 @@
 import csv
 import json
+from typing import List, Dict
 
 
 def evaluate_average(values: str) -> float:
@@ -26,8 +27,8 @@ def evaluate_most_frequent(values: str) -> float:
 
 
 def prepare_weights(
-    base_record: dict,
-    keys_for_weights: list[str],
+    base_record: Dict,
+    keys_for_weights: List[str],
     analyzed_content: str,
     associated_name: str = "perceivedAesthetics",
 ) -> None:

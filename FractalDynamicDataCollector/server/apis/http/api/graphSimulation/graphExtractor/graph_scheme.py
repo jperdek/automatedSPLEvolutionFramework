@@ -1,6 +1,9 @@
+from typing import Dict
+
+
 class FractalGraphScheme:
     @staticmethod
-    def add_wcurve_instance_to_scheme(wcurve_scheme: dict) -> None:
+    def add_wcurve_instance_to_scheme(wcurve_scheme: Dict) -> None:
         wcurve_scheme.update(
             {
                 "wcurve.diagonalLength": "int",
@@ -14,7 +17,7 @@ class FractalGraphScheme:
         )
 
     @staticmethod
-    def create_default_scheme_for_draw_WCurve() -> dict:
+    def create_default_scheme_for_draw_WCurve() -> Dict:
         wcurve_scheme = {
             "id": "int",
             "centerX": "int",
@@ -28,11 +31,11 @@ class FractalGraphScheme:
         return wcurve_scheme
 
     @staticmethod
-    def additionally_add_image_to_scheme(wcurve_scheme: dict) -> None:
+    def additionally_add_image_to_scheme(wcurve_scheme: Dict) -> None:
         wcurve_scheme.update({"image_base64_url": "string"})
 
     @staticmethod
-    def create_default_scheme_for_draw_line() -> dict:
+    def create_default_scheme_for_draw_line() -> Dict:
         line_scheme = {
             "id": "int",
             "x1": "float",
@@ -44,7 +47,7 @@ class FractalGraphScheme:
         return line_scheme
 
     @staticmethod
-    def create_default_scheme_for_wcurve() -> dict:
+    def create_default_scheme_for_wcurve() -> Dict:
         wcurve_scheme = {
             "id": "int",
             "distanceWidthRadius": "int",
@@ -55,7 +58,7 @@ class FractalGraphScheme:
         return wcurve_scheme
 
     @staticmethod
-    def create_default_schemes(allow_image: True) -> dict:
+    def create_default_schemes(allow_image: True) -> Dict:
         wcurve_scheme = FractalGraphScheme.create_default_scheme_for_draw_WCurve()
         if allow_image:
             FractalGraphScheme.additionally_add_image_to_scheme(wcurve_scheme)
@@ -66,7 +69,7 @@ class FractalGraphScheme:
         }
 
     @staticmethod
-    def create_default_schemes_with_image() -> dict:
+    def create_default_schemes_with_image() -> Dict:
         wcurve_scheme = FractalGraphScheme.create_default_scheme_for_draw_WCurve()
         FractalGraphScheme.additionally_add_image_to_scheme(wcurve_scheme)
         return {

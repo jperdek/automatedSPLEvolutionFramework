@@ -1,10 +1,13 @@
 import sys
 from flask import Flask
 import flask_cors
+
 from screenshot_api.take_screenshot_api import screenshot_api
 from tools.single_file_adaptations import singlefile_api as tools_api
 from graph_api.extract_graph_api import graph_extractor_api
 from graph_api.nodes_and_connectors_api import nodes_and_connectors_api
+from graph_database_api.graph_database_entry import graph_database_entry_api
+from svg_transformation_api.svg_creator_api import svg_creator_api
 
 app = Flask(__name__, static_url_path='',
             static_folder='web/static',
@@ -15,6 +18,8 @@ app.register_blueprint(screenshot_api, url_prefix="/api/screenshoter")
 app.register_blueprint(tools_api, url_prefix="/api/tools")
 app.register_blueprint(graph_extractor_api, url_prefix="/api/graph-extraction")
 app.register_blueprint(nodes_and_connectors_api, url_prefix="/api/nodes-and-connectors")
+app.register_blueprint(graph_database_entry_api, url_prefix="/api/graph_db_entry")
+app.register_blueprint(svg_creator_api, url_prefix="/api/svg_creator")
 
 
 with app.app_context():

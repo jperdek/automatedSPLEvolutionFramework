@@ -7,7 +7,7 @@ class PlaywrightScreenshooter:
 
     def __init__(
         self, engine_name: str, resolution: (int, int) = (2560, 1440), **arguments
-    ):
+    ) -> None:
         self.playwright_screenshooter = sync_playwright().start()
         self.engine_name = engine_name
         self.resolution = {"width": resolution[0], "height": resolution[1]}
@@ -18,7 +18,7 @@ class PlaywrightScreenshooter:
         ).launch(**arguments)
         self.browser = None
 
-    def launch(self, arguments: {}):
+    def launch(self, arguments: {}) -> None:
         chromium = self.playwright_screenshooter.chromium  # or "firefox" or "webkit".
         self.browser = chromium.launch()
 
@@ -39,7 +39,7 @@ class PlaywrightScreenshooter:
         if self.launched_browser.is_connected():
             self.launched_browser.close()
 
-    def load_page_from_disc_actual_position(self, path: str):
+    def load_page_from_disc_actual_position(self, path: str) -> None:
         absolute_path = os.path.abspath(path)
         if not self.actual_page:
             self.new_page()

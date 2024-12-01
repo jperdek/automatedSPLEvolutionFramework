@@ -1,7 +1,7 @@
 import io
 import os
 import sys
-from typing import Optional
+from typing import Optional, Tuple
 
 from PIL import Image
 from io import BytesIO
@@ -133,7 +133,7 @@ class ImageProcessor:
 
     @staticmethod
     def increase_image_size(
-        image_file: BytesIO, max_size: (int, int), color=None
+        image_file: BytesIO, max_size: (int, int), color: Optional[Tuple[int, int, int]] = None
     ) -> Image:
         if color is None:
             color = (51, 51, 51)

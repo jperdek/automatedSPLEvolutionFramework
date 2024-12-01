@@ -1,5 +1,5 @@
 import io
-from typing import Optional, Dict
+from typing import Optional, Dict, List
 
 from typing_extensions import deprecated
 
@@ -12,7 +12,7 @@ import json
 
 class GraphProcessor:
     @staticmethod
-    def convert_according_type(value: any, value_type: str):
+    def convert_according_type(value: any, value_type: str) -> any:
         if value_type == "string":
             return str(value)
         elif value_type == "int":
@@ -28,14 +28,14 @@ class GraphProcessor:
 
     @staticmethod
     def copy_node_content_according_schema(
-        graph_json_node: dict,
+        graph_json_node: Dict,
         node_id: int,
-        schema_for_node: dict,
+        schema_for_node: Dict,
         connector_list_name: str = "pointsTo",
         connector_type_name: str = "fname",
         drawing: bool = True,
         image_settings: Optional[ImageSettings] = None,
-    ) -> dict:
+    ) -> Dict:
         if image_settings is None:
             image_settings = ImageSettings()
         node_content = {}
@@ -75,13 +75,13 @@ class GraphProcessor:
 
     @staticmethod
     def copy_node_content_without_schema(
-        graph_json_node: dict,
+        graph_json_node: Dict,
         node_id: int,
         connector_list_name: str = "pointsTo",
         connector_type_name: str = "fname",
         drawing: bool = True,
         image_settings: Optional[ImageSettings] = None,
-    ) -> dict:
+    ) -> Dict:
         node_content = {"id": node_id}
         if drawing:
             if image_settings is None:
@@ -110,12 +110,12 @@ class GraphProcessor:
 
     @staticmethod
     def create_connection(
-        result_node1: dict,
-        result_node2: dict,
+        result_node1: Dict,
+        result_node2: Dict,
         node_identifier_key: str = "id",
         connection_name1: str = "from",
         connection_name2: str = "to",
-    ) -> dict:
+    ) -> Dict:
         return {
             connection_name1: result_node1[node_identifier_key],
             connection_name2: result_node2[node_identifier_key],
@@ -124,17 +124,17 @@ class GraphProcessor:
     @staticmethod
     @deprecated
     def process_node_recursive(
-        graph_json_node: dict,
-        node_number_id: dict,
-        connections: list[dict],
-        result_nodes: dict,
-        used_schema: Optional[dict],
+        graph_json_node: Dict,
+        node_number_id: Dict,
+        connections: List[Dict],
+        result_nodes: Dict,
+        used_schema: Optional[Dict],
         connector_list_name: str = "pointsTo",
         connector_type_name: str = "fname",
         drawing: bool = True,
         image_settings: Optional[ImageSettings] = None,
         skip_nodes_used_to_draw_image: bool = True,
-    ) -> dict:
+    ) -> Dict:
         node_type = graph_json_node[connector_type_name]
         if node_type not in result_nodes.keys() or not result_nodes[node_type]:
             result_nodes[node_type] = []
@@ -188,17 +188,17 @@ class GraphProcessor:
 
     @staticmethod
     def process_node(
-        graph_json_node: dict,
-        node_number_id: dict,
-        connections: list[dict],
-        result_nodes: dict,
-        used_schema: Optional[dict],
+        graph_json_node: Dict,
+        node_number_id: Dict,
+        connections: List[Dict],
+        result_nodes: Dict,
+        used_schema: Optional[Dict],
         connector_list_name: str = "pointsTo",
         connector_type_name: str = "fname",
         drawing: bool = True,
         image_settings: Optional[ImageSettings] = None,
         skip_nodes_used_to_draw_image: bool = True,
-    ) -> dict:
+    ) -> Dict:
         node_content = None
         graph_json_node["previously_processed_node_content"] = None
         process_node_stack = [graph_json_node]
@@ -253,14 +253,14 @@ class GraphProcessor:
 
     @staticmethod
     def get_nodes_and_connectors_from_graph_in_JSON(
-        graph_json: dict,
-        used_schema: Optional[dict],
+        graph_json: Dict,
+        used_schema: Optional[Dict],
         connectors_list_name: str = "pointsTo",
         connector_type_name: str = "fname",
         drawing: bool = True,
         image_settings: Optional[ImageSettings] = None,
         skip_nodes_used_to_draw_image: bool = True,
-    ) -> (list[dict], dict):
+    ) -> (List[Dict], Dict):
         connections = []
         node_number_id = {"id": 1}
         result_nodes = {}
@@ -288,7 +288,7 @@ class GraphProcessor:
 
     @staticmethod
     def create_csv_from_results(
-        file_csv_path: str, data: list[dict], field_names: list[str]
+        file_csv_path: str, data: List[Dict], field_names: List[str]
     ) -> None:
         with open(file_csv_path, "w", encoding="UTF8", newline="") as f:
             writer = csv.DictWriter(f, fieldnames=field_names, delimiter="$")
@@ -297,8 +297,8 @@ class GraphProcessor:
 
     @staticmethod
     def process_graph(
-        graph_root: dict,
-        graph_schema: Optional[dict],
+        graph_root: Dict,
+        graph_schema: Optional[Dict],
         connector_result_file_path: str,
         result_file_path: str,
         connector_list_name: str = "pointsTo",
@@ -337,7 +337,7 @@ class GraphProcessor:
         )
 
     @staticmethod
-    def create_csv_from_results_to_ram(data: list[dict], field_names: list[str]) -> str:
+    def create_csv_from_results_to_ram(data: List[Dict], field_names: List[str]) -> str:
         buffer = io.BytesIO()
         with io.TextIOWrapper(buffer, encoding="utf-8") as wrapper:
             dict_writer = csv.DictWriter(wrapper, fieldnames=field_names, delimiter="$")
@@ -347,8 +347,8 @@ class GraphProcessor:
 
     @staticmethod
     def process_graph_to_ram(
-            graph_root: dict,
-            graph_schema: Optional[dict] = None,
+            graph_root: Dict,
+            graph_schema: Optional[Dict] = None,
             connector_list_name: str = "pointsTo",
             connector_type_name: str = "fname",
             drawing: bool = True,

@@ -1,3 +1,5 @@
+from typing import Optional, Dict
+
 from server.apis.http.api.graphSimulation.graphExtractor.graph_scheme import FractalGraphScheme
 from server.apis.http.api.graphSimulation.graphExtractor.process_graphs import GraphProcessor
 from server.apis.http.api.processors.analyzer import DynamicFractalAnalyzer
@@ -13,14 +15,13 @@ class DatasetVariabilityPointGraphDataExtractor:
         self,
         dataset_directory_path: str,
         final_location_path: str = "./generated_dataset_vp_graph_data",
-        graph_schema: dict = None,
+        graph_schema: Optional[Dict] = None,
         connector_list_name: str = "pointsTo",
         connector_type_name: str = "fname",
         drawing: bool = True,
-        image_settings: dict = None,
+        image_settings: Optional[Dict] = None,
         variable_with_graph: str = "initialGraphRoot",
         file_with_connections_name: str = "connections.csv",
-        is_typescript: bool = False,
         is_wrapped: bool = False,
     ) -> None:
         if not graph_schema:
@@ -38,8 +39,7 @@ class DatasetVariabilityPointGraphDataExtractor:
                 self.dynamic_fractal_analyzer.load_data_from_fractal(
                     script_path,
                     variable_with_graph,
-                    is_wrapped=is_wrapped,
-                    is_typescript=is_typescript,
+                    is_wrapped=is_wrapped
                 )
             )
             absolute_derivation_path = os.path.join(

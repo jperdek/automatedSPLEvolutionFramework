@@ -1,8 +1,9 @@
 import os
-from typing import Optional
+from typing import Optional, Dict, List
 
 from graphSimulation.graphExtractor.graph_scheme import FractalGraphScheme
 from neo4j import GraphDatabase
+from neo4j._sync.work import Session
 import re as regexp
 import csv
 import json
@@ -14,7 +15,7 @@ class SchemaConverter:
         if value_type == "string":
             if value is None or not value:
                 value = ""
-            return str(value)
+            return str(value).replace("\"", "").replace("'", "")
         elif value_type == "int":
             if value is None or not value:
                 value = 0
@@ -113,13 +114,14 @@ class GraphConnector:
             session.run("MATCH (a) DELETE a")
 
     def __save_object_schema(
-        self, new_schema: dict, new_schema_directory: str, entity_name: str
+        self, new_schema: dict, new_schema_directory: Optional[str], entity_name: str
     ) -> None:
-        path_to_serialized_entity = os.path.join(
-            new_schema_directory, entity_name + "_SCHEMA.json"
-        )
-        with open(path_to_serialized_entity, "w", encoding="utf-8") as file:
-            file.write(json.dumps(new_schema))
+        if new_schema_directory:
+            path_to_serialized_entity = os.path.join(
+                new_schema_directory, entity_name + "_SCHEMA.json"
+            )
+            with open(path_to_serialized_entity, "w", encoding="utf-8") as file:
+                file.write(json.dumps(new_schema))
 
     def insert_objects(
         self,
@@ -157,6 +159,53 @@ class GraphConnector:
                         new_object_record_schema,
                     )
 
+    def insert_objects_from_ram(
+        self,
+        new_objects: List[Dict],
+        object_schema: Optional[Dict],
+        object_name: str = "Obj",
+        new_schema_directory: str = "../../new_schemas",
+    ):
+        with self.driver.session() as session:
+            if not object_schema:
+                object_schema = self.__find_neo4j_schema_for_data(new_objects)
+                self.__save_object_schema(
+                    object_schema, new_schema_directory, object_name
+                )
+            else:
+                object_schema = self.__construct_non_problematic_schema(
+                    object_schema
+                )
+            neo4j_parameters = self.__convert_schema_dict_to_neo_parameters(
+                object_schema
+            )
+
+            for new_object_record in new_objects:
+                new_object_record_schema = (
+                    SchemaConverter.copy_node_content_according_schema(
+                        new_object_record, object_schema, remove_dot=True
+                    )
+                )
+
+                session.run(
+                    "MERGE (a: " + object_name + " " + neo4j_parameters + ");",
+                    new_object_record_schema,
+                )
+
+    def __insert_base_connection(self, session: Session, node_id_from: str, node_id_to: str) -> None:
+        session.run(
+            "MATCH (a {id: "
+            + node_id_from
+            + "} ), (b {id: "
+            + node_id_to
+            + " }) MERGE (a)-[c: CONNECTS]->(b);"
+        )
+
+    def insert_connections_from_ram(self, connections: List[Dict]) -> None:
+        with self.driver.session() as session:
+            for connection_record in connections:
+                self.__insert_base_connection(session, str(connection_record["from"]), str(connection_record["to"]))
+
     def insert_connections(
         self, path_to_connections_csv: str, delimiter: str = "$"
     ) -> None:
@@ -164,13 +213,7 @@ class GraphConnector:
             with open(path_to_connections_csv, "r", encoding="utf-8") as file:
                 connections = csv.DictReader(file, delimiter=delimiter)
                 for connection_record in connections:
-                    session.run(
-                        "MATCH (a {id: "
-                        + connection_record["from"]
-                        + "} ), (b {id: "
-                        + connection_record["to"]
-                        + " }) MERGE (a)-[c: CONNECTS]->(b);"
-                    )
+                    self.__insert_base_connection(session, str(connection_record["from"]), str(connection_record["to"]))
 
     def close(self) -> None:
         # Don't forget to close the driver connection when you are finished with it
@@ -181,7 +224,7 @@ class GraphConnector:
         project_directory_path: str,
         connections_file_name: str,
         new_schema_directory: str = "../../new_schemas",
-        used_schemas: Optional[dict] = None,
+        used_schemas: Optional[Dict] = None,
         connections_only: bool = False
     ) -> None:
         if used_schemas is None:
@@ -197,7 +240,7 @@ class GraphConnector:
                 print("Processing entity: " + entity_name)
                 if connections_file_name not in path_to_graph_file and not connections_only:
                     object_type = (
-                        entity_name.replace(".csv", "").title().replace(" ", "")
+                        entity_name.replace(".csv", "").title().replace(" ", "").replace("\"", "")
                     )
                     used_schema = used_schemas.get(entity_name, {})
                     if not used_schema:
@@ -213,6 +256,39 @@ class GraphConnector:
         if path_to_connections:
             print("Inserting connections")
             self.insert_connections(path_to_connections)
+        else:
+            raise Exception("Path to connections not found!")
+
+    def insert_graph_without_scheme_from_ram(
+        self,
+        processed_tables_as_graph: Dict,
+        new_schema_directory: str = "../../new_schemas",
+        used_schemas: Optional[Dict] = None,
+        connections_only: bool = False,
+        connections_file_name: str = "connectors"
+    ) -> None:
+        if used_schemas is None:
+            used_schemas = dict()
+        connections = None
+
+        for table_name, table_data in processed_tables_as_graph.items():
+            print("Processing entity: " + table_name)
+            if connections_file_name not in table_name and not connections_only:
+                object_type = table_name.replace(".csv", "").title().replace(" ", "").replace("\\", "").replace("\"", "").replace("'", "")
+
+                used_schema = used_schemas.get(table_name, {})
+                used_schemas[table_name] = used_schema if not used_schema else used_schemas[table_name]
+                self.insert_objects_from_ram(
+                    table_data["data"],
+                    object_schema=used_schema,
+                    object_name=object_type,
+                    new_schema_directory=new_schema_directory,
+                )
+            else:
+                connections = table_data
+        if connections:
+            print("Inserting connections")
+            self.insert_connections_from_ram(connections["data"])
         else:
             raise Exception("Path to connections not found!")
 
@@ -241,7 +317,7 @@ class GraphConnector:
         user: str,
         password: str,
         connections_file_name: str = "connections.csv",
-        new_schema_directory: str = "../../new_schemas",
+        new_schema_directory: Optional[str] = "../../new_schemas",
         clear_database: bool = True,
         connections_only: bool = False
     ) -> None:
@@ -267,44 +343,57 @@ class GraphConnector:
         connection.close()
 
 
-def insert_merged_graph(url: str, user: str, password: str) -> None:
-    connection = GraphConnector(url, user, password)
-    connection.clear_database()
-    connection.insert_objects(
-        "../../generated_dataset_vp_graph_data_merged/function drawWCurve.csv",
-        FractalGraphScheme.create_default_scheme_for_draw_WCurve(),
-        "DrawWCurve",
-    )
-    connection.insert_objects(
-        "../../generated_dataset_vp_graph_data_merged/function WCurve.csv",
-        FractalGraphScheme.create_default_scheme_for_wcurve(),
-        "WCurve",
-    )
-    # connection.insert_objects("../../generated_dataset_vp_graph_data_merged/function drawLine.csv",
-    #                          FractalGraphScheme.create_default_scheme_for_draw_line(), "DrawLine")
-    connection.insert_connections(
-        "../../generated_dataset_vp_graph_data_merged/connections.csv"
-    )
-    connection.close()
+class GraphFromFamilyInserter:
+    @staticmethod
+    def insert_merged_graph(url: str, user: str, password: str) -> None:
+        connection = GraphConnector(url, user, password)
+        connection.clear_database()
+        connection.insert_objects(
+            "../../generated_dataset_vp_graph_data_merged/function drawWCurve.csv",
+            FractalGraphScheme.create_default_scheme_for_draw_WCurve(),
+            "DrawWCurve",
+        )
+        connection.insert_objects(
+            "../../generated_dataset_vp_graph_data_merged/function WCurve.csv",
+            FractalGraphScheme.create_default_scheme_for_wcurve(),
+            "WCurve",
+        )
+        # connection.insert_objects("../../generated_dataset_vp_graph_data_merged/function drawLine.csv",
+        #                          FractalGraphScheme.create_default_scheme_for_draw_line(), "DrawLine")
+        connection.insert_connections(
+            "../../generated_dataset_vp_graph_data_merged/connections.csv"
+        )
+        connection.close()
 
+    @staticmethod
+    def insert_small_graph_from_ram(url: str, user: str, password: str, graph_data_in_docs: Dict,
+                                    clear_database: bool = False, connections_only: bool = False,
+                                    new_schema_directory: Optional[str] = None) -> None:
+        connection = GraphConnector(url, user, password)
+        if not clear_database:
+            connection.clear_database()
+        connection.insert_graph_without_scheme_from_ram(graph_data_in_docs, connections_only=connections_only,
+                                                        new_schema_directory=new_schema_directory)
+        connection.close()
 
-def insert_small_graph(url: str, user: str, password: str) -> None:
-    connection = GraphConnector(url, user, password)
-    connection.clear_database()
-    connection.insert_objects(
-        "../../generated_dataset_vp_graph_data/1/function drawWCurve.csv",
-        FractalGraphScheme.create_default_scheme_for_draw_WCurve(),
-        "DrawWCurve",
-    )
-    connection.insert_objects(
-        "../../generated_dataset_vp_graph_data/1/function WCurve.csv",
-        FractalGraphScheme.create_default_scheme_for_wcurve(),
-        "WCurve",
-    )
-    connection.insert_connections(
-        "../../generated_dataset_vp_graph_data/1/connections.csv"
-    )
-    connection.close()
+    @staticmethod
+    def insert_small_graph(url: str, user: str, password: str) -> None:
+        connection = GraphConnector(url, user, password)
+        connection.clear_database()
+        connection.insert_objects(
+            "../../generated_dataset_vp_graph_data/1/function drawWCurve.csv",
+            FractalGraphScheme.create_default_scheme_for_draw_WCurve(),
+            "DrawWCurve",
+        )
+        connection.insert_objects(
+            "../../generated_dataset_vp_graph_data/1/function WCurve.csv",
+            FractalGraphScheme.create_default_scheme_for_wcurve(),
+            "WCurve",
+        )
+        connection.insert_connections(
+            "../../generated_dataset_vp_graph_data/1/connections.csv"
+        )
+        connection.close()
 
 
 if __name__ == "__main__":

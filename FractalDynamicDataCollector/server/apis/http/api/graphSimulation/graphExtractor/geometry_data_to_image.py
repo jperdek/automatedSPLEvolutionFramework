@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List, Dict
 
 from graphSimulation.graphMerger.merge_configuration import ImageSettings
 from processors.image_processor import ImageProcessor
@@ -24,7 +24,7 @@ class GeometryDataToImage:
 
     @staticmethod
     def __check_consistency_of_keys_in_object(
-        associated_object: dict, key_list: list[str]
+        associated_object: Dict, key_list: List[str]
     ) -> bool:
         for key in key_list:
             if key not in associated_object.keys():
@@ -35,7 +35,7 @@ class GeometryDataToImage:
     def draw_geometry_operation(
         draw: ImageDraw,
         operation_name: str,
-        associated_object: dict,
+        associated_object: Dict,
         thickness: int = 2,
     ) -> bool:
         if operation_name == "drawFiveSide":
@@ -127,7 +127,7 @@ class GeometryDataToImage:
 
     @staticmethod
     def __is_drawwing_command(
-        checked_object: dict,
+        checked_object: Dict,
         draw: ImageDraw,
         function_names_to_generators_mapping: any,
         connector_type_name: str = "fname",
@@ -149,7 +149,7 @@ class GeometryDataToImage:
 
     @staticmethod
     def put_geometry_data_to_image(
-        graph_json_node: dict,
+        graph_json_node: Dict,
         image_settings: Optional[ImageSettings] = None,
         connector_type_name: str = "fname",
         function_names_to_generators_mapping=None,
