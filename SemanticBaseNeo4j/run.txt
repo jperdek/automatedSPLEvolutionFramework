@@ -1,0 +1,6 @@
+cd D:\neo4j
+"D:\neo4j\bin\neo4j.bat"  console
+http://localhost:7474/browser/
+neo4j feature
+
+"E:\neo4j\bin\neo4j.bat"  console

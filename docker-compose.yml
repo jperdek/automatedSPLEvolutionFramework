@@ -10,23 +10,26 @@ services:
         - "hostname1  localhost:127.0.0.1"
     container_name: dynamicDataCollector
     volumes:
-      - app-volume:/
+      - evolution-volume:/
     environment:
       FLASK_ENV: development
     networks:
       - buildernet
   fullyAutomatedEvolution:
     build:
-      context: ./frontend/semanticAspects
+      context: ./EvolutionSPLFramework
       dockerfile: Dockerfile
     image: jperdek/fully-automated-evolution
     ports:
       - "5002:5002"
     container_name: fully-automated-evolution
     volumes:
-      - app-volume:/
+      - evolution-volume:/
     environment:
-      FLASK_ENV: development
+        FLASK_ENV: development
+      PROJECT_PATH: /EvolutionSPLFramework
+      PATH_TO_EVOLUTION_DIRECTORY: /evolution
+      CANTO_SCRIPT_RESOURCE_LOCATION: /EvolutionSPLFramework/resources/canto/canto-0.15.js
     networks:
       - buildernet
   astConverterAndComplexityAnalysisAPI:
@@ -57,7 +60,8 @@ services:
       NEO4J_AUTH: neo4j/neo4j1
       NEO4J_dbms_logs_debug_level: DEBUG
 volumes:
-     dataset-products-volume: 
+    evolution-volume:
+    dataset-products-volume: 
 networks:
   buildernet:
     driver: "bridge"

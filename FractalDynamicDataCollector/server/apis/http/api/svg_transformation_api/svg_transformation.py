@@ -1,3 +1,4 @@
+import pathlib
 import time
 
 import requests
@@ -154,7 +155,8 @@ class SVGTransform:
         with open(new_file_name, "w", encoding="utf-8") as file:
             file.write(str(page_soup))
         page.goto(new_file_name, wait_until="networkidle")
-
+        file_to_rem = pathlib.Path(new_file_name)
+        file_to_rem.unlink()
         time.sleep(time_to_wait)
 
         page.evaluate(SVGTransform.__get_finalizing_svg_script(generated_svg_id))

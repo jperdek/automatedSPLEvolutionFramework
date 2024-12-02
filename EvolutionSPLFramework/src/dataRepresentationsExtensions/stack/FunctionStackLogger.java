@@ -128,6 +128,8 @@ public class FunctionStackLogger {
 				"					}",
 				"				} else if (typeof(name) === \"object\") {",
 				"					newRecord[processedObjectField] = JSON.parse(JSON.stringify(processedObjectFieldPart));",
+				"				} else if (processObjectField === \"mergeId\") {",
+				"					continue;",
 				"				} else {",
 				"					newRecord[processedObjectField] = processedObjectFieldPart;",
 				"				}",
