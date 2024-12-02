@@ -98,7 +98,7 @@ Automated SPL evolution framework - evolving variability on code level: Applicat
 		- left click on project name in Package Explorer -> properties -> Java Compiler -> Compiler compliance level > 18 or more > apply > apply and close  
 
 - 3b.) Set configuration variables to base and destination TypeScript scripts:  
-	- In [./EvolutionSPLFramework\src\evolutionSimulation\productAssetsInitialization.java] change:
+	- In [./EvolutionSPLFramework\src\evolutionSimulation\productAssetsInitialization\SharedConfiguration.java] change:
  	  - line [public static final String PROJECT_PATH = "E://aspects/automatedSPLEvolutionFramework/EvolutionSPLFramework";] to your path ["file:///C:ABSOLUTE PATH TO YOUR/EvolutionSPLFramework"]  
   	  - line [public static final String PATH_TO_EVOLUTION_DIRECTORY = "E://aspects/automatedSPLEvolutionFramework/EvolutionSPLFramework/evolutionDirectory";] to your path ["file:///C:ABSOLUTE PATH TO YOUR/EvolutionSPLFramework/evolutionDirectory"]
   	  - line [public final static String CANTO_SCRIPT_RESOURCE_LOCATION = "E://aspects/automatedSPLEvolutionFramework/EvolutionSPLFramework/resources/canto/canto-0.15.js";] to your path ["file:///C:ABSOLUTE PATH TO YOUR/EvolutionSPLFramework/resources/canto/canto-0.15.js"]  
