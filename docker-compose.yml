@@ -1,75 +1,85 @@
-version: "3.8"
 services:
-  dynamicDataCollectorService:
-    build: ./FractalDynamicDataCollector
-    command: python FractalDynamicDataCollector/server/apis/http/api/endpoints.py
-    image: jperdek/dynamic-data-collector
-    ports:
-      - "5000:5000"
-    extra_hosts:
-        - "hostname1  localhost:127.0.0.1"
-    container_name: dynamicDataCollector
-    volumes:
-      - evolution-volume:/
-    environment:
-      FLASK_ENV: development
-    networks:
-      - buildernet
-  fullyAutomatedEvolution:
-    build:
-      context: ./EvolutionSPLFramework
-      dockerfile: Dockerfile
-    image: jperdek/fully-automated-evolution
-    ports:
-      - "5002:5002"
-    container_name: fully-automated-evolution
-    volumes:
-      - evolution-volume:/
-    environment:
-      FLASK_ENV: development
-      IS_LINUX: true,
-      PROJECT_PATH: ${PROJECT_PATH:-/EvolutionSPLFramework}
-      PATH_TO_EVOLUTION_DIRECTORY: ${PROJECT_PATH:-/evolution}
-      CANTO_SCRIPT_RESOURCE_LOCATION: ${PROJECT_PATH:-/EvolutionSPLFramework/resources/canto/canto-0.15.js}
-    networks:
-      - buildernet
-  astConverterAndComplexityAnalysisAPI:
-    image: jperdek/astConverterAndComplexityAnalysisAPI
-    build:
-      context: ./ConverterAndComplexityAnalyzerAPI
-      dockerfile: Dockerfile
-    ports:
-      - "5001:5001"
-    extra_hosts:
-        - "hostname1  localhost:127.0.0.1"
-    networks:
-      - buildernet
-    restart: on-failure
-  fractalKnowledgeBase: 
-    build:
-       context: ./SemanticBaseNeo4j/fractalKnowledgeBase
-       dockerfile: Dockerfile
-    image: jperdek/fractalKnowledgeBase
-    hostname: neo4j
-    container_name: neo4j
-    ports:
-      - "7475:7475"
-      - "7688:7688"
-    volumes:
-      - ./neo4j/plugins:/plugins
-    environment:
-      NEO4J_AUTH: neo4j/neo4j1
-      NEO4J_dbms_logs_debug_level: DEBUG
+    dynamicDataCollectorService:
+        build: ./FractalDynamicDataCollector
+        command: python FractalDynamicDataCollector/server/apis/http/api/endpoints.py
+        image: jperdek/dynamic-data-collector
+        ports:
+            - "5000:5000"
+        extra_hosts:
+            - "hostname1  localhost:127.0.0.1"
+        container_name: dynamicDataCollector
+        volumes:
+            - source-volume:/EvolutionSPLFramework/splsToMerge
+        env_file: .env
+        environment:
+            FLASK_ENV: development
+        networks:
+            - buildernet
+    fullyAutomatedEvolutionFramework:
+        build:
+            context: ./EvolutionSPLFramework
+            dockerfile: Dockerfile
+        image: jperdek/fully-automated-evolution
+        ports:
+            - "5002:5002"
+        container_name: fully-automated-evolution
+        volumes:
+            - source-volume:/EvolutionSPLFramework/splsToMerge
+        env_file: .env
+        environment:
+            FLASK_ENV: development
+            IS_LINUX: true,
+            PROJECT_PATH: ${PROJECT_PATH:-/EvolutionSPLFramework}
+            PATH_TO_EVOLUTION_DIRECTORY: ${PATH_TO_EVOLUTION_DIRECTORY:-/evolution}
+            CANTO_SCRIPT_RESOURCE_LOCATION: ${CANTO_SCRIPT_RESOURCE_LOCATION:-/EvolutionSPLFramework/resources/canto/canto-0.15.js}
+        networks:
+            - buildernet
+    astConverterAndComplexityAnalysisAPI:
+        image: jperdek/ast-converter-and-complexity-analysis-api
+        build:
+            context: ./ConverterAndComplexityAnalyzerAPI
+            dockerfile: Dockerfile
+        ports:
+            - "5001:5001"
+        extra_hosts:
+            - "hostname1  localhost:127.0.0.1"
+        networks:
+        - buildernet
+        restart: on-failure
+    fractalKnowledgeBase: 
+        build:
+            context: ./SemanticBaseNeo4j/fractalKnowledgeBase
+            dockerfile: Dockerfile
+        image: jperdek/fractal-knowledge-base
+        hostname: neo4j
+        container_name: neo4j
+        ports:
+            - "7475:7475"
+            - "7688:7688"
+        volumes:
+            - ./neo4j/plugins:/plugins
+        env_file: .env
+        environment:
+            NEO4J_AUTH: ${KNOWLEDGE_BASE_USERNAME:-neo4j}/${KNOWLEDGE_BASE_PASSWORD:-feature}
+            NEO4J_dbms_logs_debug_level: ${KNOWLEDGE_BASE_LOG_LEVEL:-DEBUG}
+    splsToProcessMessageQueue:
+        env_file: .env
+        image: rabbitmq:4.0-management-alpine
+        environment:
+            RABBITMQ_DEFAULT_USER: ${PROCESSING_QUEUE_USERNAME:-splManager}
+            RABBITMQ_DEFAULT_PASS: ${PROCESSING_QUEUE_PASSWORD:-splManager}
+            RABBITMQ_DEFAULT_VHOST: ${PROCESSING_QUEUE_VHOST:-/evolution}
+        ports:
+            - 15672:15672
+        volumes:
+            - rabbitmq-volume:/var/lib/rabbitmq/
+        networks:
+            - buildernet
 volumes:
-    evolution-volume:
-      - type: volume
-        source: ./EvolutionSPLFramework/splsToMerge
-        target: /${PROJECT_PATH:-/EvolutionSPLFramework}/splsToMerge
-        volume:
-          nocopy: false
-          subpath: sub
-    dataset-products-volume: 
+    source-volume:
+    dataset-products-volume:
+    rabbitmq-volume:
 networks:
-  buildernet:
-    driver: "bridge"
+    buildernet:
+        driver: "bridge"
     
