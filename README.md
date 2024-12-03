@@ -41,9 +41,66 @@ Automated SPL evolution framework - evolving variability on code level: Applicat
     - flowchart of the evolution core process  
     - activity diagram of configured decisions in the evolution core process  
 
-      
 
-## LAUNCH STEPS  
+
+## LAUNCH STEPS - MICROSERVICE ARCHITECTURE  
+
+We are proposing following microservice architecture:  
+
+![Deployment Diagram](https://github.com/jperdek/automatedSPLEvolutionFramework/blob/master/documentation/diagrams/deploymentDiagramDocker.png)  
+
+
+
+### A) All in One using Docker-Compose    
+
+```docker-compose build .```  
+
+```docker-compose up```  
+
+
+### B) The main Framework using Docker  
+- the .jar from the application should be exported to run new version inside docker container  
+- we recommend to use eclipse for this purpose   
+
+
+#### B.1) BUILD from dockerfile  
+
+```docker build -t sampleapp:v1 . --no-cache```  
+
+
+#### B.2) CREATING DATA VOLUMES to store evolved content  
+
+```docker volume create evolution-volume```  
+```docker volume create source-volume```  
+```docker volume create dataset-products-volume```  
+
+
+#### B.3) PREPARING VOLUMES with resources  
+
+Creation of helper busybox container with previously created volumes:  
+```docker run -v source-volume:/EvolutionSPLFramework -v evolution-volume:/evolution --name helper busybox true```  
+
+Copying evolved data:  
+```docker cp ./splsToMerge helper:/EvolutionSPLFramework```   
+```docker cp ./resources helper:/EvolutionSPLFramework```  
+
+Removing helper container:  
+```docker rm helper```  
+
+
+#### B.4) LAUNCHING NODE JS SERVER with API for AST conversion and complexity analysis  
+
+```docker rm helper```  
+
+
+#### B.5) RUNNING FRAMEWORK along with provided data  
+
+```docker run --network="host" -v evolution-volume:/evolution -v source-volume:/EvolutionSPLFramework sampleapp:v1```  
+
+
+
+
+## LAUNCH STEPS - STANDALONE FILES 
 
 - 1.) Unpack the project ZIP to the chosen directory  
 	```cd chosenDirectory```  
