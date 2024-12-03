@@ -62,6 +62,8 @@ We are proposing following microservice architecture:
 - the .jar from the application should be exported to run new version inside docker container  
 - we recommend to use eclipse for this purpose   
 
+![Exporting .jar in Eclipse](https://github.com/jperdek/automatedSPLEvolutionFramework/blob/master/documentation/exportingJarInEclipse.png)
+
 
 #### B.1) BUILD from dockerfile  
 
