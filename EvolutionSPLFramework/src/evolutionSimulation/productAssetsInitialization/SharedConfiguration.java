@@ -11,6 +11,11 @@ package evolutionSimulation.productAssetsInitialization;
 public interface SharedConfiguration {
 
 	/**
+	 * true If the framework runs under linux derivation otherwise false for windows
+	 */
+	public static final boolean IS_LINUX = (boolean) System.getenv().getOrDefault("IS_LINUX", "false").contains("true");
+	
+	/**
 	 * Path to Automated SPL framework project folder
 	 */
 	public static final String PROJECT_PATH = System.getenv().getOrDefault("PROJECT_PATH", "E://aspects/automatedSPLEvolutionFramework/EvolutionSPLFramework");

@@ -26,10 +26,11 @@ services:
     volumes:
       - evolution-volume:/
     environment:
-        FLASK_ENV: development
-      PROJECT_PATH: /EvolutionSPLFramework
-      PATH_TO_EVOLUTION_DIRECTORY: /evolution
-      CANTO_SCRIPT_RESOURCE_LOCATION: /EvolutionSPLFramework/resources/canto/canto-0.15.js
+      FLASK_ENV: development
+      IS_LINUX: true,
+      PROJECT_PATH: ${PROJECT_PATH:-/EvolutionSPLFramework}
+      PATH_TO_EVOLUTION_DIRECTORY: ${PROJECT_PATH:-/evolution}
+      CANTO_SCRIPT_RESOURCE_LOCATION: ${PROJECT_PATH:-/EvolutionSPLFramework/resources/canto/canto-0.15.js}
     networks:
       - buildernet
   astConverterAndComplexityAnalysisAPI:
@@ -61,6 +62,12 @@ services:
       NEO4J_dbms_logs_debug_level: DEBUG
 volumes:
     evolution-volume:
+      - type: volume
+        source: ./EvolutionSPLFramework/splsToMerge
+        target: /${PROJECT_PATH:-/EvolutionSPLFramework}/splsToMerge
+        volume:
+          nocopy: false
+          subpath: sub
     dataset-products-volume: 
 networks:
   buildernet:

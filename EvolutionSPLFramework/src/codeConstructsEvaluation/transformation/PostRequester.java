@@ -9,6 +9,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import evolutionSimulation.productAssetsInitialization.SharedConfiguration;
+
 /**
  * Performs POST request and loads file content
  * 
@@ -28,6 +30,7 @@ public class PostRequester {
 	 * @throws InterruptedException
 	 */
 	public static String doPost(String serviceUrl, String fileContent) throws IOException, InterruptedException {
+		serviceUrl = serviceUrl.replace("localhost", System.getenv().getOrDefault("DOCKER_HOST", "localhost"));
 		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest request = HttpRequest.newBuilder()
 				  .uri(URI.create(serviceUrl))
@@ -46,6 +49,7 @@ public class PostRequester {
 	 * @throws IOException
 	 */
 	public static String loadFileContent(String fileName) throws IOException {
+		if (SharedConfiguration.IS_LINUX) { fileName = fileName.replace("\\", "/"); }
 	    String fileContent = new String(Files.readAllBytes(Paths.get(fileName)), StandardCharsets.UTF_8);
 	    return fileContent;
 	}

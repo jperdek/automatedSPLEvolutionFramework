@@ -79,6 +79,10 @@ public class CustomAnnotationsAsDecoratorsImporter {
 			System.out.println("Loading configurationscript with custom annotation: " +  customAnnotationScriptFile);
 		}
 
+		System.out.println(customAnnotationScriptFile);
+		if (!System.getenv().getOrDefault("localhost", "DOCKER_HOST").equals("localhost")) {
+			customAnnotationScriptFile = SharedConfiguration.PROJECT_PATH + "/resources/" + SPLEvolutionCore.DECORATOR_CONFIGURATION_ANNOTATIONS_FILE_NAME;
+		}
 		File file = new File(customAnnotationScriptFile);
 		if (!file.exists()) { file.createNewFile(); return ""; }
 		FileInputStream fos = new FileInputStream(file);
