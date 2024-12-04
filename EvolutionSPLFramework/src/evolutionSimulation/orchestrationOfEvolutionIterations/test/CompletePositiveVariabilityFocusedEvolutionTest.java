@@ -102,7 +102,7 @@ public class CompletePositiveVariabilityFocusedEvolutionTest {
 			CompletePositiveVariabilityFocusedEvolutionTest completeIyterativeDevelopment = new  CompletePositiveVariabilityFocusedEvolutionTest();
 			EvolutionConfiguration evolutionConfiguration = completeIyterativeDevelopment.prepareInitialConfiguration();
 			ExportAssetPlanner exportAssetPlanner = new AssetPlannerBaseStrategy(new PlanAssetOnce());
-			
+
 			// evolutionConfiguration.setTemplateConfigurationPath(templateRelativePath);
 			SPLNextEvolutionIterationCandidateSelectionStrategy evolution2IterationStrategy = new RandomCandidateSelection();
 			SPLNextEvolutionIterationCandidateSelectionStrategy evolution3IterationStrategy = new RandomCandidateSelection();

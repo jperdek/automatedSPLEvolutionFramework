@@ -11,13 +11,29 @@ services:
             - "hostname1  localhost:127.0.0.1"
         container_name: dynamicDataCollector
         volumes:
-            - source-volume:/EvolutionSPLFramework/splsToMerge
+            - source-volume:/EvolutionSPLFramework
             - evolution-volume:/evolution
         env_file: .env
         environment:
             FLASK_ENV: development
         networks:
             - buildernet
+        depends_on:
+            - fullyAutomatedEvolutionFramework
+            - volumeCopyInit
+    volumeCopyInit:
+        build:
+            dockerfile: Dockerfile
+        command: cp -R /localFiles/splsToMerge /localFiles/resources  ${PROJECT_PATH:-/EvolutionSPLFramework}
+        env_file: .env
+        image: jperdek/volume-copy-init
+        environment:
+            PROJECT_PATH: ${PROJECT_PATH:-/EvolutionSPLFramework}
+            PATH_TO_EVOLUTION_DIRECTORY: ${PATH_TO_EVOLUTION_DIRECTORY:-/evolution}
+        volumes:
+            - dataset-products-volume:/dataset
+            - source-volume:/EvolutionSPLFramework
+            - evolution-volume:/evolution
     fullyAutomatedEvolutionFramework:
         build:
             context: ./EvolutionSPLFramework
@@ -27,18 +43,22 @@ services:
             - "5002:5002"
         container_name: fully-automated-evolution
         volumes:
-            - source-volume:/EvolutionSPLFramework/splsToMerge
+            - dataset-products-volume:/dataset
+            - source-volume:/EvolutionSPLFramework
             - evolution-volume:/evolution
         env_file: .env
         environment:
             FLASK_ENV: development
             IS_LINUX: true,
-            DOCKER_HOST: localhost,
+            DOCKER_HOST: host.docker.internal
             PROJECT_PATH: ${PROJECT_PATH:-/EvolutionSPLFramework}
             PATH_TO_EVOLUTION_DIRECTORY: ${PATH_TO_EVOLUTION_DIRECTORY:-/evolution}
             CANTO_SCRIPT_RESOURCE_LOCATION: ${CANTO_SCRIPT_RESOURCE_LOCATION:-/EvolutionSPLFramework/resources/canto/canto-0.15.js}
         networks:
             - buildernet
+        depends_on:
+            - astConverterAndComplexityAnalysisAPI
+            - volumeCopyInit
     astConverterAndComplexityAnalysisAPI:
         image: jperdek/ast-converter-and-complexity-analysis-api
         build:
@@ -49,7 +69,7 @@ services:
         extra_hosts:
             - "hostname1  localhost:127.0.0.1"
         networks:
-        - buildernet
+            - buildernet
         restart: on-failure
     fractalKnowledgeBase: 
         build:

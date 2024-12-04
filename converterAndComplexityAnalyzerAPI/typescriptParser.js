@@ -26,7 +26,6 @@ app.post('/convert', function (request, response) {
 });
 
 app.post('/convertBack', function (request, response) {
-	console.log(request.body);
 	const ast = JSON.parse(request.body);
 	const printer = ts.createPrinter({ newLine: ts.NewLineKind.LineFeed });
 	const code = printer.printNode(ts.EmitHint.Unspecified, ast, ast);
@@ -46,10 +45,8 @@ app.post('/cleanComments', function (request, response) {
 
 app.post('/analyzeTyphonJS', function (request, response) {
 	const source = request.body;
-	console.log(source);
 	const report = escomplex.analyzeModule(source);
 	response.set('Content-Type', 'text/html');
-	console.log(report);
 	response.send(report);
 	response.status(200);
 });
@@ -60,7 +57,6 @@ app.post('/analyzeESLintCC', function (request, response) {
 	const complexity = new Complexity();
 	complexity.lintFiles(source).then((report) => {
 		response.set('Content-Type', 'text/html');
-		console.log(report);
 		response.send(report);
 		response.status(200);
 	}).catch((error) => {
@@ -73,7 +69,6 @@ app.post('/analyzeEScomplex', function (request, response) {
 	const source = request.body;
 	const report = escomplex2.analyse(source);
 	response.set('Content-Type', 'text/html');
-	console.log(report);
 	response.send(report);
 	response.status(200);
 });
@@ -83,8 +78,6 @@ app.post('/transpile', bodyParser.text({type: '*/*'}), function (request, respon
 	const source = request.body;
 	const report = ts.transpile(source.replaceAll("export", "window.export"));
 	response.set('Content-Type', 'text/html');
-	console.log(report);
-	console.log("FAIIILLLL");
 	response.send(report);
 	response.status(200);
 });

@@ -11,5 +11,6 @@ ENV CANTO_SCRIPT_RESOURCE_LOCATION=$canto_script_resource_location
 ENV DOCKER_HOST=host.docker.internal
 ENV IS_LINUX=true
 
+
 COPY deploy/deploy.jar app.jar
 ENTRYPOINT ["java","-jar","/app.jar"]
