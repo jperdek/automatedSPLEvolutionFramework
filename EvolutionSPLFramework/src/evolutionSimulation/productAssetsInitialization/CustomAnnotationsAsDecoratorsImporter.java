@@ -80,6 +80,7 @@ public class CustomAnnotationsAsDecoratorsImporter {
 		}
 
 		System.out.println(customAnnotationScriptFile);
+		System.out.println(System.getenv().getOrDefault("localhost", "DOCKER_HOST"));
 		if (!System.getenv().getOrDefault("localhost", "DOCKER_HOST").equals("localhost")) {
 			customAnnotationScriptFile = SharedConfiguration.PROJECT_PATH + "/resources/" + SPLEvolutionCore.DECORATOR_CONFIGURATION_ANNOTATIONS_FILE_NAME;
 		}
