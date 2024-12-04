@@ -159,6 +159,8 @@ public class EvolutionIterationsPipeline {
 				for (String inputPath: inputPaths) {
 					pathToScriptInputFilePath = inputPath + evolutionConfiguration.getCurrentEvolvedScriptRelativePath();
 					System.out.println("Input Path: " + pathToScriptInputFilePath);
+
+					if (pathToScriptInputFilePath.contains("_XXX__VariationPointData.json")) { continue; }
 					if (DebugInformation.PROCESS_STEP_INFORMATION) { customizedEvolutionConfiguration.printCurrentConfiguration(); }
 					evolutionIteration.runEvolutioIteration(pathToScriptInputFilePath, 
 							customizedEvolutionConfiguration, evolutionCoreSettings, exportAssetPlanner);

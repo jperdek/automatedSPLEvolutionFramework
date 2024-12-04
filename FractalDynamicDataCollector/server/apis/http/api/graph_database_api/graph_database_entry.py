@@ -25,7 +25,7 @@ def insert_instance_graph():
     port = request.args.get("port", 7687)
     url1 = f"{scheme}://{host_name}:{port}"
     user1 = request.args.get("user", "neo4j")
-    password1 = request.args.get("password", "feature")
+    password1 = request.args.get("password", "featureNeo4")
 
     clear_database = request.args.get("clear_database", False)
     connections_only = request.args.get("connections_only", False)

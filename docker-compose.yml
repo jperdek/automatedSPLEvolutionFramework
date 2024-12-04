@@ -1,7 +1,9 @@
 services:
     dynamicDataCollectorService:
-        build: ./FractalDynamicDataCollector
-        command: python FractalDynamicDataCollector/server/apis/http/api/endpoints.py
+        build: 
+            context: ./FractalDynamicDataCollector
+            dockerfile: DockerfileDeployNginx
+        command: python /srv/flask_app/apis/http/api/endpoints.py
         image: jperdek/dynamic-data-collector
         ports:
             - "5000:5000"
@@ -10,6 +12,7 @@ services:
         container_name: dynamicDataCollector
         volumes:
             - source-volume:/EvolutionSPLFramework/splsToMerge
+            - evolution-volume:/evolution
         env_file: .env
         environment:
             FLASK_ENV: development
@@ -25,6 +28,7 @@ services:
         container_name: fully-automated-evolution
         volumes:
             - source-volume:/EvolutionSPLFramework/splsToMerge
+            - evolution-volume:/evolution
         env_file: .env
         environment:
             FLASK_ENV: development
@@ -60,7 +64,7 @@ services:
             - ./neo4j/plugins:/plugins
         env_file: .env
         environment:
-            NEO4J_AUTH: ${KNOWLEDGE_BASE_USERNAME:-neo4j}/${KNOWLEDGE_BASE_PASSWORD:-feature}
+            NEO4J_AUTH: ${KNOWLEDGE_BASE_USERNAME:-neo4j}/${KNOWLEDGE_BASE_PASSWORD:-featureNeo4}
             NEO4J_dbms_logs_debug_level: ${KNOWLEDGE_BASE_LOG_LEVEL:-DEBUG}
     splsToProcessMessageQueue:
         env_file: .env
@@ -77,6 +81,7 @@ services:
             - buildernet
 volumes:
     source-volume:
+    evolution-volume:
     dataset-products-volume:
     rabbitmq-volume:
 networks:

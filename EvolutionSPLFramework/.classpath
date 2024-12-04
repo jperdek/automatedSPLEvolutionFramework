@@ -11,5 +11,6 @@
 	<classpathentry kind="lib" path="E:/aspects/spaProductLine/VariationPointDivisioner/lib/jsoup-1.15.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry kind="lib" path="E:/aspects/automatedSPLEvolutionFramework/EvolutionSPLFramework/lib/jFuzzyLogicV1.jar"/>
+	<classpathentry kind="lib" path="E:/aspects/automatedSPLEvolutionFramework/EvolutionSPLFramework/lib/amqp-client-5.23.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
