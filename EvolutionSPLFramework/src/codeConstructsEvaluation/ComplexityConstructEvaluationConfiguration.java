@@ -42,17 +42,28 @@ public interface ComplexityConstructEvaluationConfiguration {
 	public final static String ECMASCRIPT_SERVICE_URL = "analyzeEScomplex";
 	
 	/**
-	 * Service url part to convert code to AST
+	 * Service url part to convert code into AST
 	 */
 	public final static String FROM_CODE_TO_AST_SERVICE_URL = "convert";
 	
 	/**
-	 * Service url part to convert AST to code
+	 * Service url part to convert AST into code
 	 */
 	public final static String FROM_AST_TO_CODE_SERVICE_URL = "convertBack";
+	
+	/**
+	 * Service url part to convert large code fragment into AST
+	 */
+	public final static String FROM_CODE_TO_LARGE_AST_SERVICE_URL = "convertLarge";
+	
+	/**
+	 * Service url part to convert extensive AST into code
+	 */
+	public final static String FROM_AST_TO_LARGE_CODE_SERVICE_URL = "convertLargeBack";
 	
 	/**
 	 * Service url part to clear comments from (TypeScript) code
 	 */
 	public final static String CLEAR_COMMENTS_IN_CODE_SERVICE_URL = "cleanComments";
+
 }

@@ -98,7 +98,7 @@ public class TyphonTypeScriptComplexityAnalysis implements ComplexityService{
 	public JSONObject getJSONComplexityReport(String fileName, String fileContent) throws IOException, InterruptedException {
 		fileContent = this.doCleaning(fileContent);
 		String typhonUrl = ComplexityConstructEvaluationConfiguration.SERVER_URL + ComplexityConstructEvaluationConfiguration.TYPHON_SERVICE_URL;
-		JSONObject configRoot = JSONResponseReader.loadJSONConfig(PostRequester.doPost(typhonUrl, fileContent));
+		JSONObject configRoot = JSONResponseReader.loadJSONConfig(PostRequester.doPost(typhonUrl, null, fileContent));
 		return configRoot;
 	}
 	

@@ -24,13 +24,18 @@ public class ASTConverterClient {
 	private final static String CLEAR_COMMENTS_FROM_CODE_SERVICE_URL = ComplexityConstructEvaluationConfiguration.SERVER_URL 
 			+ ComplexityConstructEvaluationConfiguration.CLEAR_COMMENTS_IN_CODE_SERVICE_URL;
 	
+	private final static String FROM_AST_TO_LARGE_CODE_SERVICE_URL = ComplexityConstructEvaluationConfiguration.SERVER_URL 
+			+ ComplexityConstructEvaluationConfiguration.FROM_AST_TO_LARGE_CODE_SERVICE_URL;
+	private final static String FROM_CODE_TO_LARGE_AST_SERVICE_URL = ComplexityConstructEvaluationConfiguration.SERVER_URL 
+			+ ComplexityConstructEvaluationConfiguration.FROM_CODE_TO_LARGE_AST_SERVICE_URL;
+	
 	/**
 	 * 
 	 */
 	public ASTConverterClient() {}
 	
 	public static String clearComments(String codeWithComments) throws IOException, InterruptedException {
-		String cleanedCodeFromComments = PostRequester.doPost(ASTConverterClient.CLEAR_COMMENTS_FROM_CODE_SERVICE_URL, codeWithComments);
+		String cleanedCodeFromComments = PostRequester.doPost(ASTConverterClient.CLEAR_COMMENTS_FROM_CODE_SERVICE_URL, null, codeWithComments);
 		return cleanedCodeFromComments;
 	}
 	
@@ -71,17 +76,20 @@ public class ASTConverterClient {
 	
 	public static JSONObject convertFromCodeToASTJSON(String fileContent) throws IOException, InterruptedException {
 		fileContent = ASTConverterClient.cleanOneLineIgnoreComments(fileContent);
-		String convertedToASTString = PostRequester.doPost(ASTConverterClient.FROM_CODE_TO_AST_SERVICE_URL, fileContent);
+		String convertedToASTString = PostRequester.doPost(ASTConverterClient.FROM_CODE_TO_AST_SERVICE_URL, 
+				ASTConverterClient.FROM_CODE_TO_LARGE_AST_SERVICE_URL, fileContent);
 		return ASTLoader.loadASTFromString(convertedToASTString);
 	}
 
 	public static JSONObject convertFromASTToCodeJSON(String fileContent) throws IOException, InterruptedException {
-		String convertedToASTString = PostRequester.doPost(ASTConverterClient.FROM_AST_TO_CODE_SERVICE_URL, fileContent);
+		String convertedToASTString = PostRequester.doPost(ASTConverterClient.FROM_AST_TO_CODE_SERVICE_URL, 
+				ASTConverterClient.FROM_AST_TO_LARGE_CODE_SERVICE_URL, fileContent);
 		return ASTLoader.loadASTFromString(convertedToASTString);
 	}
 	
 	public static String convertFromASTToCode(String fileContent) throws IOException, InterruptedException {
-		String convertedToCodeString = PostRequester.doPost(ASTConverterClient.FROM_AST_TO_CODE_SERVICE_URL, fileContent);
+		String convertedToCodeString = PostRequester.doPost(ASTConverterClient.FROM_AST_TO_CODE_SERVICE_URL, 
+				ASTConverterClient.FROM_AST_TO_LARGE_CODE_SERVICE_URL, fileContent);
 		return convertedToCodeString;
 	}
 	
@@ -100,7 +108,8 @@ public class ASTConverterClient {
 				+ " };\\r\\n\",\"languageVersion\":99,\"languageVariant\":0,\"scriptKind\":3,\"isDeclarationFile\":false,\"hasNoDefaultLib\":false,"
 				+ "\"bindDiagnostics\":[],\"pragmas\":{},\"referencedFiles\":[],\"typeReferenceDirectives\":[],\"libReferenceDirectives\":[],"
 				+ "\"amdDependencies\":[],\"nodeCount\":16,\"identifierCount\":1,\"identifiers\":{},\"parseDiagnostics\":[]}";
-		String convertedToASTString = PostRequester.doPost(ASTConverterClient.FROM_AST_TO_CODE_SERVICE_URL, customScheme);
+		String convertedToASTString = PostRequester.doPost(ASTConverterClient.FROM_AST_TO_CODE_SERVICE_URL, 
+				ASTConverterClient.FROM_AST_TO_LARGE_CODE_SERVICE_URL, customScheme);
 		convertedToASTString = convertedToASTString.substring(convertedToASTString.indexOf("=") + 1);
 		if (formatAnnotationsInLine) {
 			convertedToASTString = convertedToASTString.replaceAll("\n", "");

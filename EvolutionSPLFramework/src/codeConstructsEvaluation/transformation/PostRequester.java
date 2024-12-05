@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
+import java.net.http.HttpRequest.BodyPublisher;
 import java.net.http.HttpResponse;
 
 import java.nio.charset.StandardCharsets;
@@ -38,32 +39,44 @@ public class PostRequester {
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	public static String doPost(String serviceUrl, String fileContent) throws IOException, InterruptedException {
+	public static String doPost(String serviceUrl, String serviceUrlLargeFiles, String fileContent) throws IOException, InterruptedException {
 		serviceUrl = serviceUrl.replace("localhost", System.getenv().getOrDefault("DOCKER_HOST", "localhost"));
 		System.out.println("---------------------------->");
 		System.out.println(fileContent);
 		System.out.println("---------------------------->");
 		System.out.println(serviceUrl);
 		HttpClient client = HttpClient.newHttpClient();
-		HttpRequest request = HttpRequest.newBuilder()
-					.version(HttpClient.Version.HTTP_2)
-				  .uri(URI.create(serviceUrl))
-				  .header("Content-Type", "text/plain")
-				  .POST(HttpRequest.BodyPublishers.ofString(fileContent))
-				  .build();
+		BodyPublisher fileContentToPost = HttpRequest.BodyPublishers.ofString(fileContent);
+		long objectSize = ObjectSizeAnalyzer.getObjectSize(fileContentToPost);
 		HttpResponse<?> response;
-		try {
+		if (serviceUrlLargeFiles == null || ((objectSize / 1024) / 1024) > 15) {
+			HttpRequest request = HttpRequest.newBuilder()
+						.version(HttpClient.Version.HTTP_2)
+					  .uri(URI.create(serviceUrl))
+					  .header("Content-Type", "text/plain")
+					  .POST(fileContentToPost)
+					  .build();
+			try {
+				response = client.send(request, HttpResponse.BodyHandlers.ofString());
+			} catch(Exception e) {
+				CloseableHttpClient httpClient = HttpClients.createDefault();
+				HttpPost post = new HttpPost(serviceUrl);
+	            post.setHeader("Content-Type", "text/plain");
+	            post.setEntity(new StringEntity(fileContent));
+	
+	            // Execute the request and get the response
+	            CloseableHttpResponse responseApacheClient = httpClient.execute(post);
+	            return EntityUtils.toString(responseApacheClient.getEntity());
+			}
+		} else {
+			HttpRequest request = HttpRequest.newBuilder()
+					.version(HttpClient.Version.HTTP_2)
+				  .uri(URI.create(serviceUrlLargeFiles))
+				  .header("Content-Type", "text/plain")
+				  .POST(fileContentToPost)
+				  .build();
 			response = client.send(request, HttpResponse.BodyHandlers.ofString());
-		} catch(Exception e) {
-			Thread.sleep(10000);
-			CloseableHttpClient httpClient = HttpClients.createDefault();
-			HttpPost post = new HttpPost(serviceUrl);
-            post.setHeader("Content-Type", "text/plain");
-            post.setEntity(new StringEntity(fileContent));
-
-            // Execute the request and get the response
-            CloseableHttpResponse responseApacheClient = httpClient.execute(post);
-            return EntityUtils.toString(responseApacheClient.getEntity());
+	
 		}
 		System.out.println("DONEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
 		return (String) response.body();
