@@ -62,12 +62,12 @@ router.get("/convertLarge", function (request, response) {
 			response.json({"response": "Error occured: " + error.toString()})
 			return;
 		}
-		
+
 		const cleanedCode = commentCleaner.clean("ts", loadedFile).replaceAll("//\s*@ts[^\n]+\n", "");;
 		const ast = ts.createSourceFile("x.ts", cleanedCode, ts.ScriptTarget.Latest);
 		const printer = ts.createPrinter({ newLine: ts.NewLineKind.LineFeed });
 
-		const code = printer.printNode(ts.EmitHint.Unspecified, JSON.stringify(ast), JSON.stringify(ast));
+		const code = printer.printNode(ts.EmitHint.Unspecified, ast, ast);
 		const uuid = cryptoLib.randomUUID();
 		
 		const savedFileLocation = LARGE_FILES_TMP_DIR + "/convertLarge/" + uuid + ".txt";

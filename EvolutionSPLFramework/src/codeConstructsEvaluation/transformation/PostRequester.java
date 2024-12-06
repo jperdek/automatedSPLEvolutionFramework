@@ -92,7 +92,7 @@ public class PostRequester {
 		
 		largeFileLocationUrl = PostRequester.getUrlToDownloadByPostRequest(convertionServiceUrl, serviceUrlLargeFiles, fileContent);
 		String loadedFileResponse = "";
-		if (System.getenv().getOrDefault("SHARE_FILES_USING_DISK", "true").equals("true")) {
+		if (!System.getenv().getOrDefault("SHARE_FILES_USING_DISK", "true").equals("true") || largeFileLocationUrl.startsWith(".")) {
 			serviceUrlLargeFiles = largeFileLocationUrl.replace("://", ":--");
 			if (largeFileLocationUrl.startsWith(".")) {
 				largeFileLocationUrl = convertionServiceUrl.substring(0, convertionServiceUrl.substring(10).indexOf("/") + 11) + largeFileLocationUrl.substring(1);
@@ -107,7 +107,7 @@ public class PostRequester {
 		    	loadedFileResponse += new String(contents, 0, bytesRead);              
 		    }
 		} else {
-			System.out.println("HEEEREE");
+			System.out.println("EEEEEEEEEEEEEEEEEEEEEEEEEEE");
 			loadedFileResponse = loadFileContent(largeFileLocationUrl);
 		}
 		return loadedFileResponse;
@@ -138,7 +138,7 @@ public class PostRequester {
 		
 		largeFileLocationUrl = PostRequester.getUrlToDownloadByPostRequest(convertionServiceUrl, serviceUrlLargeFiles, fileContent);
 		String loadedFileResponse = "";
-		if (System.getenv().getOrDefault("SHARE_FILES_USING_DISK", "true").equals("true")) {
+		if (!System.getenv().getOrDefault("SHARE_FILES_USING_DISK", "true").equals("true") || convertionServiceUrl.startsWith(".")) {
 			serviceUrlLargeFiles = serviceUrlLargeFiles.replace("://", ":---");
 			convertionServiceUrl = convertionServiceUrl.replace("./", serviceUrlLargeFiles.substring(0, serviceUrlLargeFiles.indexOf("/")).replace(":---", "://"));
 			BufferedInputStream in = new BufferedInputStream(new URL(convertionServiceUrl).openStream());
@@ -191,6 +191,7 @@ public class PostRequester {
 				  .GET()
 				  .build();
 		} else {
+			System.out.println("FALSE");
 			requestTo = HttpRequest.newBuilder()
 					.version(HttpClient.Version.HTTP_2)
 				  .uri(URI.create(serviceUrlLargeFiles))
