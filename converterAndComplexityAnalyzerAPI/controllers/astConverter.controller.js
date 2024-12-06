@@ -67,11 +67,11 @@ router.get("/convertLarge", function (request, response) {
 		const ast = ts.createSourceFile("x.ts", cleanedCode, ts.ScriptTarget.Latest);
 		const printer = ts.createPrinter({ newLine: ts.NewLineKind.LineFeed });
 
-		const code = printer.printNode(ts.EmitHint.Unspecified, ast, ast);
+		const code = printer.printNode(ts.EmitHint.Unspecified, JSON.stringify(ast), JSON.stringify(ast));
 		const uuid = cryptoLib.randomUUID();
 		
 		const savedFileLocation = LARGE_FILES_TMP_DIR + "/convertLarge/" + uuid + ".txt";
-		fs.writeFile(savedFileLocation, JSON.stringify({ast}, (k, v) => { return ""; }), function(error) {
+		fs.writeFile(savedFileLocation, JSON.stringify(ast), function(error) {
 			response.setHeader("Content-Type", "application/json");
 			if(error) {
 				response.status(500);
@@ -120,7 +120,7 @@ router.get("/convertLargeBack", function (request, response) {
 			response.json({"response": "Error occured: " + error.toString()})
 			return;
 		}
-		const ast = request.query.is_file? JSON.parse(loadedFile)["ast"] : JSON.parse(loadedFile);
+		const ast = request.query.is_file? JSON.parse(loadedFile)["ast"] : JSON.parse(loadedFile.replace("\r\n", ""));
 		const printer = ts.createPrinter({ newLine: ts.NewLineKind.LineFeed });
 		const code = printer.printNode(ts.EmitHint.Unspecified, ast, ast);
 		

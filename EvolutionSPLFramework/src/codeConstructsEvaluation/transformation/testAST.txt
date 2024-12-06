@@ -1,0 +1,108 @@
+{
+    "pos": 0,
+    "end": 87,
+    "flags": 0,
+    "modifierFlagsCache": 0,
+    "transformFlags": 4457472,
+    "kind": 308,
+    "statements": [
+        {
+            "pos": 0,
+            "end": 85,
+            "flags": 0,
+            "modifierFlagsCache": 0,
+            "transformFlags": 4457472,
+            "kind": 240,
+            "declarationList": {
+                "pos": 0,
+                "end": 84,
+                "flags": 2,
+                "modifierFlagsCache": 0,
+                "transformFlags": 4457472,
+                "kind": 258,
+                "declarations": [
+                    {
+                        "pos": 12,
+                        "end": 84,
+                        "flags": 0,
+                        "modifierFlagsCache": 0,
+                        "transformFlags": 0,
+                        "kind": 257,
+                        "name": {
+                            "pos": 12,
+                            "end": 30,
+                            "flags": 0,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 79,
+                            "escapedText": "EXPRESSION_START0"
+                        },
+                        "initializer": {
+                            "pos": 32,
+                            "end": 84,
+                            "flags": 0,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "kind": 207,
+                            "properties": [
+                                {
+                                    "pos": 93,
+                                    "kind": 299,
+                                    "flags": 0,
+                                    "modifierFlagsCache": 0,
+                                    "name": {
+                                        "pos": 93,
+                                        "kind": 10,
+                                        "flags": 0,
+                                        "modifierFlagsCache": 0,
+                                        "end": 114,
+                                        "text": "puzzleAlgorithmType",
+                                        "hasExtendedUnicodeEscape": false,
+                                        "transformFlags": 0
+                                    },
+                                    "end": 139,
+                                    "transformFlags": 0,
+                                    "initializer": {
+                                        "pos": 115,
+                                        "kind": 10,
+                                        "flags": 0,
+                                        "modifierFlagsCache": 0,
+                                        "end": 139,
+                                        "text": "['JIGSAW', 'JIGSAW2']",
+                                        "hasExtendedUnicodeEscape": false,
+                                        "transformFlags": 0
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "endOfFileToken": {
+        "pos": 85,
+        "end": 87,
+        "flags": 0,
+        "modifierFlagsCache": 0,
+        "transformFlags": 0,
+        "kind": 1
+    },
+    "fileName": "x.ts",
+    "text": "\r\n     const EXPRESSION_START0 = {  \"pos\": 155, \"kind\": 207  };\r\n",
+    "languageVersion": 99,
+    "languageVariant": 0,
+    "scriptKind": 3,
+    "isDeclarationFile": false,
+    "hasNoDefaultLib": false,
+    "bindDiagnostics": [],
+    "pragmas": {},
+    "referencedFiles": [],
+    "typeReferenceDirectives": [],
+    "libReferenceDirectives": [],
+    "amdDependencies": [],
+    "nodeCount": 16,
+    "identifierCount": 1,
+    "identifiers": {},
+    "parseDiagnostics": []
+}

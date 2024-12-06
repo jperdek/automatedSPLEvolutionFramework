@@ -25,7 +25,7 @@ public class ASTConverterClient {
 			+ ComplexityConstructEvaluationConfiguration.CLEAR_COMMENTS_IN_CODE_SERVICE_URL;
 	
 	private final static String FROM_AST_TO_LARGE_CODE_SERVICE_URL = ComplexityConstructEvaluationConfiguration.SERVER_URL 
-			+ ComplexityConstructEvaluationConfiguration.FROM_AST_TO_LARGE_CODE_SERVICE_URL;
+			+ ComplexityConstructEvaluationConfiguration.FROM_AST_TO_LARGE_CODE_SERVICE_URL + "?is_file=true";
 	private final static String FROM_CODE_TO_LARGE_AST_SERVICE_URL = ComplexityConstructEvaluationConfiguration.SERVER_URL 
 			+ ComplexityConstructEvaluationConfiguration.FROM_CODE_TO_LARGE_AST_SERVICE_URL;
 	
@@ -35,7 +35,7 @@ public class ASTConverterClient {
 	public ASTConverterClient() {}
 	
 	public static String clearComments(String codeWithComments) throws IOException, InterruptedException {
-		String cleanedCodeFromComments = PostRequester.doPost(ASTConverterClient.CLEAR_COMMENTS_FROM_CODE_SERVICE_URL, null, codeWithComments);
+		String cleanedCodeFromComments = PostRequester.doPost(ASTConverterClient.CLEAR_COMMENTS_FROM_CODE_SERVICE_URL, null, null, codeWithComments);
 		return cleanedCodeFromComments;
 	}
 	
@@ -76,20 +76,38 @@ public class ASTConverterClient {
 	
 	public static JSONObject convertFromCodeToASTJSON(String fileContent) throws IOException, InterruptedException {
 		fileContent = ASTConverterClient.cleanOneLineIgnoreComments(fileContent);
-		String convertedToASTString = PostRequester.doPost(ASTConverterClient.FROM_CODE_TO_AST_SERVICE_URL, 
+		String convertedToASTString = PostRequester.doPost(ASTConverterClient.FROM_CODE_TO_AST_SERVICE_URL,
+				ASTConverterClient.FROM_AST_TO_LARGE_CODE_SERVICE_URL,
 				ASTConverterClient.FROM_CODE_TO_LARGE_AST_SERVICE_URL, fileContent);
 		return ASTLoader.loadASTFromString(convertedToASTString);
 	}
 
+	public static JSONObject convertFromCodeToASTJSON(String fileContent, boolean useFileTransfer) throws IOException, InterruptedException {
+		fileContent = ASTConverterClient.cleanOneLineIgnoreComments(fileContent);
+		String convertedToASTString = PostRequester.doPost(ASTConverterClient.FROM_CODE_TO_AST_SERVICE_URL,
+				ASTConverterClient.FROM_AST_TO_LARGE_CODE_SERVICE_URL,
+				ASTConverterClient.FROM_CODE_TO_LARGE_AST_SERVICE_URL, fileContent, useFileTransfer);
+		return ASTLoader.loadASTFromString(convertedToASTString);
+	}
+	
 	public static JSONObject convertFromASTToCodeJSON(String fileContent) throws IOException, InterruptedException {
-		String convertedToASTString = PostRequester.doPost(ASTConverterClient.FROM_AST_TO_CODE_SERVICE_URL, 
+		String convertedToASTString = PostRequester.doPost(ASTConverterClient.FROM_AST_TO_CODE_SERVICE_URL,
+				ASTConverterClient.FROM_CODE_TO_LARGE_AST_SERVICE_URL,
 				ASTConverterClient.FROM_AST_TO_LARGE_CODE_SERVICE_URL, fileContent);
 		return ASTLoader.loadASTFromString(convertedToASTString);
 	}
 	
 	public static String convertFromASTToCode(String fileContent) throws IOException, InterruptedException {
-		String convertedToCodeString = PostRequester.doPost(ASTConverterClient.FROM_AST_TO_CODE_SERVICE_URL, 
+		String convertedToCodeString = PostRequester.doPost(ASTConverterClient.FROM_AST_TO_CODE_SERVICE_URL,
+				ASTConverterClient.FROM_CODE_TO_LARGE_AST_SERVICE_URL,
 				ASTConverterClient.FROM_AST_TO_LARGE_CODE_SERVICE_URL, fileContent);
+		return convertedToCodeString;
+	}
+	
+	public static String convertFromASTToCode(String fileContent, boolean useFileTransfer) throws IOException, InterruptedException {
+		String convertedToCodeString = PostRequester.doPost(ASTConverterClient.FROM_AST_TO_CODE_SERVICE_URL,
+				ASTConverterClient.FROM_CODE_TO_LARGE_AST_SERVICE_URL,
+				ASTConverterClient.FROM_AST_TO_LARGE_CODE_SERVICE_URL, fileContent, useFileTransfer);
 		return convertedToCodeString;
 	}
 	
@@ -109,6 +127,7 @@ public class ASTConverterClient {
 				+ "\"bindDiagnostics\":[],\"pragmas\":{},\"referencedFiles\":[],\"typeReferenceDirectives\":[],\"libReferenceDirectives\":[],"
 				+ "\"amdDependencies\":[],\"nodeCount\":16,\"identifierCount\":1,\"identifiers\":{},\"parseDiagnostics\":[]}";
 		String convertedToASTString = PostRequester.doPost(ASTConverterClient.FROM_AST_TO_CODE_SERVICE_URL, 
+				ASTConverterClient.FROM_CODE_TO_LARGE_AST_SERVICE_URL,
 				ASTConverterClient.FROM_AST_TO_LARGE_CODE_SERVICE_URL, customScheme);
 		convertedToASTString = convertedToASTString.substring(convertedToASTString.indexOf("=") + 1);
 		if (formatAnnotationsInLine) {

@@ -54,12 +54,12 @@ public interface ComplexityConstructEvaluationConfiguration {
 	/**
 	 * Service url part to convert large code fragment into AST
 	 */
-	public final static String FROM_CODE_TO_LARGE_AST_SERVICE_URL = "convertLarge";
+	public final static String FROM_CODE_TO_LARGE_AST_SERVICE_URL = "convertLargeBack";
 	
 	/**
 	 * Service url part to convert extensive AST into code
 	 */
-	public final static String FROM_AST_TO_LARGE_CODE_SERVICE_URL = "convertLargeBack";
+	public final static String FROM_AST_TO_LARGE_CODE_SERVICE_URL = "convertLarge";
 	
 	/**
 	 * Service url part to clear comments from (TypeScript) code

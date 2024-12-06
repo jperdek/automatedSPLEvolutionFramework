@@ -10,7 +10,7 @@ import java.lang.instrument.Instrumentation;
 public class ObjectSizeAnalyzer {
     private static volatile Instrumentation globalInstrumentation;
 
-    public static void premain(final String agentArgs, final Instrumentation inst) {
+    public static void premain(String agentArgs, Instrumentation inst) {
         globalInstrumentation = inst;
     }
 

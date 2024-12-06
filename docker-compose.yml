@@ -49,7 +49,8 @@ services:
         env_file: .env
         environment:
             FLASK_ENV: development
-            IS_LINUX: true,
+            IS_LINUX: true
+            SHARE_FILES_USING_DISK: ${SHARE_FILES_USING_DISK:-true}
             DOCKER_HOST: host.docker.internal
             PROJECT_PATH: ${PROJECT_PATH:-/EvolutionSPLFramework}
             PATH_TO_EVOLUTION_DIRECTORY: ${PATH_TO_EVOLUTION_DIRECTORY:-/evolution}
