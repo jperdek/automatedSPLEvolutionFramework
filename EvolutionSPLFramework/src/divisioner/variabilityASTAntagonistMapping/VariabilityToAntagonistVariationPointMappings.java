@@ -105,15 +105,16 @@ public class VariabilityToAntagonistVariationPointMappings {
 					if (endMaximum == -1 || endMaximum < currentEndPosition) { endMaximum = currentEndPosition; }
 				}
 			}
-
-			for (VariationPointTransformationBetweenAsts variationPointTransformationBetweenAsts:variationPointTransformationBetweenAstsSet) {
-				// length of whole AST is intended to consist from the 0 to endMaximum, where length of block is ranging from endMinimum to endMaximum 
-				if (onlyToBlockTransformation) {
-					variationPointTransformationBetweenAsts.doTransformationOnBlocks(
-							processedAntagonistContextStartPosition, processedAntagonistContextEndPosition);
-				} else {
-					variationPointTransformationBetweenAsts.doTransformation(
-						processedAntagonistContextStartPosition, processedAntagonistContextEndPosition, endMaximum - startMinimum);
+			if (variationPointTransformationBetweenAstsSet != null) {
+				for (VariationPointTransformationBetweenAsts variationPointTransformationBetweenAsts:variationPointTransformationBetweenAstsSet) {
+					// length of whole AST is intended to consist from the 0 to endMaximum, where length of block is ranging from endMinimum to endMaximum 
+					if (onlyToBlockTransformation) {
+						variationPointTransformationBetweenAsts.doTransformationOnBlocks(
+								processedAntagonistContextStartPosition, processedAntagonistContextEndPosition);
+					} else {
+						variationPointTransformationBetweenAsts.doTransformation(
+							processedAntagonistContextStartPosition, processedAntagonistContextEndPosition, endMaximum - startMinimum);
+					}
 				}
 			}
 		}

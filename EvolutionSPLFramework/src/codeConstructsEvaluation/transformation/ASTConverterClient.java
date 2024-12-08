@@ -35,7 +35,7 @@ public class ASTConverterClient {
 	public ASTConverterClient() {}
 	
 	public static String clearComments(String codeWithComments) throws IOException, InterruptedException {
-		String cleanedCodeFromComments = PostRequester.doPost(ASTConverterClient.CLEAR_COMMENTS_FROM_CODE_SERVICE_URL, null, null, codeWithComments);
+		String cleanedCodeFromComments = PostRequester.doPost(ASTConverterClient.CLEAR_COMMENTS_FROM_CODE_SERVICE_URL, ASTConverterClient.CLEAR_COMMENTS_FROM_CODE_SERVICE_URL, ASTConverterClient.CLEAR_COMMENTS_FROM_CODE_SERVICE_URL, codeWithComments);
 		return cleanedCodeFromComments;
 	}
 	

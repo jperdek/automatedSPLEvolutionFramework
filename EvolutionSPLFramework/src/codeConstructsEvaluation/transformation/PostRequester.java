@@ -1,6 +1,7 @@
 package codeConstructsEvaluation.transformation;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -46,15 +47,15 @@ public class PostRequester {
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	public static String doPostRequest(String serviceUrl, String serviceUrlLargeFiles, String fileContent) throws IOException, InterruptedException {
+	public static String doPostRequest(String serviceUrl, String fileContent) throws IOException, InterruptedException {
 		BodyPublisher fileContentToPost = HttpRequest.BodyPublishers.ofString(fileContent);
 		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest request = HttpRequest.newBuilder()
-				.version(HttpClient.Version.HTTP_2)
-			  .uri(URI.create(serviceUrl))
-			  .header("Content-Type", "text/plain")
-			  .POST(fileContentToPost)
-			  .build();
+			.version(HttpClient.Version.HTTP_2)
+			.uri(URI.create(serviceUrl))
+			.header("Content-Type", "text/plain")
+			.POST(fileContentToPost)
+			.build();
 		HttpResponse<String> response;
 		try {
 			response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -86,19 +87,22 @@ public class PostRequester {
 		serviceUrl = serviceUrl.replace("localhost", System.getenv().getOrDefault("DOCKER_HOST", "localhost"));
 		long objectSize = fileContent.getBytes().length;
 		String largeFileLocationUrl;
-		if (serviceUrlLargeFiles == null || (!useFileTransfer && ((objectSize / 1024) / 1024) < 15)) {
-			return PostRequester.doPostRequest(serviceUrl, serviceUrlLargeFiles, fileContent);
-		} 
+		try {
+			return PostRequester.doPostRequest(serviceUrl, fileContent);
+		} catch(Exception e) { 
+			System.out.println("[doPost(4args)]: Bypassing POST with file exchange contract. Requesting: " + convertionServiceUrl); 
+			e.printStackTrace();
+		}
 		
-		largeFileLocationUrl = PostRequester.getUrlToDownloadByPostRequest(convertionServiceUrl, serviceUrlLargeFiles, fileContent);
+		largeFileLocationUrl = PostRequester.getUrlToDownloadByPostRequest(convertionServiceUrl, convertionServiceUrl, fileContent);
+		System.out.println(largeFileLocationUrl);
 		String loadedFileResponse = "";
-		if (!System.getenv().getOrDefault("SHARE_FILES_USING_DISK", "true").equals("true") || largeFileLocationUrl.startsWith(".")) {
+		if (largeFileLocationUrl.startsWith(".")) {
 			serviceUrlLargeFiles = largeFileLocationUrl.replace("://", ":--");
 			if (largeFileLocationUrl.startsWith(".")) {
 				largeFileLocationUrl = convertionServiceUrl.substring(0, convertionServiceUrl.substring(10).indexOf("/") + 11) + largeFileLocationUrl.substring(1);
 			}
 			largeFileLocationUrl = largeFileLocationUrl.replace("/public/", "");
-			System.out.println(largeFileLocationUrl);
 			BufferedInputStream in = new BufferedInputStream(new URL(largeFileLocationUrl).openStream());
 			
 			byte[] contents = new byte[1024];
@@ -107,8 +111,8 @@ public class PostRequester {
 		    	loadedFileResponse += new String(contents, 0, bytesRead);              
 		    }
 		} else {
-			System.out.println("EEEEEEEEEEEEEEEEEEEEEEEEEEE");
 			loadedFileResponse = loadFileContent(largeFileLocationUrl);
+			//if (largeFileLocationUrl != null) { (new File(largeFileLocationUrl)).delete(); }
 		}
 		return loadedFileResponse;
 	}
@@ -124,23 +128,36 @@ public class PostRequester {
 	 * @throws InterruptedException
 	 */
 	public static String doPost(String serviceUrl, String convertionServiceUrl, String serviceUrlLargeFiles, String fileContent) throws IOException, InterruptedException {
-		serviceUrl = serviceUrl.replace("localhost", System.getenv().getOrDefault("DOCKER_HOST", "localhost"));
-		System.out.println("---------------------------->");
-		System.out.println(fileContent);
-		System.out.println("---------------------------->");
-		System.out.println(serviceUrl);
+		serviceUrl = serviceUrl.replace("localhost", System.getenv().getOrDefault("DOCKER_HOST", "127.0.0.1"));
 		long objectSize = fileContent.getBytes().length;
 		String largeFileLocationUrl;
-		if (serviceUrlLargeFiles == null || ((objectSize / 1024) / 1024) > 15) {
-			return PostRequester.doPostRequest(serviceUrl, serviceUrlLargeFiles, fileContent);
-		} 
+		//if (serviceUrlLargeFiles == null) { // || ((objectSize / 1024) / 1024) < 15) {
+			try {
+				return PostRequester.doPostRequest(serviceUrl, fileContent);
+			} catch(Exception e) { 
+				System.out.println("[doPost(4args)]: Bypassing POST with file exchange contract. Requesting: " + convertionServiceUrl); 
+				e.printStackTrace();
+			}
+		//} 
 		
-		
-		largeFileLocationUrl = PostRequester.getUrlToDownloadByPostRequest(convertionServiceUrl, serviceUrlLargeFiles, fileContent);
+		largeFileLocationUrl = PostRequester.getUrlToDownloadByPostRequest(convertionServiceUrl, convertionServiceUrl, fileContent);
 		String loadedFileResponse = "";
-		if (!System.getenv().getOrDefault("SHARE_FILES_USING_DISK", "true").equals("true") || convertionServiceUrl.startsWith(".")) {
-			serviceUrlLargeFiles = serviceUrlLargeFiles.replace("://", ":---");
-			convertionServiceUrl = convertionServiceUrl.replace("./", serviceUrlLargeFiles.substring(0, serviceUrlLargeFiles.indexOf("/")).replace(":---", "://"));
+		//serverFiles: convertionServiceUrl.startsWith(".")
+		largeFileLocationUrl = largeFileLocationUrl.replace("\temp", "./public/temp").replace("/temp", "./public/temp");
+		System.out.println(convertionServiceUrl);
+		boolean isLokal = false;
+		if (largeFileLocationUrl.startsWith(".")) {
+			System.out.println("HERE");
+			largeFileLocationUrl = largeFileLocationUrl.replace("://", ":---");
+			int localDirectoryIndex = (isLokal)? 0 : 1;
+			convertionServiceUrl = convertionServiceUrl.replace("./", convertionServiceUrl.substring(0, convertionServiceUrl.indexOf("/")).replace(":---", "://"));
+			if (convertionServiceUrl.indexOf("?") > 0) {
+				convertionServiceUrl = convertionServiceUrl + "&url=" + largeFileLocationUrl.replace("/public", "").substring(localDirectoryIndex);
+			} else {
+				convertionServiceUrl = convertionServiceUrl + "?url=" + largeFileLocationUrl.replace("/public", "").substring(localDirectoryIndex);
+			}
+			convertionServiceUrl = convertionServiceUrl.replace("localhost", System.getenv().getOrDefault("DOCKER_HOST", "localhost"));
+			System.out.println(convertionServiceUrl);
 			BufferedInputStream in = new BufferedInputStream(new URL(convertionServiceUrl).openStream());
 			
 			byte[] contents = new byte[1024];
@@ -149,11 +166,9 @@ public class PostRequester {
 		    	loadedFileResponse += new String(contents, 0, bytesRead);              
 		    }
 		} else {
-			System.out.println("HEEEREE");
 			loadedFileResponse = loadFileContent(largeFileLocationUrl);
+			//if (largeFileLocationUrl != null) { (new File(largeFileLocationUrl)).delete(); }
 		}
-		
-		System.out.println("DONEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
 		return loadedFileResponse;
 	}
 
@@ -162,36 +177,43 @@ public class PostRequester {
 		String largeFileLocationUrl;
 		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest requestTo;
+		String urlOfSavedFilesOnDisk = null;
 		
 		if (System.getenv().getOrDefault("SHARE_FILES_USING_DISK", "true").equals("true")) {
 			UUID uuid = UUID.randomUUID();
-			String urlOfSavedFilesOnDisk = System.getenv().getOrDefault("LARGE_FILES_TMP_DIR", "E:/aspects/typescriptConverter/public/tmp") + "/convertLarge/" + uuid.toString() + ".txt";
+			if (SharedConfiguration.USE_TMP_LOCATION_INSTEAD_OF_SERVER) {
+				urlOfSavedFilesOnDisk = SharedConfiguration.PATH_TO_TEMP_DIRECTORY;
+			} else {
+				urlOfSavedFilesOnDisk = System.getenv().getOrDefault("LARGE_FILES_TMP_DIR", ".");
+			}
+			Files.createDirectories(Paths.get(urlOfSavedFilesOnDisk + "/convertLarge"));
+			urlOfSavedFilesOnDisk = urlOfSavedFilesOnDisk + "/convertLarge/" + uuid.toString() + ".txt";
+			
 			String serviceUrlWithParameters = convertionServiceUrl;
 			if (convertionServiceUrl.contains("?")) {
 				serviceUrlWithParameters = serviceUrlWithParameters + "&url=" + urlOfSavedFilesOnDisk;
 			} else {
 				serviceUrlWithParameters = serviceUrlWithParameters + "?url=" + urlOfSavedFilesOnDisk;
 			}
-			System.out.println(urlOfSavedFilesOnDisk);
 			//Files.write(Paths.get(urlOfSavedFilesOnDisk), fileContent.getBytes());
 			try {
 			      FileWriter myWriter = new FileWriter(urlOfSavedFilesOnDisk);
 			      myWriter.write(fileContent);
 			      myWriter.close();
-			      System.out.println("Successfully wrote to the file.");
-			    } catch (IOException e) {
-			      System.out.println("An error occurred.");
+			} catch (IOException e) {
 			      e.printStackTrace();
-			    }
+			}
 			
-			System.out.println(serviceUrlWithParameters);
+			serviceUrlWithParameters = serviceUrlWithParameters.replace("localhost", System.getenv().getOrDefault("DOCKER_HOST", "localhost"));
+			System.out.println("Sending data to: " + serviceUrlWithParameters);
 			requestTo = HttpRequest.newBuilder()
 					.version(HttpClient.Version.HTTP_2)
 				  .uri(URI.create(serviceUrlWithParameters))
 				  .GET()
 				  .build();
 		} else {
-			System.out.println("FALSE");
+			serviceUrlLargeFiles = serviceUrlLargeFiles.replace("localhost", System.getenv().getOrDefault("DOCKER_HOST", "localhost"));
+			System.out.println("Sending data to: " + serviceUrlLargeFiles);
 			requestTo = HttpRequest.newBuilder()
 					.version(HttpClient.Version.HTTP_2)
 				  .uri(URI.create(serviceUrlLargeFiles))
@@ -201,14 +223,17 @@ public class PostRequester {
 		}
 		
 		HttpResponse<String> response = client.send(requestTo, HttpResponse.BodyHandlers.ofString());
+		//if (urlOfSavedFilesOnDisk != null) { (new File(urlOfSavedFilesOnDisk)).delete(); }
+		
 		JSONParser jsonParser = new JSONParser();
 		try {
 			fileLocationConfig = (JSONObject) jsonParser.parse((String) response.body());
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		System.out.println(fileLocationConfig.toString());
+
 		largeFileLocationUrl = (String) fileLocationConfig.get("location");
+		System.out.println("Response location: " + largeFileLocationUrl);
 		return largeFileLocationUrl;
 	}
 	

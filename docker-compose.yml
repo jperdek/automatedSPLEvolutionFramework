@@ -6,9 +6,7 @@ services:
         command: python /srv/flask_app/apis/http/api/endpoints.py
         image: jperdek/dynamic-data-collector
         ports:
-            - "5000:5000"
-        extra_hosts:
-            - "hostname1  localhost:127.0.0.1"
+            - "127.0.0.1:5000:5000"
         container_name: dynamicDataCollector
         volumes:
             - source-volume:/EvolutionSPLFramework
@@ -16,8 +14,6 @@ services:
         env_file: .env
         environment:
             FLASK_ENV: development
-        networks:
-            - buildernet
         depends_on:
             - fullyAutomatedEvolutionFramework
             - volumeCopyInit
@@ -40,12 +36,17 @@ services:
             dockerfile: Dockerfile
         image: jperdek/fully-automated-evolution
         ports:
-            - "5002:5002"
+            - "127.0.0.1:5002:5002"
         container_name: fully-automated-evolution
+        links:
+            - astConverterAndComplexityAnalysisAPI
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
         volumes:
             - dataset-products-volume:/dataset
             - source-volume:/EvolutionSPLFramework
             - evolution-volume:/evolution
+            - tmp-volume:/temp
         env_file: .env
         environment:
             FLASK_ENV: development
@@ -55,6 +56,7 @@ services:
             PROJECT_PATH: ${PROJECT_PATH:-/EvolutionSPLFramework}
             PATH_TO_EVOLUTION_DIRECTORY: ${PATH_TO_EVOLUTION_DIRECTORY:-/evolution}
             CANTO_SCRIPT_RESOURCE_LOCATION: ${CANTO_SCRIPT_RESOURCE_LOCATION:-/EvolutionSPLFramework/resources/canto/canto-0.15.js}
+            PATH_TO_TEMP_DIRECTORY: ${PATH_TO_TEMP_DIRECTORY:-/temp}
         networks:
             - buildernet
         depends_on:
@@ -65,13 +67,17 @@ services:
         build:
             context: ./ConverterAndComplexityAnalyzerAPI
             dockerfile: Dockerfile
-        ports:
-            - "5001:5001"
         extra_hosts:
-            - "hostname1  localhost:127.0.0.1"
+            - "host.docker.internal:host-gateway"
+        ports:
+            - "127.0.0.1:5001:5001"
         networks:
             - buildernet
+        volumes:
+            - tmp-volume:/temp
         restart: on-failure
+        environment:
+            PATH_TO_TEMP_DIRECTORY: ${PATH_TO_TEMP_DIRECTORY:-/temp}
     fractalKnowledgeBase: 
         build:
             context: ./SemanticBaseNeo4j/fractalKnowledgeBase
@@ -96,7 +102,7 @@ services:
             RABBITMQ_DEFAULT_PASS: ${PROCESSING_QUEUE_PASSWORD:-splManager}
             RABBITMQ_DEFAULT_VHOST: ${PROCESSING_QUEUE_VHOST:-/evolution}
         ports:
-            - 15672:15672
+            - "127.0.0.1:15672:15672"
         volumes:
             - rabbitmq-volume:/var/lib/rabbitmq/
         networks:
@@ -106,7 +112,7 @@ volumes:
     evolution-volume:
     dataset-products-volume:
     rabbitmq-volume:
+    tmp-volume:
 networks:
     buildernet:
         driver: "bridge"
-    

@@ -213,8 +213,9 @@ public class EvolutionIteration {
 		WrappedTypeScriptContentInVariable wrappedTypeScriptContentInVariable = new WrappedTypeScriptContentInVariable(fileContent);
 		
 		JSONObject astTreeRoot = ASTConverterClient.convertFromCodeToASTJSON(wrappedTypeScriptContentInVariable.getScript());
+		System.out.println(astTreeRoot);
 		JSONObject highlightedAst = variationPointDivisioning.divisionAndGetHighlightedAst(astTreeRoot, pathToScriptInputFilePath);
-		
+		System.out.println(highlightedAst);
 		JSONArray harvestedVariationPoints = variationPointDivisioning.getVariationPointsData(highlightedAst, astTreeRoot);
 		
 		FileExportsUnits availableExportUnits = FileExportUnitsToMerge.prepareDefaultFileExportUnitsToMerge(

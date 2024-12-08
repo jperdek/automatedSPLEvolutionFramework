@@ -115,6 +115,8 @@ public class VariationPointDivisioning {
 	 */
 	public JSONObject divisionAndGetHighlightedAst(String inputCodeFilePath, JSONObject originalAst) throws NotFoundVariableDeclaration, IOException, InterruptedException, 
 			InvalidSystemVariationPointMarkerException, DifferentAnnotationTypesOnTheSameVariationPoint, DuplicatedAnnotation {
+		System.out.println(inputCodeFilePath);
+		System.out.println(PostRequester.loadFileContent(inputCodeFilePath));
 		JSONObject astTreeRoot = ASTConverterClient.convertFromCodeToASTJSON(PostRequester.loadFileContent(inputCodeFilePath));
 		JSONObject highlightedAst = this.variationPointsDivisioningStrategy.divisionAndGetHighlightedAst(this.divisioner, astTreeRoot, inputCodeFilePath);
 		return highlightedAst;

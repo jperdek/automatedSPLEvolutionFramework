@@ -13,4 +13,4 @@ docker cp ./resources helper:/EvolutionSPLFramework
 docker rm helper
 
 // RUN IT WITH APPROPRIATE MODULES
-docker run -v evolution-volume:/evolution -v source-volume:/EvolutionSPLFramework sampleapp:v1
+docker run --network="host" -v evolution-volume:/evolution -v source-volume:/EvolutionSPLFramework sampleapp:v1

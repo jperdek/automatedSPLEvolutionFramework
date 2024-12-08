@@ -22,7 +22,6 @@ class LargeFilesAstTransformationTest {
 		String fileContent = new String(Files.readAllBytes(Paths.get("./src/codeConstructsEvaluation/transformation/testAST.txt")));
 		String code = ASTConverterClient.convertFromASTToCode(fileContent, true);
 		JSONObject resultingObject = ASTConverterClient.convertFromCodeToASTJSON(code, true);
-		
 	}
 
 }
