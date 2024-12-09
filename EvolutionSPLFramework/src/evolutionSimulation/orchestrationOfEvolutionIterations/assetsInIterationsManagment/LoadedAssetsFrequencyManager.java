@@ -79,7 +79,7 @@ public class LoadedAssetsFrequencyManager {
 	 */
 	public void addLocationIfNotExistWithLimit(String constructName, int usageLimit) {
 		if (!this.exportLocationUsageFrequencyLimits.containsKey(constructName)) {
-			System.out.println("Setting limit: " + usageLimit + " for construct name: " + constructName);
+			//System.out.println("Setting limit: " + usageLimit + " for construct name: " + constructName);
 			this.exportLocationUsageFrequencyLimits.put(constructName, usageLimit);
 			this.exportLocationUsageFrequency.put(constructName, 0);
 		}
@@ -105,7 +105,7 @@ public class LoadedAssetsFrequencyManager {
 	 * @param usageLimit - the limit that will guard the possibility to plan particular asset
 	 */
 	public void addLocationWithLimit(String constructName, int usageLimit) {
-		System.out.println("Setting limit: " + usageLimit + " for construct name: " + constructName);
+		//System.out.println("Setting limit: " + usageLimit + " for construct name: " + constructName);
 		this.exportLocationUsageFrequencyLimits.put(constructName, usageLimit);
 		this.exportLocationUsageFrequency.put(constructName, 0);
 	}

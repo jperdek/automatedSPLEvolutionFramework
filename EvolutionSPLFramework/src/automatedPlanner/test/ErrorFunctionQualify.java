@@ -7,7 +7,6 @@ public class ErrorFunctionQualify extends ErrorFunction {
 
 	public double evaluate(RuleBlock ruleBlock) {
         double error = 1;
-        System.out.println("HERE");
         return error;
     }
 }

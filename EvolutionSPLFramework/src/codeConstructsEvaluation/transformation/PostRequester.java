@@ -97,7 +97,7 @@ public class PostRequester {
 		largeFileLocationUrl = PostRequester.getUrlToDownloadByPostRequest(convertionServiceUrl, convertionServiceUrl, fileContent);
 		System.out.println(largeFileLocationUrl);
 		String loadedFileResponse = "";
-		if (largeFileLocationUrl.startsWith(".")) {
+		if (largeFileLocationUrl.startsWith(".") || largeFileLocationUrl.contains("E://") ) {
 			serviceUrlLargeFiles = largeFileLocationUrl.replace("://", ":--");
 			if (largeFileLocationUrl.startsWith(".")) {
 				largeFileLocationUrl = convertionServiceUrl.substring(0, convertionServiceUrl.substring(10).indexOf("/") + 11) + largeFileLocationUrl.substring(1);
@@ -143,11 +143,11 @@ public class PostRequester {
 		largeFileLocationUrl = PostRequester.getUrlToDownloadByPostRequest(convertionServiceUrl, convertionServiceUrl, fileContent);
 		String loadedFileResponse = "";
 		//serverFiles: convertionServiceUrl.startsWith(".")
-		largeFileLocationUrl = largeFileLocationUrl.replace("\temp", "./public/temp").replace("/temp", "./public/temp");
+		//largeFileLocationUrl = largeFileLocationUrl.replace("\temp", "./public/temp").replace("/temp", "./public/temp");
 		System.out.println(convertionServiceUrl);
 		boolean isLokal = false;
+		// SERVING FILES IN PLACE OF SERVER PUBLIC DIRECTORY
 		if (largeFileLocationUrl.startsWith(".")) {
-			System.out.println("HERE");
 			largeFileLocationUrl = largeFileLocationUrl.replace("://", ":---");
 			int localDirectoryIndex = (isLokal)? 0 : 1;
 			convertionServiceUrl = convertionServiceUrl.replace("./", convertionServiceUrl.substring(0, convertionServiceUrl.indexOf("/")).replace(":---", "://"));
@@ -157,7 +157,7 @@ public class PostRequester {
 				convertionServiceUrl = convertionServiceUrl + "?url=" + largeFileLocationUrl.replace("/public", "").substring(localDirectoryIndex);
 			}
 			convertionServiceUrl = convertionServiceUrl.replace("localhost", System.getenv().getOrDefault("DOCKER_HOST", "localhost"));
-			System.out.println(convertionServiceUrl);
+			System.out.println("Data from: " + convertionServiceUrl);
 			BufferedInputStream in = new BufferedInputStream(new URL(convertionServiceUrl).openStream());
 			
 			byte[] contents = new byte[1024];
@@ -165,9 +165,10 @@ public class PostRequester {
 		    while((bytesRead = in.read(contents)) != -1) { 
 		    	loadedFileResponse += new String(contents, 0, bytesRead);              
 		    }
+		 // SERVING FILES FROM 
 		} else {
 			loadedFileResponse = loadFileContent(largeFileLocationUrl);
-			//if (largeFileLocationUrl != null) { (new File(largeFileLocationUrl)).delete(); }
+			if (largeFileLocationUrl != null) { (new File(largeFileLocationUrl)).delete(); }
 		}
 		return loadedFileResponse;
 	}
