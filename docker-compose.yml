@@ -99,15 +99,41 @@ services:
         environment:
             NEO4J_AUTH: ${KNOWLEDGE_BASE_USERNAME:-neo4j}/${KNOWLEDGE_BASE_PASSWORD:-featureNeo4}
             NEO4J_dbms_logs_debug_level: ${KNOWLEDGE_BASE_LOG_LEVEL:-DEBUG}
-    splsToProcessMessageQueue:
+    splCreationConsumer: 
+        build:
+            context: ./FractalDynamicDataCollector/queueConsumer
+            dockerfile: Dockerfile
+        image: jperdek/spl-creation-consumer
+        volumes:
+            - dataset-products-volume:/dataset
+            - source-volume:/EvolutionSPLFramework
+            - evolution-volume:/evolution
+            - tmp-volume:/temp
         env_file: .env
+        environment:
+            PROCESSING_QUEUE_USERNAME: ${PROCESSING_QUEUE_USERNAME:-splManager}
+            PROCESSING_QUEUE_PASSWORD: ${PROCESSING_QUEUE_PASSWORD:-splManager}
+            PROCESSING_QUEUE_VHOST: ${PROCESSING_QUEUE_VHOST:-/evolution}
+            CONSUMER_USER_NAME: consumerUser
+            CONSUMER_USER_PASSWORD: consumerUser
+            RABBIT_MQ_HOST: docker.host.internal
+        depends_on:
+            - volumeCopyInit
+            - splsToProcessMessageQueue
+    splsToProcessMessageQueue:
         image: rabbitmq:4.0-management-alpine
+        post_start:
+            - command: rabbitmqctl add_user consumerUser consumerUser
+        env_file: .env
         environment:
             RABBITMQ_DEFAULT_USER: ${PROCESSING_QUEUE_USERNAME:-splManager}
             RABBITMQ_DEFAULT_PASS: ${PROCESSING_QUEUE_PASSWORD:-splManager}
             RABBITMQ_DEFAULT_VHOST: ${PROCESSING_QUEUE_VHOST:-/evolution}
+            CONSUMER_USER_NAME: consumerUser
+            CONSUMER_USER_PASSWORD: consumerUser
         ports:
             - "127.0.0.1:15672:15672"
+            - "127.0.0.1:5672:5672"
         volumes:
             - rabbitmq-volume:/var/lib/rabbitmq/
         networks:

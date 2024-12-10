@@ -12,3 +12,5 @@
 /EvolutionSPLFramework/evolutionDirectory/*
 /EvolutionSPLFramework/src/automatedPlanner/test/fclDemos/*
 /EvolutionSPLFramework/src/automatedPlanner/test/demos/*
+/FractalDynamicDataCollector/queueConsumer/venv
+/FractalDynamicDataCollector/queueConsumer/.idea
