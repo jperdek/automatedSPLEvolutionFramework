@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import asynchronousPublisher.evolvedSPLPublishing.EvolvedSPLPublisher;
 import codeConstructsEvaluation.transformation.ASTConverterClient;
 import codeConstructsEvaluation.transformation.PostRequester;
 import codeContext.processors.NotFoundVariableDeclaration;
@@ -214,7 +215,7 @@ public class EvolutionIteration {
 		
 		JSONObject astTreeRoot = ASTConverterClient.convertFromCodeToASTJSON(wrappedTypeScriptContentInVariable.getScript());
 		JSONObject highlightedAst = variationPointDivisioning.divisionAndGetHighlightedAst(astTreeRoot, pathToScriptInputFilePath);
-		System.out.println("failueree: " + highlightedAst.toString() + " fiiiii rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
+
 		JSONArray harvestedVariationPoints = variationPointDivisioning.getVariationPointsData(highlightedAst, astTreeRoot);
 		
 		FileExportsUnits availableExportUnits = FileExportUnitsToMerge.prepareDefaultFileExportUnitsToMerge(

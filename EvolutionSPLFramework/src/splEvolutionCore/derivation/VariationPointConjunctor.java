@@ -3,6 +3,9 @@ package splEvolutionCore.derivation;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import asynchronousPublisher.MessageQueueManager.PublishedMessageTypes;
+import asynchronousPublisher.UnknownMessageTypeException;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,6 +15,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeoutException;
 
 import codeContext.persistence.UpdatedTreePersistence;
 import codeContext.processors.export.ExportLocationAggregation;
@@ -295,8 +299,9 @@ public class VariationPointConjunctor {
 	 * Manages derivation of conjuncting parts 
 	 * 
 	 * @param synthesizedContent - synthesized content object that is used to synthesize whole project/AST
-	 * @param exportedAggregations
-	 * @return
+	 * @param exportedAggregations - list of exported aggregated exports that should be included as dependencies
+	 * @return resulting project id of newly evolved SPL
+	 * 
 	 * @throws IOException
 	 * @throws UnknownResourceToProcessException
 	 * @throws InterruptedException
@@ -343,14 +348,43 @@ public class VariationPointConjunctor {
 		String targetDestinationPath = evolutionConfiguration.getOutputFilePath(projectId);
 		String currentScriptPath = targetDestinationPath + evolutionConfiguration.getCurrentEvolvedScriptRelativePath();
 		this.serializeSythesizedContent(currentScriptPath, synthesizedContent);
+		
+		this.publishMessageAboutEvolvedSPL(evolutionConfiguration, projectId, targetDestinationPath, currentScriptPath);
 		return projectId;
+	}
+	
+	/**
+	 * Publishes information about currently evolved SPL, especially its location to create diverse representations
+	 * 
+	 * @param evolutionConfiguration - object that manages evolution configuration
+	 * @param projectId - unique project identifier
+	 * @param targetDestinationPath - destination path to resulting directory
+	 * @param currentScriptPath
+	 */
+	private void publishMessageAboutEvolvedSPL(EvolutionConfiguration evolutionConfiguration, 
+			String projectId, String targetDestinationPath, String currentScriptPath) {
+		int iterationNumber = evolutionConfiguration.getIteration();
+		if (SPLEvolutionCore.PRODUCE_MESSAGES_INTO_MQ_AFTER_DERIVATION) {
+			JSONObject messageContent = new JSONObject();
+			messageContent.put("evolutionIteration", String.valueOf(iterationNumber));
+			messageContent.put("projectId", projectId);
+			messageContent.put("targetPath", targetDestinationPath);
+			messageContent.put("evolvedScriptPath", currentScriptPath);
+			
+			try {
+				this.derivationResourcesManager.getEvolutionConfigurationReference().publishMessageThroughQueueManager(
+						PublishedMessageTypes.SPL_EVOLVED, messageContent.toString());
+			} catch (IOException | TimeoutException | UnknownMessageTypeException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	/**
 	 * Updates AST about used exported aggregations given project except HTML template
 	 * 
 	 * @param projectId - unique project identifier
-	 * @param evolutionConfiguration
+	 * @param evolutionConfiguration - object that manages evolution configuration
 	 * @param exportedAggregations - list of exported aggregated exports that should be included as dependencies
 	 * @throws IOException
 	 * @throws UnknownResourceToProcessException

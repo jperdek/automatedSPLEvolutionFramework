@@ -1,13 +1,19 @@
 package evolutionSimulation;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
+import asynchronousPublisher.MessageQueueManager;
+import asynchronousPublisher.MessageQueueManager.PublishedMessageTypes;
+import asynchronousPublisher.UnknownMessageTypeException;
 import dataRepresentationsExtensions.DataRepresentationsConfiguration;
 import evolutionSimulation.iteration.EvolutionSamples;
 import evolutionSimulation.iteration.EvolutionVariables;
 import evolutionSimulation.productAssetsInitialization.Resource;
 import splEvolutionCore.DebugInformation;
+import splEvolutionCore.SPLEvolutionCore;
 
 
 /**
@@ -95,6 +101,11 @@ public class EvolutionConfiguration {
 	private int numberOfEvolvedMembersInPopulation = 3;
 	
 	/**
+	 * Manager to manage sending and receiving incoming messages into message queue (for further processing) 
+	 */
+	private MessageQueueManager messageQueueManager = null;
+	
+	/**
 	 * Strategies to direct the evolution process
 	 * 
 	 * @author Jakub Perdek
@@ -159,6 +170,7 @@ public class EvolutionConfiguration {
 		this.initialCodeResources = new ArrayList<Resource>();
 		this.dataRepresentationsConfiguration = dataRepresentationsConfiguration;
 		this.evolutionTerminateConditions = evolutionTerminateConditions;
+		if (SPLEvolutionCore.PRODUCE_MESSAGES_INTO_MQ_AFTER_DERIVATION) { this.messageQueueManager = new MessageQueueManager(); }
 	}
 
 	/**
@@ -302,7 +314,7 @@ public class EvolutionConfiguration {
 	 */
 	public List<String> getSelectedExportedContentPaths(String extensionBeforeName, 
 			List<String> contentPathsToOmit, List<String> variablesPathsOmit) {
-		//load external dependencies
+		// load external dependencies
 		List<String> exportUnitsToMerge = EvolutionSamples.concatenateScriptPath(EvolutionSamples.getAllEvolutionSamples(
 				contentPathsToOmit), extensionBeforeName);
 		List<String> exportVariablesToMerge = EvolutionVariables.getAllEvolutionSamples(variablesPathsOmit);
@@ -401,6 +413,19 @@ public class EvolutionConfiguration {
 	 * @return the path to source project/sources that are extended
 	 */
 	public String getInputFilePath() { return this.inputFilePath; }
+	
+	/**
+	 * Publishes particular message under chosen type
+	 * 
+	 * @param publishedMessageType - type of message that will be processed by particular consumers
+	 * @param message - message that has to be sent to consumer
+	 * @throws IOException
+	 * @throws TimeoutException
+	 * @throws UnknownMessageTypeException
+	 */
+	public void publishMessageThroughQueueManager(PublishedMessageTypes publishedMessageType, String message) throws IOException, TimeoutException, UnknownMessageTypeException { 
+		this.messageQueueManager.publish(publishedMessageType, message); 
+	}
 	
 	/**
 	 * Returns the relative output file path including the evolution 

@@ -415,4 +415,9 @@ public interface SPLEvolutionCore {
 	 */
 	public final static String DECORATOR_CONFIGURATION_ANNOTATIONS_FILE_PATH = 
 			"js/" + SPLEvolutionCore.DECORATOR_CONFIGURATION_ANNOTATIONS_FILE_NAME;
+	
+	/**
+	 * Allows to connect to RabbitMQ and store produced messages about each evolved SPL
+	 */
+	public final static boolean PRODUCE_MESSAGES_INTO_MQ_AFTER_DERIVATION = true;
 }

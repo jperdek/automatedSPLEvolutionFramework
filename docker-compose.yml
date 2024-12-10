@@ -10,10 +10,15 @@ services:
         container_name: dynamicDataCollector
         volumes:
             - source-volume:/EvolutionSPLFramework
+            - dataset-products-volume:/dataset
             - evolution-volume:/evolution
         env_file: .env
         environment:
             FLASK_ENV: development
+            DATA_COLLECTOR_PORT: 5000
+            DATA_COLLECTOR_ADDRESS: http://127.0.0.1
+            PATH_TO_EVOLUTION_DIRECTORY: ${PATH_TO_EVOLUTION_DIRECTORY:-/evolution}
+            PATH_TO_DATASET_DIRECTORY: ${PATH_TO_DATASET_DIRECTORY:-/dataset}
         depends_on:
             - fullyAutomatedEvolutionFramework
             - volumeCopyInit
