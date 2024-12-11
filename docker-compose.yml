@@ -22,6 +22,8 @@ services:
         depends_on:
             - fullyAutomatedEvolutionFramework
             - volumeCopyInit
+        networks:
+            - buildernet
     volumeCopyInit:
         build:
             dockerfile: Dockerfile
