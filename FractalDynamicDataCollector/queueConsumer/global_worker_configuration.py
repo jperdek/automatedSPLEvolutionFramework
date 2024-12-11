@@ -18,7 +18,7 @@ class DataRepresentationsClient:
 
     @staticmethod
     def get_server_path() -> str:
-        return os.getenv("DATA_COLLECTOR_ADDRESS", "http://localhost") + ":" + os.getenv("DATA_COLLECTOR_PORT", "5000")
+        return "http://" + os.getenv("DATA_COLLECTOR_ADDRESS", "localhost") + ":" + os.getenv("DATA_COLLECTOR_PORT", "5000")
 
     @staticmethod
     def copy_whole_project(evolved_spl_path: str, resulting_spl_project_path: str,

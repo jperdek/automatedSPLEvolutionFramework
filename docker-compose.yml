@@ -127,6 +127,7 @@ services:
             RABBIT_MQ_HOST: splsToProcessMessageQueue
             RABBIT_MQ_HEARTBEAT: "0"
             QUEUE_EVOLVED_SPL: ${QUEUE_EVOLVED_SPL:-EVOLVED_SPL}
+            DATA_COLLECTOR_ADDRESS: host.docker.internal
         depends_on:
             - volumeCopyInit
             - splsToProcessMessageQueue
