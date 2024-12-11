@@ -63,6 +63,10 @@ services:
             CANTO_SCRIPT_RESOURCE_LOCATION: ${CANTO_SCRIPT_RESOURCE_LOCATION:-/EvolutionSPLFramework/resources/canto/canto-0.15.js}
             PATH_TO_TEMP_DIRECTORY: ${PATH_TO_TEMP_DIRECTORY:-/temp}
             QUEUE_EVOLVED_SPL: ${QUEUE_EVOLVED_SPL:-EVOLVED_SPL}
+            PROCESSING_QUEUE_HOST: host.docker.internal
+            PROCESSING_QUEUE_VHOST: rabbitmq
+            MQ_CONSUMER_USER_NAME: ${CONSUMER_USER_NAME:-consumerUser}
+            MQ_CONSUMER_USER_PASSWORD: ${CONSUMER_USER_PASSWORD:-consumerUser}
         networks:
             - buildernet
         depends_on:

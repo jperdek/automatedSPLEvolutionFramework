@@ -1,6 +1,7 @@
 package asynchronousPublisher;
 
 import java.io.IOException;
+import java.net.SocketException;
 import java.util.concurrent.TimeoutException;
 
 import com.rabbitmq.client.Channel;
@@ -38,19 +39,38 @@ public class RabbitMQAdapter {
 	 * @throws TimeoutException 
 	 * @throws IOException 
 	 */
-	public RabbitMQAdapter(String exchangeName) throws IOException, TimeoutException {
+	public RabbitMQAdapter(String exchangeName) throws IOException {
 		this.factory = new ConnectionFactory();
 		this.factory.setUsername(MessageExchangeConnectionConfiguration.MESSAGE_EXCHANGE_CUSTOM_USER);
 		factory.setPassword(MessageExchangeConnectionConfiguration.MESSAGE_EXCHANGE_CUSTOM_PASSWORD);
 		factory.setVirtualHost(MessageExchangeConnectionConfiguration.MESSAGE_EXCHANGE_VHOST);
 		factory.setHost(MessageExchangeConnectionConfiguration.MESSAGE_EXCHANGE_HOST);
 		factory.setPort(MessageExchangeConnectionConfiguration.MESSAGE_EXCHANGE_PORT);
-		
-		this.channel = this.createChannel();
 		this.exchangeName = exchangeName;
-		this.channel.exchangeDeclare(this.exchangeName, "fanout");
+		
+		if (this.tryGetChannelAndConnect()) { this.channel.exchangeDeclare(this.exchangeName, "fanout"); }
 		System.out.println("Created exchange: " + this.channel);
 	}
+	
+	/**
+	 * Tries to connect and obtain channel
+	 * 
+	 * @return true if connection is successful otherwise false
+	 */
+	private boolean tryGetChannelAndConnect() {
+		System.out.println("Trying to connect to message queue...");
+		try {
+			this.channel = this.createChannel();
+			return true;
+		} catch(IOException e) {
+			this.channel = null;
+		} catch (TimeoutException te) {
+			this.channel = null;
+		}
+		System.out.println("Connecting to message queue failed...");
+		return false;
+	}
+	
 	
 	/**
 	 * Returns newly created RabbitMQ connection
@@ -78,10 +98,14 @@ public class RabbitMQAdapter {
 	 * @throws IOException
 	 * @throws TimeoutException
 	 */
-	public void publishMessageToQueue(String message) throws IOException, TimeoutException {
-		if (this.channel == null) { this.channel = this.createChannel(); }
+	public void publishMessageToQueue(String message) throws IOException {
+		if (this.channel == null && this.tryGetChannelAndConnect()) { this.channel.exchangeDeclare(this.exchangeName, "fanout"); }
 
-        this.channel.basicPublish(this.exchangeName, "", null, message.getBytes("UTF-8"));
-        System.out.println(" Publishing information " + this.exchangeName + ": '" + message + "'");
+		if (this.channel != null) {
+	        this.channel.basicPublish(this.exchangeName, "", null, message.getBytes("UTF-8"));
+	        System.out.println(" Publishing information " + this.exchangeName + ": '" + message + "'");
+		} else {
+			System.out.println("Cannot publish into queue... Connection is lost. Skipping...");
+		}
 	}
 }

@@ -13,12 +13,12 @@ public class MessageExchangeConnectionConfiguration {
 	/**
 	 * Login name to reach rabbit MQ exchange queue
 	 */
-	public static final String MESSAGE_EXCHANGE_CUSTOM_USER = System.getenv().getOrDefault("CONSUMER_USER_NAME", "guest");
+	public static final String MESSAGE_EXCHANGE_CUSTOM_USER = System.getenv().getOrDefault("MQ_CONSUMER_USER_NAME", "guest");
 	
 	/**
 	 * Password associated with custom user
 	 */
-	public static final String MESSAGE_EXCHANGE_CUSTOM_PASSWORD = System.getenv().getOrDefault("CONSUMER_USER_PASSWORD", "guest");
+	public static final String MESSAGE_EXCHANGE_CUSTOM_PASSWORD = System.getenv().getOrDefault("MQ_CONSUMER_USER_PASSWORD", "guest");
 	
 	/**
 	 * Vhost to reach processing queue and exchange messages

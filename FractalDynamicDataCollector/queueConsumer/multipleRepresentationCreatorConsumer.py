@@ -35,7 +35,7 @@ def callback_func(channel, method, properties, body):
     except Exception as e:
         if channel.is_open:
             logger.debug("Error is thrown. Skipping..." + str(e))
-            channel.basic_reject(method.delivery_tag)
+            channel.basic_reject(method.delivery_tag, requeue=False)
 
 
 if __name__ == "__main__":
