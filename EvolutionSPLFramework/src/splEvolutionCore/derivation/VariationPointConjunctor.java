@@ -21,7 +21,6 @@ import codeContext.persistence.UpdatedTreePersistence;
 import codeContext.processors.export.ExportLocationAggregation;
 import codeContext.processors.export.ExportLocations;
 import evolutionSimulation.EvolutionConfiguration;
-import evolutionSimulation.iteration.EvolutionSamples;
 import evolutionSimulation.productAssetsInitialization.CanvasBasedResource;
 import evolutionSimulation.productAssetsInitialization.HTMLCanvasToTemplateInjector;
 import evolutionSimulation.productAssetsInitialization.Resource;

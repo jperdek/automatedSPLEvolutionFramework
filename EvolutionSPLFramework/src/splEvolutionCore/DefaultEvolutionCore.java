@@ -91,8 +91,6 @@ public class DefaultEvolutionCore implements EvolutionCoreStrategies {
 			MethodToEvaluateComplexityNotFoundException, DuplicatedContextIdentifier, 
 			UnmappedContextException, DifferentlyAggregatedLocation, VariationPointPlaceInArrayNotFound,
 			UnknownResourceToProcessException, AlreadyMappedVariationPointContentsInjection, AssetMisuse, AlreadyChosenVariationPointForInjectionException {
-		System.out.println("------------------------------------->");
-		System.out.println(variationPointsArray.toString());
 		int numberSelectedCandidates = 3;
 		List<ChosenValueAssignmentStrategyForNegativeVariability> chosenValueAssignmentStrategyForNegativeVariabilities = 
 				evolutionCoreSettings.getChosenValueAssignmentStrategiesForNegativeVariability();
@@ -127,8 +125,7 @@ public class DefaultEvolutionCore implements EvolutionCoreStrategies {
 			UpdatedTreePersistence.persistsAstInFile(SharedConfiguration.PROJECT_PATH + "/evolutionDirectory/evolNum1/conccustom/ast.txt",
 				ASTConverterClient.convertFromASTToCode(splAstTree.toString()));
 		}*/
-		System.out.println(variationPointsArray.toString());
-		System.out.println(variationPointsArray);
+
 		List<PositiveVariationPointCandidateTemplates> positiveVariationPointCandidatesTemplates = 
 				PositiveVariationPointCandidateSelection.createPositiveVariabilityCandidates(variationPointsArray);
 		if (DebugInformation.PROCESS_STEP_INFORMATION) {

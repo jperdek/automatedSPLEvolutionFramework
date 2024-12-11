@@ -27,7 +27,7 @@ public class EvolvedSPLPublisher extends RabbitMQAdapter {
 	 * @throws IOException 
 	 */
 	public EvolvedSPLPublisher() throws IOException, TimeoutException {
-		super("EVOLVED_SPL");
+		super(System.getenv().getOrDefault("QUEUE_EVOLVED_SPL", "EVOLVED_SPL"));
 	}
 	
 	/**

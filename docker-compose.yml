@@ -62,9 +62,11 @@ services:
             PATH_TO_EVOLUTION_DIRECTORY: ${PATH_TO_EVOLUTION_DIRECTORY:-/evolution}
             CANTO_SCRIPT_RESOURCE_LOCATION: ${CANTO_SCRIPT_RESOURCE_LOCATION:-/EvolutionSPLFramework/resources/canto/canto-0.15.js}
             PATH_TO_TEMP_DIRECTORY: ${PATH_TO_TEMP_DIRECTORY:-/temp}
+            QUEUE_EVOLVED_SPL: ${QUEUE_EVOLVED_SPL:-EVOLVED_SPL}
         networks:
             - buildernet
         depends_on:
+            - splsToProcessMessageQueue
             - astConverterAndComplexityAnalysisAPI
             - volumeCopyInit
     astConverterAndComplexityAnalysisAPI:
@@ -96,6 +98,8 @@ services:
         volumes:
             - ./neo4j/plugins:/plugins
         env_file: .env
+        networks:
+            - buildernet
         environment:
             NEO4J_AUTH: ${KNOWLEDGE_BASE_USERNAME:-neo4j}/${KNOWLEDGE_BASE_PASSWORD:-featureNeo4}
             NEO4J_dbms_logs_debug_level: ${KNOWLEDGE_BASE_LOG_LEVEL:-DEBUG}
@@ -116,13 +120,15 @@ services:
             PROCESSING_QUEUE_VHOST: ${PROCESSING_QUEUE_VHOST:-/evolution}
             CONSUMER_USER_NAME: ${CONSUMER_USER_NAME:-consumerUser}
             CONSUMER_USER_PASSWORD: ${CONSUMER_USER_PASSWORD:-consumerUser}
-            RABBIT_MQ_HOST: docker.host.internal
-            RABBIT_MQ_HEARBEAT: "0"
-        networks:
-            - buildernet
+            RABBIT_MQ_HOST: splsToProcessMessageQueue
+            RABBIT_MQ_HEARTBEAT: "0"
+            QUEUE_EVOLVED_SPL: ${QUEUE_EVOLVED_SPL:-EVOLVED_SPL}
         depends_on:
             - volumeCopyInit
             - splsToProcessMessageQueue
+        restart: on-failure
+        networks:
+            - buildernet
     splsToProcessMessageQueue:
         image: rabbitmq:4.0-management-alpine
         build:
@@ -131,6 +137,8 @@ services:
             args:
                 consumer_user_name: ${CONSUMER_USER_NAME:-consumerUser}
                 consumer_user_password: ${CONSUMER_USER_PASSWORD:-consumerUser}
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
         env_file: .env
         environment:
             RABBITMQ_DEFAULT_USER: ${PROCESSING_QUEUE_USERNAME:-splManager}
@@ -146,6 +154,11 @@ services:
             - rabbitmq-volume:/var/lib/rabbitmq/
         networks:
             - buildernet
+        healthcheck:
+            test: [ "CMD", "nc", "-z", "localhost", "5672" ]
+            interval: 5s
+            timeout: 15s
+            retries: 1
 volumes:
     source-volume:
     evolution-volume:

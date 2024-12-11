@@ -43,7 +43,8 @@ if __name__ == "__main__":
                                         password=os.getenv("CONSUMER_USER_PASSWORD", "guest"))
     connection_url = "amqp://" + os.getenv("CONSUMER_USER_NAME", "guest") + ":" + os.getenv(
         "CONSUMER_USER_PASSWORD", "guest") + "@" + os.getenv(
-        "RABBIT_MQ_HOST", "localhost") + ":" + "5672/rabbitmq?heartbeat=" + str(os.getenv("RABBIT_MQ_HEARBEAT", 0))
+        "RABBIT_MQ_HOST", "localhost") + ":" + "5672/rabbitmq?heartbeat=" + str(os.getenv("RABBIT_MQ_HEARTBEAT", 0))
+    logger.debug("Connection url: " + connection_url)
     connection_params = pika.URLParameters(connection_url)
 
     connection = pika.BlockingConnection(connection_params)
