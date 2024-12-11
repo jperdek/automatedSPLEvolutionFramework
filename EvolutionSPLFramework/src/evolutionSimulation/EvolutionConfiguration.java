@@ -140,10 +140,12 @@ public class EvolutionConfiguration {
 	 * @param outputFilePath - the path to destination directory where assets and extensions will be incorporated
 	 * @param pathToScriptInputFilePath - the path to base script/source code that is managed/extended or updated
 	 * @param currentEvolvedScriptRelativePath - the relative path to base/evolved script/source code that is managed/extended or updated
+	 * @throws TimeoutException 
+	 * @throws IOException 
 	 */
 	public EvolutionConfiguration(String initialCode, String concernName, String inputFilePath,
 			String outputFilePath, String pathToScriptInputFilePath, 
-			String currentEvolvedScriptRelativePath, DataRepresentationsConfiguration dataRepresentationsConfiguration) {
+			String currentEvolvedScriptRelativePath, DataRepresentationsConfiguration dataRepresentationsConfiguration) throws IOException, TimeoutException {
 		this(initialCode, concernName, inputFilePath, outputFilePath, pathToScriptInputFilePath, 
 				currentEvolvedScriptRelativePath, dataRepresentationsConfiguration, new EvolutionTerminateConditions());
 	}
@@ -158,10 +160,12 @@ public class EvolutionConfiguration {
 	 * @param pathToScriptInputFilePath - the path to base script/source code that is managed/extended or updated
 	 * @param currentEvolvedScriptRelativePath - the relative path to base/evolved script/source code that is managed/extended or updated
 	 * @param evolutionTerminateConditions - the conditions to terminate evolution process
+	 * @throws TimeoutException 
+	 * @throws IOException 
 	 */
 	public EvolutionConfiguration(String initialCode, String concernName, String inputFilePath,
 			String outputFilePath, String pathToScriptInputFilePath, String currentEvolvedScriptRelativePath,
-			DataRepresentationsConfiguration dataRepresentationsConfiguration, EvolutionTerminateConditions evolutionTerminateConditions) {
+			DataRepresentationsConfiguration dataRepresentationsConfiguration, EvolutionTerminateConditions evolutionTerminateConditions) throws IOException, TimeoutException {
 		this.initialCode = initialCode;
 		this.inputFilePath = inputFilePath;
 		this.outputFilePath = outputFilePath;

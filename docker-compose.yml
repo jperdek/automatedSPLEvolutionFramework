@@ -114,26 +114,34 @@ services:
             PROCESSING_QUEUE_USERNAME: ${PROCESSING_QUEUE_USERNAME:-splManager}
             PROCESSING_QUEUE_PASSWORD: ${PROCESSING_QUEUE_PASSWORD:-splManager}
             PROCESSING_QUEUE_VHOST: ${PROCESSING_QUEUE_VHOST:-/evolution}
-            CONSUMER_USER_NAME: consumerUser
-            CONSUMER_USER_PASSWORD: consumerUser
+            CONSUMER_USER_NAME: ${CONSUMER_USER_NAME:-consumerUser}
+            CONSUMER_USER_PASSWORD: ${CONSUMER_USER_PASSWORD:-consumerUser}
             RABBIT_MQ_HOST: docker.host.internal
+            RABBIT_MQ_HEARBEAT: "0"
+        networks:
+            - buildernet
         depends_on:
             - volumeCopyInit
             - splsToProcessMessageQueue
     splsToProcessMessageQueue:
         image: rabbitmq:4.0-management-alpine
-        post_start:
-            - command: rabbitmqctl add_user consumerUser consumerUser
+        build:
+            context: ./rabbitMQ
+            dockerfile: Dockerfile
+            args:
+                consumer_user_name: ${CONSUMER_USER_NAME:-consumerUser}
+                consumer_user_password: ${CONSUMER_USER_PASSWORD:-consumerUser}
         env_file: .env
         environment:
             RABBITMQ_DEFAULT_USER: ${PROCESSING_QUEUE_USERNAME:-splManager}
             RABBITMQ_DEFAULT_PASS: ${PROCESSING_QUEUE_PASSWORD:-splManager}
-            RABBITMQ_DEFAULT_VHOST: ${PROCESSING_QUEUE_VHOST:-/evolution}
-            CONSUMER_USER_NAME: consumerUser
-            CONSUMER_USER_PASSWORD: consumerUser
+            RABBITMQ_DEFAULT_VHOST: ${PROCESSING_QUEUE_VHOST:-rabbitmq}
+            CONSUMER_USER_NAME: ${CONSUMER_USER_NAME:-consumerUser}
+            CONSUMER_USER_PASSWORD: ${CONSUMER_USER_PASSWORD:-consumerUser}
         ports:
             - "127.0.0.1:15672:15672"
             - "127.0.0.1:5672:5672"
+            - "127.0.0.1:5671:5671"
         volumes:
             - rabbitmq-volume:/var/lib/rabbitmq/
         networks:

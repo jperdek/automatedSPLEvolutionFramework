@@ -13,6 +13,8 @@ import java.util.Map;
 import org.json.simple.JSONArray;
 
 import astFileProcessor.ASTLoader;
+import asynchronousPublisher.evolvedSPLPublishing.EvolvedSPLPublisher;
+import evolutionSimulation.EvolutionConfiguration;
 import evolutionSimulation.orchestrationOfEvolutionIterations.SPLCandidateSelectionStrategies.imageContentQualityAssignment.VariationPointsDataAggregations;
 import positiveVariabilityManagement.ProjectCopier;
 import splEvolutionCore.SPLEvolutionCore;
@@ -66,7 +68,7 @@ public class SPLCandidateLoadingMechanism {
 	 * @throws IOException
 	 */
 	public void loadAndParseSPLCandidates(String previousEvolutionDirectoryPath,
-			VariationPointsDataAggregations variationPointsDataAggregations) throws IOException {
+			VariationPointsDataAggregations variationPointsDataAggregations, EvolutionConfiguration evolutionConfiguration) throws IOException {
 		System.out.println("Loading candidates for new evolution iteration from directory: " + previousEvolutionDirectoryPath);
 		 File dir = new File(previousEvolutionDirectoryPath);
 		 File[] directoryListing = dir.listFiles();
@@ -104,6 +106,10 @@ public class SPLCandidateLoadingMechanism {
 			    				Files.move(grandchildFile.toPath(), Path.of(newFilePath), StandardCopyOption.REPLACE_EXISTING);
 			    				
 		    					ProjectCopier.copyExistingProject(affectedProjectPath, vpDataAbsolutePath + "_XXX_" + projectCounter, true, true);
+		    					
+		    					String targetDestinationPath = vpDataAbsolutePath + "_XXX_" + projectCounter;
+		    					String projectId = childName;
+		    					EvolvedSPLPublisher.publishMessageAboutEvolvedSPL(evolutionConfiguration, projectId, targetDestinationPath, true);
 		    				} else {
 		    					System.out.println("Cannot move data. Variation point data are missing... Removing data.");
 		    					Files.delete(grandchildFile.toPath());

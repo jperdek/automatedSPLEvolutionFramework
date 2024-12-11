@@ -26,7 +26,7 @@ class DataRepresentationsClient:
         if not os.path.exists(resulting_spl_project_path + "/code"):
             os.makedirs(resulting_spl_project_path, exist_ok=True)
         try:
-            shutil.copytree(evolved_spl_path, resulting_spl_project_path + "/code")
+            shutil.copytree(evolved_spl_path, resulting_spl_project_path + "/code", dirs_exist_ok=True)
         except OSError as error:
             if logger:
                 logger.debug("Copying project failed: " + str(error))
@@ -79,8 +79,8 @@ class DataRepresentationsClient:
                     response.status_code))
 
     @staticmethod
-    def create_all_representations(evolved_spl_path: str, evolved_spl_script_path: str, evolution_iteration: str,
-                                   project_id: str, logger: Optional[logging.Logger] = None) -> None:
+    def create_all_representations(evolved_spl_path: str, evolution_iteration: str,
+                                   project_id: str, logger: Optional[logging.Logger] = None) -> str:
         destination_spl_project_path = DataRepresentationsClient.get_destination_dataset_path(
             evolution_iteration, project_id)
         DataRepresentationsClient.copy_whole_project(evolved_spl_path, destination_spl_project_path, logger)
@@ -89,6 +89,7 @@ class DataRepresentationsClient:
         DataRepresentationsClient.get_and_save_svg_data(evolved_spl_path + "/index.html", destination_spl_project_path, logger)
         DataRepresentationsClient.get_and_save_graph_data(evolved_spl_path + "/index.html",
                                                           destination_spl_project_path, logger)
+        return destination_spl_project_path
 
     @staticmethod
     def test(logger: Optional[logging.Logger] = None):

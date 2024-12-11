@@ -1,13 +1,19 @@
 FROM rabbitmq
 
-# Define environment variables.
-ENV RABBITMQ_USER user
-ENV RABBITMQ_PASSWORD user
-ENV RABBITMQ_PID_FILE /var/lib/rabbitmq/mnesia/rabbitmq
+ARG consumer_user_name=consumerUser
+ARG consumer_user_password=consumerUser
 
-ADD init.sh /init.sh
-RUN chmod +x /init.sh
+
+# Define environment variables.
+ENV RABBITMQ_USER=$consumer_user_name
+ENV RABBITMQ_PASSWORD=$consumer_user_password
+ENV RABBITMQ_PID_FILE=/var/lib/rabbitmq/mnesia/rabbitmq
+
+COPY ./init.sh /rabbitMQ/init.sh
+RUN chmod +x /rabbitMQ/init.sh
+WORKDIR /rabbitMQ
 EXPOSE 15672
 
+
 # Define default command
-CMD ["/init.sh"]
+CMD ["sh", "/rabbitMQ/init.sh"]

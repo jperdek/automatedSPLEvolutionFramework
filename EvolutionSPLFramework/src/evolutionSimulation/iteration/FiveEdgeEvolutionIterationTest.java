@@ -22,6 +22,7 @@ import splEvolutionCore.candidateSelector.valueAssignment.complexityValueAssignm
 import variationPointsVisualization.DifferentAnnotationTypesOnTheSameVariationPoint;
 import variationPointsVisualization.DuplicatedAnnotation;
 import java.io.IOException;
+import java.util.concurrent.TimeoutException;
 
 
 /**
@@ -62,13 +63,14 @@ public class FiveEdgeEvolutionIterationTest extends EvolutionIteration {
 	 * @throws AlreadyMappedVariationPointContentsInjection
 	 * @throws AssetMisuse 
 	 * @throws AlreadyChosenVariationPointForInjectionException 
+	 * @throws TimeoutException 
 	 */
 	public static void main(String args[]) throws NotFoundVariableDeclaration, IOException, InterruptedException,
 				InvalidSystemVariationPointMarkerException, DifferentAnnotationTypesOnTheSameVariationPoint,
 				DuplicatedAnnotation, DuplicateCandidateIdentifier, AlreadyProvidedArgumentInConfigurationExpressionPlace,
 				MethodToEvaluateComplexityNotFoundException, DuplicatedContextIdentifier, UnmappedContextException,
 				DifferentlyAggregatedLocation, VariationPointPlaceInArrayNotFound, UnknownResourceToProcessException, 
-				AlreadyMappedVariationPointContentsInjection, AssetMisuse, AlreadyChosenVariationPointForInjectionException {
+				AlreadyMappedVariationPointContentsInjection, AssetMisuse, AlreadyChosenVariationPointForInjectionException, TimeoutException {
 		String inputFilePath = EvolutionSamples.FIVE_EDGE_INPUT_PATHS.get(0);
 		String outputFilePath = SharedConfiguration.PATH_TO_EVOLUTION_DIRECTORY;
 		String currentEvolvedScriptRelativePath = "/js/platnoJS.js"; // this should be changed for each evolved project

@@ -5,6 +5,7 @@ import org.json.simple.JSONObject;
 
 import asynchronousPublisher.MessageQueueManager.PublishedMessageTypes;
 import asynchronousPublisher.UnknownMessageTypeException;
+import asynchronousPublisher.evolvedSPLPublishing.EvolvedSPLPublisher;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,12 +16,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.TimeoutException;
 
 import codeContext.persistence.UpdatedTreePersistence;
 import codeContext.processors.export.ExportLocationAggregation;
 import codeContext.processors.export.ExportLocations;
 import evolutionSimulation.EvolutionConfiguration;
+import evolutionSimulation.iteration.EvolutionSamples;
 import evolutionSimulation.productAssetsInitialization.CanvasBasedResource;
 import evolutionSimulation.productAssetsInitialization.HTMLCanvasToTemplateInjector;
 import evolutionSimulation.productAssetsInitialization.Resource;
@@ -221,6 +222,7 @@ public class VariationPointConjunctor {
 		String targetDestinationPath = evolutionConfiguration.getOutputFilePath(projectId);
 		String adaptedTargetDestinationPath;
 		String templateDestinationPath;
+		String currentScriptPath;
 		HTMLCanvasToTemplateInjector htmlCanvasToTemplateInjector;
 		List<Resource> usedResources;
 		
@@ -268,6 +270,8 @@ public class VariationPointConjunctor {
 					this.derivationResourcesManager.getEvolutionConfigurationReference().getInitialCode(), adaptedTargetDestinationPath, 
 					templateDestinationPath, usedResources, evolutionConfiguration, synthesizedContent, projectId, isInitialPhase);
 			
+			currentScriptPath = adaptedTargetDestinationPath + evolutionConfiguration.getCurrentEvolvedScriptRelativePath();
+			
 			if (SPLEvolutionCore.SERIALIZE_APPLICATION_AST || SPLEvolutionCore.SERIALIZE_VARIATION_POINTS) {
 				this.serializeModifiedVariationPointConfiguration(adaptedTargetDestinationPath, synthesizedContent, projectId);
 			}
@@ -314,6 +318,12 @@ public class VariationPointConjunctor {
 		EvolutionConfiguration evolutionConfiguration = this.derivationResourcesManager.getEvolutionConfigurationReference();
 		this.copyBaseProjectAssets(projectId, evolutionConfiguration); //copy all files from original/ or common ones/those that should be updated
 		this.prepareTestTemplateAndDependencies(projectId, evolutionConfiguration, exportedAggregations, synthesizedContent);
+		
+		// ONLY SPLs after first iteration are process, others needs to be processed after flattening which creates more sample SPLs and puts XXX into their name
+		if (evolutionConfiguration.getIteration() == 1) {
+			String targetDestinationPath = evolutionConfiguration.getOutputFilePath(projectId);
+			EvolvedSPLPublisher.publishMessageAboutEvolvedSPL(evolutionConfiguration, projectId, targetDestinationPath, false);
+		}
 		return projectId;
 	}
 	
@@ -345,39 +355,12 @@ public class VariationPointConjunctor {
 		this.copyBaseProjectAssets(projectId, evolutionConfiguration);
 		this.updateAstAboutExportedAggregations(projectId, evolutionConfiguration, exportedAggregations);
 		
+
 		String targetDestinationPath = evolutionConfiguration.getOutputFilePath(projectId);
 		String currentScriptPath = targetDestinationPath + evolutionConfiguration.getCurrentEvolvedScriptRelativePath();
 		this.serializeSythesizedContent(currentScriptPath, synthesizedContent);
-		
-		this.publishMessageAboutEvolvedSPL(evolutionConfiguration, projectId, targetDestinationPath, currentScriptPath);
+		EvolvedSPLPublisher.publishMessageAboutEvolvedSPL(evolutionConfiguration, projectId, targetDestinationPath, false);
 		return projectId;
-	}
-	
-	/**
-	 * Publishes information about currently evolved SPL, especially its location to create diverse representations
-	 * 
-	 * @param evolutionConfiguration - object that manages evolution configuration
-	 * @param projectId - unique project identifier
-	 * @param targetDestinationPath - destination path to resulting directory
-	 * @param currentScriptPath
-	 */
-	private void publishMessageAboutEvolvedSPL(EvolutionConfiguration evolutionConfiguration, 
-			String projectId, String targetDestinationPath, String currentScriptPath) {
-		int iterationNumber = evolutionConfiguration.getIteration();
-		if (SPLEvolutionCore.PRODUCE_MESSAGES_INTO_MQ_AFTER_DERIVATION) {
-			JSONObject messageContent = new JSONObject();
-			messageContent.put("evolutionIteration", String.valueOf(iterationNumber));
-			messageContent.put("projectId", projectId);
-			messageContent.put("targetPath", targetDestinationPath);
-			messageContent.put("evolvedScriptPath", currentScriptPath);
-			
-			try {
-				this.derivationResourcesManager.getEvolutionConfigurationReference().publishMessageThroughQueueManager(
-						PublishedMessageTypes.SPL_EVOLVED, messageContent.toString());
-			} catch (IOException | TimeoutException | UnknownMessageTypeException e) {
-				e.printStackTrace();
-			}
-		}
 	}
 	
 	/**

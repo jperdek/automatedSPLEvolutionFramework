@@ -22,6 +22,11 @@ public class RabbitMQAdapter {
 	protected ConnectionFactory factory;
 	
 	/**
+	 * Channel with message flow
+	 */
+	protected Channel channel;
+	
+	/**
 	 * The name of exchange used to share messages
 	 */
 	protected String exchangeName;
@@ -29,10 +34,22 @@ public class RabbitMQAdapter {
 	
 	/**
 	 * Instantiates general RabbitMQ adapter instance
+	 * 
+	 * @throws TimeoutException 
+	 * @throws IOException 
 	 */
-	public RabbitMQAdapter() {
+	public RabbitMQAdapter(String exchangeName) throws IOException, TimeoutException {
 		this.factory = new ConnectionFactory();
-		this.exchangeName = "ABSTRACT";
+		this.factory.setUsername(MessageExchangeConnectionConfiguration.MESSAGE_EXCHANGE_CUSTOM_USER);
+		factory.setPassword(MessageExchangeConnectionConfiguration.MESSAGE_EXCHANGE_CUSTOM_PASSWORD);
+		factory.setVirtualHost(MessageExchangeConnectionConfiguration.MESSAGE_EXCHANGE_VHOST);
+		factory.setHost(MessageExchangeConnectionConfiguration.MESSAGE_EXCHANGE_HOST);
+		factory.setPort(MessageExchangeConnectionConfiguration.MESSAGE_EXCHANGE_PORT);
+		
+		this.channel = this.createChannel();
+		this.exchangeName = exchangeName;
+		this.channel.exchangeDeclare(this.exchangeName, "fanout");
+		System.out.println("Created exchange: " + this.channel);
 	}
 	
 	/**
@@ -54,11 +71,17 @@ public class RabbitMQAdapter {
 	 */
 	public Channel createChannel() throws IOException, TimeoutException { return this.getConnection().createChannel(); }
 	
+	/**
+	 * Publishes message to queue under respective channel and exchange name
+	 * 
+	 * @param message
+	 * @throws IOException
+	 * @throws TimeoutException
+	 */
 	public void publishMessageToQueue(String message) throws IOException, TimeoutException {
-		Channel channel = this.createChannel();
-        channel.exchangeDeclare(this.exchangeName, "fanout");
+		if (this.channel == null) { this.channel = this.createChannel(); }
 
-        channel.basicPublish(this.exchangeName, "", null, message.getBytes("UTF-8"));
+        this.channel.basicPublish(this.exchangeName, "", null, message.getBytes("UTF-8"));
         System.out.println(" Publishing information " + this.exchangeName + ": '" + message + "'");
 	}
 }

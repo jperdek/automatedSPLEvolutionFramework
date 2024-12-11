@@ -1,6 +1,7 @@
 package evolutionSimulation.orchestrationOfEvolutionIterations.test;
 
 import java.io.IOException;
+import java.util.concurrent.TimeoutException;
 
 import codeContext.processors.NotFoundVariableDeclaration;
 import dataRepresentationsExtensions.DataRepresentationsConfiguration;
@@ -51,8 +52,10 @@ public class CompletePositiveVariabilityFocusedEvolutionTest {
 	 * Prepares the configuration for the initial evolution phase
 	 * 
 	 * @return the configuration for the initial evolution phase
+	 * @throws TimeoutException 
+	 * @throws IOException 
 	 */
-	public EvolutionConfiguration prepareInitialConfiguration() {
+	public EvolutionConfiguration prepareInitialConfiguration() throws IOException, TimeoutException {
 		String inputFilePath = EvolutionSamples.FIVE_EDGE_INPUT_PATHS.get(0);
 		String outputFilePath = SharedConfiguration.PATH_TO_EVOLUTION_DIRECTORY;
 		String currentEvolvedScriptRelativePath = "/js/platnoJS.js"; // this should be changed for each evolved project
@@ -92,13 +95,14 @@ public class CompletePositiveVariabilityFocusedEvolutionTest {
 	 * @throws AlreadyMappedVariationPointContentsInjection
 	 * @throws AssetMisuse 
 	 * @throws AlreadyChosenVariationPointForInjectionException 
+	 * @throws TimeoutException 
 	 */
 	public static void main(String args[]) throws NotFoundVariableDeclaration, IOException, InterruptedException,
 		InvalidSystemVariationPointMarkerException, DifferentAnnotationTypesOnTheSameVariationPoint,
 		DuplicatedAnnotation, DuplicateCandidateIdentifier, AlreadyProvidedArgumentInConfigurationExpressionPlace,
 		MethodToEvaluateComplexityNotFoundException, DuplicatedContextIdentifier, UnmappedContextException,
 		DifferentlyAggregatedLocation, VariationPointPlaceInArrayNotFound, UnknownResourceToProcessException, 
-		AlreadyMappedVariationPointContentsInjection, AssetMisuse, AlreadyChosenVariationPointForInjectionException {
+		AlreadyMappedVariationPointContentsInjection, AssetMisuse, AlreadyChosenVariationPointForInjectionException, TimeoutException {
 			CompletePositiveVariabilityFocusedEvolutionTest completeIyterativeDevelopment = new  CompletePositiveVariabilityFocusedEvolutionTest();
 			EvolutionConfiguration evolutionConfiguration = completeIyterativeDevelopment.prepareInitialConfiguration();
 			ExportAssetPlanner exportAssetPlanner = new AssetPlannerBaseStrategy(new PlanAssetOnce());

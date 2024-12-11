@@ -49,8 +49,10 @@ public class MessageQueueManager {
 	
 	/**
 	 * Instantiates message queue manager to handle communication with message queue
+	 * @throws TimeoutException 
+	 * @throws IOException 
 	 */
-	public MessageQueueManager() {
+	public MessageQueueManager() throws IOException, TimeoutException {
 		if (SPLEvolutionCore.PRODUCE_MESSAGES_INTO_MQ_AFTER_DERIVATION) {
 			this.evolvedSPLProducer = new EvolvedSPLPublisher();
 		}

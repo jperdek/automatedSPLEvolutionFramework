@@ -5,15 +5,12 @@ import java.io.IOException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import asynchronousPublisher.evolvedSPLPublishing.EvolvedSPLPublisher;
 import codeConstructsEvaluation.transformation.ASTConverterClient;
 import codeConstructsEvaluation.transformation.PostRequester;
 import codeContext.processors.NotFoundVariableDeclaration;
 import codeContext.processors.export.exportedFileUnits.FileExportUnitsToMerge;
 import codeContext.processors.export.exportedFileUnits.FileExportsUnits;
 import dividedAstExport.InvalidSystemVariationPointMarkerException;
-import divisioner.Divisioner;
-import divisioner.VariationPointDivisionConfiguration;
 import divisioner.VariationPointDivisioning;
 import evolutionSimulation.EvolutionConfiguration;
 import evolutionSimulation.orchestrationOfEvolutionIterations.SPLCandidateSelectionStrategies.SPLNextEvolutionIterationCandidateSelectionStrategy;

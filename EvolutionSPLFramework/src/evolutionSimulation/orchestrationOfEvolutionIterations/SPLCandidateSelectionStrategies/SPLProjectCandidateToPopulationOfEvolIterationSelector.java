@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import evolutionSimulation.EvolutionConfiguration;
 import evolutionSimulation.orchestrationOfEvolutionIterations.SPLCandidateLoadingMechanism;
 import evolutionSimulation.orchestrationOfEvolutionIterations.SPLCandidateSelectionStrategies.imageContentQualityAssignment.VariationPointsDataAggregations;
 
@@ -76,6 +77,7 @@ public class SPLProjectCandidateToPopulationOfEvolIterationSelector {
 	 * 
 	 * @param previousEvolutionDirectory - previously used evolution directory
 	 * @param evolIterationCandidateSelectionStrategy - the strategy to select the most suitable candidates according to the settings in configuration 
+	 * @param evolutionConfiguration
 	 * @return the list of paths to project directories of the most suitable candidates selected according to 
 	 * the settings in configuration which are located in directory of the previously used sub-evolution iteration
 	 * 
@@ -83,9 +85,9 @@ public class SPLProjectCandidateToPopulationOfEvolIterationSelector {
 	 */
 	public List<String> getPathsToEachSPLProjectCandidateFromPopulation(int numberOfNextEvolutionCandidates, 
 			String previousEvolutionDirectory, SPLNextEvolutionIterationCandidateSelectionStrategy
-			evolIterationCandidateSelectionStrategy) throws IOException {
+			evolIterationCandidateSelectionStrategy, EvolutionConfiguration evolutionConfiguration) throws IOException {
 		
-		mechanismForSPLCandidateLoading.loadAndParseSPLCandidates(previousEvolutionDirectory, variationPointsDataAggregations);
+		mechanismForSPLCandidateLoading.loadAndParseSPLCandidates(previousEvolutionDirectory, variationPointsDataAggregations, evolutionConfiguration);
 		List<String> listOfCandidateSPLFileNamesFromEachPopulationMember = this.mechanismForSPLCandidateLoading.getListOfCandidateSPLFileNamesFromEachPopulationMember();
 		List<String> selectedCandidates = 
 				evolIterationCandidateSelectionStrategy.selectNextEvolutionIterationCandidates(numberOfNextEvolutionCandidates,

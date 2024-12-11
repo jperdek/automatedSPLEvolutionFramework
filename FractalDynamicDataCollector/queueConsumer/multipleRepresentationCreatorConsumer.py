@@ -1,37 +1,61 @@
 import json
 import logging
 import os
+import sys
 
 import pika
 
 from global_worker_configuration import DataRepresentationsClient
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+logger.addHandler(logging.StreamHandler(sys.stdout))
 
+processed_spls = {}
 
 def callback_func(channel, method, properties, body):
-    task_configuration = json.loads(body)
-    evolved_spl_path = task_configuration["targetPath"]
-    evolved_spl_script_path = task_configuration["evolvedScriptPath"]
-    project_id = task_configuration["projectId"]
-    evolution_iteration = task_configuration["evolutionIteration"]
+    try:
+        task_configuration = json.loads(body)
+        project_id = task_configuration["projectId"]
+        logger.debug(">------| Processing data creation request after SPL: " + project_id + " has been evolved.")
+        evolved_spl_path = task_configuration["targetPath"]
+        evolution_iteration = task_configuration["evolutionIteration"]
+        if evolved_spl_path not in processed_spls.keys():
+            processed_spls[evolved_spl_path] = evolved_spl_path
+            destination_spl_path = DataRepresentationsClient.create_all_representations(evolved_spl_path,
+                                                                                        evolution_iteration,
+                                                                                        project_id, logger)
+            logger.debug(">------| Finished all processing tasks. Final location: " + destination_spl_path)
+        else:
+            logger.debug("SPL has been already processed. Skipping...")
+        if channel.is_open:
+            logger.debug("Final OK ack is sent")
+            channel.basic_ack("OK")
 
-    DataRepresentationsClient.create_all_representations(evolved_spl_path, evolved_spl_script_path, evolution_iteration,
-                                                         project_id, logger)
+    except Exception as e:
+        if channel.is_open:
+            logger.debug("Error is thrown. Skipping..." + str(e))
+            channel.basic_reject(method.delivery_tag)
 
 
 if __name__ == "__main__":
-    credentials = pika.PlainCredentials(os.getenv("CONSUMER_USER_NAME", "consumerUser"),
-                                        os.getenv("CONSUMER_USER_PASSWORD", "consumerUser"))
-    connection = pika.BlockingConnection(
-        pika.ConnectionParameters(host=os.getenv("RABBIT_MQ_HOST", "docker.host.internal"), port=5672,
-                                  credentials=credentials))
+    credentials = pika.PlainCredentials(username=os.getenv("CONSUMER_USER_NAME", "guest"),
+                                        password=os.getenv("CONSUMER_USER_PASSWORD", "guest"))
+    connection_url = "amqp://" + os.getenv("CONSUMER_USER_NAME", "guest") + ":" + os.getenv(
+        "CONSUMER_USER_PASSWORD", "guest") + "@" + os.getenv(
+        "RABBIT_MQ_HOST", "localhost") + ":" + "5672/rabbitmq?heartbeat=" + str(os.getenv("RABBIT_MQ_HEARBEAT", 0))
+    connection_params = pika.URLParameters(connection_url)
+
+    connection = pika.BlockingConnection(connection_params)
 
     channel = connection.channel()
-    result = channel.queue_declare(exclusive=True)
-    channel.queue_bind(result.method.queue,
-                       exchange="EVOLVED_SPL",
-                       routing_key="*.*.*.*.*")
+    queue_name = os.getenv("QUEUE_EVOLVED_SPL", "EVOLVED_SPL")
+    result = channel.queue_declare(queue=queue_name)
+    channel.queue_bind(result.method.queue, exchange=queue_name, routing_key="*.*.*.*.*")
 
-    channel.basic_consume(callback_func, result.method.queue, no_ack=True)
+    if os.getenv("PURGE_QUEUE_ON_START", True):
+        logger.debug("Purging queue: " + queue_name)
+        channel.queue_purge(queue_name)
+    channel.basic_consume(queue=result.method.queue, on_message_callback=callback_func)
+    logger.debug(">------| Consuming started |--------<")
     channel.start_consuming()

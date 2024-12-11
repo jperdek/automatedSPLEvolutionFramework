@@ -154,7 +154,7 @@ public class EvolutionIterationsPipeline {
 				candidateForPopulationSelector = new SPLProjectCandidateToPopulationOfEvolIterationSelector(candidateForPopulationSelector);
 				inputPaths = candidateForPopulationSelector.getPathsToEachSPLProjectCandidateFromPopulation(
 						numberEvolvedCandidatesFromLastIteration, 
-						pathToEvolvedSPLProjectsDirectory, strategySPLNextEvolutionIterationCandidateSelection);
+						pathToEvolvedSPLProjectsDirectory, strategySPLNextEvolutionIterationCandidateSelection, evolutionConfiguration);
 				System.out.println("EVOLUTION ITERATION: " + customizedEvolutionConfiguration.getIteration() + " Input Paths number: " + inputPaths.size());
 				for (String inputPath: inputPaths) {
 					pathToScriptInputFilePath = inputPath + evolutionConfiguration.getCurrentEvolvedScriptRelativePath();
