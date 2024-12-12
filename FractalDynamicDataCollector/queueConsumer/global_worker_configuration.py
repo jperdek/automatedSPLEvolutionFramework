@@ -34,7 +34,7 @@ class DataRepresentationsClient:
     @staticmethod
     def get_and_save_screenshot(evolved_spl_index_path: str, resulting_spl_project_path: str,
                                 logger: Optional[logging.Logger] = None) -> None:
-        service_url = DataRepresentationsClient.get_server_path() + "/api/screenshoter/screenshoter?url=" + evolved_spl_index_path
+        service_url = DataRepresentationsClient.get_server_path() + "/api/screenshoter/screenshoter?url=file://" + evolved_spl_index_path
         response = requests.get(service_url)
         if response.status_code == 200:
             screenshot = response.content
@@ -50,7 +50,7 @@ class DataRepresentationsClient:
     @staticmethod
     def get_and_save_graph_data(evolved_spl_index_path: str, resulting_spl_project_path: str,
                                 logger: Optional[logging.Logger] = None) -> None:
-        service_url = DataRepresentationsClient.get_server_path() + "/api/graph-extraction/extractObject?max_depth=70&url=" + evolved_spl_index_path
+        service_url = DataRepresentationsClient.get_server_path() + "/api/graph-extraction/extractObject?max_depth=70&url=file://" + evolved_spl_index_path
         response = requests.get(service_url)
         if response.status_code == 200:
             spl_graph = response.text
@@ -66,7 +66,7 @@ class DataRepresentationsClient:
     @staticmethod
     def get_and_save_svg_data(evolved_spl_index_path: str, resulting_spl_project_path: str,
                               logger: Optional[logging.Logger] = None) -> None:
-        service_url = DataRepresentationsClient.get_server_path() + "/api/svg_creator/create_svg?time_to_wait=10&generated_svg_id=mySvg&draw_line_in_op=drawLine&replacement_function=function(context, x1, y1, x2, y2, thickness)&url=" + evolved_spl_index_path
+        service_url = DataRepresentationsClient.get_server_path() + "/api/svg_creator/create_svg?time_to_wait=10&generated_svg_id=mySvg&draw_line_in_op=drawLine&replacement_function=function(context, x1, y1, x2, y2, thickness)&url=file://" + evolved_spl_index_path
         response = requests.get(service_url)
         if response.status_code == 200:
             spl_raster = response.text
@@ -83,6 +83,8 @@ class DataRepresentationsClient:
                                    project_id: str, logger: Optional[logging.Logger] = None) -> str:
         destination_spl_project_path = DataRepresentationsClient.get_destination_dataset_path(
             evolution_iteration, project_id)
+        evolved_spl_path = evolved_spl_path.strip().replace("&#39;", "").strip("'")
+        destination_spl_project_path = destination_spl_project_path.strip().replace("&#39;", "").strip("'")
         DataRepresentationsClient.copy_whole_project(evolved_spl_path, destination_spl_project_path, logger)
         DataRepresentationsClient.get_and_save_screenshot(evolved_spl_path + "/index.html",
                                                           destination_spl_project_path, logger)

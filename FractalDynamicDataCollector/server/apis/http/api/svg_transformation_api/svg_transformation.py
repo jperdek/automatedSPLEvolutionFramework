@@ -11,6 +11,7 @@ class SVGImplementation:
     ON_READY_JQUERY = 1
     TRANSPILE_TS = 2
 
+
 class SVGTransform:
 
     @staticmethod
@@ -123,7 +124,7 @@ class SVGTransform:
         screenshooter = PlaywrightScreenshooter("chromium")
         page = screenshooter.new_page()
         if "http" not in web_page_location:
-            with open(web_page_location, "r", encoding="utf-8") as file:
+            with open(web_page_location.replace("file://", ""), "r", encoding="utf-8") as file:
                 html_to_parse = file.read()
         else:
             html_to_parse = requests.get(web_page_location).content
@@ -152,9 +153,9 @@ class SVGTransform:
             page_body.append(new_script2)
         file_name = web_page_location[web_page_location.rfind("/") + 1:]
         new_file_name = web_page_location.replace(file_name, "") + "__COPY__" + file_name
-        with open(new_file_name, "w", encoding="utf-8") as file:
+        with open(new_file_name.replace("file://", ""), "w", encoding="utf-8") as file:
             file.write(str(page_soup))
-        page.goto(new_file_name, wait_until="networkidle")
+        page.goto("file://" + new_file_name.replace("file://", ""), wait_until="networkidle")
         file_to_rem = pathlib.Path(new_file_name)
         file_to_rem.unlink()
         time.sleep(time_to_wait)
