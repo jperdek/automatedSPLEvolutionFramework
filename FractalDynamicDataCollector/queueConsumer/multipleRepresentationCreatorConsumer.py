@@ -54,7 +54,7 @@ if __name__ == "__main__":
     result = channel.queue_declare(queue=queue_name)
     channel.queue_bind(result.method.queue, exchange=queue_name, routing_key="*.*.*.*.*")
 
-    if os.getenv("PURGE_QUEUE_ON_START", True):
+    if os.getenv("PURGE_QUEUE_ON_START", False):
         logger.debug("Purging queue: " + queue_name)
         channel.queue_purge(queue_name)
     channel.basic_consume(queue=result.method.queue, on_message_callback=callback_func)

@@ -156,7 +156,7 @@ class SVGTransform:
         with open(new_file_name.replace("file://", ""), "w", encoding="utf-8") as file:
             file.write(str(page_soup))
         page.goto("file://" + new_file_name.replace("file://", ""), wait_until="networkidle")
-        file_to_rem = pathlib.Path(new_file_name)
+        file_to_rem = pathlib.Path(new_file_name.replace("file://", "").replace("file:", ""))
         file_to_rem.unlink()
         time.sleep(time_to_wait)
 
