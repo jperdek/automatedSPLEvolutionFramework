@@ -135,6 +135,10 @@ public class AllVariationPointContentInjectionAggregator implements SelectionOfC
 		if(DebugInformation.PROCESS_STEP_INFORMATION) {
 			System.out.println("..........." + harvestedContentMarkerCapacitiesAll.size());
 		}
+		if (harvestedContentMarkerCapacitiesAll.size() == 0) {
+			//System.out.println("Cannot choose candiate to inject. Terminating evolution...");
+			//System.exit(0);
+		}
 		return harvestedContentMarkerCapacitiesAll;
 	}
 }

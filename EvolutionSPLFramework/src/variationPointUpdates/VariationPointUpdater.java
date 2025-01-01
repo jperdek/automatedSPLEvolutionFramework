@@ -8,7 +8,6 @@ import codeContext.processors.ASTTextExtractorTools;
 import codeContext.processors.NotFoundVariableDeclaration;
 import dividedAstExport.InvalidSystemVariationPointMarkerException;
 import divisioner.VariationPointDivisionConfiguration;
-import splEvolutionCore.SPLEvolutionCore;
 import splEvolutionCore.candidateSelector.AlreadyProvidedArgumentInConfigurationExpressionPlace;
 import splEvolutionCore.candidateSelector.NegativeVariationPointCandidate;
 import splEvolutionCore.candidateSelector.valueAssignment.cleaning.AnnotationsFromCodeRemover;

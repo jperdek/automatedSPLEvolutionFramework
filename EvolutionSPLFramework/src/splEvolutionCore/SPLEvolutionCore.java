@@ -14,8 +14,9 @@ import java.util.List;
 public interface SPLEvolutionCore {
 	
 	public static final boolean SHOW_ALL_SYSTEM_ANNOTATIONS_ON_DEBUG = true;
+	
 	/**
-	 * Is evolution should be applied in form of HTML template //false is not direclty supported
+	 * Is evolution should be applied in form of HTML template //false is not directly supported
 	 */
 	public static final boolean APPLY_TO_TEMPLATE = true;
 	
@@ -240,22 +241,26 @@ public interface SPLEvolutionCore {
 	/**
 	 * method can be introduced if number of appended lines exceeds this constant
 	 */
-	public static final Integer NUMBER_LINES_TO_INTRODUCE_METHOD = 5;
+	public static final Integer NUMBER_LINES_TO_INTRODUCE_METHOD = Integer.parseInt(
+			System.getenv().getOrDefault("NUMBER_LINES_TO_INTRODUCE_METHOD", "5"));
 	
 	/**
 	 * class can be introduced if number of declarations exceeds this constant
 	 */
-	public static final Integer NUMBER_DECLARATIONS_TO_INTRODUCE_CLASS = 3;
+	public static final Integer NUMBER_DECLARATIONS_TO_INTRODUCE_CLASS = Integer.parseInt(
+			System.getenv().getOrDefault("NUMBER_DECLARATIONS_TO_INTRODUCE_CLASS", "3"));
 	
 	/**
 	 * class can be introduced if number of declared methods exceeds this constant
 	 */
-	public static final Integer NUMBER_METHODS_TO_INTRODUCE_CLASS = 8;
+	public static final Integer NUMBER_METHODS_TO_INTRODUCE_CLASS = Integer.parseInt(
+			System.getenv().getOrDefault("NUMBER_METHODS_TO_INTRODUCE_CLASS", "8"));
 	
 	/**
 	 * class can be introduced if number of lines exceeds this constant
 	 */
-	public static final Integer NUMBER_LINES_TO_CONVERT_METHOD_INTO_CLASS = 8;
+	public static final Integer NUMBER_LINES_TO_CONVERT_METHOD_INTO_CLASS = Integer.parseInt(
+			System.getenv().getOrDefault("NUMBER_LINES_TO_CONVERT_METHOD_INTO_CLASS", "8"));
 	
 
 	/**
@@ -308,42 +313,50 @@ public interface SPLEvolutionCore {
 	/**
 	 * if true then the resulting AST of derived SPL will be persisted otherwise not
 	 */
-	public final static boolean SERIALIZE_APPLICATION_AST = true;
+	public final static boolean SERIALIZE_APPLICATION_AST = Boolean.parseBoolean(
+			System.getenv().getOrDefault("SERIALIZE_APPLICATION_AST", "true"));
 	
 	/**
 	 * if true then the resulting variation points sequence of SPL will be persisted otherwise not 
 	 */
-	public final static boolean SERIALIZE_VARIATION_POINTS = true;
+	public final static boolean SERIALIZE_VARIATION_POINTS = Boolean.parseBoolean(
+			System.getenv().getOrDefault("SERIALIZE_VARIATION_POINTS", "true"));
 	
 	/**
 	 * String identifier identifying data from variation points - representation
 	 */
-	public final static String VARIATION_POINTS_DATA_NAME_ID_ENDING = "_VariationPointData.json";
+	public final static String VARIATION_POINTS_DATA_NAME_ID_ENDING = System.getenv().getOrDefault(
+			"VARIATION_POINTS_DATA_NAME_ID_ENDING", "_VariationPointData.json");
 	
 	/**
 	 * String identifier identifying AST of processed application
 	 */
-	public final static String PROCESSED_AST_NAME_ID_ENDING = "_AST.json";
+	public final static String PROCESSED_AST_NAME_ID_ENDING = System.getenv().getOrDefault(
+			"PROCESSED_AST_NAME_ID_ENDING", "_AST.json");
 	
 	/**
 	 * Clears comments from resulting SPL derivation
 	 */
-	public final static boolean CLEAR_COMMENTS_FROM_RESULTING_SPL_DERIVATION = true;
+	public final static boolean CLEAR_COMMENTS_FROM_RESULTING_SPL_DERIVATION = Boolean.parseBoolean(
+			System.getenv().getOrDefault("CLEAR_COMMENTS_FROM_RESULTING_SPL_DERIVATION", "true"));
 	
 	/**
 	 * Clears comments from resulting SPL during evolution iteration
 	 */
-	public final static boolean CLEAR_COMMENTS_DURING_SPL_EVOLUTION = true;
+	public final static boolean CLEAR_COMMENTS_DURING_SPL_EVOLUTION = Boolean.parseBoolean(
+			System.getenv().getOrDefault("CLEAR_COMMENTS_DURING_SPL_EVOLUTION", "true"));
 	
 	/**
 	 * Copy resources from shared library into each SPL derivation
 	 */
-	public final static boolean INCLUDE_SHARED_LIBRARY = true;
+	public final static boolean INCLUDE_SHARED_LIBRARY = Boolean.parseBoolean(
+			System.getenv().getOrDefault("INCLUDE_SHARED_LIBRARY", "true"));
 	
 	/**
 	 * Copy scripts with global configuration variables from shared library into each SPL derivation
 	 */
-	public final static boolean INCLUDE_SHARED_VARIABLES_IN_LIBRARY = true;
+	public final static boolean INCLUDE_SHARED_VARIABLES_IN_LIBRARY = Boolean.parseBoolean(
+			System.getenv().getOrDefault("INCLUDE_SHARED_VARIABLES_IN_LIBRARY", "true"));
 	
 	/**
 	 * Path to stored libraries for each evolved SPL/product/application
@@ -358,7 +371,8 @@ public interface SPLEvolutionCore {
 	/**
 	 * Restriction to maximal derived SPLs during evolution - obeyed only in special cases
 	 */
-	public final static int MAX_SPL_INSTANCES_TO_DERIVE = 2;
+	public final static int MAX_SPL_INSTANCES_TO_DERIVE = Integer.parseInt(
+			System.getenv().getOrDefault("MAX_SPL_INSTANCES_TO_DERIVE", "1"));
 
 	/**
 	 * The list of functions that cannot be instantiated into code fragment
@@ -368,27 +382,32 @@ public interface SPLEvolutionCore {
 	/**
 	 * Allows to use actual/currently available script variables, parameters and directly created particular types if true otherwise not
 	 */
-	public final static boolean USE_ACTUAL_SCRIPT_VARIABLES = true;
+	public final static boolean USE_ACTUAL_SCRIPT_VARIABLES = Boolean.parseBoolean(
+			System.getenv().getOrDefault("USE_ACTUAL_SCRIPT_VARIABLES", "true"));
 	
 	/**
 	 * Allows to harvest method or class parameters and optionally to use them for substitution if true otherwise not if true otherwise not
 	 */
-	public final static boolean USE_PARAMETERS = true;
+	public final static boolean USE_PARAMETERS = Boolean.parseBoolean(
+			System.getenv().getOrDefault("USE_PARAMETERS", "true"));
 	
 	/**
 	 * Allows to harvest global variables and to use them for substitution if true otherwise not
 	 */
-	public final static boolean USE_GLOBAL_VARIABLES = true;
+	public final static boolean USE_GLOBAL_VARIABLES = Boolean.parseBoolean(
+			System.getenv().getOrDefault("USE_GLOBAL_VARIABLES", "true"));
 	
 	/**
 	 * Restricts the harvesting only the variables on current hierarchy level if true otherwise not
 	 */
-	public final static boolean USE_CURRENT_LEVEL_VARIABLES_ONLY = true;
+	public final static boolean USE_CURRENT_LEVEL_VARIABLES_ONLY = Boolean.parseBoolean(
+			System.getenv().getOrDefault("USE_CURRENT_LEVEL_VARIABLES_ONLY", "true"));
 	
 	/**
 	 * Allows to instantiate new entities according to type if true otherwise not
 	 */
-	public final static boolean INSTANTIATE_NEW_ENTITIES_ACCORDING_TO_TYPE = true;
+	public final static boolean INSTANTIATE_NEW_ENTITIES_ACCORDING_TO_TYPE = Boolean.parseBoolean(
+			System.getenv().getOrDefault("INSTANTIATE_NEW_ENTITIES_ACCORDING_TO_TYPE", "true"));
 	
 	/**
 	 * Separates the currently available variable from the name/identifier of variation point to manage both
@@ -398,12 +417,14 @@ public interface SPLEvolutionCore {
 	/**
 	 * Disables inject and use external variables during the evolution (has impact on available code fragments used during positive variability handling)
 	 */
-	public final static boolean DISABLE_EXTERNAL_VARIABLE_INJECTIONS = true;
+	public final static boolean DISABLE_EXTERNAL_VARIABLE_INJECTIONS = Boolean.parseBoolean(
+			System.getenv().getOrDefault("DISABLE_EXTERNAL_VARIABLE_INJECTIONS", "false"));
 	
 	/**
 	 * Disables inject and use internally available variables during the evolution (has impact on available code fragments used during positive variability handling)
 	 */
-	public final static boolean DISABLE_INTERNAL_VARIABLE_INJECTIONS = false; 
+	public final static boolean DISABLE_INTERNAL_VARIABLE_INJECTIONS = Boolean.parseBoolean(
+			System.getenv().getOrDefault("DISABLE_INTERNAL_VARIABLE_INJECTIONS", "false"));
 	
 	/**
 	 * The name of file with configuration of custom annotations used to manage variability in SPL with their declaration

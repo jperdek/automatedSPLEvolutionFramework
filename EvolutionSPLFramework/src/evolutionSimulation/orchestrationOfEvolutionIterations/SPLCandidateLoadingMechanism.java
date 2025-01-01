@@ -69,6 +69,7 @@ public class SPLCandidateLoadingMechanism {
 	 */
 	public void loadAndParseSPLCandidates(String previousEvolutionDirectoryPath,
 			VariationPointsDataAggregations variationPointsDataAggregations, EvolutionConfiguration evolutionConfiguration) throws IOException {
+		System.out.println("PROCESSING NEXT EVOLUTION CANDIDATES...");
 		System.out.println("Loading candidates for new evolution iteration from directory: " + previousEvolutionDirectoryPath);
 		 File dir = new File(previousEvolutionDirectoryPath);
 		 File[] directoryListing = dir.listFiles();
@@ -174,15 +175,19 @@ public class SPLCandidateLoadingMechanism {
 		String insertedPath;
 		String pathAndVersion[];
 		JSONArray variationPointsData;
+
 		vpDataAbsolutePath = vpDataAbsolutePath.replace("\\", "/");
     	System.out.println("Processing the candidate file: " + vpDataAbsolutePath);
+    	
+    	// for each variation point data file that ends SPLEvolutionCore.VARIATION_POINTS_DATA_NAME_ID_ENDING loads new project
     	if (!childFile.isDirectory() && vpDataAbsolutePath.contains(SPLEvolutionCore.VARIATION_POINTS_DATA_NAME_ID_ENDING)) {
-    		System.out.println("Found variation point data.");
+    		System.out.println("Found variation point data: " + vpDataAbsolutePath);
     		fileContent = String.join(" ", Files.readAllLines(Path.of(vpDataAbsolutePath)));
     		variationPointsData = ASTLoader.loadJSONArrayFromString(fileContent);
     	  	fileName = vpDataAbsolutePath.split(SPLEvolutionCore.VARIATION_POINTS_DATA_NAME_ID_ENDING)[0];
     	  	fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
     	  	variationPointsDataAggregations.processVariationPointsData(variationPointsData, fileName);
+    	  	
     	  	for (File childFile2: directoryListing) {
 		    	vpDataAbsolutePath2 = childFile2.getAbsolutePath().replace("\\", "/");
 		    	pathAndVersion = vpDataAbsolutePath2.split("_XXX_");
@@ -198,6 +203,11 @@ public class SPLCandidateLoadingMechanism {
 		    		break;
     	  		}
     	  	}
+    	}
+    	
+    	System.out.println("Candidate to process: ");
+    	for (String candidateName: this.vpDataFileNameToProjectPath.values()) {
+    		System.out.println("Candidate: "  + candidateName);
     	}
 	}
 }

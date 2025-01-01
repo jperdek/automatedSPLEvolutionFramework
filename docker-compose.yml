@@ -69,6 +69,17 @@ services:
             PROCESSING_QUEUE_VHOST: rabbitmq
             MQ_CONSUMER_USER_NAME: ${CONSUMER_USER_NAME:-consumerUser}
             MQ_CONSUMER_USER_PASSWORD: ${CONSUMER_USER_PASSWORD:-consumerUser}
+            OUTPUT_DEBUG_FILES: ${OUTPUT_DEBUG_FILES:-false}
+            OUTPIT_FILES_AS_ANNOTATED_AST_AND_CODE: ${OUTPIT_FILES_AS_ANNOTATED_AST_AND_CODE:-false}
+            SHOW_SELECTED_SYNTESIZED_CODE_CONSTRUCTS: ${SHOW_SELECTED_SYNTESIZED_CODE_CONSTRUCTS:-false}
+            SHOW_MISSING_EVOLUTION_ENHANCEMENTS: ${SHOW_MISSING_EVOLUTION_ENHANCEMENTS:-false}
+            SHOW_POLLUTING_INFORMATION: ${SHOW_POLLUTING_INFORMATION:-false}
+            SHOW_CREATED_ENTITIES: ${SHOW_CREATED_ENTITIES:-false}
+            SHOW_INFORMATION_ABOUT_EXPORTS: ${SHOW_INFORMATION_ABOUT_EXPORTS:-false}
+            SHOW_INITIAL_COPIED_INFORMATION: ${SHOW_INITIAL_COPIED_INFORMATION:-false}
+            SHOW_POSITIVE_VARIABILITY_INCREMENT_CODE_FRAGMENT: ${SHOW_POSITIVE_VARIABILITY_INCREMENT_CODE_FRAGMENT:-false}
+            PROCESS_STEP_INFORMATION: ${PROCESS_STEP_INFORMATION:-false}
+            SHOW_DERIVED_PROJECT_INFORMATION: ${SHOW_DERIVED_PROJECT_INFORMATION:-false}
         networks:
             - buildernet
         depends_on:
@@ -139,7 +150,7 @@ services:
         networks:
             - buildernet
     splsToProcessMessageQueue:
-        image: rabbitmq:4.0-management-alpine
+        image: jperdek/spl-to-process-message-queue
         build:
             context: ./rabbitMQ
             dockerfile: Dockerfile

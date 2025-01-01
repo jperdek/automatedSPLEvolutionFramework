@@ -24,7 +24,8 @@ public interface CanvasBasedApplicationConfiguration {
 	 * Allows to use canvas CantoJS wrapper along with evolved (fractal-based) content
 	 * if true then CantoJS is used to wrap canvas otherwise false
 	 */
-	public static boolean WRAP_WITH_CANTO_JS = true;
+	public static boolean WRAP_WITH_CANTO_JS = Boolean.parseBoolean(
+			System.getenv().getOrDefault("WRAP_WITH_CANTO_JS", "true"));
 	
 	/**
 	 * The location of CantoJS script (perceived as resource or one of SPL assets)

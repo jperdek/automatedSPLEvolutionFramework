@@ -140,6 +140,7 @@ public class EvolutionIterationsPipeline {
 				evolutionCoreSettings = evolutionIteration.getAssociatedEvolutionCoreSettings();
 			}
 			
+			String pathForNextIteration = null;
 			if (pathToEvolvedSPLProjectsDirectory == null || pathToEvolvedSPLProjectsDirectory.equals("")) {
 				System.out.println("NO Path to evolved directory!");
 				if (DebugInformation.PROCESS_STEP_INFORMATION) { customizedEvolutionConfiguration.printCurrentConfiguration(); }
@@ -151,6 +152,7 @@ public class EvolutionIterationsPipeline {
 				strategySPLNextEvolutionIterationCandidateSelection = 
 						evolutionIteration.getEvolutionIterationCandidateSelectionMechanism();
 				
+				System.out.println("CANDIDATE POPULATION SELECTION ");
 				candidateForPopulationSelector = new SPLProjectCandidateToPopulationOfEvolIterationSelector(candidateForPopulationSelector);
 				inputPaths = candidateForPopulationSelector.getPathsToEachSPLProjectCandidateFromPopulation(
 						numberEvolvedCandidatesFromLastIteration, 
@@ -158,14 +160,18 @@ public class EvolutionIterationsPipeline {
 				System.out.println("EVOLUTION ITERATION: " + customizedEvolutionConfiguration.getIteration() + " Input Paths number: " + inputPaths.size());
 				for (String inputPath: inputPaths) {
 					pathToScriptInputFilePath = inputPath + evolutionConfiguration.getCurrentEvolvedScriptRelativePath();
-					System.out.println("Input Path: " + pathToScriptInputFilePath);
-
+					System.out.println("Input Path: " + inputPath);
+					System.out.println("Evolved Path: " + pathToScriptInputFilePath);
+					
 					if (pathToScriptInputFilePath.contains("_XXX__VariationPointData.json")) { continue; }
 					if (DebugInformation.PROCESS_STEP_INFORMATION) { customizedEvolutionConfiguration.printCurrentConfiguration(); }
+					
 					evolutionIteration.runEvolutioIteration(pathToScriptInputFilePath, 
 							customizedEvolutionConfiguration, evolutionCoreSettings, exportAssetPlanner);
 					//ADAPTATIONS ARE MISSING!!!!
 					//evolutionCoreSettings = evolutionIteration.getAssociatedEvolutionCoreSettings();
+					pathForNextIteration = pathToScriptInputFilePath.substring(pathToScriptInputFilePath.lastIndexOf("/") + 1);
+					pathForNextIteration = pathForNextIteration.substring(pathForNextIteration.lastIndexOf("/") + 1);
 				}
 			}
 			
@@ -179,7 +185,8 @@ public class EvolutionIterationsPipeline {
 			
 			customizedEvolutionConfiguration.incrementIteration();
 			evolutionConfiguration.updateIteration(customizedEvolutionConfiguration);
-			evolutionConfiguration.setPathToEvolvedSPLProjectDirectoryFromLatestEvolution(customizedEvolutionConfiguration);
+			evolutionConfiguration.setPathToEvolvedSPLProjectDirectoryFromLatestEvolution(customizedEvolutionConfiguration, pathForNextIteration);
+			System.out.println("PATH CLOSED");
 			customizedEvolutionConfiguration = evolutionConfiguration;
 		}
 	}

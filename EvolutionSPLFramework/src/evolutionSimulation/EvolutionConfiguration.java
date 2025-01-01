@@ -581,7 +581,7 @@ public class EvolutionConfiguration {
 	 * 
 	 * @param globalEvolutionConfiguration - evolution configuration from previous iterations 
 	 */
-	public void setPathToEvolvedSPLProjectDirectoryFromLatestEvolution(EvolutionConfiguration globalEvolutionConfiguration) {
+	public void setPathToEvolvedSPLProjectDirectoryFromLatestEvolution(EvolutionConfiguration globalEvolutionConfiguration, String pathForNextIteration) {
 		System.out.println("--------------------------------------------->  SETTINGS");
 		System.out.println(globalEvolutionConfiguration.getConcernName());
 		System.out.println(this.concernName);
@@ -592,9 +592,12 @@ public class EvolutionConfiguration {
 			System.out.println("Setting path to actually evolved SPL/applications for next evolution iteration: " + 
 							globalEvolutionConfiguration.getPathToEvolvedSPLProjectDirectory()); 
 		}
+		
+		if (pathForNextIteration != null) { this.setPathToScriptInputFile(pathForNextIteration); }
 		if (globalEvolutionConfiguration.getPathToEvolvedSPLProjectDirectory() != null) {
 			System.out.println("Unknown path.....................................");
 			this.inputFilePath = this.pathToEvolvedSPLProjectDirectory = globalEvolutionConfiguration.getPathToEvolvedSPLProjectDirectory();
+			System.out.println("Setting path: " + this.inputFilePath);
 		} else {
 			this.inputFilePath = this.pathToEvolvedSPLProjectDirectory = 
 					globalEvolutionConfiguration.getOutputFilePathToDirectoryUsedInCurrentEvolution();

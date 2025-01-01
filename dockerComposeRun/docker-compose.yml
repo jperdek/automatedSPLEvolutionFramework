@@ -1,0 +1,179 @@
+services:
+    dynamicDataCollectorService:
+        build: 
+            context: ./FractalDynamicDataCollector
+            dockerfile: DockerfileDeployNginx
+        command: python /srv/flask_app/apis/http/api/endpoints.py
+        image: jperdek/dynamic-data-collector
+        ports:
+            - "127.0.0.1:5000:5000"
+        container_name: dynamicDataCollector
+        volumes:
+            - source-volume:/EvolutionSPLFramework
+            - dataset-products-volume:/dataset
+            - evolution-volume:/evolution
+        env_file: .env
+        environment:
+            FLASK_ENV: development
+            DATA_COLLECTOR_PORT: 5000
+            DATA_COLLECTOR_ADDRESS: host.docker.internal
+            PATH_TO_EVOLUTION_DIRECTORY: ${PATH_TO_EVOLUTION_DIRECTORY:-/evolution}
+            PATH_TO_DATASET_DIRECTORY: ${PATH_TO_DATASET_DIRECTORY:-/dataset}
+        depends_on:
+            - fullyAutomatedEvolutionFramework
+            - volumeCopyInit
+        networks:
+            - buildernet
+    volumeCopyInit:
+        build:
+            dockerfile: Dockerfile
+        command: cp -R /localFiles/splsToMerge /localFiles/resources  ${PROJECT_PATH:-/EvolutionSPLFramework}
+        env_file: .env
+        image: jperdek/volume-copy-init
+        environment:
+            PROJECT_PATH: ${PROJECT_PATH:-/EvolutionSPLFramework}
+            PATH_TO_EVOLUTION_DIRECTORY: ${PATH_TO_EVOLUTION_DIRECTORY:-/evolution}
+        volumes:
+            - dataset-products-volume:/dataset
+            - source-volume:/EvolutionSPLFramework
+            - evolution-volume:/evolution
+    fullyAutomatedEvolutionFramework:
+        build:
+            context: ./EvolutionSPLFramework
+            dockerfile: Dockerfile
+        image: jperdek/fully-automated-evolution
+        ports:
+            - "127.0.0.1:5002:5002"
+        container_name: fully-automated-evolution
+        links:
+            - astConverterAndComplexityAnalysisAPI
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+        volumes:
+            - dataset-products-volume:/dataset
+            - source-volume:/EvolutionSPLFramework
+            - evolution-volume:/evolution
+            - tmp-volume:/temp
+        env_file: .env
+        environment:
+            FLASK_ENV: development
+            IS_LINUX: true
+            SHARE_FILES_USING_DISK: ${SHARE_FILES_USING_DISK:-true}
+            DOCKER_HOST: host.docker.internal
+            PROJECT_PATH: ${PROJECT_PATH:-/EvolutionSPLFramework}
+            PATH_TO_EVOLUTION_DIRECTORY: ${PATH_TO_EVOLUTION_DIRECTORY:-/evolution}
+            CANTO_SCRIPT_RESOURCE_LOCATION: ${CANTO_SCRIPT_RESOURCE_LOCATION:-/EvolutionSPLFramework/resources/canto/canto-0.15.js}
+            PATH_TO_TEMP_DIRECTORY: ${PATH_TO_TEMP_DIRECTORY:-/temp}
+            QUEUE_EVOLVED_SPL: ${QUEUE_EVOLVED_SPL:-EVOLVED_SPL}
+            PROCESSING_QUEUE_HOST: host.docker.internal
+            PROCESSING_QUEUE_VHOST: rabbitmq
+            MQ_CONSUMER_USER_NAME: ${CONSUMER_USER_NAME:-consumerUser}
+            MQ_CONSUMER_USER_PASSWORD: ${CONSUMER_USER_PASSWORD:-consumerUser}
+        networks:
+            - buildernet
+        depends_on:
+            - splsToProcessMessageQueue
+            - astConverterAndComplexityAnalysisAPI
+            - volumeCopyInit
+    astConverterAndComplexityAnalysisAPI:
+        image: jperdek/ast-converter-and-complexity-analysis-api
+        build:
+            context: ./ConverterAndComplexityAnalyzerAPI
+            dockerfile: Dockerfile
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+        ports:
+            - "127.0.0.1:5001:5001"
+        networks:
+            - buildernet
+        volumes:
+            - tmp-volume:/temp
+        restart: on-failure
+        environment:
+            PATH_TO_TEMP_DIRECTORY: ${PATH_TO_TEMP_DIRECTORY:-/temp}
+    fractalKnowledgeBase: 
+        build:
+            context: ./SemanticBaseNeo4j/fractalKnowledgeBase
+            dockerfile: Dockerfile
+        image: jperdek/fractal-knowledge-base
+        hostname: neo4j
+        container_name: neo4j
+        ports:
+            - "7475:7475"
+            - "7688:7688"
+        volumes:
+            - ./neo4j/plugins:/plugins
+        env_file: .env
+        networks:
+            - buildernet
+        environment:
+            NEO4J_AUTH: ${KNOWLEDGE_BASE_USERNAME:-neo4j}/${KNOWLEDGE_BASE_PASSWORD:-featureNeo4}
+            NEO4J_dbms_logs_debug_level: ${KNOWLEDGE_BASE_LOG_LEVEL:-DEBUG}
+    splCreationConsumer: 
+        build:
+            context: ./FractalDynamicDataCollector/queueConsumer
+            dockerfile: Dockerfile
+        image: jperdek/spl-creation-consumer
+        volumes:
+            - dataset-products-volume:/dataset
+            - source-volume:/EvolutionSPLFramework
+            - evolution-volume:/evolution
+            - tmp-volume:/temp
+        env_file: .env
+        environment:
+            PROCESSING_QUEUE_USERNAME: ${PROCESSING_QUEUE_USERNAME:-splManager}
+            PROCESSING_QUEUE_PASSWORD: ${PROCESSING_QUEUE_PASSWORD:-splManager}
+            PROCESSING_QUEUE_VHOST: ${PROCESSING_QUEUE_VHOST:-/evolution}
+            CONSUMER_USER_NAME: ${CONSUMER_USER_NAME:-consumerUser}
+            CONSUMER_USER_PASSWORD: ${CONSUMER_USER_PASSWORD:-consumerUser}
+            RABBIT_MQ_HOST: splsToProcessMessageQueue
+            RABBIT_MQ_HEARTBEAT: "0"
+            QUEUE_EVOLVED_SPL: ${QUEUE_EVOLVED_SPL:-EVOLVED_SPL}
+            DATA_COLLECTOR_ADDRESS: host.docker.internal
+            PURGE_QUEUE_ON_START: false
+        depends_on:
+            - volumeCopyInit
+            - splsToProcessMessageQueue
+            - dynamicDataCollectorService
+        restart: on-failure
+        networks:
+            - buildernet
+    splsToProcessMessageQueue:
+        image: jperdek/spl-to-process-message-queue
+        build:
+            context: ./rabbitMQ
+            dockerfile: Dockerfile
+            args:
+                consumer_user_name: ${CONSUMER_USER_NAME:-consumerUser}
+                consumer_user_password: ${CONSUMER_USER_PASSWORD:-consumerUser}
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+        env_file: .env
+        environment:
+            RABBITMQ_DEFAULT_USER: ${PROCESSING_QUEUE_USERNAME:-splManager}
+            RABBITMQ_DEFAULT_PASS: ${PROCESSING_QUEUE_PASSWORD:-splManager}
+            RABBITMQ_DEFAULT_VHOST: ${PROCESSING_QUEUE_VHOST:-rabbitmq}
+            CONSUMER_USER_NAME: ${CONSUMER_USER_NAME:-consumerUser}
+            CONSUMER_USER_PASSWORD: ${CONSUMER_USER_PASSWORD:-consumerUser}
+        ports:
+            - "127.0.0.1:15672:15672"
+            - "127.0.0.1:5672:5672"
+            - "127.0.0.1:5671:5671"
+        volumes:
+            - rabbitmq-volume:/var/lib/rabbitmq/
+        networks:
+            - buildernet
+        healthcheck:
+            test: [ "CMD", "nc", "-z", "localhost", "5672" ]
+            interval: 5s
+            timeout: 15s
+            retries: 1
+volumes:
+    source-volume:
+    evolution-volume:
+    dataset-products-volume:
+    rabbitmq-volume:
+    tmp-volume:
+networks:
+    buildernet:
+        driver: "bridge"

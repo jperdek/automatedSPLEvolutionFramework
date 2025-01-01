@@ -110,13 +110,17 @@ public class CompletePositiveVariabilityFocusedEvolutionTest {
 			// evolutionConfiguration.setTemplateConfigurationPath(templateRelativePath);
 			SPLNextEvolutionIterationCandidateSelectionStrategy evolution2IterationStrategy = new RandomCandidateSelection();
 			SPLNextEvolutionIterationCandidateSelectionStrategy evolution3IterationStrategy = new RandomCandidateSelection();
+			SPLNextEvolutionIterationCandidateSelectionStrategy evolution4IterationStrategy = new RandomCandidateSelection();
+			
 			EvolutionIteration evolutionIteration1 = new EvolutionIteration();
 			EvolutionIteration evolutionIteration2 = new EvolutionIteration(evolution2IterationStrategy);
 			EvolutionIteration evolutionIteration3 = new EvolutionIteration(evolution3IterationStrategy);
+			EvolutionIteration evolutionIteration4 = new EvolutionIteration(evolution4IterationStrategy);
 			EvolutionIterationsPipeline evolutionIterationsPipeline = new EvolutionIterationsPipeline();
 			evolutionIterationsPipeline.addEvolutionIterationToSequence(evolutionIteration1);
 			evolutionIterationsPipeline.addEvolutionIterationToSequence(evolutionIteration2);
 			evolutionIterationsPipeline.addEvolutionIterationToSequence(evolutionIteration3);
+			evolutionIterationsPipeline.addEvolutionIterationToSequence(evolutionIteration4);
 			evolutionIterationsPipeline.runEvolutionPipeline(evolutionConfiguration, exportAssetPlanner);
 	}
 }
