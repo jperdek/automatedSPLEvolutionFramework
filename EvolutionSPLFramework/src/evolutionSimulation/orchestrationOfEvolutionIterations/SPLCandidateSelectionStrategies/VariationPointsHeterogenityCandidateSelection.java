@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import evolutionSimulation.orchestrationOfEvolutionIterations.SPLCandidateSelectionStrategies.imageContentQualityAssignment.VariationPointView;
 import evolutionSimulation.orchestrationOfEvolutionIterations.SPLCandidateSelectionStrategies.imageContentQualityAssignment.VariationPointsDataAggregations;
 import evolutionSimulation.orchestrationOfEvolutionIterations.SPLCandidateSelectionStrategies.imageContentQualityAssignment.VariationPointsDataOrganizer;
@@ -20,6 +23,11 @@ import evolutionSimulation.orchestrationOfEvolutionIterations.SPLCandidateSelect
  *
  */
 public class VariationPointsHeterogenityCandidateSelection implements SPLNextEvolutionIterationCandidateSelectionStrategy {
+
+	/**
+	 * Logger to track selection of candidates according to the heterogeneous relations to various code structures
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(SPLProjectCandidateToPopulationOfEvolIterationSelector.class);
 
 	/**
 	 * Data aggregations of categorized variation point according to their relation to the code
@@ -98,7 +106,7 @@ public class VariationPointsHeterogenityCandidateSelection implements SPLNextEvo
 		}
 		if (numberOfNextEvolutionCandidates < listOfCandidateSPLFileNamesFromEachPopulationMember.size() 
 				&& numberOfNextEvolutionCandidates < uniqueContentGroupsMapping.size()) {
-			System.out.println("Not all candidates are proportionally unique. Unique are only: " + 
+			logger.debug("Not all candidates are proportionally unique. Unique are only: " + 
 				uniqueContentGroupsMapping.size() + " from all of: " + numberOfNextEvolutionCandidates);
 		}
 		

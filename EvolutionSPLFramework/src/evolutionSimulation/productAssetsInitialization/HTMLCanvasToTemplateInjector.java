@@ -17,6 +17,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import codeConstructsEvaluation.transformation.PostRequester;
 import evolutionSimulation.EvolutionConfiguration;
@@ -38,6 +40,11 @@ import splEvolutionCore.SPLEvolutionCore;
 public class HTMLCanvasToTemplateInjector {
 
 	/**
+	 * Logger to track injection of HTML canvas to HTML template
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(EvolutionConfiguration.class);
+	
+	/**
 	 * The variable ID to produce unique variables
 	 */
 	private static int counterVariableID = 1;
@@ -56,7 +63,7 @@ public class HTMLCanvasToTemplateInjector {
 	 */
 	public String optionalyCreateHTMLFileAndGetContent(String htmlTemplateToInjectPath) throws IOException {
 		if(DebugInformation.SHOW_POLLUTING_INFORMATION) {
-			System.out.println("Creating or Loading file from: " +  htmlTemplateToInjectPath);
+			logger.debug("Creating or Loading file from: " +  htmlTemplateToInjectPath);
 		}
 
 		File file = new File(htmlTemplateToInjectPath);
@@ -188,7 +195,7 @@ public class HTMLCanvasToTemplateInjector {
 		boolean isLibrary, isBaseScript, shouldBeExcluded;
 		for (Resource importResource: importResources) {
 			String absoluteOrRelativeProjectPath = importResource.getRelativePathFromProject();
-			System.out.println("_____Handled resource: " + absoluteOrRelativeProjectPath);
+			logger.debug("_____Handled resource: " + absoluteOrRelativeProjectPath);
 			shouldBeExcluded = false;
 			for (String scriptToOmit: HTMLCanvasToTemplateInjector.scriptsToOmit) {
 				if (absoluteOrRelativeProjectPath.toLowerCase().contains(scriptToOmit.toLowerCase()) ||
@@ -197,7 +204,7 @@ public class HTMLCanvasToTemplateInjector {
 					// ADDED TO MANAGE RESOURCES PROPERLY
 					if (!SPLEvolutionCore.INCLUDE_SHARED_LIBRARY || 
 							!absoluteOrRelativeProjectPath.contains(SPLEvolutionCore.SHARED_LIBRARY_LOCATION)) { 
-						System.out.println("Excluded script: " + absoluteOrRelativeProjectPath);
+						logger.debug("Excluded script: " + absoluteOrRelativeProjectPath);
 						shouldBeExcluded = true; break;
 					}
 				}
@@ -215,7 +222,7 @@ public class HTMLCanvasToTemplateInjector {
 						processedResourceFileName = libraryPath.substring(libraryPath.replace("\\", "/").lastIndexOf("/"));
 						destinationLibraryPath = targetDestinationPath + "/" + SPLEvolutionCore.SHARED_LIBRARY_LOCATION;
 						destinationLibraryFilePath = destinationLibraryPath + "/" + processedResourceFileName;
-						System.out.println("Configuring inner configuration library file: " + destinationLibraryFilePath + ". Setting this path.");
+						logger.debug("Configuring inner configuration library file: " + destinationLibraryFilePath + ". Setting this path.");
 						try {
 							Files.createDirectories(Path.of(destinationLibraryPath));
 							Files.copy(Path.of(absoluteOrRelativeProjectPath), Path.of(destinationLibraryFilePath));
@@ -236,7 +243,7 @@ public class HTMLCanvasToTemplateInjector {
 						processedResourceFileName = libraryPath.substring(libraryPath.replace("\\", "/").lastIndexOf("/"));
 						destinationLibraryPath = targetDestinationPath + "/" + SPLEvolutionCore.SHARED_GLOBAL_VARIABLES_LOCATION;
 						destinationLibraryFilePath = destinationLibraryPath + "/" + processedResourceFileName;
-						System.out.println("Configuring inner configuration library file: " + destinationLibraryFilePath + ". Setting this path.");
+						logger.debug("Configuring inner configuration library file: " + destinationLibraryFilePath + ". Setting this path.");
 						try {
 							Files.createDirectories(Path.of(destinationLibraryPath));
 							Files.copy(Path.of(absoluteOrRelativeProjectPath), Path.of(destinationLibraryFilePath));
@@ -270,7 +277,7 @@ public class HTMLCanvasToTemplateInjector {
 						projectId, synthesizedContent, pathToImportInProject);
 			}
 			extractedVariableName = wrappedTypeScriptContentInVariable.getVariableName().replace("var ", "");
-			System.out.println("Using variable name: " + extractedVariableName + " for " + absoluteOrRelativeProjectPath);
+			logger.debug("Using variable name: " + extractedVariableName + " for " + absoluteOrRelativeProjectPath);
 			importedCodeToTranspile = "const jsCode" + Integer.toString(HTMLCanvasToTemplateInjector.counterVariableID) + 
 					" = window.ts.transpile(" + extractedVariableName + ".replaceAll(\"export\", \"window.export\"));\n eval(jsCode" + 
 					Integer.toString(HTMLCanvasToTemplateInjector.counterVariableID) + ");";

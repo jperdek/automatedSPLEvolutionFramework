@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import codeContext.processors.ASTTextExtractorTools;
 import codeContext.processors.export.ExportLocationAggregation;
@@ -41,6 +43,11 @@ import splEvolutionCore.derivation.VariationPointConjunctor;
  */
 public class NewContextsSynthesizer {
 
+	/**
+	 * Logger to track context synthesis into new evolved software product line/lines
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(NewContextsSynthesizer.class);
+	
 	/**
 	 * The strategy to select positive variability variation points to be updated
 	 */
@@ -139,7 +146,7 @@ public class NewContextsSynthesizer {
 			variationPointIDName = (String) actuallyProcessedVariationPointData.get("variationPointName");
 			
 			functionalityOnVarPoints = this.selectConstructs(positiveVariationPointConstructCandidate, selectedTemplate, variationPointIDName);
-			if (DebugInformation.PROCESS_STEP_INFORMATION) { System.out.println("Constructs selected: " + functionalityOnVarPoints.size()); }
+			if (DebugInformation.PROCESS_STEP_INFORMATION) { logger.debug("Constructs selected: " + functionalityOnVarPoints.size()); }
 			variationPointContentInjection = new VariationPointContentsInjection(selectedTemplate, functionalityOnVarPoints);
 			if (variationPointContentInjection.getCodeFragments().size() == 0) { continue; }
 			
@@ -166,12 +173,12 @@ public class NewContextsSynthesizer {
 		List<CodeFragment> associatedGranularityShapedCodeFragments = new ArrayList<CodeFragment>();
 		CodeFragment granularityShapedCodeFragment;
 		if (positiveVariationPointConstructCandidate.getPositiveVariationPointConstructs().size() == 0) { 
-			System.out.println("No positive variation point constructs are available!"); 
+			logger.debug("No positive variation point constructs are available!"); 
 		}
 		List<List<Entry<String, Map<String, AssignedValue>>>> positiveVariationPointConstructs = this.featureConstructsSelectionStrategy.selectFeaturesAllCases(
 				positiveVariationPointConstructCandidate.getPositiveVariationPointConstructs());
 		if (DebugInformation.PROCESS_STEP_INFORMATION && positiveVariationPointConstructs.size() == 0) { 
-			System.out.println("No constructs selected!"); 
+			logger.debug("No constructs selected!"); 
 		}
 		
 		// code granularity is handled in place of one variable point/positive variation point candidate template
@@ -191,7 +198,7 @@ public class NewContextsSynthesizer {
 	 * @param granularityShapedCodeFragment - the instance with information about particular code fragment
 	 */
 	private void showPrintedCode(CodeFragment granularityShapedCodeFragment) {
-		System.out.println(granularityShapedCodeFragment.getCode());
+		logger.debug(granularityShapedCodeFragment.getCode());
 	}
 	
 	/**
@@ -297,10 +304,10 @@ public class NewContextsSynthesizer {
 				codePartsArray = codeFragment.getCodeAst();
 				
 				if(DebugInformation.SHOW_POSITIVE_VARIABILITY_INCREMENT_CODE_FRAGMENT) {
-					System.out.println("Inserted code at marker: " + markerName);
+					logger.debug("Inserted code at marker: " + markerName);
 					int index = 0;
 					for (Object codePart: codePartsArray) {
-						System.out.println(index + ": " + codePart.toString());
+						logger.debug(index + ": " + codePart.toString());
 						index++;
 					}
 				}
@@ -447,13 +454,13 @@ public class NewContextsSynthesizer {
 					templateAstRoot, newApplicationAst, variationPointsContentInjection);
 	
 			/* try {
-				System.out.println(ASTConverterClient.convertFromASTToCode(newApplicationAst.toString()));
+				logger.debug(ASTConverterClient.convertFromASTToCode(newApplicationAst.toString()));
 			} catch(Exception e) {
 				
 			} */
 			// possibilities to serialized all information - inside synthesized content
 			if (processDirectly) {
-				if(DebugInformation.PROCESS_STEP_INFORMATION) { System.out.println("GENERATING..............");}
+				if(DebugInformation.PROCESS_STEP_INFORMATION) { logger.info("GENERATING..............");}
 				usedExportedAggregations = new ArrayList<ExportLocationAggregation>();
 				for (CodeFragment usedCodeFragment: variationPointsContentInjection.getCodeFragments()) {
 					associatedAggregatedLocationExports = usedCodeFragment.getExportLocationAggregation();

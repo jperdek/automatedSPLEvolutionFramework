@@ -2,6 +2,9 @@ package codeContext.processors.export;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import codeContext.ClassContext;
 import codeContext.FunctionContext;
 import codeContext.InnerContext;
@@ -19,6 +22,11 @@ import splEvolutionCore.DebugInformation;
  */
 public class ExportedContext implements ExportedInterface, ExportedObjectOrAvailableVariable {
 
+	/**
+	 * Logger to track information about exported context
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(ExportedContext.class);
+	
 	/**
 	 * Enumeration of code context types
 	 * -function
@@ -183,8 +191,8 @@ public class ExportedContext implements ExportedInterface, ExportedObjectOrAvail
 	 */
 	public void printContent() {
 		if (DebugInformation.SHOW_CREATED_ENTITIES) {
-			System.out.println(this.getIdentifier());
-			System.out.println("CONTEXT INFORMATION: " + this.contextInformation.toString());
+			logger.debug(this.getIdentifier());
+			logger.debug("CONTEXT INFORMATION: " + this.contextInformation.toString());
 		}
 	}
 

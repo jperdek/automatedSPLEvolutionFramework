@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import codeContext.InnerContext;
 import codeContext.objects.VariableObject;
 import splEvolutionCore.DebugInformation;
@@ -21,6 +24,11 @@ import splEvolutionCore.DebugInformation;
  *
  */
 public class VariableObjectInHierarchyCollector {
+
+	/**
+	 * Logger to track harvesting of parameters from hierarchic entity
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(VariableObjectInHierarchyCollector.class);
 
 	/**
 	 * Path from initial context in hierarchy to current place in hierarchy
@@ -193,9 +201,9 @@ public class VariableObjectInHierarchyCollector {
 				parametersDepth = this.currentSearchedObjectDepth + languageSpecificVariableSubstitutionConfiguration.getMaxHarvestingParametersDepthLevelAcrossHierarchies();
 				localVariablesDepth =  this.currentSearchedObjectDepth + languageSpecificVariableSubstitutionConfiguration.getMaxHarvestingLocalVariablesDepthLevelAcrossHierarchies();
 				if (DebugInformation.SHOW_POLLUTING_INFORMATION) {
-					System.out.println("Current hierarchy depth parameters: " + this.currentSearchedObjectDepth + " variables: " + this.currentSearchedObjectDepth);
-					System.out.println("Allowed parameters depth: " + this.currentSearchedObjectDepth + " to " + parametersDepth + " Depth: " + depth);
-					System.out.println("Allowed local variables depth: " + this.currentSearchedObjectDepth + " to " + localVariablesDepth + " Depth: " + depth);
+					logger.debug("Current hierarchy depth parameters: " + this.currentSearchedObjectDepth + " variables: " + this.currentSearchedObjectDepth);
+					logger.debug("Allowed parameters depth: " + this.currentSearchedObjectDepth + " to " + parametersDepth + " Depth: " + depth);
+					logger.debug("Allowed local variables depth: " + this.currentSearchedObjectDepth + " to " + localVariablesDepth + " Depth: " + depth);
 				}
 				parametersInHierarchy = parametersInDepth.getValue();
 				/*
@@ -208,7 +216,7 @@ public class VariableObjectInHierarchyCollector {
 						) {
 					if (DebugInformation.SHOW_POLLUTING_INFORMATION) {
 					  for (VariableObject vo: parametersInHierarchy) {
-						 System.out.println("Depth: " + depth + " Taken variable/parameter name: " + vo.getExportName() + " as " + vo.getExportType());
+						  logger.debug("Depth: " + depth + " Taken variable/parameter name: " + vo.getExportName() + " as " + vo.getExportType());
 					  }
 					}
 					foundParameters.addAll(parametersInHierarchy);

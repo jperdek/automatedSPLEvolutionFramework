@@ -1,6 +1,10 @@
 package evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment;
 
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 
 
@@ -12,6 +16,11 @@ import java.util.HashMap;
  */
 public class LoadedAssetsFrequencyManager {
 
+	/**
+	 * Logger to track the limits in the planning of particular assets
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(LoadedAssetsFrequencyManager.class);
+	
 	/**
 	 * The name of script which assets are guarded according to specified limits
 	 */
@@ -55,15 +64,15 @@ public class LoadedAssetsFrequencyManager {
 		Integer locationUsageFrequency = this.exportLocationUsageFrequency.get(constructName); 
 		if (maximalFrequency == null) { maximalFrequency = -1; }
 		if (locationUsageFrequency == null && maximalFrequency == -1) {
-			System.out.println("Allowing to plan asset: " + constructName + ". No associated limitations!");
+			logger.debug("Allowing to plan asset: " + constructName + ". No associated limitations!");
 			this.exportLocationUsageFrequency.put(constructName, 1);
 			return true;
 		}
 		if (maximalFrequency.intValue() == -1 || 
 				locationUsageFrequency.intValue() < maximalFrequency.intValue()) {
-			System.out.println("Allowing to plan asset: " + constructName);
+			logger.debug("Allowing to plan asset: " + constructName);
 			if (maximalFrequency.intValue() == -1) {
-				System.out.println("Holding limit: " + locationUsageFrequency.intValue() + " < " + maximalFrequency.intValue());
+				logger.debug("Holding limit: " + locationUsageFrequency.intValue() + " < " + maximalFrequency.intValue());
 			} 
 			this.exportLocationUsageFrequency.put(constructName, locationUsageFrequency.intValue() + 1);
 			return true;
@@ -79,7 +88,7 @@ public class LoadedAssetsFrequencyManager {
 	 */
 	public void addLocationIfNotExistWithLimit(String constructName, int usageLimit) {
 		if (!this.exportLocationUsageFrequencyLimits.containsKey(constructName)) {
-			//System.out.println("Setting limit: " + usageLimit + " for construct name: " + constructName);
+			//logger.debug("Setting limit: " + usageLimit + " for construct name: " + constructName);
 			this.exportLocationUsageFrequencyLimits.put(constructName, usageLimit);
 			this.exportLocationUsageFrequency.put(constructName, 0);
 		}
@@ -105,7 +114,7 @@ public class LoadedAssetsFrequencyManager {
 	 * @param usageLimit - the limit that will guard the possibility to plan particular asset
 	 */
 	public void addLocationWithLimit(String constructName, int usageLimit) {
-		//System.out.println("Setting limit: " + usageLimit + " for construct name: " + constructName);
+		//logger.debug("Setting limit: " + usageLimit + " for construct name: " + constructName);
 		this.exportLocationUsageFrequencyLimits.put(constructName, usageLimit);
 		this.exportLocationUsageFrequency.put(constructName, 0);
 	}

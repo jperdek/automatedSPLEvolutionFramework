@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import codeContext.processors.export.ExportedContext;
 import splEvolutionCore.DebugInformation;
 
@@ -20,11 +23,15 @@ import splEvolutionCore.DebugInformation;
 public class FileExportsUnits {
 	
 	/**
+	 * Logger to track information about export file exports units
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(FileExportsUnits.class);
+	
+	/**
 	 * The map of file names to associated exports
 	 */
 	private Map<String, FileExportUnit> fileExportsMap;
 	
-
 	/**
 	 * Initializes export units for particular (SPL project) files
 	 */
@@ -75,10 +82,10 @@ public class FileExportsUnits {
 			for (Entry<String, FileExportUnit> fileToExportUnitEntry: this.fileExportsMap.entrySet()) {
 				fileName = fileToExportUnitEntry.getKey();
 				fileExportUnit = fileToExportUnitEntry.getValue();
-				System.out.println("|&------ File name: " + fileName + "------&>");
+				logger.debug("|&------ File name: " + fileName + "------&>");
 				fileExportUnit.printContent();
-				System.out.println("|&-------------------------------------------&|");
-				System.out.println();
+				logger.debug("|&-------------------------------------------&|");
+				logger.debug("\n");
 			}
 		}
 	}

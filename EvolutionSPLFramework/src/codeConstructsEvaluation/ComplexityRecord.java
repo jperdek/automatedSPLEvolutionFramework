@@ -3,6 +3,10 @@ package codeConstructsEvaluation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Set;
 
 import astFileProcessor.astObjects.ASTGenericDecorator;
@@ -21,6 +25,11 @@ import codeConstructsEvaluation.entities.SourceLinesOfCodeMeasure;
  */
 public class ComplexityRecord implements EntityComplexityDifference {
 
+	/**
+	 * Logger to track information from complexity record
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(ComplexityRecord.class);
+	
 	/**
 	 * All available source code entity types for which the complexity is evaluated
 	 * 
@@ -226,7 +235,6 @@ public class ComplexityRecord implements EntityComplexityDifference {
 		}
 		
 		CyclomaticComplexity cyclomaticComplexityDifference, compareWithCyclomaticComplexity;
-		//GeneralComplexity generalComplexityDifference; 
 		HalsteadMeasures halsteadMeasuresDifference, compareWithHalsteadMeasures;
 		SourceLinesOfCodeMeasure slocMeasuresDifference, compareWithSlocMeasures;
 
@@ -281,7 +289,7 @@ public class ComplexityRecord implements EntityComplexityDifference {
 	 * Prints the data stored in this complexity record
 	 */
 	public void print() {
-		System.out.println("XXXXXXXXX___| COMPLEXITY RECORD " + this.sourceType + " |___XXXXXXXXX");
+		logger.debug("XXXXXXXXX___| COMPLEXITY RECORD " + this.sourceType + " |___XXXXXXXXX");
 		if (this.cyclomaticComplexity != null) {
 			this.cyclomaticComplexity.print();
 		}
@@ -291,7 +299,7 @@ public class ComplexityRecord implements EntityComplexityDifference {
 		if (this.slocMeasure != null) {
 			this.slocMeasure.print();
 		}
-		System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+		logger.debug("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
 	}
 	
 	@Override

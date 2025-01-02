@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.json.simple.JSONArray;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import astFileProcessor.ASTLoader;
 import asynchronousPublisher.evolvedSPLPublishing.EvolvedSPLPublisher;
@@ -29,6 +31,11 @@ import splEvolutionCore.SPLEvolutionCore;
  */
 public class SPLCandidateLoadingMechanism {
 
+	/**
+	 * Logger to track loading of software product line candidates
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(SPLCandidateLoadingMechanism.class);
+	
 	/**
 	 * The mapping of the file with variation points to the file name
 	 */
@@ -69,8 +76,8 @@ public class SPLCandidateLoadingMechanism {
 	 */
 	public void loadAndParseSPLCandidates(String previousEvolutionDirectoryPath,
 			VariationPointsDataAggregations variationPointsDataAggregations, EvolutionConfiguration evolutionConfiguration) throws IOException {
-		System.out.println("PROCESSING NEXT EVOLUTION CANDIDATES...");
-		System.out.println("Loading candidates for new evolution iteration from directory: " + previousEvolutionDirectoryPath);
+		 logger.debug("PROCESSING NEXT EVOLUTION CANDIDATES...");
+		 logger.debug("Loading candidates for new evolution iteration from directory: " + previousEvolutionDirectoryPath);
 		 File dir = new File(previousEvolutionDirectoryPath);
 		 File[] directoryListing = dir.listFiles();
 		 String vpDataAbsolutePath, vpDataGrandChildAbsolutePath;
@@ -86,7 +93,7 @@ public class SPLCandidateLoadingMechanism {
 		    	if (childFile.isDirectory()) {
 		    		for (File grandchildFile: childFile.listFiles()) {
 		    			vpDataGrandChildAbsolutePath = grandchildFile.getAbsolutePath();
-		    			if (!grandchildFile.exists()) { System.out.println("File: " + vpDataGrandChildAbsolutePath + " does not exist. Skipping..."); continue; }
+		    			if (!grandchildFile.exists()) { logger.debug("File: " + vpDataGrandChildAbsolutePath + " does not exist. Skipping..."); continue; }
 		    			if (!grandchildFile.isDirectory() && vpDataGrandChildAbsolutePath.contains(SPLEvolutionCore.VARIATION_POINTS_DATA_NAME_ID_ENDING)) {
 		    				containsVersions = true;
 		    				childName = childFile.getName();
@@ -112,7 +119,7 @@ public class SPLCandidateLoadingMechanism {
 		    					String projectId = childName;
 		    					EvolvedSPLPublisher.publishMessageAboutEvolvedSPL(evolutionConfiguration, projectId, targetDestinationPath, true);
 		    				} else {
-		    					System.out.println("Cannot move data. Variation point data are missing... Removing data.");
+		    					logger.debug("Cannot move data. Variation point data are missing... Removing data.");
 		    					Files.delete(grandchildFile.toPath());
 		    				}
 		    			}
@@ -177,11 +184,11 @@ public class SPLCandidateLoadingMechanism {
 		JSONArray variationPointsData;
 
 		vpDataAbsolutePath = vpDataAbsolutePath.replace("\\", "/");
-    	System.out.println("Processing the candidate file: " + vpDataAbsolutePath);
+		logger.debug("Processing the candidate file: " + vpDataAbsolutePath);
     	
     	// for each variation point data file that ends SPLEvolutionCore.VARIATION_POINTS_DATA_NAME_ID_ENDING loads new project
     	if (!childFile.isDirectory() && vpDataAbsolutePath.contains(SPLEvolutionCore.VARIATION_POINTS_DATA_NAME_ID_ENDING)) {
-    		System.out.println("Found variation point data: " + vpDataAbsolutePath);
+    		logger.debug("Found variation point data: " + vpDataAbsolutePath);
     		fileContent = String.join(" ", Files.readAllLines(Path.of(vpDataAbsolutePath)));
     		variationPointsData = ASTLoader.loadJSONArrayFromString(fileContent);
     	  	fileName = vpDataAbsolutePath.split(SPLEvolutionCore.VARIATION_POINTS_DATA_NAME_ID_ENDING)[0];
@@ -194,20 +201,20 @@ public class SPLCandidateLoadingMechanism {
 		    	vpDataAbsolutePath2ToCompare = pathAndVersion[0];
 		    	if (pathAndVersion.length > 1) { vpDataAbsolutePath2ToCompare = vpDataAbsolutePath2ToCompare + "_XXX_" + pathAndVersion[1]; }
 		    	
-		    	System.out.println("Path version length: " + pathAndVersion.length);
-		    	System.out.println("IN: " + vpDataAbsolutePath2 + " for comparison is used: " + vpDataAbsolutePath2ToCompare);
+		    	logger.debug("Path version length: " + pathAndVersion.length);
+		    	logger.debug("IN: " + vpDataAbsolutePath2 + " for comparison is used: " + vpDataAbsolutePath2ToCompare);
 		    	if (!vpDataAbsolutePath.equals(vpDataAbsolutePath2ToCompare) && vpDataAbsolutePath.contains(vpDataAbsolutePath2ToCompare)) {
 		    		insertedPath = vpDataAbsolutePath2;
-		    		System.out.println("INSERTED PATH: " + insertedPath.replace("//", "/"));
+		    		logger.debug("INSERTED PATH: " + insertedPath.replace("//", "/"));
 		    		this.vpDataFileNameToProjectPath.put(fileName, insertedPath.replace("//", "/"));
 		    		break;
     	  		}
     	  	}
     	}
     	
-    	System.out.println("Candidate to process: ");
+    	logger.debug("Candidate to process: ");
     	for (String candidateName: this.vpDataFileNameToProjectPath.values()) {
-    		System.out.println("Candidate: "  + candidateName);
+    		logger.debug("Candidate: "  + candidateName);
     	}
 	}
 }

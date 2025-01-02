@@ -4,7 +4,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import codeContext.processors.export.ExportLocationAggregation;
+import positiveVariabilityManagement.AllVariationPointContentInjectionAggregator;
 import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.InjectionIntoVariationPointValidator;
 import positiveVariabilityManagement.fragmentManagement.model.AggregatedCodeFragment;
 import positiveVariabilityManagement.fragmentManagement.model.CodeFragment;
@@ -23,6 +27,11 @@ import splEvolutionCore.candidateSelector.valueAssignment.AssignedValue;
  */
 public class QuantityBasedGranularityManagementStrategy implements CodeIncrementGranularityManagementStrategy {
 
+	/**
+	 * Logger to track quantity granularity management strategy
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(QuantityBasedGranularityManagementStrategy.class);
+	
 	/**
 	 * Identifier to generat new method names
 	 */
@@ -78,7 +87,7 @@ public class QuantityBasedGranularityManagementStrategy implements CodeIncrement
 			associatedAggregatedLocationExports = positiveVariationPointCandidate.
 					getExportLocationAggregationsAccordingToInstantiatedCallableForm(instantiatedCodeForm);
 			if (!InjectionIntoVariationPointValidator.canBeInjectedIntoVariationPoint(selectedVariationPointToInjectContent, associatedAggregatedLocationExports)) {
-				System.out.println("Code fragment: " + instantiatedCodeForm + " is violating dependency injection issue: " + selectedVariationPointToInjectContent + " <> " + associatedAggregatedLocationExports.getVariationPointDependency() + "  ! Returning null!");
+				logger.debug("Code fragment: " + instantiatedCodeForm + " is violating dependency injection issue: " + selectedVariationPointToInjectContent + " <> " + associatedAggregatedLocationExports.getVariationPointDependency() + "  ! Returning null!");
 				return null;
 			}
 			variationPointConstruct = new LineOfCode(featureConstruct.getKey(), featureConstruct.getValue(), associatedAggregatedLocationExports);
@@ -92,7 +101,7 @@ public class QuantityBasedGranularityManagementStrategy implements CodeIncrement
 				associatedAggregatedLocationExports = positiveVariationPointCandidate.
 						getExportLocationAggregationsAccordingToInstantiatedCallableForm(instantiatedCodeForm);
 				if (!InjectionIntoVariationPointValidator.canBeInjectedIntoVariationPoint(selectedVariationPointToInjectContent, associatedAggregatedLocationExports)) {
-					System.out.println("Omitting code fragment: " + instantiatedCodeForm + " from aggregated code fragment due to dependency injection issue!");
+					logger.debug("Omitting code fragment: " + instantiatedCodeForm + " from aggregated code fragment due to dependency injection issue!");
 					continue;
 				}
 				insertedLinesOfCode = insertedLinesOfCode + 1;

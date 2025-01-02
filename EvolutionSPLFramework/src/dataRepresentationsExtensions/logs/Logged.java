@@ -279,7 +279,6 @@ public class Logged {
 	 * @throws InterruptedException
 	 */
 	public JSONObject constructLoggerAst(String variableName, String variableValue) throws IOException, InterruptedException {
-		//System.out.println(this.constructLogger(variableName, variableValue)); //CODE NOT TO JSON
 		return ASTConverterClient.getFirstStatementFromASTFile((JSONObject) ASTConverterClient.convertFromCodeToASTJSON(this.constructLogger(variableName, variableValue)));
 	}
 	

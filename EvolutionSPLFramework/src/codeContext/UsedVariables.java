@@ -12,6 +12,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import codeContext.objects.CodeContextObject;
 import codeContext.objects.SortByCodeContext;
 import codeContext.objects.VariableObject;
@@ -23,6 +26,7 @@ import divisioner.VariationPointDivisionConfiguration;
 import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.ActualScriptVariablesToSubstituteConfiguration;
 import splEvolutionCore.DebugInformation;
 
+
 /**
  * Used variables with given code context
  * 
@@ -30,6 +34,11 @@ import splEvolutionCore.DebugInformation;
  *
  */
 public class UsedVariables implements ExportedContextInterface, ExportedInterface {
+	
+	/**
+	 * Logger to track information about used variables
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(UsedVariables.class);
 	
 	/**
 	 * The list of used variables by given code context
@@ -136,7 +145,7 @@ public class UsedVariables implements ExportedContextInterface, ExportedInterfac
 		String valueCharacteristics;
 		if (astVariable.containsKey("initializer")) {
 			if (DebugInformation.SHOW_MISSING_EVOLUTION_ENHANCEMENTS) {
-				System.out.println("Automatically guessing type. Can be error prone!");
+				logger.warn("Automatically guessing type. Can be error prone!");
 			}
 			initializerJSONObject = (JSONObject) astVariable.get("initializer");
 			if (initializerJSONObject.containsKey("arguments")) {	
@@ -169,7 +178,7 @@ public class UsedVariables implements ExportedContextInterface, ExportedInterfac
 				return "number";
 			} catch(Exception e) { 
 				if (DebugInformation.SHOW_MISSING_EVOLUTION_ENHANCEMENTS) {
-					System.out.println("Unparsed value: " + valueCharacteristics);
+					logger.warn("Unparsed value: " + valueCharacteristics);
 				}
 				if (DebugInformation.SHOW_POLLUTING_INFORMATION) { e.printStackTrace(); } 
 			}
@@ -212,9 +221,9 @@ public class UsedVariables implements ExportedContextInterface, ExportedInterfac
 	 */
 	public List<VariableObject> getAllActualVariableObject(long currentPosition) {
 		if (DebugInformation.SHOW_POLLUTING_INFORMATION) {
-			System.out.println("Current position: " + currentPosition);
+			logger.debug("Current position: " + currentPosition);
 			for (VariableObject vo: this.usedVariableObjects) {
-				System.out.println(vo.getExportName() + "  " + vo.getCallableStr());
+				logger.debug(vo.getExportName() + "  " + vo.getCallableStr());
 			}
 		}
 		CodeContextObject[] cco = new CodeContextObject[this.usedVariableObjects.size()];

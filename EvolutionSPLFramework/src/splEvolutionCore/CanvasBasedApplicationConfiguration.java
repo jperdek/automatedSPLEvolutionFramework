@@ -8,8 +8,12 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import evolutionSimulation.productAssetsInitialization.Resource;
 import evolutionSimulation.productAssetsInitialization.SharedConfiguration;
+import splEvolutionCore.candidateSelector.valueAssignment.featureSelectionStrategies.constructSelection.FeatureConstructsSelectionStrategy;
 
 
 /**
@@ -19,7 +23,12 @@ import evolutionSimulation.productAssetsInitialization.SharedConfiguration;
  *
  */
 public interface CanvasBasedApplicationConfiguration {
-
+	
+	/**
+	 * Logger to track information from canvas based configuration - application of CantoJS library
+	 */
+	static final Logger logger = LoggerFactory.getLogger(FeatureConstructsSelectionStrategy.class);
+	
 	/**
 	 * Allows to use canvas CantoJS wrapper along with evolved (fractal-based) content
 	 * if true then CantoJS is used to wrap canvas otherwise false
@@ -67,8 +76,8 @@ public interface CanvasBasedApplicationConfiguration {
 		Path destinationLocation = Paths.get(cantoTargetPath.replace("file:///", ""));
 		try { Files.createDirectories(destinationLocation); } catch(FileAlreadyExistsException e) {}
 		if (DebugInformation.SHOW_INITIAL_COPIED_INFORMATION) {
-			System.out.println("FROM: " + CanvasBasedApplicationConfiguration.CANTO_SCRIPT_RESOURCE_LOCATION);
-			System.out.println("TO  : " + cantoTargetPath);
+			logger.info("FROM: " + CanvasBasedApplicationConfiguration.CANTO_SCRIPT_RESOURCE_LOCATION);
+			logger.info("TO  : " + cantoTargetPath);
 		}
 		
 		Files.copy(Paths.get(CanvasBasedApplicationConfiguration.CANTO_SCRIPT_RESOURCE_LOCATION),

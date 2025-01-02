@@ -6,13 +6,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Scanner;
 
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import evolutionSimulation.EvolutionConfiguration;
 import evolutionSimulation.iteration.WrappedTypeScriptContentInVariable;
 import splEvolutionCore.DebugInformation;
 import splEvolutionCore.SPLEvolutionCore;
@@ -29,6 +30,11 @@ import splEvolutionCore.SPLEvolutionCore;
 public class CustomAnnotationsAsDecoratorsImporter {
 
 	/**
+	 * Logger to track injection and initialization of custom annotations in form of decorators
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(CustomAnnotationsAsDecoratorsImporter.class);
+
+	/**
 	 * Introducing definition of custom variability managing decorators/annotations in new SPL instance if is not already available/included
 	 * 
 	 * @param splDestinationPath - the path to evolved SPL instance to its directory in particular evolution iteration
@@ -41,7 +47,7 @@ public class CustomAnnotationsAsDecoratorsImporter {
 		String resultingScriptPath = splDestinationPath + "/" + relativeScriptPath;
 		File resultingScriptFile = new File(resultingScriptPath);
 		if (!resultingScriptFile.exists()) {
-			System.out.println("Creating decorator annotation file: " + resultingScriptPath + " and injecting it into template.");
+			logger.debug("Creating decorator annotation file: " + resultingScriptPath + " and injecting it into template.");
 			String customDecoratorsFunctionality = CustomAnnotationsAsDecoratorsImporter.loadsCustomDecoratorsFunctionality();
 			WrappedTypeScriptContentInVariable wrappedCustomDecoratorFunctionalityInVariable = 
 					new WrappedTypeScriptContentInVariable("decoratorsSPL = `" + customDecoratorsFunctionality + "`");
@@ -62,7 +68,7 @@ public class CustomAnnotationsAsDecoratorsImporter {
 				fos.close();
 			}
 		} else {
-			System.out.println("Configured annotations/decorators to manage variability are already defined in: " + resultingScriptPath);
+			logger.debug("Configured annotations/decorators to manage variability are already defined in: " + resultingScriptPath);
 		}
 	}
 	
@@ -76,7 +82,7 @@ public class CustomAnnotationsAsDecoratorsImporter {
 		String customAnnotationScriptFile = "./src/evolutionSimulation/productAssetsInitialization/" 
 								+ SPLEvolutionCore.DECORATOR_CONFIGURATION_ANNOTATIONS_FILE_NAME;
 		if(DebugInformation.SHOW_POLLUTING_INFORMATION) {
-			System.out.println("Loading configurationscript with custom annotation: " +  customAnnotationScriptFile);
+			logger.debug("Loading configurationscript with custom annotation: " +  customAnnotationScriptFile);
 		}
 
 		if (!System.getenv().getOrDefault("localhost", "DOCKER_HOST").equals("localhost")) {

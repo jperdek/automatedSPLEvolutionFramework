@@ -8,9 +8,10 @@ import java.util.Set;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import astFileProcessor.ASTLoader;
-import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.AlreadyChosenVariationPointForInjectionException;
 import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.CallableConstructDependency;
 import splEvolutionCore.DebugInformation;
 
@@ -23,6 +24,11 @@ import splEvolutionCore.DebugInformation;
  *
  */
 public class ExportLocationAggregation {
+	
+	/**
+	 * Logger to track information about aggregations that consist of export location
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(ExportLocationAggregation.class);
 	
 	/**
 	 * The map of file names (paths) to exported locations
@@ -46,7 +52,7 @@ public class ExportLocationAggregation {
 	 */
 	public ExportLocationAggregation(CallableConstructDependency callableConstructDependency) {
 		this.fileBasedLocations = new HashMap<String, ExportLocations>();
-		if (DebugInformation.SHOW_POLLUTING_INFORMATION) { System.out.println("-> Callable construct Dependecy: " + callableConstructDependency); }
+		if (DebugInformation.SHOW_POLLUTING_INFORMATION) { logger.debug("-> Callable construct Dependecy: " + callableConstructDependency); }
 		this.callableConstructDependency = callableConstructDependency;
 	}
 	
@@ -199,6 +205,6 @@ public class ExportLocationAggregation {
 			}
 		}
 		futureStatements.addAll(originalAstStatements);
-		originalAst.put("statements", futureStatements);//ERRORRRR
+		originalAst.put("statements", futureStatements);
 	}
 }

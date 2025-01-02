@@ -4,9 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import codeContext.GlobalContext;
 import codeContext.InnerContext;
 import codeContext.processors.ASTTextExtractorTools;
+import codeContext.processors.FunctionProcessor;
+import splEvolutionCore.DebugInformation;
 
 
 /**
@@ -16,6 +21,11 @@ import codeContext.processors.ASTTextExtractorTools;
  *
  */
 public class ExportsProcessor {
+	
+	/**
+	 * Logger to track information from exports processor
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(ExportsProcessor.class);
 	
 	/**
 	 * Get information if processed code construct is directly marked as exported
@@ -143,7 +153,9 @@ public class ExportsProcessor {
 			InnerContext initialContext, GlobalContext globalContext) {
 		List<String> exportedNames = ExportsProcessor.analyzeAndExtractsExportedNames(codeConstructAst);
 		if (exportedNames != null) {
-			//for (String exportedName: exportedNames) { System.out.println(" ---> " + exportedName); }
+			if (DebugInformation.SHOW_POLLUTING_INFORMATION) {
+				for (String exportedName: exportedNames) { logger.debug("Exported name: " + exportedName); }
+			}
 			initialContext.findContextToExportMapping(exportedNames, exportAggregator);
 			globalContext.findContextToExportMapping(exportedNames, exportAggregator);
 		}

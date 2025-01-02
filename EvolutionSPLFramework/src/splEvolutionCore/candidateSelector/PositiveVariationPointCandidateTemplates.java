@@ -3,8 +3,12 @@ package splEvolutionCore.candidateSelector;
 import positiveVariabilityManagement.callsTemplateSelectionStrategies.CallsFromPositiveVariationPointCreator;
 import splEvolutionCore.SPLEvolutionCore;
 import splEvolutionCore.candidateSelector.valueAssignment.AssignedValue;
+import splEvolutionCore.derivation.DerivationResourcesManager;
 import positiveVariabilityManagement.entities.CallableConstructTemplate;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +25,11 @@ import java.util.Map;
  */
 public class PositiveVariationPointCandidateTemplates extends VariationPointCandidate {
 
+	/**
+	 * Logger to track checking of positive variation point candidate template
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(PositiveVariationPointCandidateTemplates.class);
+	
 	/**
 	 * Assigned values/quality/measures/scores to given positive variation point
 	 * -its mapping of the metric/method name to represented value and its interpretation
@@ -73,7 +82,7 @@ public class PositiveVariationPointCandidateTemplates extends VariationPointCand
 				comparedForbiddenCodeToSkipStub = embeddedNameToSkip.substring(embeddedNameToSkip.indexOf('(') + 1);
 				
 				if (comparedTemplateStub.equals(comparedForbiddenCodeToSkipStub)) {
-					System.out.println("Omitting function " + embeddedNameToSkip + " that is found as forbidden.");
+					logger.info("Omitting function " + embeddedNameToSkip + " that is found as forbidden.");
 					canPass = false; 
 					break;
 				}

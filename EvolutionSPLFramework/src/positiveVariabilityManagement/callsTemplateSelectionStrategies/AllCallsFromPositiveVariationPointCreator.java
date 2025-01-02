@@ -5,7 +5,10 @@ import java.util.List;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import positiveVariabilityManagement.entities.VariablesForSubstantiation;
 import splEvolutionCore.DebugInformation;
 import splEvolutionCore.candidateSelector.PositiveVariationPointCandidateTemplates;
 
@@ -19,6 +22,11 @@ import splEvolutionCore.candidateSelector.PositiveVariationPointCandidateTemplat
  */
 public class AllCallsFromPositiveVariationPointCreator implements CallsFromPositiveVariationPointCreator {
 
+	/**
+	 * Logger to track strategy to get all calls from positive variation point creator
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(AllCallsFromPositiveVariationPointCreator.class);
+	
 	/**
 	 * Instantiates AllCallsFromPositiveVariationPointCreator
 	 */
@@ -48,7 +56,7 @@ public class AllCallsFromPositiveVariationPointCreator implements CallsFromPosit
 					//continue;
 					callTemplate = callTemplate.strip().substring(1);
 				}
-				if (DebugInformation.SHOW_POLLUTING_INFORMATION) { System.out.println("Extracted template call: " + callTemplate); }
+				if (DebugInformation.SHOW_POLLUTING_INFORMATION) { logger.debug("Extracted template call: " + callTemplate); }
 				calls.add(callTemplate);
 			}
 		}

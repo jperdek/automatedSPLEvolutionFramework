@@ -4,12 +4,13 @@ package dataRepresentationsExtensions;
 import java.io.IOException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import astFileProcessor.ASTLoader;
 import codeContext.processors.ASTTextExtractorTools;
 import dataRepresentationsExtensions.logs.Logged;
-import dataRepresentationsExtensions.logs.LoggedRepresentation;
 import dataRepresentationsExtensions.stack.FunctionStackLogger;
+import dividedAstExport.recursionCycleFinder.RecursionCycleFinder;
 import evolutionSimulation.EvolutionConfiguration;
 
 
@@ -21,6 +22,10 @@ import evolutionSimulation.EvolutionConfiguration;
  */
 public class DataRepresentationInnerWrappers {
 
+	/**
+	 * Logger to track data wrapper representations 
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(DataRepresentationInnerWrappers.class);
 	
 	private FunctionStackLogger functionStackLogger;
 	private Logged defaultGlobalLogged = null;
@@ -37,14 +42,14 @@ public class DataRepresentationInnerWrappers {
 	public void additionalDataRepresentationsCreatorsInjector(EvolutionConfiguration evolutionConfiguration, DataRepresentationsConfiguration dataRepresentationsConfiguration, JSONObject astRoot) throws IOException, InterruptedException {
 		this.additionalDataRepresentationsCreatorsInjector(astRoot, astRoot, astRoot, dataRepresentationsConfiguration);
 		if (dataRepresentationsConfiguration.shouldInjectStackFunctionality()) {
-			System.out.println("Injecting stacks!");
+			logger.info("Injecting stacks!");
 			this.availableStackStatus = this.functionStackLogger.verifyIfStackIsAlreadyPushed(astRoot);
 			if (!this.availableStackStatus) {
 				this.functionStackLogger.initializeStackStubOnAst(astRoot); //base functions are added after all functionality is prepared
 			}
 		}
 		if (dataRepresentationsConfiguration.shouldInjectLogFunctionality()) {
-			System.out.println("Injecting logs!");
+			logger.info("Injecting logs!");
 			this.defaultGlobalLogged = new Logged(dataRepresentationsConfiguration, "root", evolutionConfiguration.getEvolvedContentName(), "", "");
 			this.defaultGlobalLogged.initializeLoggerStubOnAst(astRoot);
 		}

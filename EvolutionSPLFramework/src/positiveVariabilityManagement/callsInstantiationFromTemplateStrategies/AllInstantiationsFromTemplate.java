@@ -8,14 +8,16 @@ import java.util.Set;
 import divisioner.VariationPointDivisionConfiguration;
 
 import java.util.Map.Entry;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Queue;
 
 import positiveVariabilityManagement.UnmappedContextException;
-import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.ActualScriptVariablesToSubstituteConfiguration;
 import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.AllVariablesMapper;
 import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.ExportedObjectOrAvailableVariable;
 import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.ParsedTypeOfVariableData;
-import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.ParsedTypeOfVariableImportedData;
 import positiveVariabilityManagement.entities.CallableConstructTemplate;
 import splEvolutionCore.DebugInformation;
 import splEvolutionCore.candidateSelector.PositiveVariationPointCandidateTemplates;
@@ -30,6 +32,11 @@ import splEvolutionCore.candidateSelector.PositiveVariationPointCandidateTemplat
  */
 public class AllInstantiationsFromTemplate implements CallsInstantiationFromTemplate {
 
+	/**
+	 * Logger to track instantiation of all possible constructs from template
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(AllInstantiationsFromTemplate.class);
+	
 	/**
 	 * Set of messages propagated to the output to prevent duplicates
 	 */
@@ -86,10 +93,10 @@ public class AllInstantiationsFromTemplate implements CallsInstantiationFromTemp
 			}
 		}
 		if (variationPointCandidateTemplate.getCallableConstructTemplates().size() == 0) {
-			if (true || DebugInformation.SHOW_POLLUTING_INFORMATION) { System.out.println("No callable constructa are selected!"); }
+			if (true || DebugInformation.SHOW_POLLUTING_INFORMATION) { logger.info("No callable constructa are selected!"); }
 			return new LinkedList<CallableConstruct>(); 
 		} else if (true || DebugInformation.SHOW_POLLUTING_INFORMATION) { 
-			System.out.println("Callable constructa are selected: " + callableConstructs.size()); 
+			logger.info("Callable constructa are selected: " + callableConstructs.size()); 
 		}
 		return callableConstructs;
 	}
@@ -142,7 +149,7 @@ public class AllInstantiationsFromTemplate implements CallsInstantiationFromTemp
 			if (DebugInformation.SHOW_MISSING_EVOLUTION_ENHANCEMENTS && 
 					!AllInstantiationsFromTemplate.messageOnOutput.contains(callableConstructNameWhole)) {
 				AllInstantiationsFromTemplate.messageOnOutput.add(callableConstructNameWhole);
-				System.out.println("Cannot find parameters for construct: " + callableConstructNameWhole + " Add them if possible...");
+				logger.warn("Cannot find parameters for construct: " + callableConstructNameWhole + " Add them if possible...");
 			}
 		}
 		return callableConstructsOld;

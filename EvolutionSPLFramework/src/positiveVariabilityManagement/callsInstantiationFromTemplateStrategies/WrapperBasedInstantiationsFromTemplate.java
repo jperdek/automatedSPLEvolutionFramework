@@ -9,6 +9,10 @@ import java.util.Set;
 import divisioner.VariationPointDivisionConfiguration;
 
 import java.util.Map.Entry;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Queue;
 
 import positiveVariabilityManagement.UnmappedContextException;
@@ -32,6 +36,11 @@ import splEvolutionCore.candidateSelector.PositiveVariationPointCandidateTemplat
 public class WrapperBasedInstantiationsFromTemplate implements CallsInstantiationFromTemplate {
 
 	/**
+	 * Logger to track wrapper based instantiation to preserve and execute TypeScript in javaScript 
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(WrapperBasedInstantiationsFromTemplate.class);
+	
+	/**
 	 * Set of messages propagated to the output to prevent duplicates
 	 */
 	private static HashSet<String> messageOnOutput = new HashSet<String>();
@@ -42,13 +51,13 @@ public class WrapperBasedInstantiationsFromTemplate implements CallsInstantiatio
 	 * @param parameterInformation - the mapping of variable/parameter names in substitution mapping into type of particular parameter
 	 */
 	private void printParameterNames(Map<String, ParsedTypeOfVariableData> parameterInformation) {
-		System.out.println("-----------------------> PARAM NAMES");
+		logger.debug("-----------------------> PARAM NAMES");
 		for (ParsedTypeOfVariableData matchedVariableNameT: parameterInformation.values()) {
 			for (String matchedVariableName: matchedVariableNameT.getNameToContextMapping().keySet()) {
-				System.out.println(matchedVariableName);
+				logger.debug(matchedVariableName);
 			}
 		}
-		System.out.println("-----------------------> PARAM NAMES Ends");
+		logger.debug("-----------------------> PARAM NAMES Ends");
 	}
 
 	@Override
@@ -71,7 +80,7 @@ public class WrapperBasedInstantiationsFromTemplate implements CallsInstantiatio
 		Queue<CallableConstruct> allCallableConstructs = new LinkedList<CallableConstruct>();
 
 		if (DebugInformation.SHOW_POLLUTING_INFORMATION && variationPointCandidateTemplate.getCallableConstructTemplates().size() == 0) { 
-			System.out.println("No callable construct templates are available!"); 
+			logger.info("No callable construct templates are available!"); 
 		}
 		Map<String, ParsedTypeOfVariableData> parameterInformation; //type, associatedData
 		for (CallableConstructTemplate callableConstructTemplate: variationPointCandidateTemplate.getCallableConstructTemplates()) {
@@ -87,7 +96,7 @@ public class WrapperBasedInstantiationsFromTemplate implements CallsInstantiatio
 			if (!callableConstructs.isEmpty()) { allCallableConstructs.addAll(callableConstructs); }
 		}
 		if (variationPointCandidateTemplate.getCallableConstructTemplates().size() == 0) {
-			if (DebugInformation.SHOW_POLLUTING_INFORMATION) { System.out.println("No callable constructa are instantiated!"); }
+			if (DebugInformation.SHOW_POLLUTING_INFORMATION) { logger.debug("No callable constructa are instantiated!"); }
 			return new LinkedList<CallableConstruct>(); 
 		} 
 		return allCallableConstructs;
@@ -140,7 +149,7 @@ public class WrapperBasedInstantiationsFromTemplate implements CallsInstantiatio
 						for (CallableConstruct callableConstructOld: callableConstructsOld) {
 							callableConstructNew = new CallableConstruct(callableConstructOld);
 							if (callableConstructNew.addParameterWithChecking(matchedVariableName, matchedExportedContext)) {
-								//System.out.println("Found construct: " + matchedVariableName);
+								//logger.debug("Found construct: " + matchedVariableName);
 								preCallableConstructsNew.add(callableConstructNew);
 							}
 						}
@@ -163,7 +172,7 @@ public class WrapperBasedInstantiationsFromTemplate implements CallsInstantiatio
 		if (callableConstructsOld.isEmpty()) {
 			if (DebugInformation.SHOW_MISSING_EVOLUTION_ENHANCEMENTS && !WrapperBasedInstantiationsFromTemplate.messageOnOutput.contains(callableConstructNameWhole)) {
 				WrapperBasedInstantiationsFromTemplate.messageOnOutput.add(callableConstructNameWhole);
-				System.out.println("Wrapper based instantiation: Cannot find parameters for construct: " + callableConstructNameWhole + " Add them if possible...");
+				logger.debug("Wrapper based instantiation: Cannot find parameters for construct: " + callableConstructNameWhole + " Add them if possible...");
 			}
 		}
 

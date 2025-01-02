@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import codeConstructsEvaluation.transformation.ASTConverterClient;
 import splEvolutionCore.DebugInformation;
@@ -18,6 +20,11 @@ import splEvolutionCore.DebugInformation;
  *
  */
 public class ExportLocations extends ExportLocation {
+	
+	/**
+	 * Logger to track information from export locations
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(ExportLocations.class);
 	
 	/**
 	 * The set of exported constructs from one particular file or location
@@ -86,7 +93,7 @@ public class ExportLocations extends ExportLocation {
 	 */
 	public JSONObject createImportToAST() throws IOException, InterruptedException {
 		String importStr = this.createImportStr();
-		if(DebugInformation.SHOW_POLLUTING_INFORMATION) { System.out.println("Created import: " + importStr); }
+		if(DebugInformation.SHOW_POLLUTING_INFORMATION) { logger.debug("Created import: " + importStr); }
 		
 		return ASTConverterClient.getFirstStatementFromASTFile(ASTConverterClient.convertFromCodeToASTJSON(importStr));
 	}

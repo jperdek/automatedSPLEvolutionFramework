@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import asynchronousPublisher.MessageQueueManager;
 import asynchronousPublisher.MessageQueueManager.PublishedMessageTypes;
 import asynchronousPublisher.UnknownMessageTypeException;
@@ -25,6 +28,11 @@ import splEvolutionCore.SPLEvolutionCore;
  */
 public class EvolutionConfiguration {
 
+	/**
+	 * Logger to track evolution configuration settings
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(EvolutionConfiguration.class);
+	
 	/**
 	 * The name of the concern
 	 */
@@ -582,26 +590,24 @@ public class EvolutionConfiguration {
 	 * @param globalEvolutionConfiguration - evolution configuration from previous iterations 
 	 */
 	public void setPathToEvolvedSPLProjectDirectoryFromLatestEvolution(EvolutionConfiguration globalEvolutionConfiguration, String pathForNextIteration) {
-		System.out.println("--------------------------------------------->  SETTINGS");
-		System.out.println(globalEvolutionConfiguration.getConcernName());
-		System.out.println(this.concernName);
+		logger.info("--> SETTING PATHS TO NEXT EVOLUTION");
+		logger.debug("Concern name: " + this.concernName);
 		if (this.concernName != null) {
 			this.concernName = globalEvolutionConfiguration.getConcernName();
 		}
 		if (DebugInformation.PROCESS_STEP_INFORMATION) { 
-			System.out.println("Setting path to actually evolved SPL/applications for next evolution iteration: " + 
+			logger.debug("Setting path to actually evolved SPL/applications for next evolution iteration: " + 
 							globalEvolutionConfiguration.getPathToEvolvedSPLProjectDirectory()); 
 		}
 		
 		if (pathForNextIteration != null) { this.setPathToScriptInputFile(pathForNextIteration); }
 		if (globalEvolutionConfiguration.getPathToEvolvedSPLProjectDirectory() != null) {
-			System.out.println("Unknown path.....................................");
 			this.inputFilePath = this.pathToEvolvedSPLProjectDirectory = globalEvolutionConfiguration.getPathToEvolvedSPLProjectDirectory();
-			System.out.println("Setting path: " + this.inputFilePath);
+			logger.debug("Setting path: " + this.inputFilePath);
 		} else {
 			this.inputFilePath = this.pathToEvolvedSPLProjectDirectory = 
 					globalEvolutionConfiguration.getOutputFilePathToDirectoryUsedInCurrentEvolution();
-			System.out.println("Already set input file path: " + this.inputFilePath);
+			logger.debug("Already set input file path: " + this.inputFilePath);
 		}
 	}
 	
@@ -609,17 +615,17 @@ public class EvolutionConfiguration {
 	 * Prints information about currently set configuration
 	 */
 	public void printCurrentConfiguration() {
-		System.out.println();
-		System.out.println("------------------------ CONFIGURATION ---------------------------");
-		System.out.println("Processed concern name: " + this.concernName);
-		System.out.println("Relative path to current evolved script: " + this.currentEvolvedScriptRelativePath);
-		System.out.println("Input file path: " + this.inputFilePath);
-		System.out.println("Iteration: " + this.iteration);
-		System.out.println("Path to currently evolved SPL directory: " + this.pathToEvolvedSPLProjectDirectory);
-		System.out.println("Output file path: " + this.outputFilePath);
-		System.out.println("Template path: " + this.templateConfigurationPath);
-		System.out.println("Path to script input path: " + this.pathToScriptInputFilePath);
-		System.out.println("------------------------ CONFIGURATION ---------------------------");
-		System.out.println();
+		logger.info("\n");
+		logger.info("------------------------ CONFIGURATION ---------------------------");
+		logger.info("Processed concern name: " + this.concernName);
+		logger.info("Relative path to current evolved script: " + this.currentEvolvedScriptRelativePath);
+		logger.info("Input file path: " + this.inputFilePath);
+		logger.info("Iteration: " + this.iteration);
+		logger.info("Path to currently evolved SPL directory: " + this.pathToEvolvedSPLProjectDirectory);
+		logger.info("Output file path: " + this.outputFilePath);
+		logger.info("Template path: " + this.templateConfigurationPath);
+		logger.info("Path to script input path: " + this.pathToScriptInputFilePath);
+		logger.info("------------------------ CONFIGURATION ---------------------------");
+		logger.info("\n");
 	}
 }

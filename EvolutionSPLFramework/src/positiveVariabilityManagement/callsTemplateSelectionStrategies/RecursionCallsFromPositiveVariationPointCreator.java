@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import splEvolutionCore.candidateSelector.PositiveVariationPointCandidateTemplates;
 
@@ -17,6 +19,11 @@ import splEvolutionCore.candidateSelector.PositiveVariationPointCandidateTemplat
  */
 public class RecursionCallsFromPositiveVariationPointCreator implements CallsFromPositiveVariationPointCreator {
 
+	/**
+	 * Logger to track strategy to get recursive calls from positive variation point creator
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(RecursionCallsFromPositiveVariationPointCreator.class);
+	
 	/**
 	 * Extracts only calls inside recursively called function/constructor
 	 * 
@@ -43,7 +50,7 @@ public class RecursionCallsFromPositiveVariationPointCreator implements CallsFro
 					//continue;
 					callTemplate = callTemplate.strip().substring(1);
 				}
-				System.out.println("Extracted template call: " + callTemplate);
+				logger.debug("Extracted template call: " + callTemplate);
 				calls.add(callTemplate);
 			}
 			if (calls.size() > 0) {

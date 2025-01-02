@@ -5,6 +5,8 @@ import java.io.PrintWriter;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import astFileProcessor.ASTLoader;
 import codeConstructsEvaluation.transformation.ASTConverterClient;
@@ -15,11 +17,11 @@ import codeContext.GlobalContext;
 import codeContext.InnerContext;
 import codeContext.processors.ASTContextInjector;
 import codeContext.processors.ASTContextProcessor;
-import codeContext.processors.SystemAnnotationInjector;
 import codeContext.processors.FunctionProcessor;
 import codeContext.processors.HierarchyContextProcessor;
 import codeContext.processors.NotFoundVariableDeclaration;
 import divisioner.divisionStrategies.RecallStrategy;
+import evolutionSimulation.iteration.EvolutionIterationsPipeline;
 import splEvolutionCore.DebugInformation;
 import variationPointsVisualization.DifferentAnnotationTypesOnTheSameVariationPoint;
 import variationPointsVisualization.DuplicatedAnnotation;
@@ -33,6 +35,11 @@ import variationPointsVisualization.DuplicatedAnnotation;
  */
 public class Divisioner implements DivisioningInterface {
 
+	/**
+	 * Logger to track implemented functionality to division AST into positive and negative variability variation points
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(Divisioner.class);
+	
 	/**
 	 * The configuration and support to division variation points into negative and positive variability accoring to particular strategy
 	 */
@@ -248,7 +255,7 @@ public class Divisioner implements DivisioningInterface {
 				globalContext, innerContext, innerContext, useTypes);
 		
 		if (DebugInformation.OUTPUT_DEBUG_FILES) {
-			System.out.println("Debug file on output: labeledVariationPoints.txt");
+			logger.debug("Debug file on output: labeledVariationPoints.txt");
 			try (PrintWriter out = new PrintWriter("labeledVariationPointsAst.txt")) { out.println(dividedAst.toString()); }
 			String modifiedContent = ASTConverterClient.convertFromASTToCode(dividedAst.toString());
 			try (PrintWriter out = new PrintWriter("labeledVariationPoints.txt")) { out.println(modifiedContent); }

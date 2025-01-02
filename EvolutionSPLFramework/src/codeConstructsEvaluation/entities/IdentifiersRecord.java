@@ -1,6 +1,10 @@
 package codeConstructsEvaluation.entities;
 
 import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -8,6 +12,11 @@ import java.util.List;
 
 public class IdentifiersRecord implements ComplexityMeasure {
 
+	/**
+	 * Logger to track information about identifiers used in Halstead measures
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(IdentifiersRecord.class);
+	
 	private double distinct;
 	private double total;
 	private Set<String> identifiers;
@@ -67,32 +76,30 @@ public class IdentifiersRecord implements ComplexityMeasure {
 
 	@Override
 	public void print() {
-		System.out.println("----| distant: " + this.distinct);
-		System.out.println("----| total: " + this.total);
+		logger.debug("----| distant: " + this.distinct);
+		logger.debug("----| total: " + this.total);
 		
-		System.out.print  ("----|");
+		logger.debug("----|");
 		String identifier;
 		Iterator<String> identifiersIterator = this.identifiers.iterator();
 		while(identifiersIterator.hasNext()) {
 			identifier = identifiersIterator.next();
-			System.out.print(identifier);
+			logger.debug(identifier);
 			if (identifiersIterator.hasNext()) {
-				System.out.print(", ");
+				logger.debug(", ");
 			} else {
-				System.out.print("\n");
+				logger.debug("\n");
 			}
 		}
 	}
 	
 	public static void putColumnNameStatic(List<String> columnNames) {
-		
 		columnNames.add("Halstead Identifiers Distinct");
 		columnNames.add("Halstead Identifiers Total");
 		columnNames.add("Halstead Identifiers Names");
 	}
 	
 	public static void writeToCSVStatic(StringBuilder content) {
-
 		content.append("");
 		content.append(';');
 		content.append("");
@@ -103,7 +110,6 @@ public class IdentifiersRecord implements ComplexityMeasure {
 	
 	@Override
 	public void putColumnName(List<String> columnNames) {
-		
 		columnNames.add("Halstead Identifiers Distinct");
 		columnNames.add("Halstead Identifiers Total");
 		columnNames.add("Halstead Identifiers Names");
@@ -111,7 +117,6 @@ public class IdentifiersRecord implements ComplexityMeasure {
 	
 	@Override
 	public void writeToCSV(StringBuilder content) {
-
 		content.append(String.valueOf(this.distinct).replace(".", ","));
 		content.append(';');
 		content.append(String.valueOf(this.total).replace(".", ","));

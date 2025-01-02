@@ -9,6 +9,8 @@ import java.util.Set;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import codeContext.processors.ASTTextExtractorTools;
 import splEvolutionCore.DebugInformation;
@@ -22,6 +24,11 @@ import splEvolutionCore.DebugInformation;
  *
  */
 public class RecursionCycleFinder {
+	
+	/**
+	 * Logger to track finding recursive functions by detecting cycles 
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(RecursionCycleFinder.class);
 	
 	/**
 	 * List of declared areas
@@ -94,11 +101,11 @@ public class RecursionCycleFinder {
 			if (startCodeAreaPosition <= startPosition && startCodeAreaPosition <= endPosition && 
 					endCodeAreaPosition >= startPosition && endPosition <= endCodeAreaPosition) {
 				codeName = processedCodeArea.getCodeName();
-				//System.out.println(codeName + " [ " + startCodeAreaPosition + " <= "+ startPosition + " <= "+ endCodeAreaPosition  + " ]["+ startCodeAreaPosition + " <= "+ endPosition + " <= "+ endCodeAreaPosition  + " ]");
+				//logger.debug(codeName + " [ " + startCodeAreaPosition + " <= "+ startPosition + " <= "+ endCodeAreaPosition  + " ]["+ startCodeAreaPosition + " <= "+ endPosition + " <= "+ endCodeAreaPosition  + " ]");
 				isInsideRecursion = this.isCycle(codeName);
 				if (isInsideRecursion && DebugInformation.SHOW_POLLUTING_INFORMATION) {
-					System.out.println("Found recursion AT: " + codeName + " recursion: " + isInsideRecursion);
-					System.out.println(((String) astRoot.get("text")).substring(
+					logger.debug("Found recursion AT: " + codeName + " recursion: " + isInsideRecursion);
+					logger.debug(((String) astRoot.get("text")).substring(
 							Math.toIntExact(startCodeAreaPosition), Math.toIntExact(endCodeAreaPosition)));
 				}
 				if (isInsideRecursion) { return true; }
@@ -179,17 +186,17 @@ public class RecursionCycleFinder {
 				astName = ASTTextExtractorTools.getTextFromAstIncludingNameAndExpressions(astElement);
 				if (astGrandParent.containsKey("members") && astGrandParent.containsKey("name")) {
 					astClassName = ASTTextExtractorTools.getTextFromAstIncludingNameAndExpressions(astGrandParent);
-					if (DebugInformation.SHOW_POLLUTING_INFORMATION) { System.out.println("--> "  + astClassName + "." + astName); }
+					if (DebugInformation.SHOW_POLLUTING_INFORMATION) { logger.debug("--> "  + astClassName + "." + astName); }
 					if (astClassName.equals(astName)) {
-						if (DebugInformation.SHOW_POLLUTING_INFORMATION) { System.out.println("--> " + astName); }
+						if (DebugInformation.SHOW_POLLUTING_INFORMATION) { logger.debug("--> " + astName); }
 						connectionSet.add(astName);
 					} else {
-						if (DebugInformation.SHOW_POLLUTING_INFORMATION) { System.out.println("--> " + astClassName + "." + astName); }
+						if (DebugInformation.SHOW_POLLUTING_INFORMATION) { logger.debug("--> " + astClassName + "." + astName); }
 						if (this.ignoreClassFunctionOverlap) { connectionSet.add(astName); }
 						connectionSet.add(astClassName + "." + astName);
 					}
 				} else {
-					if (DebugInformation.SHOW_POLLUTING_INFORMATION) { System.out.println("--> " + astName); }
+					if (DebugInformation.SHOW_POLLUTING_INFORMATION) { logger.debug("--> " + astName); }
 					connectionSet.add(astName);
 				}
 			}
@@ -242,7 +249,7 @@ public class RecursionCycleFinder {
 			parentName = ASTTextExtractorTools.getTextFromAstIncludingOptionallyName(astParent);
 			constructName = ASTTextExtractorTools.getTextFromAstIncludingOptionallyName(astPart);
 			if (DebugInformation.SHOW_POLLUTING_INFORMATION) { 
-				System.out.println("CLASS FUNCTION: " + parentName + "." + constructName);
+				logger.debug("CLASS FUNCTION: " + parentName + "." + constructName);
 			}
 			
 			harvestedInnerCalls = new HashSet<String>();
@@ -252,7 +259,7 @@ public class RecursionCycleFinder {
 			this.createAndInsertCodeArea(astPart, constructName);
 		} else if (astParent.containsKey("members") && !astParent.containsKey("parameters") && astParent.containsKey("name")) { //GET CLASS
 			parentName = ASTTextExtractorTools.getTextFromAstIncludingOptionallyName(astParent);
-			if (DebugInformation.SHOW_POLLUTING_INFORMATION) { System.out.println("CLASS: " + parentName); }
+			if (DebugInformation.SHOW_POLLUTING_INFORMATION) { logger.debug("CLASS: " + parentName); }
 			
 			harvestedInnerCalls = new HashSet<String>();
 			this.harvestInnerCalls(astParent, astParent, astParent, harvestedInnerCalls);
@@ -262,7 +269,7 @@ public class RecursionCycleFinder {
 			if (!astPart.containsKey("name")) { // CLASS CONSTRUCTOR
 				// this can cycle - constructor and class creation
 				constructName = ASTTextExtractorTools.getTextFromAstIncludingOptionallyName(astPart);
-				if (DebugInformation.SHOW_POLLUTING_INFORMATION) { System.out.println("CONSTRUCTOR: " + constructName); }
+				if (DebugInformation.SHOW_POLLUTING_INFORMATION) { logger.debug("CONSTRUCTOR: " + constructName); }
 				
 				harvestedInnerCalls = new HashSet<String>();
 				this.harvestInnerCalls(astPart, astPart, astParent, harvestedInnerCalls);
@@ -271,7 +278,7 @@ public class RecursionCycleFinder {
 			} else {
 				// FUNCTION BODY
 				constructName = ASTTextExtractorTools.getTextFromAstIncludingOptionallyName(astPart);
-				if (DebugInformation.SHOW_POLLUTING_INFORMATION) { System.out.println("NON-CLASS FUNCTION: " + constructName); }
+				if (DebugInformation.SHOW_POLLUTING_INFORMATION) { logger.debug("NON-CLASS FUNCTION: " + constructName); }
 
 				harvestedInnerCalls = new HashSet<String>();
 				this.harvestInnerCalls(astPart, astParent, astParent, harvestedInnerCalls);
@@ -301,7 +308,7 @@ public class RecursionCycleFinder {
 		if (this.ignoreClassFunctionOverlap) {
 			contextIDParts = contextStringIdentifier.strip().split(".");
 			if (contextIDParts.length == 0) { return false; }
-			System.out.println("cc: " + contextIDParts[contextIDParts.length - 1]);
+			logger.debug("cc: " + contextIDParts[contextIDParts.length - 1]);
 			return this.isCycle(contextIDParts[contextIDParts.length - 1]);
 		}
 		return false;

@@ -2,8 +2,23 @@ package codeConstructsEvaluation.entities;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
+/**
+ * Source Lines of code measurement - representation
+ * 
+ * @author Jakub Perdek
+ *
+ */
 public class SourceLinesOfCodeMeasure implements ComplexityMeasure {
 
+	/**
+	 * Logger to track information about SLOC measure
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(SourceLinesOfCodeMeasure.class);
+	
 	private double physicalLOC;
 	private double logicalLOC;
 	
@@ -32,20 +47,18 @@ public class SourceLinesOfCodeMeasure implements ComplexityMeasure {
 
 	@Override
 	public void print() {
-		System.out.println("____| Source Lines Of Code Measure |____");
-		System.out.println("---| physicalLOC: " + this.physicalLOC);
-		System.out.println("---| logicalLOC: " + this.logicalLOC);
-		System.out.println("-----------------------------------------");
+		logger.debug("____| Source Lines Of Code Measure |____");
+		logger.debug("---| physicalLOC: " + this.physicalLOC);
+		logger.debug("---| logicalLOC: " + this.logicalLOC);
+		logger.debug("-----------------------------------------");
 	}
 	
 	public static void putColumnNameStatic(List<String> columnNames) {
-		
 		columnNames.add("LOC Physical");
 		columnNames.add("LOC Logical");
 	}
 	
 	public static void writeToCSVStatic(StringBuilder content) {
-
 		content.append("");
 		content.append(';');
 		content.append("");
@@ -54,14 +67,12 @@ public class SourceLinesOfCodeMeasure implements ComplexityMeasure {
 	
 	@Override
 	public void putColumnName(List<String> columnNames) {
-		
 		columnNames.add("LOC Physical");
 		columnNames.add("LOC Logical");
 	}
 	
 	@Override
 	public void writeToCSV(StringBuilder content) {
-
 		content.append(String.valueOf(this.physicalLOC).replace(".", ","));
 		content.append(';');
 		content.append(String.valueOf(this.logicalLOC).replace(".", ","));

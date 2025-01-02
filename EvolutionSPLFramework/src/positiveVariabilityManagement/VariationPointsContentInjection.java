@@ -6,10 +6,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.ExportAssetPlanner;
 import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.AlreadyChosenVariationPointForInjectionException;
 import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.InjectionIntoVariationPointValidator;
 import positiveVariabilityManagement.fragmentManagement.model.CodeFragment;
+import splEvolutionCore.candidateSelector.valueAssignment.cleaning.AllMarkerRemover;
 
 
 /**
@@ -19,6 +23,11 @@ import positiveVariabilityManagement.fragmentManagement.model.CodeFragment;
  *
  */
 public class VariationPointsContentInjection {	
+	
+	/**
+	 * Logger to track content injections along with its dependencies and assets
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(VariationPointsContentInjection.class);
 	
 	/**
 	 * The mapping of unique variation point identifier to selected code fragments for further injection
@@ -81,12 +90,12 @@ public class VariationPointsContentInjection {
 		if (this.exportAssetPlanner.canUseAsset(codeFragment.getCodeAst().toJSONString())) {
 			this.lastUsedCodeFragment = codeFragment;
 			this.contentsOfVariationPointsMap.put(variationPointMarkerName, codeFragment);
-			System.out.println("Code fragment has been added into assets.............................................." + codeFragment.getCode());
-			System.out.println("....... Dependencies" + codeFragment.getImportDependenciesAsCode());
+			logger.debug("Code fragment has been added into assets.............................................." + codeFragment.getCode());
+			logger.debug("....... Dependencies" + codeFragment.getImportDependenciesAsCode());
 			return true;
 		}
-		System.out.println("Code fragment has not been added into assets.............................................." + codeFragment.getCode());
-		System.out.println("....... Dependencies" + codeFragment.getImportDependenciesAsCode());
+		logger.debug("Code fragment has not been added into assets.............................................." + codeFragment.getCode());
+		logger.debug("....... Dependencies" + codeFragment.getImportDependenciesAsCode());
 		return false;
 	}
 

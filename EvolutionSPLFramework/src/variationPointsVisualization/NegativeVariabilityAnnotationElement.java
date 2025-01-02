@@ -86,7 +86,7 @@ public class NegativeVariabilityAnnotationElement {
 		String annotationName = ASTTextExtractorTools.getTextFromAstIncludingNameAndExpressions(this.expressionAst);
 		this.expressionInJSON = ExpressionConverter.extractExpressionFromDecoratorAst(this.expressionAst);
 		if (this.expressionInJSON == null && AnnotationExtensionMarker.isSystemAnnotation(annotationName)) {
-			//System.out.println("Automatically generated exception does not have configuration expression! Skip.");
+			//logger.debug("Automatically generated exception does not have configuration expression! Skip.");
 		} else {
 			this.expressionStr = this.expressionInJSON.toString();
 		}

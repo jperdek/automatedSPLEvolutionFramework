@@ -1,9 +1,10 @@
 package evolutionSimulation.orchestrationOfEvolutionIterations.SPLCandidateSelectionStrategies;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import evolutionSimulation.EvolutionConfiguration;
 import evolutionSimulation.orchestrationOfEvolutionIterations.SPLCandidateLoadingMechanism;
@@ -19,6 +20,11 @@ import evolutionSimulation.orchestrationOfEvolutionIterations.SPLCandidateSelect
  */
 public class SPLProjectCandidateToPopulationOfEvolIterationSelector {
 
+	/**
+	 * Logger to track overall candidate selection process according to configuration for particular (sub-)evolution iteration
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(SPLProjectCandidateToPopulationOfEvolIterationSelector.class);
+	
 	/**
 	 * Instance to load variation points data from SPL candidates 
 	 */
@@ -95,7 +101,7 @@ public class SPLProjectCandidateToPopulationOfEvolIterationSelector {
 						variationPointsDataAggregations);
 
 		for (int i=0; i<selectedCandidates.size(); i++) {
-			System.out.println("Chosen path to candidate: " + mechanismForSPLCandidateLoading.getCandidatePath(selectedCandidates.get(i)));
+			logger.debug("Chosen path to candidate: " + mechanismForSPLCandidateLoading.getCandidatePath(selectedCandidates.get(i)));
 			selectedCandidates.set(i, mechanismForSPLCandidateLoading.getCandidatePath(selectedCandidates.get(i)));
 		}
 		return selectedCandidates;

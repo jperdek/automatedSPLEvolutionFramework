@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import codeContext.processors.ASTTextExtractorTools;
 import divisioner.VariationPointDivisionConfiguration;
+import splEvolutionCore.candidateSelector.valueAssignment.AssignedValueProcessForPositiveVariability;
 
 
 /**
@@ -16,6 +19,11 @@ import divisioner.VariationPointDivisionConfiguration;
  *
  */
 public class AllMarkerRemover {
+	
+	/**
+	 * Logger to track removal of positive variability markers 
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(AllMarkerRemover.class);
 	
 	/**
 	 * Instantiates AllMarkerRemover
@@ -80,7 +88,7 @@ public class AllMarkerRemover {
 				
 				for (JSONObject statementToRemove: positiveVariabilityStatementsToRemove) {
 					if (!entryArray.remove(statementToRemove)) {
-						System.out.println("Posistive variation point NOT REMOVED!!!!");
+						logger.debug("Posistive variation point NOT REMOVED!!!!");
 					}
 				}
 			}

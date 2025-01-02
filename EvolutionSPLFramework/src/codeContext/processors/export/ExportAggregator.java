@@ -5,6 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.ExportAssetPlanner;
 
 
@@ -17,6 +21,11 @@ import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterations
  */
 public class ExportAggregator {
 
+	/**
+	 * Logger to track information about export aggregation
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(ExportAggregator.class);
+	
 	/**
 	 * The map of export type (string identifier) to export context
 	 */
@@ -82,7 +91,7 @@ public class ExportAggregator {
 			exportName = exportedContextEntry.getKey();
 			exportedContext = exportedContextEntry.getValue();
 			
-			System.out.print("<....IMPORT " + exportName + ": ");
+			logger.debug("<....IMPORT " + exportName + ": ");
 			exportedContext.printContent();
 		}
 	}

@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import codeContext.processors.export.exportedFileUnits.FileExportsUnits;
 import positiveVariabilityManagement.UnmappedContextException;
 import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.AlreadyChosenVariationPointForInjectionException;
@@ -22,6 +25,7 @@ import splEvolutionCore.candidateSelector.DifferentlyAggregatedLocation;
 import splEvolutionCore.candidateSelector.PositiveVariationPointCandidate;
 import splEvolutionCore.candidateSelector.PositiveVariationPointCandidateTemplates;
 import splEvolutionCore.candidateSelector.valueAssignment.complexityValueAssignment.MethodToEvaluateComplexityNotFoundException;
+import splEvolutionCore.derivation.DerivationResourcesManager;
 
 
 /**
@@ -33,6 +37,11 @@ import splEvolutionCore.candidateSelector.valueAssignment.complexityValueAssignm
  *
  */
 public class AssignedValueProcessForPositiveVariability extends AssignedValueProcess<ChosenValueAssignmentStrategyForPositiveVariability> {
+	
+	/**
+	 * Logger to track value assignment process performed for positive variability
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(AssignedValueProcessForPositiveVariability.class);
 	
 	/**
 	 * Strategy to load possible calls from the positive variation point marker
@@ -168,7 +177,7 @@ public class AssignedValueProcessForPositiveVariability extends AssignedValuePro
 		//  Creating code templates started...
 		boolean rejectVariationPointTemplate = positiveVariationPointCandidateTemplates.extractCallTemplatesAccordingToStrategyWithDefaultValue(this.positiveVariabilityCreatorStrategy);
 		if (!rejectVariationPointTemplate) { return false; } // optional removal 
-		if (DebugInformation.SHOW_POLLUTING_INFORMATION) { System.out.println("Processed variation point: " + positiveVariationPointCandidateTemplates.getVariationPointName()); }
+		if (DebugInformation.SHOW_POLLUTING_INFORMATION) { logger.info("Processed variation point: " + positiveVariationPointCandidateTemplates.getVariationPointName()); }
 		//  done
 		
 		PositiveVariationPointCandidate positiveVariationPointCandidate = new PositiveVariationPointCandidate(
@@ -201,7 +210,7 @@ public class AssignedValueProcessForPositiveVariability extends AssignedValuePro
 			positiveVariationPointCandidateTemplates.associateVariationPointCandidate(positiveVariationPointCandidate);
 			return true;
 		} else {
-			System.out.println("Callable constructs are not available for variation point: " + positiveVariationPointCandidateTemplates.getVariationPointName());
+			logger.info("Callable constructs are not available for variation point: " + positiveVariationPointCandidateTemplates.getVariationPointName());
 		}
 		return false;
 	}

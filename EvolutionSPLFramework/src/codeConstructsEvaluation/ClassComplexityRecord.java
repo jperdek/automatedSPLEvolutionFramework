@@ -4,6 +4,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import astFileProcessor.astObjects.ASTGenericDecorator;
 
 import java.util.ArrayList;
@@ -19,6 +22,12 @@ import java.util.List;
  *
  */
 public class ClassComplexityRecord extends ComplexityRecord implements EntityComplexityDifference  {
+	
+	/**
+	 * Logger to track information from class complexity record
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(ClassComplexityRecord.class);
+
 	/**
 	 * Associated complexity records
 	 */
@@ -194,25 +203,25 @@ public class ClassComplexityRecord extends ComplexityRecord implements EntityCom
 	 */
 	@Override
 	public void print() {	
-		System.out.println("+++| CLASS: " + this.className + " (maintainability: " + this.maintainability + ")");
+		logger.debug("+++| CLASS: " + this.className + " (maintainability: " + this.maintainability + ")");
 		super.print();
 		String methodName, recordName;
 		
-		System.out.println("+++| File methods: (" + this.classMethods.size() + ")");
+		logger.debug("+++| File methods: (" + this.classMethods.size() + ")");
 		for(Entry<String, MethodComplexityRecord> complexityMethodRecord: this.classMethods.entrySet()) {
 			methodName = complexityMethodRecord.getKey();
 			complexityMethodRecord.getValue().print();
-			System.out.println("+++ __METHOD_END__ " + methodName + " ___+++");
+			logger.debug("+++ __METHOD_END__ " + methodName + " ___+++");
 		}
 
-		System.out.println("+++| Associated record: (" + this.associatedRecords.size() + ")");
+		logger.debug("+++| Associated record: (" + this.associatedRecords.size() + ")");
 		for(Entry<String, ComplexityRecord> complexityAssociatedRecord: this.associatedRecords.entrySet()) {
 			recordName = complexityAssociatedRecord.getKey();
-			System.out.println("+++| Associated record: (" + recordName + ")");
+			logger.debug("+++| Associated record: (" + recordName + ")");
 			complexityAssociatedRecord.getValue().print();
 		}
 
-		System.out.println("++++++++++++++++++++++++++++++++++++++++++++++");
+		logger.debug("++++++++++++++++++++++++++++++++++++++++++++++");
 	}
 	
 	@Override

@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import codeContext.processors.export.ExportLocationAggregation;
 import codeContext.processors.export.ExportedContext;
 import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.variablesSubstitution.ExportedObjectOrAvailableVariable;
@@ -21,6 +24,11 @@ import splEvolutionCore.SPLEvolutionCore;
  */
 public class CallableConstruct {
 
+	/**
+	 * Logger to track callable constructs
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(CallableConstruct.class);
+	
 	/**
 	 * The base part of the call such as function or class name without parameters
 	 */
@@ -110,7 +118,7 @@ public class CallableConstruct {
 	public void addParameter(String parameterToSubstitute, InjectionCandidateVariationPoint parameterExportedContext) throws AlreadyChosenVariationPointForInjectionException {
 		
 		if (SPLEvolutionCore.DISABLE_INTERNAL_VARIABLE_INJECTIONS) { throw new AlreadyChosenVariationPointForInjectionException("Injection of inner variables is disabled!"); }
-		if (DebugInformation.SHOW_POLLUTING_INFORMATION) { System.out.println("Added: " + parameterToSubstitute); }
+		if (DebugInformation.SHOW_POLLUTING_INFORMATION) { logger.debug("Added: " + parameterToSubstitute); }
 		this.substitutedParameters.add(parameterToSubstitute);
 		Set<String> variationPointIdentifiers = parameterExportedContext.getVariationPointIdentifiers();
 		if (this.callableConstructDependency != null) {
@@ -146,7 +154,7 @@ public class CallableConstruct {
 					((InjectionCandidateVariationPoint) parameterExportedContext).getVariationPointIdentifier())) {
 				return false;
 			}*/
-			if (DebugInformation.SHOW_POLLUTING_INFORMATION) { System.out.println("Added parameter " + parameterToSubstitute + " with dependency: " + this.callableConstructDependency); } 
+			if (DebugInformation.SHOW_POLLUTING_INFORMATION) { logger.debug("Added parameter " + parameterToSubstitute + " with dependency: " + this.callableConstructDependency); } 
 			this.addParameter(parameterToSubstitute, (InjectionCandidateVariationPoint) parameterExportedContext);
 		} else {
 			if (SPLEvolutionCore.DISABLE_EXTERNAL_VARIABLE_INJECTIONS) { return false; }

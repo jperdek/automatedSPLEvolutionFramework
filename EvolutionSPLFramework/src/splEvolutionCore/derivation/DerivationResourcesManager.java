@@ -2,6 +2,7 @@ package splEvolutionCore.derivation;
 
 import codeConstructsEvaluation.transformation.ASTConverterClient;
 import evolutionSimulation.EvolutionConfiguration;
+import splEvolutionCore.DebugInformation;
 import splEvolutionCore.SPLEvolutionCore;
 import splEvolutionCore.SPLEvolutionCore.DuplicateProductPreventionOptions;
 
@@ -11,6 +12,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.json.simple.JSONArray;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,6 +28,11 @@ import java.util.List;
  */
 public class DerivationResourcesManager {
 
+	/**
+	 * Logger to track creation of created hashes made from newly evolved sample software product lines
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(DerivationResourcesManager.class);
+	
 	/**
 	 * Array of processed/operational variation points
 	 */
@@ -132,31 +140,32 @@ public class DerivationResourcesManager {
 	 * @return trimmed MD5 hash generated from the projects/SPL main resources
 	 */
 	public String getEvolutionProjectFileNameIdentifier(JSONObject processedAst) {
-		MessageDigest msgDst;
+		MessageDigest msgDst = null;
 		String variationPointIds = this.getVariationPointsID();
 		String variationPointsHash, sourceAstHash, overallHash = "";
 		String concatenatedContent;
 		try {
 			msgDst = MessageDigest.getInstance("MD5");
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		if (msgDst != null) {
 			variationPointsHash = new String(msgDst.digest(variationPointIds.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8);
 			byte[] astBytes = msgDst.digest(processedAst.toString().getBytes(StandardCharsets.UTF_8));
 			BigInteger no = new BigInteger(1, astBytes);  
 			//converting message digest into hex value  
 			sourceAstHash = no.toString(16);  
-			while (sourceAstHash.length() < 32)   {  sourceAstHash = "0" + sourceAstHash;  }  
-			System.out.println("Source app hash:" + sourceAstHash);
+			while (sourceAstHash.length() < 32) {  sourceAstHash = "0" + sourceAstHash;  }  
+			if (DebugInformation.SHOW_POLLUTING_INFORMATION) { logger.info("Source app hash:" + sourceAstHash); }
 			concatenatedContent = variationPointsHash + sourceAstHash;
-			byte[] overallBytes = msgDst.digest(concatenatedContent.getBytes(StandardCharsets.UTF_8));
+			//byte[] overallBytes = msgDst.digest(concatenatedContent.getBytes(StandardCharsets.UTF_8));
 			overallHash = no.toString(16);  
-			while (overallHash.length() < 32)   {  overallHash = "0" + overallHash;  }
-			System.out.println("Overall app hash:" + overallHash);
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
+			while (overallHash.length() < 32) { overallHash = "0" + overallHash;  }
+			logger.info("Overall app hash:" + overallHash);
 		}
-		
 		if (SPLEvolutionCore.DUPLICATE_PREVENTION_OPTION != DuplicateProductPreventionOptions.DISALLOW) {
 			if (AlreadyCreatedProjectException.alreadyExists(overallHash)) {
-				System.out.println("This SPL has been already generated!!! Hash: " + overallHash + " already exists. Skipping...");
+				logger.warn("This SPL has been already generated!!! Hash: " + overallHash + " already exists. Skipping...");
 				return null;
 			} else {
 				AlreadyCreatedProjectException.addHash(overallHash);

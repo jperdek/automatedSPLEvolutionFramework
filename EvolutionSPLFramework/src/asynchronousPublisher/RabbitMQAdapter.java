@@ -4,9 +4,14 @@ import java.io.IOException;
 import java.net.SocketException;
 import java.util.concurrent.TimeoutException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+
+import evolutionSimulation.EvolutionConfiguration;
 
 
 /**
@@ -16,6 +21,11 @@ import com.rabbitmq.client.ConnectionFactory;
  *
  */
 public class RabbitMQAdapter {
+	
+	/**
+	 * Logger to track exchange through Rabbit MQ adapter
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(RabbitMQAdapter.class);
 
 	/**
 	 * Connection factory to create connections
@@ -49,7 +59,7 @@ public class RabbitMQAdapter {
 		this.exchangeName = exchangeName;
 		
 		if (this.tryGetChannelAndConnect()) { this.channel.exchangeDeclare(this.exchangeName, "fanout"); }
-		System.out.println("Created exchange: " + this.channel);
+		logger.info("Created exchange: " + this.channel);
 	}
 	
 	/**
@@ -58,7 +68,7 @@ public class RabbitMQAdapter {
 	 * @return true if connection is successful otherwise false
 	 */
 	private boolean tryGetChannelAndConnect() {
-		System.out.println("Trying to connect to message queue...");
+		logger.info("Trying to connect to message queue...");
 		try {
 			this.channel = this.createChannel();
 			return true;
@@ -67,7 +77,7 @@ public class RabbitMQAdapter {
 		} catch (TimeoutException te) {
 			this.channel = null;
 		}
-		System.out.println("Connecting to message queue failed...");
+		logger.info("Connecting to message queue failed...");
 		return false;
 	}
 	
@@ -103,9 +113,9 @@ public class RabbitMQAdapter {
 
 		if (this.channel != null) {
 	        this.channel.basicPublish(this.exchangeName, "", null, message.getBytes("UTF-8"));
-	        System.out.println(" Publishing information " + this.exchangeName + ": '" + message + "'");
+	        logger.info("Publishing information using " + this.exchangeName + ": '" + message + "'");
 		} else {
-			System.out.println("Cannot publish into queue... Connection is lost. Skipping...");
+			logger.info("Cannot publish into queue... Connection is lost. Skipping...");
 		}
 	}
 }

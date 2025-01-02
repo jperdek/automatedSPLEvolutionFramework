@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import codeContext.processors.NotFoundVariableDeclaration;
 import dividedAstExport.InvalidSystemVariationPointMarkerException;
 import evolutionSimulation.EvolutionConfiguration;
@@ -36,6 +39,11 @@ import variationPointsVisualization.DuplicatedAnnotation;
  */
 public class EvolutionIterationsPipeline {
 
+	/**
+	 * Logger to track progress in evolution pipeline 
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(EvolutionIterationsPipeline.class);
+	
 	/**
 	 * The sequence of evolution iterations that should be executed
 	 */
@@ -131,7 +139,7 @@ public class EvolutionIterationsPipeline {
 			customizedEvolutionConfiguration = evolutionIteration.getAssociatedEvolutionConfiguration();
 	
 			if (customizedEvolutionConfiguration == null) { customizedEvolutionConfiguration = evolutionConfiguration; }
-			if (DebugInformation.PROCESS_STEP_INFORMATION) { System.out.println("Performing evolution iteration number: " + customizedEvolutionConfiguration.getIteration()); }
+			if (DebugInformation.PROCESS_STEP_INFORMATION) { logger.info("Performing evolution iteration number: " + customizedEvolutionConfiguration.getIteration()); }
 			
 			customizedEvolutionConfiguration.updateIteration(evolutionConfiguration);
 			customizedEvolutionConfiguration.updatePathToEvolvedSPLProjectDirectory();
@@ -142,26 +150,26 @@ public class EvolutionIterationsPipeline {
 			
 			String pathForNextIteration = null;
 			if (pathToEvolvedSPLProjectsDirectory == null || pathToEvolvedSPLProjectsDirectory.equals("")) {
-				System.out.println("NO Path to evolved directory!");
+				logger.info("NO Path to evolved directory!");
 				if (DebugInformation.PROCESS_STEP_INFORMATION) { customizedEvolutionConfiguration.printCurrentConfiguration(); }
 				evolutionIteration.runEvolutioIteration(evolutionConfiguration, exportAssetPlanner);
 				// introduces the core settings from this iteration
 				evolutionCoreSettings = evolutionIteration.getAssociatedEvolutionCoreSettings();
 			} else {
-				System.out.println("Begin with path to evolved directory: " + pathToEvolvedSPLProjectsDirectory);
+				logger.info("Begin with path to evolved directory: " + pathToEvolvedSPLProjectsDirectory);
 				strategySPLNextEvolutionIterationCandidateSelection = 
 						evolutionIteration.getEvolutionIterationCandidateSelectionMechanism();
 				
-				System.out.println("CANDIDATE POPULATION SELECTION ");
+				logger.info("CANDIDATE POPULATION SELECTION ");
 				candidateForPopulationSelector = new SPLProjectCandidateToPopulationOfEvolIterationSelector(candidateForPopulationSelector);
 				inputPaths = candidateForPopulationSelector.getPathsToEachSPLProjectCandidateFromPopulation(
 						numberEvolvedCandidatesFromLastIteration, 
 						pathToEvolvedSPLProjectsDirectory, strategySPLNextEvolutionIterationCandidateSelection, evolutionConfiguration);
-				System.out.println("EVOLUTION ITERATION: " + customizedEvolutionConfiguration.getIteration() + " Input Paths number: " + inputPaths.size());
+				logger.info("EVOLUTION ITERATION: " + customizedEvolutionConfiguration.getIteration() + " Input Paths number: " + inputPaths.size());
 				for (String inputPath: inputPaths) {
 					pathToScriptInputFilePath = inputPath + evolutionConfiguration.getCurrentEvolvedScriptRelativePath();
-					System.out.println("Input Path: " + inputPath);
-					System.out.println("Evolved Path: " + pathToScriptInputFilePath);
+					logger.info("Input Path: " + inputPath);
+					logger.info("Evolved Path: " + pathToScriptInputFilePath);
 					
 					if (pathToScriptInputFilePath.contains("_XXX__VariationPointData.json")) { continue; }
 					if (DebugInformation.PROCESS_STEP_INFORMATION) { customizedEvolutionConfiguration.printCurrentConfiguration(); }
@@ -177,16 +185,15 @@ public class EvolutionIterationsPipeline {
 			
 			// switch to the next iteration - changing paths
 			if (evolutionConfiguration.shouldTerminateEvolution()) { 
-				if (DebugInformation.PROCESS_STEP_INFORMATION) { System.out.println("Terminating SPL (inner-)evolution..."); }
+				if (DebugInformation.PROCESS_STEP_INFORMATION) { logger.info("Terminating SPL (inner-)evolution..."); }
 				break;
 			}
 			
-			if (DebugInformation.PROCESS_STEP_INFORMATION) { System.out.println("Terminating evolution iteration and beginning with iteration number: " + customizedEvolutionConfiguration.getIteration()); }
+			if (DebugInformation.PROCESS_STEP_INFORMATION) { logger.info("Terminating evolution iteration and beginning with iteration number: " + customizedEvolutionConfiguration.getIteration()); }
 			
 			customizedEvolutionConfiguration.incrementIteration();
 			evolutionConfiguration.updateIteration(customizedEvolutionConfiguration);
 			evolutionConfiguration.setPathToEvolvedSPLProjectDirectoryFromLatestEvolution(customizedEvolutionConfiguration, pathForNextIteration);
-			System.out.println("PATH CLOSED");
 			customizedEvolutionConfiguration = evolutionConfiguration;
 		}
 	}

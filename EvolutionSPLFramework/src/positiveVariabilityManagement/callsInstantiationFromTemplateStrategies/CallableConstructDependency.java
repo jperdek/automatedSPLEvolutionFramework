@@ -4,6 +4,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import splEvolutionCore.DebugInformation;
 
 
@@ -16,6 +19,11 @@ import splEvolutionCore.DebugInformation;
  */
 public class CallableConstructDependency {
 	
+	/**
+	 * Logger to track dependencies bound to callable constructs
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(CallableConstructDependency.class);
+
 	/**
 	 * The set of identifier of variation point where validity of extracted parameters/local variables holds
 	 */
@@ -48,9 +56,9 @@ public class CallableConstructDependency {
 	 */
 	public boolean fitsAllDependencies(String requestedVariationPointName) {
 		if (DebugInformation.SHOW_POLLUTING_INFORMATION) {
-			System.out.println("MATCHING >" + requestedVariationPointName + "< IN: ");
+			logger.debug("MATCHING >" + requestedVariationPointName + "< IN: ");
 			for (String param: this.variationPointIdentifierNames) {
-				System.out.println(param);
+				logger.debug(param);
 			}
 		}
 		return this.variationPointIdentifierNames.contains(requestedVariationPointName);

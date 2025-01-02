@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.ExportAssetPlanner;
 import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.AlreadyChosenVariationPointForInjectionException;
 
@@ -21,6 +24,11 @@ import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.Al
 public class TopologicallyDiverseConstructsSelection implements SelectionOfConstructsAcrossSelectedVariationPointsStrategies {
 
 
+	/**
+	 * Logger to track topologically diverse constructs selection 
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(TopologicallyDiverseConstructsSelection.class);
+	
 	@Override
 	/**
 	 * Selects code injections according to similarities between dependencies (semantic nature) between selected code constructs (content) in place of selected variation points
@@ -57,7 +65,7 @@ public class TopologicallyDiverseConstructsSelection implements SelectionOfConst
 				}
 			}
 		}
-		System.out.println("Number of topologically diverse construct to injected" + topologicallyDiverseConstructsSelection.size());
+		logger.info("Number of topologically diverse construct to injected" + topologicallyDiverseConstructsSelection.size());
 		return new AllVariationPointContentInjectionAggregator().aggregateAllPossibleInjections(topologicallyDiverseConstructsSelection, exportAssetPlanner);
 	}
 }

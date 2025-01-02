@@ -5,6 +5,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import splEvolutionCore.DebugInformation;
 
 
@@ -17,6 +20,11 @@ import splEvolutionCore.DebugInformation;
  *
  */
 public class ParsedTypeOfVariableDataWithVPMapping extends ParsedTypeOfVariableData {
+	
+	/**
+	 * Logger to track information of parsed type of variable data with variation point mapping
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(ParsedTypeOfVariableDataWithVPMapping.class);
 	
 	/**
 	 * Name of variation point where content should be injected
@@ -87,8 +95,8 @@ public class ParsedTypeOfVariableDataWithVPMapping extends ParsedTypeOfVariableD
 			//}
 		}
 		if (DebugInformation.SHOW_POLLUTING_INFORMATION) {
-			System.out.println("Dependencies..................................: " + possibleVariationPointDependencies.size());
-			System.out.println("Preparing..................................: " + variableNameToVariationPointNameMapping.size());
+			System.out.println("Number of dependencies..................................: " + possibleVariationPointDependencies.size());
+			System.out.println("Number of preparing..................................: " + variableNameToVariationPointNameMapping.size());
 		}
 		return variableNameToVariationPointNameMapping;
 	}

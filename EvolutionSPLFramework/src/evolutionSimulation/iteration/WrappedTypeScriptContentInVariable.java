@@ -3,9 +3,13 @@ package evolutionSimulation.iteration;
 import java.io.IOException;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import codeConstructsEvaluation.transformation.ASTConverterClient;
 import codeContext.persistence.UpdatedTreePersistence;
 import evolutionSimulation.EvolutionConfiguration;
+import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.LoadedAssetsFrequencyManager;
 import positiveVariabilityManagement.SynthesizedContent;
 import splEvolutionCore.DebugInformation;
 
@@ -20,6 +24,11 @@ import splEvolutionCore.DebugInformation;
  */
 public class WrappedTypeScriptContentInVariable {
 
+	/**
+	 * Logger to track the wrapping of TypeScript content to be transpiled a processed in JavaScipt 
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(WrappedTypeScriptContentInVariable.class);
+	
 	/**
 	 * The content of TypeScript file
 	 */
@@ -77,7 +86,7 @@ public class WrappedTypeScriptContentInVariable {
 		String scriptContentFromAST, finalScriptContent;
 		this.variableName = this.variableName.strip() + uuid.toString().substring(0, 5).strip();
 		if (isBaseContent) {
-			if (DebugInformation.PROCESS_STEP_INFORMATION) { System.out.println("Getting updated/evolved base script content."); }
+			if (DebugInformation.PROCESS_STEP_INFORMATION) { logger.info("Getting updated/evolved base script content."); }
 			scriptContentFromAST = ASTConverterClient.convertFromASTToCode(
 				synthesizedContent.getReferenceToProcessedAST().toString());
 			finalScriptContent = scriptContent.split(previousVariableName)[0] + this.variableName + " = `" + scriptContentFromAST + "`";
@@ -123,7 +132,7 @@ public class WrappedTypeScriptContentInVariable {
 			currentDestinationScriptPath = evolutionConfiguration.getCurrentEvolvedScriptRelativePath();
 		}
 		//if (currentScriptPath.contains("file:///")) { v = "file:///" + currentScriptPath.replace("://", ":/"); }
-		if (DebugInformation.PROCESS_STEP_INFORMATION) { System.out.println("Persisting code in file: " + currentDestinationScriptPath); }
+		if (DebugInformation.PROCESS_STEP_INFORMATION) { logger.info("Persisting code in file: " + currentDestinationScriptPath); }
 		UpdatedTreePersistence.persistsAstInFile(currentDestinationScriptPath, scriptCode);
 	} 
 }

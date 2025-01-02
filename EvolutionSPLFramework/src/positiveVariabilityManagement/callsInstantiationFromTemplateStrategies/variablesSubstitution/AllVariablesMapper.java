@@ -3,6 +3,7 @@ package positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.v
 import codeContext.processors.export.ExportedContext;
 import codeContext.processors.export.exportedFileUnits.FileExportsUnits;
 import positiveVariabilityManagement.UnmappedContextException;
+import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.AllInstantiationsFromTemplate;
 import positiveVariabilityManagement.entities.CallableConstructTemplate;
 import positiveVariabilityManagement.entities.DuplicatedContextIdentifier;
 import positiveVariabilityManagement.entities.VariablesForSubstantiation;
@@ -12,6 +13,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Set;
 
 
@@ -26,6 +31,11 @@ import java.util.Set;
  *
  */
 public class AllVariablesMapper {
+	
+	/**
+	 * Logger to track mapping of all variables
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(AllVariablesMapper.class);
 	
 	/**
 	 * The aggregations of file exports units in the mapping under the file name
@@ -143,7 +153,7 @@ public class AllVariablesMapper {
 			parameterType = parameterNamesToTypeEntry.getValue().strip();
 			parameterNameToCheck = parameterNamesToTypeEntry.getKey().strip();
 			
-			if (DebugInformation.SHOW_POLLUTING_INFORMATION) { System.out.println("Checked parameter: " + parameterNameToCheck); }
+			if (DebugInformation.SHOW_POLLUTING_INFORMATION) { logger.debug("Checked parameter: " + parameterNameToCheck); }
 			
 			if (parsedTypesMapping.containsKey(parameterType)) {
 				parsedTypeOfVariableData = parsedTypesMapping.get(parameterType);
@@ -176,7 +186,7 @@ public class AllVariablesMapper {
 
 				}
 				
-				if (variationPointDependencies.isEmpty()) { System.out.println("Necessary to skip .............................................."); return new HashMap<String, ParsedTypeOfVariableData>(); }
+				if (variationPointDependencies.isEmpty()) { logger.debug("Necessary to skip .............................................."); return new HashMap<String, ParsedTypeOfVariableData>(); }
 				nameToContextMappingDependenciesSetAfterValidation = new HashSet<>();
 				for (VariableAggregationUnderVariationPoint variableAggregationUnderVariationPoint: nameToContextMappingDependenciesSet) {
 					evaluatedVariatioonPoint = variableAggregationUnderVariationPoint.getVariationPointIdentifier();
@@ -185,18 +195,18 @@ public class AllVariablesMapper {
 					}
 				}
 				parsedTypeOfVariableData = new ParsedTypeOfVariableDataWithVPMapping(parameterType, supportedParameterNamesAll, nameToContextMappingDependenciesSetAfterValidation);
-				//System.out.println("---->" + parameterType + " " + parsedTypeOfVariableData);
+				//logger.debug("---->" + parameterType + " " + parsedTypeOfVariableData);
 				parsedTypesMapping.put(parameterType, parsedTypeOfVariableData);
 			} else {
 				System.out.println("No data were found for type: " + parameterType);
 				return new HashMap<String, ParsedTypeOfVariableData>();
 			}
 		}
-		if (variationPointDependencies.contains("markerVP238")) { 
-			
-			System.out.println("Satisfies .......................................... : "  + callableConstructTemplate.getCallableTemplateForm());
+		
+		//if (variationPointDependencies.contains("markerVP238")) { 	
+			//logger.debug("Satisfies .......................................... : "  + callableConstructTemplate.getCallableTemplateForm());
 			//if(callableConstructTemplate.getCallableTemplateForm().contains("radius")) { System.exit(5); }
-		} 
+		//} 
 		return parsedTypesMapping;
 	}
 }

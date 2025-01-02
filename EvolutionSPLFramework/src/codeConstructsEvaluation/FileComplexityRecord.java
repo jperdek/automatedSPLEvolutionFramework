@@ -4,6 +4,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import astFileProcessor.astObjects.ASTGenericDecorator;
 
 import java.util.ArrayList;
@@ -21,6 +24,11 @@ import codeConstructsEvaluation.entities.FileDependency;
  *
  */
 public class FileComplexityRecord extends ComplexityRecord implements EntityComplexityDifference  {
+	
+	/**
+	 * Logger to track information from file complexity record
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(FileComplexityRecord.class);
 	
 	/**
 	 * Evaluated method code complexities that are associated with file represented with this entity
@@ -286,26 +294,26 @@ public class FileComplexityRecord extends ComplexityRecord implements EntityComp
 	 * Prints the data stored in this file complexity record
 	 */
 	public void print() {
-		System.out.println();
-		System.out.println("XXXXXXXX| FILE |XXXXXXX");
+		logger.debug("\n");
+		logger.debug("XXXXXXXX| FILE |XXXXXXX");
 		super.print();
 		String methodName, className;
-		System.out.println("XXX| File methods: (" + this.methodsMap.size() + ")");
+		logger.debug("XXX| File methods: (" + this.methodsMap.size() + ")");
 		for(Entry<String, MethodComplexityRecord> complexityMethodRecord: this.methodsMap.entrySet()) {
 			methodName = complexityMethodRecord.getKey();
 			complexityMethodRecord.getValue().print();
-			System.out.println("XXX __METHOD_END__ " + methodName + " ___XXXX");
+			logger.debug("XXX __METHOD_END__ " + methodName + " ___XXXX");
 		}
 
-		System.out.println("XXX| File classes: (" + this.classesMap.size() + ")");
+		logger.debug("XXX| File classes: (" + this.classesMap.size() + ")");
 		for(Entry<String, ClassComplexityRecord> complexityClassRecord: this.classesMap.entrySet()) {
 			className = complexityClassRecord.getKey();
 			complexityClassRecord.getValue().print();
-			System.out.println("XXX __CLASS_END___ " + className + " ___XXXX");
+			logger.debug("XXX __CLASS_END___ " + className + " ___XXXX");
 		}
-		System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-		System.out.println();
-		System.out.println();
+		logger.debug("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+		logger.debug("\n");
+		logger.debug("\n");
 	}
 	
 	@Override

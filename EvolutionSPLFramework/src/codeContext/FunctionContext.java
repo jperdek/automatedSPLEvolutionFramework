@@ -7,6 +7,8 @@ import java.util.Map.Entry;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import codeContext.objects.VariableObject;
 import codeContext.processors.ASTContextProcessor;
@@ -24,6 +26,11 @@ import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.va
  *
  */
 public class FunctionContext extends InnerContext {
+	
+	/**
+	 * Logger to track information about function context
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(FunctionContext.class);
 	
 	/**
 	 * The name of the function
@@ -130,7 +137,7 @@ public class FunctionContext extends InnerContext {
 	 * 
 	 * @return the used parameters representation
 	 */
-	public UsedVariables getFunctionParameters() { System.out.println("Getting function parameters from" + this.functionName); return this.functionParameters; }
+	public UsedVariables getFunctionParameters() { logger.debug("Getting function parameters from" + this.functionName); return this.functionParameters; }
 
 	/**
 	 * Returns and creates the descriptive JSON represented output from information about the function context
@@ -258,21 +265,21 @@ public class FunctionContext extends InnerContext {
 		List<VariableObject> actualVariables = super.getVariables(currentPosition);
 		List<VariableObject> functionParametersAndVariables = this.functionParameters.getAllActualVariableObject(currentPosition, actualScriptVariablesToSubstituteConfiguration);
 		actualVariables.addAll(functionParametersAndVariables);
-		System.out.println("----------Printing function parameters and declared variables and data structures: ");
+		logger.debug("----------Printing function parameters and declared variables and data structures: ");
 		for (VariableObject vo: functionParametersAndVariables) {
-			System.out.println(vo.getExportName() +  " --- called as --> " + vo.getCallableStr());
+			logger.debug(vo.getExportName() +  " --- called as --> " + vo.getCallableStr());
 		}
-		System.out.println("-----------------------------------------------------------------------------------");
+		logger.debug("-----------------------------------------------------------------------------------");
 		return actualVariables;
 	}
 	
 	public void printContextSpecifics() {
-		System.out.println("-->===>---> FUNCTION PARAMETERS: ");
+		logger.debug("-->===>---> FUNCTION PARAMETERS: ");
 		for (String extractedVariableString: this.functionParameters.getUsedVariableObjectsStrings()) {
-			System.out.println("-->===> " + extractedVariableString);
+			logger.debug("-->===> " + extractedVariableString);
 		}
-		System.out.println();
-		System.out.println("RETURN TYPE: " + this.returnType);
-		System.out.println();
+		logger.debug("\n");
+		logger.debug("RETURN TYPE: " + this.returnType);
+		logger.debug("\n");
 	}
 }

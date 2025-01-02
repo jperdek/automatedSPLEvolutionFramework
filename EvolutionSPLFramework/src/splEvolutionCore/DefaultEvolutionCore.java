@@ -5,8 +5,9 @@ import java.util.List;
 import java.util.Map;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import codeConstructsEvaluation.transformation.ASTConverterClient;
 import codeContext.CodeContext;
 import codeContext.persistence.UpdatedTreePersistence;
 import codeContext.processors.NotFoundVariableDeclaration;
@@ -18,7 +19,6 @@ import evolutionSimulation.EvolutionConfiguration;
 import evolutionSimulation.iteration.AlreadyMappedVariationPointContentsInjection;
 import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.ExportAssetPlanner;
 import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.strategies.AssetMisuse;
-import evolutionSimulation.productAssetsInitialization.SharedConfiguration;
 import evolutionSimulation.productAssetsInitialization.UnknownResourceToProcessException;
 import positiveVariabilityManagement.NewContextsSynthesizer;
 import positiveVariabilityManagement.SynthesizedContent;
@@ -53,6 +53,11 @@ import variationPointsVisualization.DuplicatedAnnotation;
  * Default strategy to evolve SPL project/script
  */
 public class DefaultEvolutionCore implements EvolutionCoreStrategies {
+	
+	/**
+	 * Logger to track progress in processing of software product line evolution core
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(DefaultEvolutionCore.class);
 	
 	/**
 	 * Applies/Evolves SPL project/script in default evolution process
@@ -129,7 +134,7 @@ public class DefaultEvolutionCore implements EvolutionCoreStrategies {
 		List<PositiveVariationPointCandidateTemplates> positiveVariationPointCandidatesTemplates = 
 				PositiveVariationPointCandidateSelection.createPositiveVariabilityCandidates(variationPointsArray);
 		if (DebugInformation.PROCESS_STEP_INFORMATION) {
-			System.out.println("Number of positive variation point candidates are: " + positiveVariationPointCandidatesTemplates.size());
+			logger.info("Number of positive variation point candidates are: " + positiveVariationPointCandidatesTemplates.size());
 		}
 		ActualScriptVariablesToSubstituteConfiguration actualScriptVariablesToSubstituteConfiguration =
 				evolutionCoreSettings.getActualScriptVariablesToSubstituteConfiguration();
@@ -148,7 +153,7 @@ public class DefaultEvolutionCore implements EvolutionCoreStrategies {
 		
 		
 		if (DebugInformation.PROCESS_STEP_INFORMATION) {
-			System.out.println("Number of positive variation point candidates are: " + positiveVariationPointCandidatesTemplates.size());
+			logger.info("Number of positive variation point candidates are: " + positiveVariationPointCandidatesTemplates.size());
 		}
 		assignedValuePositiveVariabilityProcess.assignValuesProcess(positiveVariationPointCandidatesTemplates);
 		NewContextsSynthesizer newContextsSynthesizer = new NewContextsSynthesizer(

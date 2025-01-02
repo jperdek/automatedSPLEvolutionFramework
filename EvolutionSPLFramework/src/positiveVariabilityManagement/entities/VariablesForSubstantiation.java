@@ -6,6 +6,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import codeContext.processors.export.ExportedContext;
 import codeContext.processors.export.exportedFileUnits.FileExportsUnits;
 import positiveVariabilityManagement.UnmappedContextException;
@@ -19,6 +23,11 @@ import splEvolutionCore.DebugInformation;
  *
  */
 public class VariablesForSubstantiation {
+	
+	/**
+	 * Logger to track substantiation of variables into templates
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(VariablesForSubstantiation.class);
 	
 	/**
 	 * Set of used unique export names
@@ -114,7 +123,7 @@ public class VariablesForSubstantiation {
 			if (DebugInformation.SHOW_MISSING_EVOLUTION_ENHANCEMENTS && 
 					!VariablesForSubstantiation.notAssociatedVariables.contains(requiredType)) {
 				VariablesForSubstantiation.notAssociatedVariables.add(requiredType);
-				System.out.println("Type " + requiredType + " has no associated variables. Declare them if possible...");
+				logger.debug("Type " + requiredType + " has no associated variables. Declare them if possible...");
 			}
 		}
 		return variableContextMapping;

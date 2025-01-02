@@ -6,6 +6,9 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import astFileProcessor.astObjects.ASTGenericDecorator;
 import astFileProcessor.astObjects.ASTGenericDecorator.DecoratorAssociatedWith;
 import java.util.HashMap;
@@ -22,6 +25,11 @@ import java.util.List;
  */
 public class ComplexityMeasurement implements EntityComplexityDifference {
 
+	/**
+	 * Logger to track information from complexity measurement
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(ComplexityMeasurement.class);
+	
 	/**
 	 * TYpe of measurement data
 	 */
@@ -275,15 +283,15 @@ public class ComplexityMeasurement implements EntityComplexityDifference {
 	 */
 	public void print() {
 		String recordName;
-		System.out.println("##########| COMPLEXITY MEASUREMENT (maintainability: " + this.maintainability + 
+		logger.debug("##########| COMPLEXITY MEASUREMENT (maintainability: " + this.maintainability + 
 				", measurements: " + this.complexityMeasurement.size() + ") |#########");
 		for(Entry<String, ComplexityRecord> complexityRecord: this.complexityMeasurement.entrySet()) {
 			recordName = complexityRecord.getKey();
-			System.out.println("######## ___ RECORD " + recordName + " ___ ##########");
+			logger.debug("######## ___ RECORD " + recordName + " ___ ##########");
 			complexityRecord.getValue().print();
-			System.out.println("########_____RECORD_END___ ##########");
+			logger.debug("########_____RECORD_END___ ##########");
 		}
-		System.out.println("################################################");
+		logger.debug("################################################");
 	}
 	
 	@Override

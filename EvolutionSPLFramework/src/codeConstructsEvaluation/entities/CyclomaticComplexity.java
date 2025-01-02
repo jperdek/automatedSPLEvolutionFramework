@@ -2,6 +2,9 @@ package codeConstructsEvaluation.entities;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * Representation of Cyclomatic complexity
@@ -11,6 +14,11 @@ import java.util.List;
  */
 public class CyclomaticComplexity implements ComplexityMeasure {
 
+	/**
+	 * Logger to track information about cyclomatic complexity
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(CyclomaticComplexity.class);
+	
 	/**
 	 * Cyclomatic number
 	 */
@@ -78,10 +86,10 @@ public class CyclomaticComplexity implements ComplexityMeasure {
 	 * Prints information about this Cyclomatic code complexity measure 
 	 */
 	public void print() {
-		System.out.println("____| Cyclomatic Complexity |____");
-		System.out.println("---| cyclomatic number: " + this.cyclomaticNumber);
-		System.out.println("---| cyclomatic density: " + this.cyclomaticDensity);
-		System.out.println("-----------------------------------------");
+		logger.debug("____| Cyclomatic Complexity |____");
+		logger.debug("---| cyclomatic number: " + this.cyclomaticNumber);
+		logger.debug("---| cyclomatic density: " + this.cyclomaticDensity);
+		logger.debug("-----------------------------------------");
 	}
 
 	/**

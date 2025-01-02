@@ -5,6 +5,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * The aggregation of previously harvested variables/parameters from variation points according to 
@@ -14,6 +17,11 @@ import java.util.Set;
  *
  */
 public class VariableAggregationUnderVariationPoint {
+
+	/**
+	 * Logger to track aggregation of variables under particular variation point
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(VariableAggregationUnderVariationPoint.class);
 
 	/**
 	 * The variation point identifier from actually processed script
@@ -131,10 +139,10 @@ public class VariableAggregationUnderVariationPoint {
 	 * Prints aggregation of variable/parameter names under particular variation point (represented with identifier)
 	 */
 	public void printVariablesUnderThisVariationPoint() {
-		System.out.println("Available variables falling under: " + this.variationPointIdentifier);
+		logger.debug("Available variables falling under: " + this.variationPointIdentifier);
 		for (String variableName: this.variationPointToVariablesMap.keySet()) {
-			System.out.println(variableName);
+			logger.debug(variableName);
 		}
-		System.out.println("-------------------------------------------------------------------->");
+		logger.debug("-------------------------------------------------------------------->");
 	}
 }

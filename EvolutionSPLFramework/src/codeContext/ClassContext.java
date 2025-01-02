@@ -1,13 +1,14 @@
 package codeContext;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import codeContext.objects.VariableObject;
 import codeContext.processors.ASTContextProcessor;
@@ -25,6 +26,11 @@ import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.va
  *
  */
 public class ClassContext extends InnerContext {
+	
+	/**
+	 * Logger to track information about class context
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(ClassContext.class);
 	
 	/**
 	 * The name of the class
@@ -136,9 +142,9 @@ public class ClassContext extends InnerContext {
 				if (functionCallableForm.startsWith("constructor(")) { continue; }
 				contextOptions.extendAndAddExecutableForm(classExecutable, ".", functionContext.constructCallableForm());
 			} else if (innerContext instanceof ClassContext) {
-				System.out.println("Classes cannot be nested!!! Not implemented!");
+				logger.warn("Classes cannot be nested!!! Not implemented!");
 			} else {
-				System.out.println("New context! Not supported!!!");
+				logger.warn("New context! Not supported!!!");
 			}
 		}
 	}
@@ -347,10 +353,10 @@ public class ClassContext extends InnerContext {
 	}
 	
 	public void printContextSpecifics() {
-		System.out.println("-->===>---> CLASS VARIABLES: ");
+		logger.debug("-->===>---> CLASS VARIABLES: ");
 		for (String extractedVariableString: this.members.getUsedVariableObjectsStrings()) {
-			System.out.println("-->===> " + extractedVariableString);
+			logger.debug("-->===> " + extractedVariableString);
 		}
-		System.out.println();
+		logger.debug("\n");
 	}
 }

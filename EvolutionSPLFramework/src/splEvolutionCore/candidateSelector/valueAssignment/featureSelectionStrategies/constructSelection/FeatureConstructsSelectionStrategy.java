@@ -5,11 +5,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Queue;
 
 import splEvolutionCore.DebugInformation;
 import splEvolutionCore.SPLEvolutionCore.SyntetizeConstructsOptions;
 import splEvolutionCore.candidateSelector.valueAssignment.AssignedValue;
+import splEvolutionCore.derivation.VariationPointConjunctor;
 
 
 /**
@@ -19,6 +24,11 @@ import splEvolutionCore.candidateSelector.valueAssignment.AssignedValue;
  *
  */
 public interface FeatureConstructsSelectionStrategy {
+	
+	/**
+	 * Logger to track information from feature constructs selection strategy
+	 */
+	static final Logger logger = LoggerFactory.getLogger(FeatureConstructsSelectionStrategy.class);
 	
 	/**
 	 * Generates implemented feature constructs according to implementation of given strategy
@@ -114,8 +124,8 @@ public interface FeatureConstructsSelectionStrategy {
 			finalConstructFeaturesForResultingProduct.add(actualComposedConstructFeaturesForResultingProduct);
 		}
 		if (DebugInformation.SHOW_POLLUTING_INFORMATION) {
-			System.out.println("MAXIMAL NUMBER OF CONSTUCTS: " + maximalNumberOfConstructs);
-			System.out.println("CONSTRUCTS FOR RESULTING PRODUCT: " + constructFeaturesForResultingProduct.size());
+			logger.debug("MAXIMAL NUMBER OF CONSTUCTS: " + maximalNumberOfConstructs);
+			logger.debug("CONSTRUCTS FOR RESULTING PRODUCT: " + constructFeaturesForResultingProduct.size());
 		}
 
 		int index1;

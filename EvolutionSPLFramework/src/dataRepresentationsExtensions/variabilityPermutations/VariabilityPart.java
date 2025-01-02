@@ -1,6 +1,12 @@
 package dataRepresentationsExtensions.variabilityPermutations;
 
 import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import dataRepresentationsExtensions.DataRepresentationInnerWrappers;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -16,6 +22,11 @@ import java.util.Iterator;
  * @param <T> The type of selected components that should be aggregated
  */
 public class VariabilityPart<T> {
+	
+	/**
+	 * Logger to track information about variability part entity holding chosen components
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(VariabilityPart.class);
 	
 	/**
 	 * The set of selected components that form the aggregation
@@ -147,9 +158,9 @@ public class VariabilityPart<T> {
 		Collections.sort(list);
 		Iterator<Integer> identifierIterator = list.iterator();
 		while(identifierIterator.hasNext()) {
-			System.out.print(Integer.toString(identifierIterator.next()));
+			logger.debug(Integer.toString(identifierIterator.next()));
 		}
-		System.out.println();
+		logger.debug("\n");
 	}
 	
 	/**

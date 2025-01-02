@@ -4,7 +4,10 @@ import java.io.IOException;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import codeContext.ClassContext;
 import codeContext.FunctionContext;
 import codeContext.GlobalContext;
 import splEvolutionCore.DebugInformation;
@@ -19,6 +22,11 @@ import variationPointsVisualization.DuplicatedAnnotation;
  */
 public class FunctionProcessor {
 
+	/**
+	 * Logger to track information from function processor
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(FunctionProcessor.class);
+	
 	/**
 	 * Inserts function parameters and manages function context with current AST part
 	 * -additionally inserts annotations for non-class functions
@@ -43,7 +51,7 @@ public class FunctionProcessor {
 			for (Object parameterPart: parameterObjects) {
 				parameterObject = (JSONObject) parameterPart;
 				functionParameterName = (String) ((JSONObject) parameterObject.get("name")).get("escapedText");
-				if (DebugInformation.SHOW_POLLUTING_INFORMATION) { System.out.println("Inserting function parameter: " + functionParameterName); }
+				if (DebugInformation.SHOW_POLLUTING_INFORMATION) { logger.debug("Inserting function parameter: " + functionParameterName); }
 				functionContext.addFunctionParameter(parameterObject, astRoot, functionParameterName, false);
 			}
 		}

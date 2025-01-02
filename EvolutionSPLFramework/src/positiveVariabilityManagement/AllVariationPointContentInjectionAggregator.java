@@ -7,6 +7,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Queue;
 
 import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.ExportAssetPlanner;
@@ -25,6 +29,11 @@ import splEvolutionCore.SPLEvolutionCore;
  */
 public class AllVariationPointContentInjectionAggregator implements SelectionOfConstructsAcrossSelectedVariationPointsStrategies {
 
+	/**
+	 * Logger to track aggregation of variation point content for its injection
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(AllVariationPointContentInjectionAggregator.class);
+	
 	/**
 	 * Instantiates the instance with implementation of strategy to select constructs among one or multiple previously selected variation points 
 	 */
@@ -65,7 +74,7 @@ public class AllVariationPointContentInjectionAggregator implements SelectionOfC
 				if (variationPointContentsInjection.getCodeFragments().size() == 0 
 						&& !DebugInformation.SHOW_POLLUTING_INFORMATION) { continue; }
 				
-				System.out.println("Added vp name: " + variationPointMarkerName + " with fragments: " + 
+				logger.debug("Added vp name: " + variationPointMarkerName + " with fragments: " + 
 						variationPointContentsInjection.getCodeFragments().size());
 				
 			}
@@ -77,7 +86,7 @@ public class AllVariationPointContentInjectionAggregator implements SelectionOfC
 					codeFragmentToIndexMap.put(codeFragment, index);
 					index++;
 				} else {
-					System.out.println("Injection not prepared from code fragment in variation point named: " + variationPointMarkerName);
+					logger.debug("Injection not prepared from code fragment in variation point named: " + variationPointMarkerName);
 				}
 			}
 		}
@@ -87,8 +96,8 @@ public class AllVariationPointContentInjectionAggregator implements SelectionOfC
 		List<Entry<VariationPointsContentInjection, String>> availableFunctionalitiesEntryList = 
 				new ArrayList<Entry<VariationPointsContentInjection, String>>(contentInjectionToNameMap.entrySet());
 		if(DebugInformation.PROCESS_STEP_INFORMATION) {
-			System.out.println();
-			System.out.print("AGGREGATING...........");
+			logger.info("");
+			logger.info("AGGREGATING...........");
 		}
 
 		int startIndex;
@@ -111,12 +120,12 @@ public class AllVariationPointContentInjectionAggregator implements SelectionOfC
 					for (CodeFragment codeFragment: variationPointsContentInjectionPart.getCodeFragments()) {
 						newVariationPointsContentInjection = new VariationPointsContentInjection(variationPointsContentInjection, exportAssetPlanner);
 						if(DebugInformation.SHOW_POLLUTING_INFORMATION) {
-							System.out.println(variationPointMarkerName + " <---*****---> " + codeFragment.getCode());
+							logger.debug(variationPointMarkerName + " <---*****---> " + codeFragment.getCode());
 						}
 						if (newVariationPointsContentInjection.addCodeFragmentReference(variationPointMarkerName, codeFragment)) {
 							harvestedContentMarkerCapacities2.add(newVariationPointsContentInjection);
 						} else {
-							System.out.println("Injection not prepared from code fragment in variation point named: " + variationPointMarkerName);
+							logger.debug("Injection not prepared from code fragment in variation point named: " + variationPointMarkerName);
 						}
 					}
 				}
@@ -128,15 +137,15 @@ public class AllVariationPointContentInjectionAggregator implements SelectionOfC
 			harvestedContentMarkerCapacities2 = helper;
 			
 			if (SPLEvolutionCore.MAX_SPL_INSTANCES_TO_DERIVE < harvestedContentMarkerCapacitiesAll.size()) {
-				System.out.println("Maximal number of instances is reached.");
+				logger.debug("Maximal number of instances is reached.");
 				break;
 			}
 		}
 		if(DebugInformation.PROCESS_STEP_INFORMATION) {
-			System.out.println("..........." + harvestedContentMarkerCapacitiesAll.size());
+			logger.debug("..........." + harvestedContentMarkerCapacitiesAll.size());
 		}
 		if (harvestedContentMarkerCapacitiesAll.size() == 0) {
-			//System.out.println("Cannot choose candiate to inject. Terminating evolution...");
+			//logger.debug("Cannot choose candidate to inject. Terminating evolution...");
 			//System.exit(0);
 		}
 		return harvestedContentMarkerCapacitiesAll;

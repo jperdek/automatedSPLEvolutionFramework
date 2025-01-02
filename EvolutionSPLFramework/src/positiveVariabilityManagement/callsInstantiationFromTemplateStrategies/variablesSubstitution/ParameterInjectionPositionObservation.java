@@ -8,6 +8,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import codeContext.CodeContext;
 import codeContext.InnerContext.Direction;
@@ -27,6 +29,12 @@ import splEvolutionCore.candidateSelector.PositiveVariationPointCandidateTemplat
  *
  */
 public class ParameterInjectionPositionObservation {
+	
+	/**
+	 * Logger to track harvesting, collection and aggregation of variables and parameters according to their observed type, name,
+	 *  and dependency on particular variation point with bindings to particular programming language
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(ParameterInjectionPositionObservation.class);
 	
 	/**
 	 * Aggregation of all existing aggregations of variables/parameters (under variation point and variable names) according to their observed type
@@ -64,7 +72,7 @@ public class ParameterInjectionPositionObservation {
 		
 			startSearchPosition = (long) actuallyProcessedVariationPointData.get("originalASTStartPosition");
 			endSearchPosition = (long) actuallyProcessedVariationPointData.get("originalASTEndPosition");
-			System.out.println("Used position: [" + startSearchPosition + ", " + endSearchPosition + "] to get inner data from variation point: " + variationPointIDName + " variables and parameters: " +  actuallyProcessedVariationPointData.toString());	
+			logger.debug("Used position: [" + startSearchPosition + ", " + endSearchPosition + "] to get inner data from variation point: " + variationPointIDName + " variables and parameters: " +  actuallyProcessedVariationPointData.toString());	
 		}
 	}
 	
@@ -96,7 +104,7 @@ public class ParameterInjectionPositionObservation {
 		
 			searchPosition =  startSearchPosition = variationPointTransformationBetweenAsts.getTransformedStartPosition();
 			endSearchPosition = variationPointTransformationBetweenAsts.getTransformedEndPosition();
-			System.out.println("Used position: [" + startSearchPosition + ", " + endSearchPosition + "] to get inner data from variation point: " + variationPointIDName);
+			logger.debug("Used position: [" + startSearchPosition + ", " + endSearchPosition + "] to get inner data from variation point: " + variationPointIDName);
 			for (VariableObject processedVariable: codeContext.getActualVariables(null,
 					searchPosition, startSearchPosition, endSearchPosition, Direction.RIGHT_FROM_POSITION, actualScriptVariablesToSubstituteConfiguration)) {
 				variableName = processedVariable.getExportName().strip() + SPLEvolutionCore.CODE_FRAGMENT_SEPARATOR.strip();
@@ -137,12 +145,12 @@ public class ParameterInjectionPositionObservation {
 		for (Entry<String, Set<VariableAggregationUnderVariationPoint>> parameter: 
 			this.extractedVariablesOrganizedAccoringType.entrySet()) {
 			variableType = parameter.getKey();
-			System.out.println("|====== EXTRACTED VARIABLE AGGREGATED UNDER TYPE ========> " + variableType + " <======= |");
+			logger.debug("|====== EXTRACTED VARIABLE AGGREGATED UNDER TYPE ========> " + variableType + " <======= |");
 			parameterDependencySet = parameter.getValue();
 			for (VariableAggregationUnderVariationPoint aggregationUnderVariationPoint: parameterDependencySet) {
 				aggregationUnderVariationPoint.printVariablesUnderThisVariationPoint();
 			}
-			System.out.println("| <===========================================================================> |");
+			logger.debug("| <===========================================================================> |");
 		}
 	}
 	

@@ -4,6 +4,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import astFileProcessor.astObjects.ASTGenericDecorator;
 
 import java.util.List;
@@ -21,6 +24,11 @@ import java.util.Iterator;
  */
 public class MethodComplexityRecord extends ComplexityRecord implements EntityComplexityDifference {
 
+	/**
+	 * Logger to track information from method complexity record
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(MethodComplexityRecord.class);
+	
 	/**
 	 * The nested methods associated with the method that is represented with this instance
 	 */
@@ -212,33 +220,33 @@ public class MethodComplexityRecord extends ComplexityRecord implements EntityCo
 	 * Prints the data stored in this method complexity record
 	 */
 	public void print() {	
-		System.out.println("***| METHOD: " + this.methodName + " (max nested depth: " + this.maxNestedMethodDepth + ") |**************");
+		logger.debug("***| METHOD: " + this.methodName + " (max nested depth: " + this.maxNestedMethodDepth + ") |**************");
 		super.print();
 		String methodName;
 		
 		if (this.parameterNames.size() > 0) {
-			System.out.print  ("***| Method Parameter Names |****");
+			logger.debug("***| Method Parameter Names |****");
 			String identifier;
 			Iterator<String> identifiersIterator = this.parameterNames.iterator();
 			while(identifiersIterator.hasNext()) {
 				identifier = identifiersIterator.next();
-				System.out.print(identifier);
+				logger.debug(identifier);
 				if (identifiersIterator.hasNext()) {
-					System.out.print(", ");
+					logger.debug(", ");
 				} else {
-					System.out.println();
+					logger.debug("\n");
 				}
 			}
 		}
 		
-		System.out.println("***| Nested methods: (" + this.nestedMethods.size() + ")");
+		logger.debug("***| Nested methods: (" + this.nestedMethods.size() + ")");
 		for(Entry<String, MethodComplexityRecord> complexityMethodRecord: this.nestedMethods.entrySet()) {
 			methodName = complexityMethodRecord.getKey();
 			complexityMethodRecord.getValue().print();
-			System.out.println("*** __METHOD_END__ " + methodName + " ___***");
+			logger.debug("*** __METHOD_END__ " + methodName + " ___***");
 		}
 		
-		System.out.println("************************************************");
+		logger.debug("************************************************");
 	}
 	
 	@Override

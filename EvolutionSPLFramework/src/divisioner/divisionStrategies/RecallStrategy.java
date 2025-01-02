@@ -5,6 +5,9 @@ import java.io.PrintWriter;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import codeConstructsEvaluation.transformation.ASTConverterClient;
 import codeConstructsEvaluation.transformation.PostRequester;
 import codeContext.persistence.UpdatedTreePersistence;
@@ -27,6 +30,11 @@ import variationPointsVisualization.DuplicatedAnnotation;
  */
 public class RecallStrategy implements VariationPointsDivisioningStrategy {
 
+	/**
+	 * Logger to track recall strategy for variation points divisioning
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(RecallStrategy.class);
+	
 	/**
 	 * Creates the recall strategy instance
 	 */
@@ -168,7 +176,7 @@ public class RecallStrategy implements VariationPointsDivisioningStrategy {
 		JSONArray harvestedVariationPoints = this.getVariationPointsData(highlightedAst, astTreeRoot);
 		
 		if (DebugInformation.OUTPUT_DEBUG_FILES) {
-			System.out.println("Debug file on output (positive variation point annotations only): positiveVariationVariationPointsOnly.txt");
+			logger.debug("Debug file on output (positive variation point annotations only): positiveVariationVariationPointsOnly.txt");
 			String modifiedContent = ASTConverterClient.convertFromASTToCode(highlightedAst.toString());
 			try (PrintWriter out = new PrintWriter("positiveVariationVariationPointsOnly.txt")) { out.println(modifiedContent); }
 		}

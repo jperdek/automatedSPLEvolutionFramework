@@ -2,9 +2,17 @@ package codeConstructsEvaluation.entities;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class HalsteadMeasures implements ComplexityMeasure {
 
+	/**
+	 * Logger to track information about Halstead measures
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(HalsteadMeasures.class);
+	
 	private double bugs;
 	private double difficulty;
 	private double effort;
@@ -73,19 +81,19 @@ public class HalsteadMeasures implements ComplexityMeasure {
 
 	@Override
 	public void print() {
-		System.out.println("____| Halstead complexity measures |____");
-		System.out.println("----| bugs: " + this.bugs);
-		System.out.println("----| difficulty: " + this.difficulty);
-		System.out.println("----| effort: " + this.effort);
-		System.out.println("----| length: " + this.length);
-		System.out.println("----| time: " + this.time);
-		System.out.println("----| vocabulary: " + this.vocabulary);
-		System.out.println("----| volume: " + this.volume);
-		System.out.println("----| operands: ");
+		logger.debug("____| Halstead complexity measures |____");
+		logger.debug("----| bugs: " + this.bugs);
+		logger.debug("----| difficulty: " + this.difficulty);
+		logger.debug("----| effort: " + this.effort);
+		logger.debug("----| length: " + this.length);
+		logger.debug("----| time: " + this.time);
+		logger.debug("----| vocabulary: " + this.vocabulary);
+		logger.debug("----| volume: " + this.volume);
+		logger.debug("----| operands: ");
 		operands.print();
-		System.out.println("----| operators: ");
+		logger.debug("----| operators: ");
 		operators.print();
-		System.out.println("-----------------------------------------");
+		logger.debug("-----------------------------------------");
 	}
 	
 	public static void putColumnNameStatic(List<String> columnNames) {

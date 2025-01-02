@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import codeContext.ClassContext;
 import codeContext.FunctionContext;
@@ -16,13 +18,18 @@ import splEvolutionCore.candidateSelector.PositiveVariationPointCandidateTemplat
 
 
 /**
- * Transforms coordinate boundaries from variability enhanced AST into antagonist representation which is enhanced wihout any system variability markings or annotations
+ * Transforms coordinate boundaries from variability enhanced AST into antagonist representation which is enhanced without any system variability markings or annotations
  * 
  * @author Jakub Perdek
  *
  */
 public class VariabilityToAntagonistVariationPointMappings {
 
+	/**
+	 * Logger to track transformation of coordinate boundaries from variability enhanced AST into antagonist representation
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(VariabilityToAntagonistVariationPointMappings.class);
+	
 	/**
 	 * Mapping of hierarchical identifiers into their object representation which implements transformation functionality
 	 */
@@ -88,7 +95,7 @@ public class VariabilityToAntagonistVariationPointMappings {
 		long startMinimum, endMaximum, currentStartPosition, currentEndPosition;
 		
 		if (hierarchicIdentifier.contains("[F|constructor]")) {
-			System.out.println("Skipping class constructor....");
+			logger.debug("Skipping class constructor....");
 			return;
 		}
 		

@@ -8,6 +8,9 @@ import java.util.TreeMap;
 import java.util.Map.Entry;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import codeContext.objects.VariableObject;
 import codeContext.processors.ASTContextProcessor;
 import codeContext.processors.export.ExportAggregator;
@@ -28,6 +31,11 @@ import splEvolutionCore.DebugInformation;
  *
  */
 public class InnerContext implements ExportedContextInterface, ExportedObjectInterface, ExportedInterface {
+	
+	/**
+	 * Logger to track information about inner context
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(InnerContext.class);
 	
 	/**
 	 * Used parameters of inner context
@@ -298,20 +306,20 @@ public class InnerContext implements ExportedContextInterface, ExportedObjectInt
 		// CURRENT OBJECT'S DATA + PARENTS - DATA OF PREVIOUSLY DECLARED OBJECTS
 		VariableObjectInHierarchyCollector variableObjectInHierarchyCollector = new VariableObjectInHierarchyCollector(actualScriptVariablesToSubstituteConfiguration);
 		InnerContext rootContext = this.getBaseContext(); //to capture real context data
-		if (rootContext == null) { System.out.println("Error: root context is unavailable!"); }
+		if (rootContext == null) { logger.error("Error: root context is unavailable!"); }
 		rootContext.collectVariableObjectsInAllParents(variableObjectInHierarchyCollector, null, currentPosition, 
 				startSearchPosition, endSearchPosition, direction, actualScriptVariablesToSubstituteConfiguration);
 		// after current position in hierarchy is found - inserts data
 		//variableObjectInHierarchyCollector.setCurrentObjectDepthForCollectedObjectsInHierarhy(-1); //to correctly filter objects according to the depth
 		//variableObjectInHierarchyCollector.collectParametersOnCurrentDepth(extractedParameters);
 		//variableObjectInHierarchyCollector.collectLocalVariablesOnCurrentDepth(extractedLocalVariables);
-		//System.out.println("Local depth for parameters: " + variableObjectInHierarchyCollector.getMaximalReachedDepthDuringParameterCollection());
-		//System.out.println("Local depth for local variables: " + variableObjectInHierarchyCollector.getMaximalReachedDepthDuringCollectionOfLocalVariables());
+		//logger.debug("Local depth for parameters: " + variableObjectInHierarchyCollector.getMaximalReachedDepthDuringParameterCollection());
+		//logger.debug("Local depth for local variables: " + variableObjectInHierarchyCollector.getMaximalReachedDepthDuringCollectionOfLocalVariables());
 		
 		
 		// CHILDREN - DECLARED OBJECTS ON THE LEVEL OF CURRENT OBJECT - inner entity
 		if (searchedChildContext == null) {
-			System.out.print("Searched context is null. Getting observed context according to position...");
+			logger.debug("Searched context is null. Getting observed context according to position...");
 			searchedChildContext = variableObjectInHierarchyCollector.getSearchedContextIfExists(); 
 		} 
 		if (searchedChildContext != null) {
@@ -421,9 +429,9 @@ public class InnerContext implements ExportedContextInterface, ExportedObjectInt
 				}
 				if (DebugInformation.SHOW_POLLUTING_INFORMATION) {
 					if (extractedParameters != null && extractedParameters.size() > 0) {
-						System.out.println("Harvested parameters in depth " + depth + " :");
+						logger.debug("Harvested parameters in depth " + depth + " :");
 						for (VariableObject vo: extractedParameters) {
-							System.out.println(vo.getExportName() + " ___ " + vo.getExportType());
+							logger.debug(vo.getExportName() + " ___ " + vo.getExportType());
 						}
 					}
 				}
@@ -436,9 +444,9 @@ public class InnerContext implements ExportedContextInterface, ExportedObjectInt
 			extractedLocalVariables = observedChildContext.getVariables(currentPosition);
 			if (DebugInformation.SHOW_POLLUTING_INFORMATION) {
 				if (extractedLocalVariables.size() > 0) {
-					System.out.println("Harvested variables in depth " + depth + " :");
+					logger.debug("Harvested variables in depth " + depth + " :");
 					for (VariableObject vo: extractedLocalVariables) {
-						System.out.println(vo.getExportName() + " ___ " + vo.getExportType());
+						logger.debug(vo.getExportName() + " ___ " + vo.getExportType());
 					}
 				}
 			}
@@ -481,19 +489,19 @@ public class InnerContext implements ExportedContextInterface, ExportedObjectInt
 					variableObjectInHierarchyCollector, actualScriptVariablesToSubstituteConfiguration, 
 					languageSpecificVariablesToSubstituteConfiguration, true);
 			
-			if (DebugInformation.SHOW_POLLUTING_INFORMATION) { System.out.println("Searched objects depth: " + depth); }
+			if (DebugInformation.SHOW_POLLUTING_INFORMATION) { logger.debug("Searched objects depth: " + depth); }
 			variableObjectInHierarchyCollector.setCurrentObjectDepthForCollectedObjectsInHierarhy(depth);
 			return;
 		}
 		
 		SortedMap<Long, InnerContext> currentlyAvailableContexts = this.orderedContexts;// this.getActualContext(currentPosition, direction);
 		if (DebugInformation.SHOW_POLLUTING_INFORMATION) {
-			System.out.println("Number candidates in hiearachy tree to process: " + currentlyAvailableContexts.values().size());
+			logger.debug("Number candidates in hiearachy tree to process: " + currentlyAvailableContexts.values().size());
 		}
 		for (InnerContext observedChildContext: currentlyAvailableContexts.values()) {
 			// child is (equals to) searched object, [this - parent, searchedChildContext - child]
 			if (DebugInformation.SHOW_POLLUTING_INFORMATION) {
-				System.out.println("CURRENT: " + currentPosition + " REQUESTED OBJECT: [" + startSearchedObjectPosition + " , " + endSearchObjectPosition + "]  CHILD: " + observedChildContext.getActualStartPosition() + " ,  " + observedChildContext.getActualEndPosition() );
+				logger.debug("CURRENT: " + currentPosition + " REQUESTED OBJECT: [" + startSearchedObjectPosition + " , " + endSearchObjectPosition + "]  CHILD: " + observedChildContext.getActualStartPosition() + " ,  " + observedChildContext.getActualEndPosition() );
 			}
 			if ((searchedChildContext != null && observedChildContext == searchedChildContext) || 
 					(searchedChildContext == null && 
@@ -511,7 +519,7 @@ public class InnerContext implements ExportedContextInterface, ExportedObjectInt
 						variableObjectInHierarchyCollector, actualScriptVariablesToSubstituteConfiguration, 
 						languageSpecificVariablesToSubstituteConfiguration, true);
 				
-				if (DebugInformation.SHOW_POLLUTING_INFORMATION) { System.out.println("Searched objects depth: " + (depth + 1)); }
+				if (DebugInformation.SHOW_POLLUTING_INFORMATION) { logger.debug("Searched objects depth: " + (depth + 1)); }
 				variableObjectInHierarchyCollector.setCurrentObjectDepthForCollectedObjectsInHierarhy(depth + 1);
 				return;
 
@@ -523,7 +531,7 @@ public class InnerContext implements ExportedContextInterface, ExportedObjectInt
 				
 				if (startSearchedChildPosition <= startSearchedObjectPosition 
 						&& endSearchedChildPosition >= endSearchObjectPosition) {
-					if (DebugInformation.SHOW_POLLUTING_INFORMATION) { System.out.println("Found instance on path."); }
+					if (DebugInformation.SHOW_POLLUTING_INFORMATION) { logger.debug("Found instance on path."); }
 					variableObjectInHierarchyCollector.addContextToPath(observedChildContext);
 					InnerContext.collectContextInformation(observedChildContext, currentPosition, depth + 1, 
 							variableObjectInHierarchyCollector, actualScriptVariablesToSubstituteConfiguration, 
@@ -649,14 +657,14 @@ public class InnerContext implements ExportedContextInterface, ExportedObjectInt
 
 		if (DebugInformation.SHOW_CREATED_ENTITIES) {
 			List<InnerContext> parentContexts = new ArrayList<InnerContext>();
-			System.out.println("<---------------------- START ---------------------------->");
+			logger.debug("<---------------------- START ---------------------------->");
 			for (Entry<Long, InnerContext> orderedContextEntry: this.orderedContexts.entrySet()) {
 				position = orderedContextEntry.getKey();
 				innerContext = orderedContextEntry.getValue();
-				System.out.println(position + " --> " + innerContext.createDescriptiveJSON(globalContext).toString());
+				logger.debug(position + " --> " + innerContext.createDescriptiveJSON(globalContext).toString());
 				parentContexts.add(innerContext);
 			}
-			System.out.println("<---------------------- END ---------------------------->");
+			logger.debug("<---------------------- END ---------------------------->");
 			
 			for(InnerContext parentContext: parentContexts) {
 				parentContext.printOrderedStructure(globalContext);
@@ -736,9 +744,9 @@ public class InnerContext implements ExportedContextInterface, ExportedObjectInt
 	protected void addIdentiation(int depth) {
 		for (int i=0;  i <= depth; i++) {
 			if (i % 2 == 0) {
-				System.out.print("--->");
+				logger.debug("--->");
 			} else {
-				System.out.print("===>");
+				logger.debug("===>");
 			}
 		}
 	}
@@ -752,27 +760,27 @@ public class InnerContext implements ExportedContextInterface, ExportedObjectInt
 			contextType = "FUNCTION";
 			contextName = ((FunctionContext) this).getFunctionName();
 		}
-		this.addIdentiation(depth); System.out.println();
-		this.addIdentiation(depth); System.out.println();
-		this.addIdentiation(depth); System.out.println();
-		this.addIdentiation(depth); System.out.println("=-=-=-=-=-= {" + depth + "} =-=-=-=-=-=-= INNER ENTITY: " + contextName + " (" +contextType + ") [" + this.originalStartPosition + ", " + this.originalEndPosition + "]=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+		this.addIdentiation(depth); logger.debug("\n");
+		this.addIdentiation(depth); logger.debug("\n");
+		this.addIdentiation(depth); logger.debug("\n");
+		this.addIdentiation(depth); logger.debug("=-=-=-=-=-= {" + depth + "} =-=-=-=-=-=-= INNER ENTITY: " + contextName + " (" +contextType + ") [" + this.originalStartPosition + ", " + this.originalEndPosition + "]=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
 		List<String> extractedVariables = this.usedVariables.getUsedVariableObjectsStrings();
-		this.addIdentiation(depth); System.out.println("-->===>---> USED VARIABLES: ");
+		this.addIdentiation(depth); logger.debug("-->===>---> USED VARIABLES: ");
 		for (String extractedVariableString: extractedVariables) {
-			this.addIdentiation(depth); System.out.println("-->===> " + extractedVariableString);
+			this.addIdentiation(depth); logger.debug("-->===> " + extractedVariableString);
 		}
-		this.addIdentiation(depth); System.out.println();
+		this.addIdentiation(depth); logger.debug("\n");
 		
-		System.out.println("-->===>---> CONTEXT SPECIFICS: ");
+		logger.debug("-->===>---> CONTEXT SPECIFICS: ");
 		this.addIdentiation(depth); this.printContextSpecifics();
 		
 		if ( this.orderedContexts.size() > 0) {
-			this.addIdentiation(depth); System.out.println("-->===>---> CHILD CONTEXTS: ");
+			this.addIdentiation(depth); logger.debug("-->===>---> CHILD CONTEXTS: ");
 			for (InnerContext currentlyAvailableContext: this.orderedContexts.values()) {
 				currentlyAvailableContext.printTree(depth + 1);
 			}
-			this.addIdentiation(depth); System.out.println();
+			this.addIdentiation(depth); logger.debug("\n");
 		}
-		this.addIdentiation(depth); System.out.println("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+		this.addIdentiation(depth); logger.debug("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
 	}
 }

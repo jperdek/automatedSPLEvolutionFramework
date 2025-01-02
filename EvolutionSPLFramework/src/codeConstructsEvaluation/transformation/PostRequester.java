@@ -2,7 +2,6 @@ package codeConstructsEvaluation.transformation;
 
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
@@ -26,8 +25,11 @@ import org.apache.http.util.EntityUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import evolutionSimulation.productAssetsInitialization.SharedConfiguration;
+
 
 /**
  * Performs POST request and loads file content
@@ -37,6 +39,11 @@ import evolutionSimulation.productAssetsInitialization.SharedConfiguration;
  */
 public class PostRequester {
 
+	/**
+	 * Logger to track information from post requests
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(PostRequester.class);
+	
 	/**
 	 * Performs POST request to complexity service (NodeJS Express API)
 	 * 
@@ -85,17 +92,16 @@ public class PostRequester {
 	 */
 	public static String doPost(String serviceUrl, String convertionServiceUrl, String serviceUrlLargeFiles, String fileContent, boolean useFileTransfer) throws IOException, InterruptedException {
 		serviceUrl = serviceUrl.replace("localhost", System.getenv().getOrDefault("DOCKER_HOST", "localhost"));
-		long objectSize = fileContent.getBytes().length;
+		//long objectSize = fileContent.getBytes().length;
 		String largeFileLocationUrl;
 		try {
 			return PostRequester.doPostRequest(serviceUrl, fileContent);
 		} catch(Exception e) { 
-			System.out.println("[doPost(4args)]: Bypassing POST with file exchange contract. Requesting: " + convertionServiceUrl); 
-			e.printStackTrace();
+			logger.error("[doPost(4args)]: Bypassing POST with file exchange contract. Requesting: " + convertionServiceUrl, e); 
 		}
 		
 		largeFileLocationUrl = PostRequester.getUrlToDownloadByPostRequest(convertionServiceUrl, convertionServiceUrl, fileContent);
-		System.out.println(largeFileLocationUrl);
+		logger.debug("Location of large file after error handling: " + largeFileLocationUrl);
 		String loadedFileResponse = "";
 		if (largeFileLocationUrl.startsWith(".") || largeFileLocationUrl.contains("E://") ) {
 			serviceUrlLargeFiles = largeFileLocationUrl.replace("://", ":--");
@@ -129,14 +135,13 @@ public class PostRequester {
 	 */
 	public static String doPost(String serviceUrl, String convertionServiceUrl, String serviceUrlLargeFiles, String fileContent) throws IOException, InterruptedException {
 		serviceUrl = serviceUrl.replace("localhost", System.getenv().getOrDefault("DOCKER_HOST", "127.0.0.1"));
-		long objectSize = fileContent.getBytes().length;
+		//long objectSize = fileContent.getBytes().length;
 		String largeFileLocationUrl;
 		//if (serviceUrlLargeFiles == null) { // || ((objectSize / 1024) / 1024) < 15) {
 			try {
 				return PostRequester.doPostRequest(serviceUrl, fileContent);
 			} catch(Exception e) { 
-				System.out.println("[doPost(4args)]: Bypassing POST with file exchange contract. Requesting: " + convertionServiceUrl); 
-				e.printStackTrace();
+				logger.error("[doPost(4args)]: Bypassing POST with file exchange contract. Requesting: " + convertionServiceUrl, e); 
 			}
 		//} 
 		
@@ -144,7 +149,7 @@ public class PostRequester {
 		String loadedFileResponse = "";
 		//serverFiles: convertionServiceUrl.startsWith(".")
 		//largeFileLocationUrl = largeFileLocationUrl.replace("\temp", "./public/temp").replace("/temp", "./public/temp");
-		System.out.println(convertionServiceUrl);
+		logger.debug("Location of large file after error handling: " + convertionServiceUrl);
 		boolean isLokal = false;
 		// SERVING FILES IN PLACE OF SERVER PUBLIC DIRECTORY
 		if (largeFileLocationUrl.startsWith(".")) {
@@ -157,7 +162,7 @@ public class PostRequester {
 				convertionServiceUrl = convertionServiceUrl + "?url=" + largeFileLocationUrl.replace("/public", "").substring(localDirectoryIndex);
 			}
 			convertionServiceUrl = convertionServiceUrl.replace("localhost", System.getenv().getOrDefault("DOCKER_HOST", "localhost"));
-			System.out.println("Data from: " + convertionServiceUrl);
+			logger.debug("Data from: " + convertionServiceUrl);
 			BufferedInputStream in = new BufferedInputStream(new URL(convertionServiceUrl).openStream());
 			
 			byte[] contents = new byte[1024];
@@ -206,7 +211,7 @@ public class PostRequester {
 			}
 			
 			serviceUrlWithParameters = serviceUrlWithParameters.replace("localhost", System.getenv().getOrDefault("DOCKER_HOST", "localhost"));
-			System.out.println("Sending data to: " + serviceUrlWithParameters);
+			logger.debug("Sending data to: " + serviceUrlWithParameters);
 			requestTo = HttpRequest.newBuilder()
 					.version(HttpClient.Version.HTTP_2)
 				  .uri(URI.create(serviceUrlWithParameters))
@@ -214,7 +219,7 @@ public class PostRequester {
 				  .build();
 		} else {
 			serviceUrlLargeFiles = serviceUrlLargeFiles.replace("localhost", System.getenv().getOrDefault("DOCKER_HOST", "localhost"));
-			System.out.println("Sending data to: " + serviceUrlLargeFiles);
+			logger.debug("Sending data to: " + serviceUrlLargeFiles);
 			requestTo = HttpRequest.newBuilder()
 					.version(HttpClient.Version.HTTP_2)
 				  .uri(URI.create(serviceUrlLargeFiles))
@@ -234,7 +239,7 @@ public class PostRequester {
 		}
 
 		largeFileLocationUrl = (String) fileLocationConfig.get("location");
-		System.out.println("Response location: " + largeFileLocationUrl);
+		logger.debug("Response location: " + largeFileLocationUrl);
 		return largeFileLocationUrl;
 	}
 	

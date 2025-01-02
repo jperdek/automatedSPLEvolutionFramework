@@ -8,6 +8,9 @@ import java.util.Set;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import astFileProcessor.ASTLoader;
 import codeConstructsEvaluation.transformation.ASTConverterClient;
 import codeContext.processors.ASTTextExtractorTools;
@@ -22,7 +25,7 @@ import variationPointsVisualization.NegativeVariabilityDecoratorConsistenceVerif
 
 
 /**
- * Divisions specific code in form of ATS into variation points
+ * Divisions specific code in form of AST into variation points
  * -the negative variation points are annotated with system annotations
  * -the positive variation points are marked with system annotations
  * -user annotations are preserved
@@ -31,6 +34,11 @@ import variationPointsVisualization.NegativeVariabilityDecoratorConsistenceVerif
  *
  */
 public class VPDividedExporter {
+	
+	/**
+	 * Logger to track divisioning of specific code in form of AST into variation points
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(VPDividedExporter.class);
 	
 	/**
 	 * Associated instance of functionality to observe and mark recursions - consumes additional resources (not simple)
@@ -67,9 +75,9 @@ public class VPDividedExporter {
 			originalAstRootFiltered = originalAstRoot;
 		}
 		if (DebugInformation.SHOW_POLLUTING_INFORMATION) {
-			System.out.println("Original Filtered AST:");
-			System.out.println(originalAstRootFiltered.toString());
-			System.out.println("--------------------------------------->");
+			logger.debug("Original Filtered AST:");
+			logger.debug(originalAstRootFiltered.toString());
+			logger.debug("--------------------------------------->");
 		}
 		//JSONObject astRootCopy = ASTLoader.loadASTFromString(astRoot.toString());
 		if (VariationPointDivisionConfiguration.PREFER_POSITION_UPDATES_BEFORE_PERSISTING_ILLEGAL_DECORATORS_INFORMATION) {
@@ -119,7 +127,7 @@ public class VPDividedExporter {
 	private JSONObject extractVariabilityAnnotation(JSONObject annotationAst) throws IOException, InterruptedException {
 		String annotationName = ASTTextExtractorTools.getTextFromAstIncludingNameAndExpressions(annotationAst);
 		if (annotationName == null) {
-			System.out.println("Cannot find annotation name in " + annotationAst.toString() + " Skipping...");
+			logger.debug("Cannot find annotation name in " + annotationAst.toString() + " Skipping...");
 			return null;
 		}
 		String annotationFullName = ASTTextExtractorTools.getFullTextFromAstExpressions(annotationAst);
@@ -383,8 +391,8 @@ public class VPDividedExporter {
 			harvestedVariationPoint = this.harvestVariationPointOutsideFromTheMarker((JSONObject) markerDeclarationList.get(0));
 			if (harvestedVariationPoint == null) { return null; }
 			if (markerDeclarationList.size() != 1) {
-				System.out.println(harvestedVariationPoint.toString());
-				System.out.println(((JSONObject) markerDeclarationList.get(0)).toString());
+				logger.debug(harvestedVariationPoint.toString());
+				logger.debug(((JSONObject) markerDeclarationList.get(0)).toString());
 				throw new InvalidSystemVariationPointMarkerException(
 						"Marker should contain only one argument/parameter! " + markerDeclarationList.toString());
 			}
@@ -410,7 +418,7 @@ public class VPDividedExporter {
 		
 		if (this.recursionCycleFinder != null) {
 			boolean isInsideRecursion = this.recursionCycleFinder.checkIfIsInsideRecursion(startPosition, endPosition, this.astRoot);
-			if (DebugInformation.SHOW_POLLUTING_INFORMATION) { System.out.println("IS inside: " + isInsideRecursion+ ":" + contextStringIdentifier); }
+			if (DebugInformation.SHOW_POLLUTING_INFORMATION) { logger.debug("IS inside: " + isInsideRecursion+ ":" + contextStringIdentifier); }
 			harvestedVariationPoint.put("isInsideRecursion", isInsideRecursion);
 		}
 		
@@ -554,7 +562,7 @@ public class VPDividedExporter {
 				harvestedVariationPoint.put("annotationVPType", AnnotationExtensionMarker.SystemAnnotationType.FUNCTION.label);
 				variableAnnotationName = (String) ((JSONObject) astPart.get("name")).get("escapedText");//ASTTextExtractorTools.getTextFromAstIncludingOptionallyName(astParent);
 				if (variableAnnotationName == null || variableAnnotationName.equals("")) {
-					System.out.println("Error: negative variability function declaration wrongly processed!");
+					logger.error("Error: negative variability function declaration wrongly processed!");
 					System.exit(5);
 				}
 			}
@@ -567,7 +575,7 @@ public class VPDividedExporter {
 			harvestedVariationPoint.put("annotationVPType", AnnotationExtensionMarker.SystemAnnotationType.VARIABLE.label);
 			variableAnnotationName = ASTTextExtractorTools.getTextFromTheDeclarations(astPart);
 			if (variableAnnotationName == null || variableAnnotationName.equals("")) {
-				System.out.println("Error: negative variability variable declaration wrongly processed!");
+				logger.error("Error: negative variability variable declaration wrongly processed!");
 				System.exit(5);
 			}
 			
@@ -580,7 +588,7 @@ public class VPDividedExporter {
 			
 			variableAnnotationName = ASTTextExtractorTools.getTextFromAstIncludingOptionallyName(astPart);
 			if (variableAnnotationName == null || variableAnnotationName.equals("")) {
-				System.out.println("Error: negative variability class declaration wrongly processed!");
+				logger.error("Error: negative variability class declaration wrongly processed!");
 				System.exit(5);
 			}
 			
@@ -593,7 +601,7 @@ public class VPDividedExporter {
 				harvestedVariationPoint.put("annotationVPType", AnnotationExtensionMarker.SystemAnnotationType.PARAMETER.label);
 				variableAnnotationName = ASTTextExtractorTools.getTextFromAstIncludingOptionallyName(astPart);
 				if (variableAnnotationName == null || variableAnnotationName.equals("")) {
-					System.out.println("Error: negative variability parameter wrongly processed!");
+					logger.error("Error: negative variability parameter wrongly processed!");
 					System.exit(5);
 				}
 			} else {
@@ -604,9 +612,9 @@ public class VPDividedExporter {
 			startInitializerPosition = (Long) astPart.get("pos");
 			endInitializerPosition = (Long) astPart.get("end");
 		} else {
-			//System.out.println("-------------------------------------------------");
-			//System.out.println(astParent.toString());
-			//System.out.println(astPart.toString());
+			//logger.debug("-------------------------------------------------");
+			//logger.debug(astParent.toString());
+			//logger.debug(astPart.toString());
 			return null; 
 		}
 
@@ -618,7 +626,7 @@ public class VPDividedExporter {
 		if (this.recursionCycleFinder != null) {
 			boolean isInsideRecursion = this.recursionCycleFinder.checkIfIsInsideRecursion(startPosition, endPosition, this.astRoot);
 			harvestedVariationPoint.put("isInsideRecursion", isInsideRecursion);
-			if (DebugInformation.SHOW_POLLUTING_INFORMATION) { System.out.println("IS inside: " + isInsideRecursion+ ":" + contextStringIdentifier);}
+			if (DebugInformation.SHOW_POLLUTING_INFORMATION) { logger.debug("IS inside: " + isInsideRecursion+ ":" + contextStringIdentifier);}
 		}
 		
 		Long originalASTStartPosition = (Long) originalAstPart.get("pos");

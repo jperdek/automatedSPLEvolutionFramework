@@ -10,6 +10,10 @@ import java.nio.file.StandardCopyOption;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.stream.Stream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import splEvolutionCore.DebugInformation;
 
 
@@ -23,6 +27,11 @@ import splEvolutionCore.DebugInformation;
 public class ProjectCopier {
 
 	/**
+	 * Logger to track copying of project files (deletion, moving, copying, ...) 
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(ProjectCopier.class);
+	
+	/**
 	 * Deletes empty directories when files from them are moved to another location
 	 * 
 	 * @param inputPath - the input path to the root of moved project directory
@@ -30,8 +39,8 @@ public class ProjectCopier {
 	 */
 	private static void deleteEmptyDirectoriesDuringMoving(Path inputPath) throws IOException {
 		String actualDirectoryOrFileString;
-		Stream<Path> s = Files.walk(inputPath);
-		Iterator<Path> paths = s.sorted(Collections.reverseOrder()).iterator();
+		Stream<Path> stream = Files.walk(inputPath);
+		Iterator<Path> paths = stream.sorted(Collections.reverseOrder()).iterator();
 		File directory;
 		
 		while(paths.hasNext()) { 
@@ -39,13 +48,16 @@ public class ProjectCopier {
 	
 			if(Files.isDirectory(actualPath)) {
 				actualDirectoryOrFileString = actualPath.toAbsolutePath().toString();
-				System.out.println("Directory: " + actualDirectoryOrFileString);
 				directory = new File(actualDirectoryOrFileString);
-				if (directory.listFiles() == null || directory.listFiles().length == 0) { Files.delete(actualPath); } else { 
-					System.out.println("Not empty directory " + actualDirectoryOrFileString + " cannot be deleted.");
+				if (directory.listFiles() == null || directory.listFiles().length == 0) {
+					logger.debug("Deleting directory: " + actualDirectoryOrFileString);
+					Files.delete(actualPath); 
+				} else { 
+					logger.debug("Not empty directory " + actualDirectoryOrFileString + " cannot be deleted.");
 				}
 			}
 		}
+		stream.close();
 	}
 	/**
 	 * Copies the whole project assets to the specified target location
@@ -92,11 +104,11 @@ public class ProjectCopier {
 					try {
 						if (DebugInformation.SHOW_INITIAL_COPIED_INFORMATION) {
 							if (moveOnly) {
-								System.out.println("MOVING FROM: " + actualPath);
-								System.out.println("MOVING TO  : " + outputDirectoryPath);
+								logger.info("MOVING FROM: " + actualPath);
+								logger.info("MOVING TO  : " + outputDirectoryPath);
 							} else {
-								System.out.println("FROM: " + actualPath);
-								System.out.println("TO  : " + outputDirectoryPath);
+								logger.info("FROM: " + actualPath);
+								logger.info("TO  : " + outputDirectoryPath);
 							}
 						}
 						if (moveOnly) {
