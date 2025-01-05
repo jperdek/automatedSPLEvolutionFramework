@@ -13,6 +13,7 @@ logger.addHandler(logging.StreamHandler(sys.stdout))
 
 processed_spls = {}
 
+
 def callback_func(channel, method, properties, body):
     try:
         task_configuration = json.loads(body)
