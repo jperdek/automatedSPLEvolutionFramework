@@ -1,0 +1,14 @@
+1. add to config if is not and restart serve if is not:
+dbms.unmanaged_extension_classes=n10s.endpoint=/rdf
+
+2. call 
+
+http://localhost:7475/rdf/evolutionKnowledgeBase/onto
+
+or 
+
+http://localhost:7475/rdf/evolutionKnowledgeBase/onto?format=N-Triples
+
+or
+
+http://localhost:7475/rdf/evolutionKnowledgeBase/onto?format=Turtle

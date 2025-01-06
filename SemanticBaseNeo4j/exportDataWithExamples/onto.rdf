@@ -1,0 +1,92 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlcodeRepr> a owl:ObjectProperty;
+  rdfs:domain <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlProduct>,
+    <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlProductLine>;
+  rdfs:range <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlCode>;
+  rdfs:label "fully-automated-spls-schema.ttlcodeRepr" .
+
+<https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlderivedFrom>
+  a owl:ObjectProperty;
+  rdfs:domain <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlProductLine>;
+  rdfs:range <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlProduct>;
+  rdfs:label "fully-automated-spls-schema.ttlderivedFrom" .
+
+<https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlInstanceGraph>
+  a owl:Class;
+  rdfs:label "fully-automated-spls-schema.ttlInstanceGraph" .
+
+<https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlgraphRepr> a
+    owl:ObjectProperty;
+  rdfs:domain <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlProductLine>,
+    <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlProduct>;
+  rdfs:label "fully-automated-spls-schema.ttlgraphRepr";
+  rdfs:range <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlInstanceGraph> .
+
+<https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlevolvedIn> a
+    owl:ObjectProperty;
+  rdfs:range <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlEvolution>;
+  rdfs:domain <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlProductLine>;
+  rdfs:label "fully-automated-spls-schema.ttlevolvedIn" .
+
+<https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlvectorRepr> a
+    owl:ObjectProperty;
+  rdfs:label "fully-automated-spls-schema.ttlvectorRepr";
+  rdfs:domain <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlProduct>,
+    <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlProductLine>;
+  rdfs:range <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlSVG> .
+
+<https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlevolving> a owl:ObjectProperty;
+  rdfs:range <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlEvolvedScript>;
+  rdfs:label "fully-automated-spls-schema.ttlevolving";
+  rdfs:domain <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlEvolution> .
+
+<https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlrasterRepr> a
+    owl:ObjectProperty;
+  rdfs:domain <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlProductLine>,
+    <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlProduct>;
+  rdfs:label "fully-automated-spls-schema.ttlrasterRepr";
+  rdfs:range <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlScreenshot> .
+
+<https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlnextEvol> a owl:ObjectProperty;
+  rdfs:label "fully-automated-spls-schema.ttlnextEvol";
+  rdfs:domain <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlEvolution>;
+  rdfs:range <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlEvolution> .
+
+<https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlstartFromSPL>
+  a owl:ObjectProperty;
+  rdfs:range <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlProductLine>;
+  rdfs:domain <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlEvolution>;
+  rdfs:label "fully-automated-spls-schema.ttlstartFromSPL" .
+
+<https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlEvolution> a
+    owl:Class;
+  rdfs:label "fully-automated-spls-schema.ttlEvolution" .
+
+<https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlProduct> a owl:Class;
+  rdfs:label "fully-automated-spls-schema.ttlProduct" .
+
+<https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlnextEvolved>
+  a owl:ObjectProperty;
+  rdfs:label "fully-automated-spls-schema.ttlnextEvolved";
+  rdfs:domain <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlProductLine>;
+  rdfs:range <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlProductLine> .
+
+<https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlCode> a owl:Class;
+  rdfs:label "fully-automated-spls-schema.ttlCode" .
+
+<https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlEvolvedScript>
+  a owl:Class;
+  rdfs:label "fully-automated-spls-schema.ttlEvolvedScript" .
+
+<https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlSVG> a owl:Class;
+  rdfs:label "fully-automated-spls-schema.ttlSVG" .
+
+<https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlScreenshot> a
+    owl:Class;
+  rdfs:label "fully-automated-spls-schema.ttlScreenshot" .
+
+<https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttlProductLine>
+  a owl:Class;
+  rdfs:label "fully-automated-spls-schema.ttlProductLine" .

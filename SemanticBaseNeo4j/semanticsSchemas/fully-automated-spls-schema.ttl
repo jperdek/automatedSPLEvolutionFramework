@@ -1,0 +1,387 @@
+@prefix faspls: <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix dct: <http://purl.org/dc/elements/1.1/> .
+
+
+  
+<https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> a owl:Ontology ;
+	dct:title "The FullyAutomatedSpls Schema vocabulary (FASPLS)"@en  ;
+	dct:publisher "Jakub Perdek" ;
+	dct:description "Schema to represent knowledge primarily about variability and concerning minimalistic and automated software product line evolution as research objective".
+
+
+faspls:Evolution a rdfs:Class ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Evolution" ;
+	rdfs:comment "Instance of performed evolution, automated minimalistic evolution." .
+
+
+faspls:ProductLine a rdfs:Class ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Product line" ;
+	rdfs:comment "Instance of performed evolution, automated minimalistic evolution." .
+
+
+faspls:Product a rdfs:Class ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Product" ;
+	rdfs:comment "Derived product from software product line. Contains commonalities and selected variability offered by software product line." .
+
+
+faspls:VP a rdfs:Class ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Variation Point" ;
+	rdfs:comment "Variation Point (VP) of evolved script." .
+
+
+faspls:SPLArtifact a rdfs:Class ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Software product line artifact" ;
+	rdfs:comment "One of diverse representation - artifact - from the software product line, especially capturing annotated code or products." .
+
+
+faspls:EvolvedScript a rdfs:Class ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Evolved Script" ;
+	rdfs:subClassOf faspls:SPLArtifact ;
+	rdfs:comment "Evolved script in particular evolution." .
+
+
+faspls:SVG a rdfs:Class ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Variation Point" ;
+	rdfs:subClassOf faspls:SPLArtifact ;
+	rdfs:comment "Variation Point (VP) of evolved script." .
+
+
+faspls:Screenshot a rdfs:Class ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Raster screenshot" ;
+	rdfs:subClassOf faspls:SPLArtifact ;
+	rdfs:comment "Screenshot taken from product." .
+
+
+faspls:Code a rdfs:Class ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Source code" ;
+	rdfs:subClassOf faspls:SPLArtifact ;
+	rdfs:comment "Source code of entire script or its part, such as from variation point." .
+
+
+faspls:InstanceGraph a rdfs:Class ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Grah from instantiated code entities" ;
+	rdfs:subClassOf faspls:SPLArtifact ;
+	rdfs:comment "Graph made from simulation of instances creation and destruction in stack. Even simplified version complies. " .
+
+
+faspls:GraphNodeInstance a rdfs:Class ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Graph node instance" ;
+	rdfs:comment "Node from graph made from simulation of instances creation and destruction in stack. Even simplified version complies." .
+
+
+
+
+faspls:nextEvol a rdf:Property ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Next evolution performed from particular evolution." ;
+	rdfs:comment "Evolution taken after particular evolution." ;
+	rdfs:range faspls:Evolution ;
+	rdfs:domain faspls:Evolution .
+
+
+faspls:hasVP a rdf:Property ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Has variation point" ;
+	rdfs:comment "Association of variation point to specific product line." ;
+	rdfs:range faspls:VP ;
+	rdfs:domain faspls:ProductLine .
+
+
+faspls:vectorRepr a rdf:Property ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Vector representation" ;
+	rdfs:comment "Vector representation of resulting Product, Product Line, or its part." ;
+	rdfs:range faspls:SVG ;
+	rdfs:domain faspls:Product ;
+	rdfs:domain faspls:ProductLine .
+
+
+faspls:rasterRepr a rdf:Property ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Raster representation" ;
+	rdfs:comment "Raster representation- screenshot - of resulting Product, Product Line, or its part." ;
+	rdfs:range faspls:Screenshot ;
+	rdfs:domain faspls:Product ;
+	rdfs:domain faspls:ProductLine .
+
+
+faspls:codeRepr a rdf:Property ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Source code" ;
+	rdfs:comment "Source code of resulting Product, Product Line, or its part." ;
+	rdfs:range faspls:Code ;
+	rdfs:domain faspls:Product ;
+	rdfs:domain faspls:ProductLine .
+
+
+faspls:graphRepr a rdf:Property ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Graph representation" ;
+	rdfs:comment "Graph representation made out of instantiated code entities from Product, Product Line, or its part." ;
+	rdfs:range faspls:InstanceGraph ;
+	rdfs:domain faspls:Product ;
+	rdfs:domain faspls:ProductLine .
+	
+
+faspls:location a rdf:Property ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Artifact location" ;
+	rdfs:comment "Location one of diverse representations/artifact - resulting Product, Product Line, or its part." ;
+	rdfs:range rdfs:Literal ;
+	rdfs:domain faspls:SPLArtifact .
+
+
+faspls:evolSerie a rdf:Property ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Iteration sequence number" ;
+	rdfs:comment "Identifier of performed evolution iteration - time-series data" ;
+	rdfs:range rdfs:Literal ;
+	rdfs:domain faspls:ProductLine .
+
+
+faspls:derivedFrom a rdf:Property ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Derived product from" ;
+	rdfs:comment "Association between source software product line with its derived product" ;
+	rdfs:range faspls:Product ;
+	rdfs:domain faspls:ProductLine .
+
+
+faspls:graphAssoc a rdf:Property ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Derived product from" ;
+	rdfs:comment "Association of particular representation such as code, vector or captured screenshot to graph node - respective instantiated code entity" ;
+	rdfs:range faspls:Product ;
+	rdfs:domain faspls:SVG ;
+	rdfs:domain faspls:Screenshot ;
+	rdfs:domain faspls:VP ;
+	rdfs:domain faspls:Code .
+
+
+faspls:hasNode a rdf:Property ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Belonging of node to ist graph" ;
+	rdfs:comment "Association of node belonging to its source graph of instances." ;
+	rdfs:range  faspls:GraphNodeInstance ;
+	rdfs:domain faspls:InstanceGraph .
+
+
+faspls:confAssoc a rdf:Property ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Points to location of evolution configuration" ;
+	rdfs:comment "Points to location of configuration used for automated evolution." ;
+	rdfs:range rdfs:Literal ;
+	rdfs:domain faspls:Evolution .
+	
+
+faspls:evolving a rdf:Property ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Points to evolved script" ;
+	rdfs:comment "Points to evolved script in minimalistic automated evolution primarily focused on variability handling." ;
+	rdfs:range faspls:EvolvedScript ;
+	rdfs:domain faspls:Evolution .
+	
+
+faspls:startFromSPL a rdf:Property ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Points to firstly evolved software product line" ;
+	rdfs:comment "Points to software product line where particular evolution starts." ;
+	rdfs:range faspls:ProductLine ;
+	rdfs:domain faspls:Evolution .
+
+
+faspls:evolvedIn a rdf:Property ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Points to evolved software product line" ;
+	rdfs:comment "Points to evolved software product line in particular evolution." ;
+	rdfs:range faspls:ProductLine ;
+	rdfs:domain faspls:Evolution .
+	
+
+faspls:nextEvolved a rdf:Property ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Points to followingly evolved software product line" ;
+	rdfs:comment "Points to followingly evolved software product line from source one." ;
+	rdfs:range faspls:ProductLine ;
+	rdfs:domain faspls:ProductLine .
+	
+
+
+
+
+faspls:NegativeVP a rdfs:Class ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Negative variability variation point" ;
+	rdfs:subClassOf faspls:VP ;
+	rdfs:comment "Negative variability variation point" .
+
+
+faspls:PositiveVP a rdfs:Class ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Positive variability variation point" ;
+	rdfs:subClassOf faspls:VP ;
+	rdfs:comment "Positive variability variation point" .
+
+
+faspls:VariabilityAnnotation a rdfs:Class ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Variability annotation" ;
+	rdfs:comment "Variability annotation decorating particular entity in processed software product line script." .
+
+
+faspls:ConfigurationExpression a rdfs:Class ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Configuration expression" ;
+	rdfs:comment "Configuration expression with hierarchic nature." .
+	
+
+faspls:JSONExpression a rdfs:Class ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Configuration expression or its subpart in JSON" ;
+	rdfs:comment "Configuration expression or its subpart in hierarchic decomposition." .
+
+
+
+faspls:hierarchicIdentifier a rdf:Property ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Points to hiearchic identifier of code entity" ;
+	rdfs:comment "Points to hiearchic identifier of code entity captured into source/domain variation point of evolved software product line." ;
+	rdfs:range rdfs:Literal ;
+	rdfs:domain faspls:VP .
+
+
+faspls:isClassRelated a rdf:Property ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Pointing to information if variation entity is class or its part" ;
+	rdfs:comment "Pointing to information if variation entity is class or its part." ;
+	rdfs:range rdfs:Literal ;
+	rdfs:domain faspls:VP .
+
+
+faspls:isInsideRecursion a rdf:Property ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Points to information if variation point is inside recursion" ;
+	rdfs:comment "Points to information if variation point is inside recursion." ;
+	rdfs:range rdfs:Literal ;
+	rdfs:domain faspls:VP .
+
+
+
+faspls:hasVariabilityAnnotation a rdf:Property ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Assigns variation point with variability annotation" ;
+	rdfs:comment "Assigns variation point belonging to negative variability with variability annotation." ;
+	rdfs:range faspls:VariabilityAnnotation ;
+	rdfs:domain faspls:NegativeVP .
+
+
+faspls:isUserAnnotation a rdf:Property ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Points to information if annotation is made by user" ;
+	rdfs:comment "Points to information if annotation is made by user." ;
+	rdfs:range rdfs:Literal ;
+	rdfs:domain faspls:VariabilityAnnotation .
+
+
+faspls:canCall a rdf:Property ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "References a callable construct" ;
+	rdfs:comment "References callble construct in particular programming language - constructs itself serves as identifiers" ;
+	rdfs:range rdfs:Literal ;
+	rdfs:domain faspls:PositiveVP .
+
+
+faspls:fullName a rdf:Property ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Points to the name with path of the annotation" ;
+	rdfs:comment "Points to the name with path of the annotation." ;
+	rdfs:range rdfs:Literal ;
+	rdfs:domain faspls:VariabilityAnnotation .
+
+
+faspls:isIllegalDecorator a rdf:Property ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Points to information if annotation is illegal" ;
+	rdfs:comment "Points to information if annotation is illegal in particular programming language." ;
+	rdfs:range rdfs:Literal ;
+	rdfs:domain faspls:VariabilityAnnotation .
+
+
+faspls:entityType a rdf:Property ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Points to information about type of annotated entity" ;
+	rdfs:comment "Points to information about type of annotated entity, such as class, method, class variable, etc." ;
+	rdfs:range rdfs:Literal ;
+	rdfs:domain faspls:VariabilityAnnotation .
+	
+
+faspls:hasConfiguration a rdf:Property ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Points to information if annotation is illegal" ;
+	rdfs:comment "Points to information if annotation is illegal in particular programming language." ;
+	rdfs:range faspls:ConfigurationExpression ;
+	rdfs:domain faspls:VariabilityAnnotation .
+
+
+faspls:guardedFeature a rdf:Property ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Points to the name/identifier of guarded feature" ;
+	rdfs:comment "Points to the name/identifier of guarded feature." ;
+	rdfs:range rdfs:Literal ;
+	rdfs:domain faspls:ConfigurationExpression .
+
+
+faspls:asString a rdf:Property ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Points to expressed configuration expression as string" ;
+	rdfs:comment "Points to expressed hierarchic configuration expression as string." ;
+	rdfs:range rdfs:Literal ;
+	rdfs:domain faspls:PositiveVP .
+
+
+faspls:asJson a rdf:Property ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Points to expressed configuration expression or its subpart as json" ;
+	rdfs:comment "Points to expressed hierarchic configuration expression or its subpart as json." ;
+	rdfs:range faspls:JSONExpression ;
+	rdfs:domain faspls:ConfigurationExpression ;
+	rdfs:domain faspls:JSONExpression .
+
+
+faspls:hasType a rdf:Property ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Points to the type of configuration expression" ;
+	rdfs:comment "Points to the type of configuration expression, such as configuration value or operand (AND or OR)" ;
+	rdfs:range rdfs:Literal ;
+	rdfs:domain faspls:JSONExpression .
+
+
+faspls:belongsToFeature a rdf:Property ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Points to the name/identifier of representative feature" ;
+	rdfs:comment "Points to the name/identifier of representative feature." ;
+	rdfs:range rdfs:Literal ;
+	rdfs:domain faspls:JSONExpression .
+
+
+faspls:hasValue a rdf:Property ;
+	rdfs:isDefinedBy <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ;
+	rdfs:label "Points to expressed configuration expression or its part as string" ;
+	rdfs:comment "Points to expressed configuration expression or its part as string." ;
+	rdfs:range rdfs:Literal ;
+	rdfs:domain faspls:JSONExpression .
+
