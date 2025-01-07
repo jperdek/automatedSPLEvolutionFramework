@@ -1,0 +1,86 @@
+@prefix faspls: <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .
+@prefix ns0: <https://jakubperdek-26e24f.gitlab.io/> .
+
+ns0:evol_fb73b98c a ns0:fully-automated-spls-schema.ttlEvolution;
+  ns0:fully-automated-spls-schema.ttlconfAssoc "/evolved_configuration" .
+
+ns0:evol_script_68abd011 a ns0:fully-automated-spls-schema.ttlEvolvedScript;
+  ns0:fully-automated-spls-schema.ttllocation "/evolved_script" .
+
+ns0:prod_line_f1031c3f a ns0:fully-automated-spls-schema.ttlProductLine;
+  ns0:fully-automated-spls-schema.ttlevolSerie "1" .
+
+ns0:svg_dd40675a a ns0:fully-automated-spls-schema.ttlSVG;
+  ns0:fully-automated-spls-schema.ttllocation "/vector" .
+
+ns0:code_16bab4ec a ns0:fully-automated-spls-schema.ttlCode;
+  ns0:fully-automated-spls-schema.ttllocation "/code" .
+
+ns0:raster_fc202c41 a ns0:fully-automated-spls-schema.ttlScreenshot;
+  ns0:fully-automated-spls-schema.ttllocation "/raster" .
+
+ns0:graph_f61b310c a ns0:fully-automated-spls-schema.ttlInstanceGraph;
+  ns0:fully-automated-spls-schema.ttllocation "/graph" .
+
+ns0:code_bf92f68a a ns0:fully-automated-spls-schema.ttlCode;
+  ns0:fully-automated-spls-schema.ttllocation "/code_product" .
+
+ns0:product_9ad6a08f a ns0:fully-automated-spls-schema.ttlProduct .
+
+ns0:graph_f12716e8 a ns0:fully-automated-spls-schema.ttlInstanceGraph;
+  ns0:fully-automated-spls-schema.ttllocation "/graph_product" .
+
+ns0:raster_c04c47c4 a ns0:fully-automated-spls-schema.ttlScreenshot;
+  ns0:fully-automated-spls-schema.ttllocation "/raster_product" .
+
+ns0:svg_7e9ce70e a ns0:fully-automated-spls-schema.ttlSVG;
+  ns0:fully-automated-spls-schema.ttllocation "/vector_product" .
+
+ns0:graph_737767da a ns0:fully-automated-spls-schema.ttlInstanceGraph;
+  ns0:fully-automated-spls-schema.ttllocation "/graph_product2" .
+
+ns0:product_80d4518d a ns0:fully-automated-spls-schema.ttlProduct .
+
+ns0:code_bbcf2658 a ns0:fully-automated-spls-schema.ttlCode;
+  ns0:fully-automated-spls-schema.ttllocation "/code_product2" .
+
+ns0:svg_5c3ce3d7 a ns0:fully-automated-spls-schema.ttlSVG;
+  ns0:fully-automated-spls-schema.ttllocation "/vector_product2" .
+
+ns0:raster_b24196b3 a ns0:fully-automated-spls-schema.ttlScreenshot;
+  ns0:fully-automated-spls-schema.ttllocation "/raster_product2" .
+
+ns0:code_91ffa31d a ns0:fully-automated-spls-schema.ttlCode;
+  ns0:fully-automated-spls-schema.ttllocation "/code2" .
+
+ns0:raster_33ce8a7b a ns0:fully-automated-spls-schema.ttlScreenshot;
+  ns0:fully-automated-spls-schema.ttllocation "/raster2" .
+
+ns0:prod_line_32af7db3 a ns0:fully-automated-spls-schema.ttlProductLine;
+  ns0:fully-automated-spls-schema.ttlevolSerie "2" .
+
+ns0:graph_ce5b3d1c a ns0:fully-automated-spls-schema.ttlInstanceGraph;
+  ns0:fully-automated-spls-schema.ttllocation "/graph2" .
+
+ns0:svg_1d573d7f a ns0:fully-automated-spls-schema.ttlSVG;
+  ns0:fully-automated-spls-schema.ttllocation "/vector2" .
+
+ns0:svg_320acf04 a ns0:fully-automated-spls-schema.ttlSVG;
+  ns0:fully-automated-spls-schema.ttllocation "/vector3" .
+
+ns0:raster_d3cff568 a ns0:fully-automated-spls-schema.ttlScreenshot;
+  ns0:fully-automated-spls-schema.ttllocation "/raster3" .
+
+ns0:prod_line_fa07253a a ns0:fully-automated-spls-schema.ttlProductLine;
+  ns0:fully-automated-spls-schema.ttlevolSerie "3" .
+
+ns0:code_080162c5 a ns0:fully-automated-spls-schema.ttlCode;
+  ns0:fully-automated-spls-schema.ttllocation "/code3" .
+
+ns0:graph_90c6af89 a ns0:fully-automated-spls-schema.ttlInstanceGraph;
+  ns0:fully-automated-spls-schema.ttllocation "/graph3" .
+
+ns0:prod_line_f41cd081 a ns0:fully-automated-spls-schema.ttlProductLine .
+
+ns0:evol_f6fe7ce7 a ns0:fully-automated-spls-schema.ttlEvolution;
+  ns0:fully-automated-spls-schema.ttlconfAssoc "/evolved_configuration" .

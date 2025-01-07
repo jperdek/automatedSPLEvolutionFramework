@@ -66,6 +66,9 @@ class NeosemanticsKnowledgeGraphApi:
 
 if __name__ == "__main__":
     import_variation_points = True
+    #variation_point_data_location = None  # without VP
+    variation_point_data_location = "./variationPointDataSample.json" #
+
     graph_knowl_api = FullyAutomatedProductLinesKnowledgeManager()
     neosemantics_knowledge_graph_api = NeosemanticsKnowledgeGraphApi()
     graph_knowl_api.clear_database()
@@ -81,7 +84,6 @@ if __name__ == "__main__":
         evolution_configuration_path)
 
     iteration = "1"
-    variation_point_data_location = "./variationPointDataSample.json"
     code_location, graph_location, raster_location, vector_location = "/code", "/graph", "/raster", "/vector"
     neosemantics_knowledge_graph_api.register_new_evolution_iteration(
         graph_knowl_api, evolution_id, evolved_product_line_id, iteration, code_location, graph_location,

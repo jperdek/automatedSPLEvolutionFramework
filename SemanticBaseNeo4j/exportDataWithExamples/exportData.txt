@@ -1,3 +1,33 @@
+EXPORT DATA
+
+1. add to config if is not and restart serve if is not:
+dbms.unmanaged_extension_classes=n10s.endpoint=/rdf
+
+2. call
+POST http://localhost:7475/rdf/evolutionKnowledgeBase/cypher
+
+Body (raw, JSON)
+{ "cypher" : "MATCH (n) RETURN n LIMIT 10000" , "format": "Turtle" }
+
+Headers for Basic authentification ("Authorization": "Basic base64.hash(username:password)")
+Authorization Basic bmVvNGo6ZmVhdHVyZQ==  			(neo4j:feature)
+
+Authorization Basic bmVvNGo6ZmVhdHVyZU5lbzRq  			(neo4j:featureNeo4j)
+
+
+
+POST /rdf/evolutionKnowledgeBase/cypher HTTP/1.1
+Host: localhost:7475
+Authorization: Basic bmVvNGo6ZmVhdHVyZQ==
+Content-Type: application/json
+Content-Length: 68
+
+{ "cypher" : "MATCH (n) RETURN n LIMIT 10000" , "format": "Turtle" }
+
+
+
+EXPORT ONTOLOGY
+
 1. add to config if is not and restart serve if is not:
 dbms.unmanaged_extension_classes=n10s.endpoint=/rdf
 
@@ -12,3 +42,5 @@ http://localhost:7475/rdf/evolutionKnowledgeBase/onto?format=N-Triples
 or
 
 http://localhost:7475/rdf/evolutionKnowledgeBase/onto?format=Turtle
+
+
