@@ -3,6 +3,9 @@ import json
 import uuid
 from typing import Optional, Dict
 
+from server.apis.http.api.semantic_base.knowledge_graph.graph_knowledge_base_api import GraphKnowledgeBaseAPI
+from server.apis.http.api.semantic_base.tools.triple_call_neosemantics_factory import TripleCallNeosemanticsFactory
+
 
 class TurtleTriplesConstructor:
 
@@ -108,6 +111,7 @@ class TurtleTriplesConstructor:
             raster_location: Optional[str] = None, vector_location: Optional[str] = None,
             variation_point_data_location: Optional[str] = None, evolved_script_id: Optional[str] = None,
             evolved_script_path: Optional[str] = None, previous_product_line_id: Optional[str] = None,
+            immediately_save_ttls: bool = False, graph_knowledge_api: Optional[GraphKnowledgeBaseAPI] = None,
             base_header: str = "@base <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .") -> str:
         prepared_ttl = TurtleTriplesConstructor.get_rdfs_headers_in_ttl(base_header=base_header)
         prepared_ttl += TurtleTriplesConstructor.prepare_ttl_of_new_product_line_to_exiting_evolution(
@@ -121,8 +125,13 @@ class TurtleTriplesConstructor:
         prepared_ttl += TurtleTriplesConstructor.__prepare_raster_ttl(evolved_product_line_id, raster_location)
         prepared_ttl += TurtleTriplesConstructor.__prepare_vector_ttl(evolved_product_line_id, vector_location)
         prepared_ttl += TurtleTriplesConstructor.__prepare_graph_ttl(evolved_product_line_id, graph_location)
+
+        # overwrites or lefts untouched - only = operator is used
+        prepared_ttl = TurtleTriplesConstructor.__check_and_optionally_save_prepared_ttl(
+            prepared_ttl, immediately_save_ttls, graph_knowledge_api, base_header)
         prepared_ttl += TurtleTriplesConstructor.__prepare_variation_points_ttl(
-            evolved_product_line_id, variation_point_data_location)
+            evolved_product_line_id, variation_point_data_location, immediately_save_ttls,
+            graph_knowledge_api, base_header)
         return prepared_ttl
 
     @staticmethod
@@ -132,7 +141,9 @@ class TurtleTriplesConstructor:
 
     @staticmethod
     def __prepare_vp_annotation_with_expression_in_ttl(
-            variation_point_configuration: Dict, unique_variation_point_id: str) -> str:
+            variation_point_configuration: Dict, unique_variation_point_id: str,
+            immediately_save_ttls: bool = False, graph_knowledge_api: Optional[GraphKnowledgeBaseAPI] = None,
+            base_header: str = "@base <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .") -> str:
         prepared_ttl = ""
         for variability_annot_config in variation_point_configuration.get("variabilitySelections", []):
             variability_annotation_id = "var_annot_" + uuid.uuid4().hex[:8]
@@ -159,10 +170,30 @@ class TurtleTriplesConstructor:
             configuration_expression = json.loads(configuration_expression_str)
             prepared_ttl += TurtleTriplesConstructor.__process_configuration_expression(
                 configuration_expression, configuration_expression_id)
+            # overwrites or lefts untouched - only = operator is used
+            prepared_ttl = TurtleTriplesConstructor.__check_and_optionally_save_prepared_ttl(
+                prepared_ttl, immediately_save_ttls, graph_knowledge_api, base_header)
         return prepared_ttl
 
     @staticmethod
-    def __prepare_variation_point_in_ttl(variation_point_configuration: Dict, evolved_product_line_id: str) -> str:
+    def __check_and_optionally_save_prepared_ttl(
+            prepared_ttl: str, immediately_save_ttls: bool = False,
+            graph_knowledge_api: Optional[GraphKnowledgeBaseAPI] = None,
+            base_header: str = "@base <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .") -> str:
+        if immediately_save_ttls and graph_knowledge_api:
+            headers_ttl = TurtleTriplesConstructor.get_rdfs_headers_in_ttl(base_header)
+            if headers_ttl not in prepared_ttl:
+                prepared_ttl = headers_ttl + prepared_ttl
+            command_to_store_ttls = TripleCallNeosemanticsFactory.import_from_text(prepared_ttl, "Turtle")
+            graph_knowledge_api.process_data_transaction_using_commands(command_to_store_ttls)
+            return ""
+        return prepared_ttl
+
+    @staticmethod
+    def __prepare_variation_point_in_ttl(
+            variation_point_configuration: Dict, evolved_product_line_id: str,
+            immediately_save_ttls: bool = False, graph_knowledge_api: Optional[GraphKnowledgeBaseAPI] = None,
+            base_header: str = "@base <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .") -> str:
         unique_variation_point_id_str = variation_point_configuration["hierarchicIdentifier"]
         if variation_point_configuration.get("newVariationPoint"):
             for callable_object in variation_point_configuration.get("allAvailableCalls", []):
@@ -172,37 +203,47 @@ class TurtleTriplesConstructor:
             unique_variation_point_id_str += variation_point_configuration.get("affectedCode", "")
             variation_point_type = "faspls:NegativeVP"
         hash_object = hashlib.sha256(unique_variation_point_id_str.encode("utf-8"))
-        unique_variation_point_id = hash_object.hexdigest()
+        unique_variation_point_id = "var_point_" + hash_object.hexdigest()[:8]
         is_class_related = variation_point_configuration.get("classRelated", False)
         hierarchic_identifier = variation_point_configuration.get("hierarchicIdentifier", ".")
         is_inside_recursion = variation_point_configuration.get("isInsideRecursion", False)
         prepared_ttl = f"""
             <{unique_variation_point_id}> a {variation_point_type} .
-
+            
             <{evolved_product_line_id}> faspls:hasVP <{unique_variation_point_id}> .
-            <{unique_variation_point_id}> faspls:isClassRelated {is_class_related} .
-            <{unique_variation_point_id}> faspls:isInsideRecursion {is_inside_recursion} .
-            <{unique_variation_point_id}> faspls:hierarchicIdentifier {hierarchic_identifier} .
+            <{unique_variation_point_id}> faspls:isClassRelated "{is_class_related}" .
+            <{unique_variation_point_id}> faspls:isInsideRecursion "{is_inside_recursion}" .
+            <{unique_variation_point_id}> faspls:hierarchicIdentifier "{hierarchic_identifier}" .
         """
         if variation_point_configuration.get("newVariationPoint"):
             for callable_object in variation_point_configuration.get("allAvailableCalls", []):
                 prepared_ttl += f"""
                    <{unique_variation_point_id}> faspls:canCall "{callable_object}" . 
                 """
+            # overwrites or lefts untouched - only = operator is used
+            prepared_ttl = TurtleTriplesConstructor.__check_and_optionally_save_prepared_ttl(
+                prepared_ttl, immediately_save_ttls, graph_knowledge_api, base_header)
         else:
+            # overwrites or lefts untouched - only = operator is used
+            prepared_ttl = TurtleTriplesConstructor.__check_and_optionally_save_prepared_ttl(
+                prepared_ttl, immediately_save_ttls, graph_knowledge_api, base_header)
             prepared_ttl += TurtleTriplesConstructor.__prepare_vp_annotation_with_expression_in_ttl(
                 variation_point_configuration, unique_variation_point_id)
         return prepared_ttl
 
     @staticmethod
-    def __prepare_variation_points_ttl(evolved_product_line_id: str, variation_point_data_location: Optional[str]) -> str:
+    def __prepare_variation_points_ttl(
+            evolved_product_line_id: str, variation_point_data_location: Optional[str],
+            immediately_save_ttls: bool = False, graph_knowledge_api: Optional[GraphKnowledgeBaseAPI] = None,
+            base_header: str = "@base <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .") -> str:
         prepared_ttl = ""
         if variation_point_data_location:
             with open(variation_point_data_location, "r", encoding="utf-8") as file:
                 variation_points_configuration = json.loads(file.read())
                 for variation_point_configuration in variation_points_configuration:
                     prepared_ttl += TurtleTriplesConstructor.__prepare_variation_point_in_ttl(
-                        variation_point_configuration, evolved_product_line_id)
+                        variation_point_configuration, evolved_product_line_id,
+                        immediately_save_ttls, graph_knowledge_api, base_header)
         return prepared_ttl
 
     @staticmethod
