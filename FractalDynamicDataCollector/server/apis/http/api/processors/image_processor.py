@@ -8,7 +8,7 @@ from io import BytesIO
 
 # for Windows only
 if hasattr(sys, "getwindowsversion"):
-    os.environ["PATH"] += r";" + os.getcwd() + "\\vips-dev-8.12\\bin"
+    os.environ["PATH"] += r";" + os.getcwd().split("\\server")[0] + "\\vips-dev-8.12\\bin"
 import pyvips
 
 

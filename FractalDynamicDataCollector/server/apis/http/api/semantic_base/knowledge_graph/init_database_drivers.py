@@ -1,6 +1,6 @@
 import os
 
-from server.apis.http.api.semantic_base.knowledge_graph.graph_knowledge_base_api import GraphKnowledgeBaseAPI
+from semantic_base.knowledge_graph.graph_knowledge_base_api import GraphKnowledgeBaseAPI
 
 
 class FullyAutomatedProductLinesKnowledgeManager(GraphKnowledgeBaseAPI):
