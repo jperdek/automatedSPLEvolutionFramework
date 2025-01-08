@@ -325,7 +325,12 @@ public class VariationPointConjunctor {
 		// ONLY SPLs after first iteration are process, others needs to be processed after flattening which creates more sample SPLs and puts XXX into their name
 		if (evolutionConfiguration.getIteration() == 1) {
 			String targetDestinationPath = evolutionConfiguration.getOutputFilePath(projectId);
-			EvolvedSPLPublisher.publishMessageAboutEvolvedSPL(evolutionConfiguration, projectId, targetDestinationPath, false);
+			String evolvedContentName = this.derivationResourcesManager.getEvolvedContentName();
+			String finalEvolutionResourcesPath = targetDestinationPath + evolvedContentName + synthesizedContent.getFileName();
+			String newFilePathTovariationPointsData = finalEvolutionResourcesPath + SPLEvolutionCore.VARIATION_POINTS_DATA_NAME_ID_ENDING; 
+			
+			String previousSplId = evolutionConfiguration.getIdOfCurrentSourceSoftwareProductLineForEvolution();
+			EvolvedSPLPublisher.publishMessageAboutEvolvedSPL(evolutionConfiguration, projectId, targetDestinationPath, newFilePathTovariationPointsData, previousSplId, false);
 		}
 		return projectId;
 	}
@@ -362,7 +367,13 @@ public class VariationPointConjunctor {
 		String targetDestinationPath = evolutionConfiguration.getOutputFilePath(projectId);
 		String currentScriptPath = targetDestinationPath + evolutionConfiguration.getCurrentEvolvedScriptRelativePath();
 		this.serializeSythesizedContent(currentScriptPath, synthesizedContent);
-		EvolvedSPLPublisher.publishMessageAboutEvolvedSPL(evolutionConfiguration, projectId, targetDestinationPath, false);
+		
+		String evolvedContentName = this.derivationResourcesManager.getEvolvedContentName();
+		String finalEvolutionResourcesPath = targetDestinationPath + evolvedContentName + synthesizedContent.getFileName();
+		String newFilePathTovariationPointsData = finalEvolutionResourcesPath + SPLEvolutionCore.VARIATION_POINTS_DATA_NAME_ID_ENDING; 
+		
+		String previousSplId = evolutionConfiguration.getIdOfCurrentSourceSoftwareProductLineForEvolution();
+		EvolvedSPLPublisher.publishMessageAboutEvolvedSPL(evolutionConfiguration, projectId, targetDestinationPath, newFilePathTovariationPointsData, previousSplId, false);
 		return projectId;
 	}
 	

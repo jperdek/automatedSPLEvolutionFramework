@@ -23,9 +23,15 @@ def callback_func(channel, method, properties, body):
         evolution_iteration = task_configuration["evolutionIteration"]
         if evolved_spl_path not in processed_spls.keys():
             processed_spls[evolved_spl_path] = evolved_spl_path
-            destination_spl_path = DataRepresentationsClient.create_all_representations(evolved_spl_path,
-                                                                                        evolution_iteration,
-                                                                                        project_id, logger)
+            evolution_id = task_configuration["evolutionId"]
+            evolved_script_path = task_configuration["evolvedScriptPath"]
+            evolved_product_line_id = project_id
+            previous_product_line_id = task_configuration["previousProductLineId"]
+            variation_points_data_location = task_configuration["variationPointsDataLocation"]
+
+            destination_spl_path = DataRepresentationsClient.create_all_representations(
+                evolution_id, evolution_iteration, evolved_product_line_id, evolved_script_path, evolved_spl_path,
+                project_id, variation_points_data_location, previous_product_line_id, logger)
             logger.debug(">------| Finished all processing tasks. Final location: " + destination_spl_path)
         else:
             logger.debug("SPL has been already processed. Skipping...")

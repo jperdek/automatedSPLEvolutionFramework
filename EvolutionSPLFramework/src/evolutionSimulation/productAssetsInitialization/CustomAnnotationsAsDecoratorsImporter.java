@@ -13,7 +13,6 @@ import org.jsoup.parser.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import evolutionSimulation.EvolutionConfiguration;
 import evolutionSimulation.iteration.WrappedTypeScriptContentInVariable;
 import splEvolutionCore.DebugInformation;
 import splEvolutionCore.SPLEvolutionCore;

@@ -11,6 +11,7 @@ import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterations
 import evolutionSimulation.productAssetsInitialization.CanvasBasedResource;
 import evolutionSimulation.productAssetsInitialization.SharedConfiguration;
 import evolutionSimulation.productAssetsInitialization.UnknownResourceToProcessException;
+import knowledgeBaseApi.DefaultKnowledgeBaseCreation;
 import positiveVariabilityManagement.UnmappedContextException;
 import positiveVariabilityManagement.VariationPointPlaceInArrayNotFound;
 import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.AlreadyChosenVariationPointForInjectionException;
@@ -88,6 +89,14 @@ public class FiveEdgeEvolutionIterationTest extends EvolutionIteration {
 		evolutionConfiguration.addInitialResource(new CanvasBasedResource(canvasElementName, templatePath));
 		//evolutionConfiguration.setTemplateConfigurationPath(templateRelativePath);
 		ExportAssetPlanner exportAssetPlanner = new AssetPlannerBaseStrategy(new  NonRestrictiveAssetPlanning());
+		
+		String evolvedSourceSoftwareProductLineId = evolutionConfiguration.getIdOfCurrentSourceSoftwareProductLineForEvolution(); 
+		String previousSoftwareProductLineId = evolutionConfiguration.getPreviousIdOfCurrentSourceSoftwareProductLineForEvolution();
+		
+		DefaultKnowledgeBaseCreation.registerNewEvolution(evolutionConfiguration.getEvolutionID(), evolvedSourceSoftwareProductLineId, 
+				pathToScriptInputFilePath, previousSoftwareProductLineId, null, null);
+		
+	
 		evolutionSimulationTest.runEvolutioIteration(evolutionConfiguration, exportAssetPlanner);
 	}
 }

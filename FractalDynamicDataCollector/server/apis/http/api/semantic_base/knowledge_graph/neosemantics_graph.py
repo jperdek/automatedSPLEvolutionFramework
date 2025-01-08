@@ -3,20 +3,22 @@ from typing import Optional
 
 import neo4j
 
-from server.apis.http.api.semantic_base.knowledge_graph.graph_knowledge_base_api import GraphKnowledgeBaseAPI
-from server.apis.http.api.semantic_base.tools.triple_call_neosemantics_factory import TripleCallNeosemanticsFactory
-from server.apis.http.api.semantic_base.tools.turtle_constructor import TurtleTriplesConstructor
+from semantic_base.knowledge_graph.graph_knowledge_base_api import GraphKnowledgeBaseAPI
+from semantic_base.tools.triple_call_neosemantics_factory import TripleCallNeosemanticsFactory
+from semantic_base.tools.turtle_constructor import TurtleTriplesConstructor
 
 
-from server.apis.http.api.semantic_base.knowledge_graph.init_database_drivers import \
+from semantic_base.knowledge_graph.init_database_drivers import \
     FullyAutomatedProductLinesKnowledgeManager
 
 
 class NeosemanticsKnowledgeGraphApi:
 
-    def init_graph_neosemantics(self, graph_knowledge_api: GraphKnowledgeBaseAPI):
+    @staticmethod
+    def init_graph_neosemantics(graph_knowledge_api: GraphKnowledgeBaseAPI, prefix_name: str = "faspls",
+            prefixed_namespace: str = "https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl"):
         prefix_pointing_to_namespace_call = TripleCallNeosemanticsFactory.define_prefix_pointing_to_namespace(
-            "faspls", "https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl")
+            prefix_name, prefixed_namespace)
         try:
             graph_knowledge_api.create_knowledge_db()
         except neo4j.exceptions.ClientError:
@@ -26,8 +28,9 @@ class NeosemanticsKnowledgeGraphApi:
             TripleCallNeosemanticsFactory.set_constraint_on_unique_uri())
         graph_knowledge_api.process_data_transaction_using_commands(prefix_pointing_to_namespace_call)
 
+    @staticmethod
     def init_new_evolution(
-            self, graph_knowledge_api: GraphKnowledgeBaseAPI, evolution_id: str, initial_product_line_id: str,
+            graph_knowledge_api: GraphKnowledgeBaseAPI, evolution_id: str, initial_product_line_id: str,
             evolved_script_id: str, evolved_script_path: Optional[str], evolution_configuration_path: Optional[str],
             previous_evolution_id: Optional[str] = None, previous_product_line_id: Optional[str] = None,
             base_header: str = "@base <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ."):
@@ -37,8 +40,9 @@ class NeosemanticsKnowledgeGraphApi:
         knowledge_ttl_call = TripleCallNeosemanticsFactory.import_from_text(new_evolution_knowledge_ttl, "Turtle")
         graph_knowledge_api.process_data_transaction_using_commands(knowledge_ttl_call)
 
+    @staticmethod
     def register_new_evolution_iteration(
-            self, graph_knowledge_api: GraphKnowledgeBaseAPI, evolution_id: str,
+            graph_knowledge_api: GraphKnowledgeBaseAPI, evolution_id: str,
             evolved_product_line_id: str, evolution_iteration: str, code_location: Optional[str] = None,
             graph_location: Optional[str] = None, raster_location: Optional[str] = None,
             vector_location: Optional[str] = None, variation_point_data_location: Optional[str] = None,
@@ -53,8 +57,9 @@ class NeosemanticsKnowledgeGraphApi:
         knowledge_ttl_call = TripleCallNeosemanticsFactory.import_from_text(new_evolution_knowledge_ttl, "Turtle")
         graph_knowledge_api.process_data_transaction_using_commands(knowledge_ttl_call)
 
+    @staticmethod
     def register_new_product(
-            self, graph_knowledge_api: GraphKnowledgeBaseAPI,
+            graph_knowledge_api: GraphKnowledgeBaseAPI,
             evolved_product_line_id: str, code_location: Optional[str] = None, graph_location: Optional[str] = None,
             raster_location: Optional[str] = None, vector_location: Optional[str] = None,
             base_header: str = "@base <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> ."):
@@ -66,7 +71,7 @@ class NeosemanticsKnowledgeGraphApi:
 
 if __name__ == "__main__":
     import_variation_points = True
-    #variation_point_data_location = None  # without VP
+    # variation_point_data_location = None  # without VP
     variation_point_data_location = "./variationPointDataSample.json" #
 
     graph_knowl_api = FullyAutomatedProductLinesKnowledgeManager()

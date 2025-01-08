@@ -1,0 +1,123 @@
+package knowledgeBaseApi;
+
+import java.io.IOException;
+
+import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import codeConstructsEvaluation.MethodComplexityRecord;
+import codeConstructsEvaluation.transformation.PostRequester;
+
+
+/**
+ * 
+ * 
+ * @author Jakub Perdek
+ *
+ */
+public class DefaultKnowledgeBaseCreation {
+
+	private static final String DEFAULT_KNOWLEDGE_BASE_SERVER = "http://localhost:5000/api/knowledge_base";
+	private static final String INIT_DEFAULT_KNOWLEDGE_BASE = DefaultKnowledgeBaseCreation.DEFAULT_KNOWLEDGE_BASE_SERVER + "/init";
+	private static final String CLEAR_DEFAULT_KNOWLEDGE_BASE = DefaultKnowledgeBaseCreation.DEFAULT_KNOWLEDGE_BASE_SERVER + "/clear";
+	private static final String REGISTER_NEW_PRODUCT = DefaultKnowledgeBaseCreation.DEFAULT_KNOWLEDGE_BASE_SERVER + "/registerNewProduct";
+	private static final String REGISTER_NEW_EVOLUTION = DefaultKnowledgeBaseCreation.DEFAULT_KNOWLEDGE_BASE_SERVER + "/registerNewEvolution";
+	private static final String INSERT_TRIPLES = DefaultKnowledgeBaseCreation.DEFAULT_KNOWLEDGE_BASE_SERVER + "/addTriples";
+	
+	/**
+	 * Logger to track information from method complexity record
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(DefaultKnowledgeBaseCreation.class);
+	
+
+	public static void initializeDefaultKnowledgeBase() {
+		try {
+			logger.debug("Initializing default knowledge base.");
+			String response = PostRequester.doGetRequest(DefaultKnowledgeBaseCreation.INIT_DEFAULT_KNOWLEDGE_BASE);
+			logger.debug("Initialized with response: " + response);
+		} catch (IOException e) {
+			logger.error("Failed to initialize default knowledge base.", e);
+		} catch (InterruptedException e) {
+			logger.error("Failed to initialize default knowledge base.", e);
+		}
+	}
+	
+	public static void clearDefaultKnowledgeBase() {
+		try {
+			logger.debug("Clearing default knowledge base.");
+			String response = PostRequester.doGetRequest(DefaultKnowledgeBaseCreation.CLEAR_DEFAULT_KNOWLEDGE_BASE);
+			logger.debug("Cleared with response: " + response);
+		} catch (IOException e) {
+			logger.error("Failed to initialize default knowledge base.", e);
+		} catch (InterruptedException e) {
+			logger.error("Failed to initialize default knowledge base.", e);
+		}
+	}
+	
+	public static void registerNewEvolution(String evolutionId, String initialProductLineId, 
+			String evolvedScriptPath, String previousProductLineId, String previousEvolutionId, String evolutionConfigurationPath) {
+		JSONObject newEvolutionRequestData = new JSONObject();
+		newEvolutionRequestData.put("evolution_id", evolutionId);
+		newEvolutionRequestData.put("initial_product_line_id", initialProductLineId);
+		newEvolutionRequestData.put("evolved_script_path", evolvedScriptPath);
+		newEvolutionRequestData.put("previous_product_line_id", previousProductLineId);
+		newEvolutionRequestData.put("previous_evolution_id", previousEvolutionId);
+		newEvolutionRequestData.put("evolution_configuration_path", evolutionConfigurationPath);
+		
+		try {
+			logger.debug("Clearing default knowledge base.");
+			String response = PostRequester.doPostRequest(DefaultKnowledgeBaseCreation.REGISTER_NEW_EVOLUTION, newEvolutionRequestData.toString());
+			logger.debug("Cleared with response: " + response);
+		} catch (IOException e) {
+			logger.error("Failed to initialize default knowledge base.", e);
+		} catch (InterruptedException e) {
+			logger.error("Failed to initialize default knowledge base.", e);
+		}
+	}
+	
+	public static void registerNewProduct(String evolvedProductLineId, String codePath, 
+			String screenshotPath, String vectorPath, String jsonGraphPath) {
+		JSONObject newEvolutionRequestData = new JSONObject();
+		newEvolutionRequestData.put("evolved_product_line_id", evolvedProductLineId);
+
+		newEvolutionRequestData.put("code_path", codePath);
+		newEvolutionRequestData.put("screenshot_path", screenshotPath);
+		newEvolutionRequestData.put("vector_path", vectorPath);
+		newEvolutionRequestData.put("json_graph_path", jsonGraphPath);
+		
+		try {
+			logger.debug("Clearing default knowledge base.");
+			String response = PostRequester.doPostRequest(DefaultKnowledgeBaseCreation.REGISTER_NEW_PRODUCT, newEvolutionRequestData.toString());
+			logger.debug("Cleared with response: " + response);
+		} catch (IOException e) {
+			logger.error("Failed to initialize default knowledge base.", e);
+		} catch (InterruptedException e) {
+			logger.error("Failed to initialize default knowledge base.", e);
+		}
+	}
+	
+	public static String getDefaultHeaders(String baseHeader) {
+		if (baseHeader == null) {
+			baseHeader = "@base <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .";
+		}
+		return baseHeader + """
+			@prefix faspls: <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .
+            @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+            @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+            
+		""";
+	}
+	
+	public static void insertTriples(String triples) {
+		try {
+			logger.debug("Clearing default knowledge base.");
+			String response = PostRequester.doPostRequest(DefaultKnowledgeBaseCreation.INSERT_TRIPLES, triples);
+			logger.debug("Cleared with response: " + response);
+		} catch (IOException e) {
+			logger.error("Failed to initialize default knowledge base.", e);
+		} catch (InterruptedException e) {
+			logger.error("Failed to initialize default knowledge base.", e);
+		}
+	}
+}

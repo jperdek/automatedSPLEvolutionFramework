@@ -16,6 +16,7 @@ import evolutionSimulation.orchestrationOfEvolutionIterations.SPLCandidateSelect
 import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.ExportAssetPlanner;
 import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.strategies.AssetMisuse;
 import evolutionSimulation.productAssetsInitialization.UnknownResourceToProcessException;
+import knowledgeBaseApi.DefaultKnowledgeBaseCreation;
 import positiveVariabilityManagement.UnmappedContextException;
 import positiveVariabilityManagement.VariationPointPlaceInArrayNotFound;
 import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.AlreadyChosenVariationPointForInjectionException;
@@ -127,10 +128,17 @@ public class EvolutionIterationsPipeline {
 		SPLProjectCandidateToPopulationOfEvolIterationSelector candidateForPopulationSelector = null;
 		EvolutionIteration evolutionIteration;
 		EvolutionCoreSettings evolutionCoreSettings = null;
-		String pathToScriptInputFilePath;
 		List<String> inputPaths;
 		int numberEvolvedCandidatesFromLastIteration;
 
+		DefaultKnowledgeBaseCreation.initializeDefaultKnowledgeBase();
+		String evolvedSourceSoftwareProductLineId = evolutionConfiguration.getIdOfCurrentSourceSoftwareProductLineForEvolution();
+		String previousSoftwareProductLineId = evolutionConfiguration.getPreviousIdOfCurrentSourceSoftwareProductLineForEvolution();
+		String previousEvolutionId = evolutionConfiguration.getPreviousEvolutionId();
+		String pathToScriptInputFilePath = evolutionConfiguration.getCurrentEvolvedScriptRelativePath();
+		DefaultKnowledgeBaseCreation.registerNewEvolution(evolutionConfiguration.getEvolutionID(), evolvedSourceSoftwareProductLineId, 
+		pathToScriptInputFilePath, previousSoftwareProductLineId, previousEvolutionId, null);
+		
 		EvolutionConfiguration customizedEvolutionConfiguration = evolutionConfiguration;
 		while(evolutionIterationIterator.hasNext()) {
 			pathToEvolvedSPLProjectsDirectory = customizedEvolutionConfiguration.getPathToEvolvedSPLProjectDirectory();

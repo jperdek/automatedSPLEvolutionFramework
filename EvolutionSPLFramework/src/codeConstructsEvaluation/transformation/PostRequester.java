@@ -17,6 +17,7 @@ import java.nio.file.Paths;
 import java.util.UUID;
 
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -74,6 +75,28 @@ public class PostRequester {
 	
 	        // Execute the request and get the response
 	        CloseableHttpResponse responseApacheClient = httpClient.execute(post);
+	        return EntityUtils.toString(responseApacheClient.getEntity());
+		}
+		return (String) response.body();
+	}
+	
+	
+	public static String doGetRequest(String serviceUrl) throws IOException, InterruptedException {
+		HttpClient client = HttpClient.newHttpClient();
+		HttpRequest request = HttpRequest.newBuilder()
+			.version(HttpClient.Version.HTTP_2)
+			.uri(URI.create(serviceUrl))
+			.GET()
+			.build();
+		HttpResponse<String> response;
+		try {
+			response = client.send(request, HttpResponse.BodyHandlers.ofString());
+		} catch(Exception e) {
+			CloseableHttpClient httpClient = HttpClients.createDefault();
+			HttpGet getRequest = new HttpGet(serviceUrl);
+	
+	        // Execute the request and get the response
+	        CloseableHttpResponse responseApacheClient = httpClient.execute(getRequest);
 	        return EntityUtils.toString(responseApacheClient.getEntity());
 		}
 		return (String) response.body();

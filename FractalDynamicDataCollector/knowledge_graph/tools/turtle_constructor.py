@@ -3,8 +3,8 @@ import json
 import uuid
 from typing import Optional, Dict
 
-from semantic_base.knowledge_graph.graph_knowledge_base_api import GraphKnowledgeBaseAPI
-from semantic_base.tools.triple_call_neosemantics_factory import TripleCallNeosemanticsFactory
+from server.apis.http.api.semantic_base.knowledge_graph.graph_knowledge_base_api import GraphKnowledgeBaseAPI
+from server.apis.http.api.semantic_base.tools.triple_call_neosemantics_factory import TripleCallNeosemanticsFactory
 
 
 class TurtleTriplesConstructor:

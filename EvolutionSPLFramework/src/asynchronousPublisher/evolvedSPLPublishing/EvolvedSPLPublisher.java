@@ -50,11 +50,18 @@ public class EvolvedSPLPublisher extends RabbitMQAdapter {
 	 * @param iterationBefore - true if actual iteration is one iteration behind produced SPLs otherwise false 
 	 * @param currentScriptPath
 	 */
-	public static void publishMessageAboutEvolvedSPL(EvolutionConfiguration evolutionConfiguration, String projectId, String targetDestinationPath, boolean iterationBefore) {
+	public static void publishMessageAboutEvolvedSPL(EvolutionConfiguration evolutionConfiguration, String projectId, String targetDestinationPath, String variationPointsDataLocation, String previousProductLineId, boolean iterationBefore) {
 		int iterationNumber = evolutionConfiguration.getIteration();
 		if (SPLEvolutionCore.PRODUCE_MESSAGES_INTO_MQ_AFTER_DERIVATION) {
 			JSONObject messageContent = new JSONObject();
 			if (iterationBefore) { iterationNumber = iterationNumber - 1; }
+			messageContent.put("evolutionId", evolutionConfiguration.getEvolutionID());
+			messageContent.put("evolvedScriptPath", evolutionConfiguration.getPathToScriptInputFile()); //evolutionConfiguration.getCurrentEvolvedScriptRelativePath()
+			messageContent.put("evolvedSplPath", evolutionConfiguration.getOutputFilePath(projectId)); //.getOutputFilePathToDirectoryUsedInCurrentEvolution()
+			
+			messageContent.put("variationPointsDataLocation", variationPointsDataLocation);
+			messageContent.put("previousProductLineId", evolutionConfiguration.getOutputFilePath(projectId));
+			
 			messageContent.put("evolutionIteration", String.valueOf(iterationNumber));
 			messageContent.put("projectId", projectId);
 			messageContent.put("targetPath", targetDestinationPath);

@@ -3,7 +3,8 @@ from flask import Flask, g
 import flask_cors
 
 from screenshot_api.take_screenshot_api import screenshot_api
-from server.apis.http.api.semantic_base.knowledge_graph.init_database_drivers import \
+from semantic_base.default_knowledge_graph_api import default_knowledge_graph_api
+from semantic_base.knowledge_graph.init_database_drivers import \
     FullyAutomatedProductLinesKnowledgeManager
 from tools.single_file_adaptations import singlefile_api as tools_api
 from graph_api.extract_graph_api import graph_extractor_api
@@ -22,11 +23,12 @@ app.register_blueprint(graph_extractor_api, url_prefix="/api/graph-extraction")
 app.register_blueprint(nodes_and_connectors_api, url_prefix="/api/nodes-and-connectors")
 app.register_blueprint(graph_database_entry_api, url_prefix="/api/graph_db_entry")
 app.register_blueprint(svg_creator_api, url_prefix="/api/svg_creator")
+app.register_blueprint(default_knowledge_graph_api, url_prefix="/api/knowledge_base")
 
 
 with app.app_context():
     print("Preparing for requests execution...")
-    g.fullyAutomatedProductLinesKnowledgeManager = FullyAutomatedProductLinesKnowledgeManager()
+    g.fully_automated_product_lines_knowledge_manager = FullyAutomatedProductLinesKnowledgeManager()
     print("Preparation completed successfully!")
 
 

@@ -3,6 +3,7 @@ package evolutionSimulation;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeoutException;
 
 import org.slf4j.Logger;
@@ -17,6 +18,7 @@ import evolutionSimulation.iteration.EvolutionVariables;
 import evolutionSimulation.productAssetsInitialization.Resource;
 import splEvolutionCore.DebugInformation;
 import splEvolutionCore.SPLEvolutionCore;
+import splEvolutionCore.derivation.DerivationResourcesManager;
 
 
 /**
@@ -32,6 +34,28 @@ public class EvolutionConfiguration {
 	 * Logger to track evolution configuration settings
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(EvolutionConfiguration.class);
+	
+	/**
+	 * Unique identifier of performed evolution 
+	 * 	- possibly independent to evolution characteristics that can be additionally associated and serve to identify the uniqueness of the volution
+	 */
+	private String evolutionId = "evol_" + UUID.randomUUID().toString();
+	
+	/**
+	 * Unique identifier of performed previous evolution - has to be set to generate knowledge graph properly
+	 * 	- possibly independent to evolution characteristics that can be additionally associated and serve to identify the uniqueness of the volution 
+	 */
+	private String previousEvolutionId;
+	
+	/**
+	 * Id of source software product line from which other software product lines are evolved in particular evolution iteration
+	 */
+	private String sourceSoftwareProductLineId = "prod_line_init" + UUID.randomUUID().toString().substring(0, 8);
+	
+	/**
+	 * Id of previous source software product line from which other software product lines are evolved in particular evolution iteration
+	 */
+	private String previousSourceSoftwareProductLineId = sourceSoftwareProductLineId;
 	
 	/**
 	 * The name of the concern
@@ -273,6 +297,11 @@ public class EvolutionConfiguration {
 	private final static String PATH_APPLICATION_IDENTIFICATION_NOTE = "/app";
 	
 	/**
+	 * Wrapper - behind and after - each evolved software product line identifier
+	 */
+	private static final String EVOLVED_SPL_ID_WRAPPER = "-+-";
+	
+	/**
 	 * Returns the relative configuration path to template HTML file
 	 * -this file is usually used for test purposes
 	 * -the file is named "index.html" by default
@@ -284,6 +313,29 @@ public class EvolutionConfiguration {
 			return "/index.html"; //return root of project - relativePath
 		}
 		return this.templateConfigurationPath; 
+	}
+	
+	/**
+	 * Wraps source software product line id into special characters to make it easily extractable
+	 * 
+	 * @param sourceSoftwareProductLineEvolutionId - source software product line id of current source software product line used to evolve other ones from itself
+	 * @return wrapped source software product line id into special characters
+	 */
+	public String wrapSourceSoftwareroductLineEvolutionId(String sourceSoftwareProductLineEvolutionId) {
+		return EvolutionConfiguration.EVOLVED_SPL_ID_WRAPPER + sourceSoftwareProductLineEvolutionId + EvolutionConfiguration.EVOLVED_SPL_ID_WRAPPER;
+	}
+	
+	/**
+	 * Extracts source software product line id from url if exists
+	 * 
+	 * @param urlWithSourceSoftwareProductLineId - url containing source software product line id
+	 * @return source software product line id from url if exists otherwise null
+	 */
+	public String extractSourceSoftwareProductLineIdFromUrl(String urlWithSourceSoftwareProductLineId) {
+		if (urlWithSourceSoftwareProductLineId.indexOf(EvolutionConfiguration.EVOLVED_SPL_ID_WRAPPER) > 0) {
+			return urlWithSourceSoftwareProductLineId.split(EvolutionConfiguration.EVOLVED_SPL_ID_WRAPPER)[1];
+		}
+		return null;
 	}
 	
 	/**
@@ -610,6 +662,51 @@ public class EvolutionConfiguration {
 			logger.debug("Already set input file path: " + this.inputFilePath);
 		}
 	}
+	
+	/**
+	 * Returns unique identifier of performed evolution 
+	 * 
+	 * @return unique identifier of performed evolution 
+	 */
+	public String getEvolutionID() { return this.evolutionId; }
+	
+	/**
+	 * Sets id of source software product lines from which other product lines are evolved in particular evolution iteration
+	 * 
+	 * @param sourceSoftwareProductLineId - id of source software product lines from which other product lines are evolved in particular evolution iteration
+	 */
+	public void setIdOfCurrentSourceSoftwareProductLineForEvolution(String sourceSoftwareProductLineId) {
+		this.previousSourceSoftwareProductLineId = this.sourceSoftwareProductLineId;
+		this.sourceSoftwareProductLineId = "prod_line_" + sourceSoftwareProductLineId;
+	}
+	
+	/**
+	 * Returns id of source software product line from which other software product lines are evolved in particular evolution iteration
+	 * 
+	 * @return id of source software product line from which other software product lines are evolved in particular evolution iteration
+	 */
+	public String getIdOfCurrentSourceSoftwareProductLineForEvolution() { return this.sourceSoftwareProductLineId; }
+	
+	/**
+	 * Returns id of previous source software product line from which other software product lines are evolved in particular evolution iteration
+	 * 
+	 * @return id of previous source software product line from which other software product lines are evolved in particular evolution iteration
+	 */
+	public String getPreviousIdOfCurrentSourceSoftwareProductLineForEvolution() { return this.previousSourceSoftwareProductLineId; }
+	
+	/**
+	 * Sets unique identifier of performed previous evolution - has to be set to generate knowledge graph properly
+	 * 
+	 * @param previousEvolutionId - unique identifier of performed previous evolution - has to be set to generate knowledge graph properly
+	 */
+	public void setPreviousEvolutionId(String previousEvolutionId) { this.previousEvolutionId = previousEvolutionId; }
+	
+	/**
+	 * Returns unique identifier of performed previous evolution - has to be set to generate knowledge graph properly
+	 * 
+	 * @return unique identifier of performed previous evolution - has to be set to generate knowledge graph properly
+	 */
+	public String getPreviousEvolutionId() { return this.previousEvolutionId; }
 	
 	/**
 	 * Prints information about currently set configuration

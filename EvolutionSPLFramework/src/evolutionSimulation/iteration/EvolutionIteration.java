@@ -17,6 +17,7 @@ import evolutionSimulation.orchestrationOfEvolutionIterations.SPLCandidateSelect
 import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.ExportAssetPlanner;
 import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.strategies.AssetMisuse;
 import evolutionSimulation.productAssetsInitialization.UnknownResourceToProcessException;
+import knowledgeBaseApi.DefaultKnowledgeBaseCreation;
 import positiveVariabilityManagement.UnmappedContextException;
 import positiveVariabilityManagement.VariationPointPlaceInArrayNotFound;
 import positiveVariabilityManagement.callsInstantiationFromTemplateStrategies.AlreadyChosenVariationPointForInjectionException;
@@ -200,6 +201,7 @@ public class EvolutionIteration {
 		if (evolutionConfiguration == null) { evolutionConfiguration = this.associatedEvolutionConfiguration; }
 		if (evolutionCoreSettings == null) { evolutionCoreSettings = this.associatedEvolutionCoreSettings; }
 		
+		
 		evolutionConfiguration.setPathToScriptInputFile(pathToScriptInputFilePath);
 		EvolutionCoreStrategies evolutionCoreStrategy;
 		VariationPointDivisioning variationPointDivisioning = evolutionCoreSettings.getVariationPointDivisioning();
@@ -211,6 +213,9 @@ public class EvolutionIteration {
 		WrappedTypeScriptContentInVariable wrappedTypeScriptContentInVariable = new WrappedTypeScriptContentInVariable(fileContent);
 		
 		JSONObject astTreeRoot = ASTConverterClient.convertFromCodeToASTJSON(wrappedTypeScriptContentInVariable.getScript());
+		String evolvedSourceSoftwareProductLineId = evolutionConfiguration.extractSourceSoftwareProductLineIdFromUrl(pathToScriptInputFilePath);
+		evolutionConfiguration.setIdOfCurrentSourceSoftwareProductLineForEvolution(evolvedSourceSoftwareProductLineId);
+		
 		JSONObject highlightedAst = variationPointDivisioning.divisionAndGetHighlightedAst(astTreeRoot, pathToScriptInputFilePath);
 
 		JSONArray harvestedVariationPoints = variationPointDivisioning.getVariationPointsData(highlightedAst, astTreeRoot);

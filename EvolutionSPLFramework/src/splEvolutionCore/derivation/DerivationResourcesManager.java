@@ -47,7 +47,7 @@ public class DerivationResourcesManager {
 	 * Configuration of given evolution phase - to manage certain decisions with resources such as destination/target paths,...
 	 */
 	private EvolutionConfiguration evolutionConfiguration;
-	
+
 	
 	/**
 	 * Stores information about resources of given project/SPL
@@ -173,6 +173,6 @@ public class DerivationResourcesManager {
 		}
 		
 		return this.evolutionConfiguration.getEvolvedContentName() + "_" + Integer.toString(
-				this.evolutionConfiguration.getIteration()) + "_" + overallHash.substring(0, 15);
+				this.evolutionConfiguration.getIteration()) + "_" + evolutionConfiguration.wrapSourceSoftwareroductLineEvolutionId(overallHash.substring(0, 15));
 	}
 }

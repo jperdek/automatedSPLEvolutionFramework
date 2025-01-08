@@ -82,7 +82,7 @@ public class SPLCandidateLoadingMechanism {
 		 File[] directoryListing = dir.listFiles();
 		 String vpDataAbsolutePath, vpDataGrandChildAbsolutePath;
 		 String directoryWithSameName;
-		 String newFilePath;
+		 String newFilePathTovariationPointsData;
 		 String childName, grandChildName;
 		 String affectedProjectPath;
 		 int projectCounter = 0;
@@ -110,14 +110,15 @@ public class SPLCandidateLoadingMechanism {
 		    				// MOVING ALL WHOLE PROJECTS INTO FLATTENED FORM
 		    				if (!affectedProjectPath.equals("")) {
 		    					projectCounter = projectCounter + 1;
-			    				newFilePath = dir.getAbsolutePath() + "/" + childName + "_XXX_" + projectCounter + "_XXX_" + SPLEvolutionCore.VARIATION_POINTS_DATA_NAME_ID_ENDING;
-			    				Files.move(grandchildFile.toPath(), Path.of(newFilePath), StandardCopyOption.REPLACE_EXISTING);
+		    					newFilePathTovariationPointsData = dir.getAbsolutePath() + "/" + childName + "_XXX_" + projectCounter + "_XXX_" + SPLEvolutionCore.VARIATION_POINTS_DATA_NAME_ID_ENDING;
+			    				Files.move(grandchildFile.toPath(), Path.of(newFilePathTovariationPointsData), StandardCopyOption.REPLACE_EXISTING);
 			    				
 		    					ProjectCopier.copyExistingProject(affectedProjectPath, vpDataAbsolutePath + "_XXX_" + projectCounter, true, true);
 		    					
 		    					String targetDestinationPath = vpDataAbsolutePath + "_XXX_" + projectCounter;
 		    					String projectId = childName;
-		    					EvolvedSPLPublisher.publishMessageAboutEvolvedSPL(evolutionConfiguration, projectId, targetDestinationPath, true);
+		    					String previousSplId = evolutionConfiguration.getPreviousIdOfCurrentSourceSoftwareProductLineForEvolution();
+		    					EvolvedSPLPublisher.publishMessageAboutEvolvedSPL(evolutionConfiguration, projectId, targetDestinationPath, newFilePathTovariationPointsData, previousSplId, true);
 		    				} else {
 		    					logger.debug("Cannot move data. Variation point data are missing... Removing data.");
 		    					Files.delete(grandchildFile.toPath());
@@ -144,8 +145,8 @@ public class SPLCandidateLoadingMechanism {
 			    						break;
 			    					}
 			    				}
-			    				newFilePath = dir.getAbsolutePath() + "/" + childName + grandChildName.replace(directoryWithSameName, "");
-			    				Files.move(grandchildFileSame.toPath(), Path.of(newFilePath), StandardCopyOption.REPLACE_EXISTING);
+			    				newFilePathTovariationPointsData = dir.getAbsolutePath() + "/" + childName + grandChildName.replace(directoryWithSameName, "");
+			    				Files.move(grandchildFileSame.toPath(), Path.of(newFilePathTovariationPointsData), StandardCopyOption.REPLACE_EXISTING);
 			    				
 			    			}
 						}
