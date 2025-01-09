@@ -33,6 +33,11 @@ class GraphKnowledgeBaseAPI:
             print(creation)
         return creation
 
+    def process_data_transaction_using_commands_block(self, command: str):
+        with self.driver.session() as session:
+            creation = session.write_transaction(self.__run_transaction_block, command)
+        return creation
+
     def process_data_transaction_without_arguments(self, used_function: any, db_name: Optional[str] = None):
         if not db_name:
             db_name = self.database_name
@@ -61,6 +66,12 @@ class GraphKnowledgeBaseAPI:
     def __run_transaction(tx, command: str):
         print(command.replace("\n", "' + \n'").strip("+'\" ").strip().strip("+' "))
         result = tx.run(command.replace("\n", "' + \n'").strip("+'\" ").strip().strip("+' "))
+        return result
+
+    @staticmethod
+    def __run_transaction_block(tx, command: str):
+        print(command)
+        result = tx.run(command)
         return result
 
     def get_data(self, db_name: Optional[str] = None):

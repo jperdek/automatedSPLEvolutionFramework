@@ -23,7 +23,7 @@ app.register_blueprint(graph_extractor_api, url_prefix="/api/graph-extraction")
 app.register_blueprint(nodes_and_connectors_api, url_prefix="/api/nodes-and-connectors")
 app.register_blueprint(graph_database_entry_api, url_prefix="/api/graph_db_entry")
 app.register_blueprint(svg_creator_api, url_prefix="/api/svg_creator")
-app.register_blueprint(default_knowledge_graph_api, url_prefix="/api/knowledge_base")
+app.register_blueprint(default_knowledge_graph_api, url_prefix="/api/knowledge-base")
 
 
 with app.app_context():

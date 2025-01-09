@@ -6,6 +6,10 @@ from flask import Blueprint, request, g
 from semantic_base.knowledge_graph.neosemantics_graph import NeosemanticsKnowledgeGraphApi
 from semantic_base.tools.triple_call_neosemantics_factory import TripleCallNeosemanticsFactory
 
+from semantic_base.knowledge_graph.init_database_drivers import FullyAutomatedProductLinesKnowledgeManager
+
+from semantic_base.knowledge_graph.neosemantics_graph import test
+
 
 def html_text_response(payload: str, status: int = 200) -> Tuple[str, int, Dict]:
     return payload, status, {"content-type": "text/plain"}
@@ -40,6 +44,8 @@ def register_new_evolution_iteration():
     base_header = request_data.get(
         "base_header", "@base <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .")
 
+    if "fully_automated_product_lines_knowledge_manager" not in g:
+        g.fully_automated_product_lines_knowledge_manager = FullyAutomatedProductLinesKnowledgeManager()
     NeosemanticsKnowledgeGraphApi.register_new_evolution_iteration(
         g.fully_automated_product_lines_knowledge_manager, evolution_id, evolved_product_line_id, evolution_iteration,
         code_path, json_graph_path, screenshot_path, vector_path, variation_point_data_location,
@@ -62,6 +68,8 @@ def register_new_product():
 
     base_header = request_data.get(
         "base_header", "@base <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .")
+    if "fully_automated_product_lines_knowledge_manager" not in g:
+        g.fully_automated_product_lines_knowledge_manager = FullyAutomatedProductLinesKnowledgeManager()
     NeosemanticsKnowledgeGraphApi.register_new_product(
         g.fully_automated_product_lines_knowledge_manager, evolved_product_line_id,
         code_path, json_graph_path, screenshot_path, vector_path, base_header)
@@ -73,6 +81,8 @@ def init_default_neosemantics_knowledge_graph():
     prefix_name = request.args.get("prefix_name", "faspls")
     prefixed_namespace = request.args.get(
         "prefixed_namespace", "https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl")
+    if "fully_automated_product_lines_knowledge_manager" not in g:
+        g.fully_automated_product_lines_knowledge_manager = FullyAutomatedProductLinesKnowledgeManager()
     NeosemanticsKnowledgeGraphApi.init_graph_neosemantics(
         g.fully_automated_product_lines_knowledge_manager, prefix_name, prefixed_namespace)
     return html_text_response("OK")
@@ -80,6 +90,8 @@ def init_default_neosemantics_knowledge_graph():
 
 @default_knowledge_graph_api.route("/clear", methods=["GET"])
 def clear_neosemantics_knowledge_graph():
+    if "fully_automated_product_lines_knowledge_manager" not in g:
+        g.fully_automated_product_lines_knowledge_manager = FullyAutomatedProductLinesKnowledgeManager()
     g.fully_automated_product_lines_knowledge_manager.clear_database()
     return html_text_response("OK")
 
@@ -104,6 +116,8 @@ def register_new_evolution():
 
     base_header = request_data.get(
         "base_header", "@base <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .")
+    if "fully_automated_product_lines_knowledge_manager" not in g:
+        g.fully_automated_product_lines_knowledge_manager = FullyAutomatedProductLinesKnowledgeManager()
     NeosemanticsKnowledgeGraphApi.init_new_evolution(
         g.fully_automated_product_lines_knowledge_manager, evolution_id, initial_product_line_id, evolved_script_id,
         evolved_script_path, evolution_configuration_path, previous_evolution_id, previous_product_line_id, base_header)
@@ -113,8 +127,19 @@ def register_new_evolution():
 @default_knowledge_graph_api.route("/addTriples", methods=["POST"])
 def add_triples():
     new_evolution_knowledge_ttl = request.get_data().decode("utf-8", "ignore")
-    knowledge_ttl_call = TripleCallNeosemanticsFactory.import_from_text(new_evolution_knowledge_ttl, "Turtle")
-    g.fully_automated_product_lines_knowledge_manager.process_data_transaction_using_commands(knowledge_ttl_call)
+    if "fully_automated_product_lines_knowledge_manager" not in g:
+        g.fully_automated_product_lines_knowledge_manager = FullyAutomatedProductLinesKnowledgeManager()
+    triples_ttl = new_evolution_knowledge_ttl.replace("\r\n", " ").replace("\n", " ")
+    knowledge_ttl_call = TripleCallNeosemanticsFactory.import_from_text(triples_ttl, "Turtle")
+    g.fully_automated_product_lines_knowledge_manager.process_data_transaction_using_commands_block(knowledge_ttl_call)
 
     return html_text_response("OK")
 
+
+@default_knowledge_graph_api.route("/test", methods=["GET"])
+def insert_default_knowledge_and_make_graph():
+    import_variation_points = request.args.get("importVariationPoints", "true")
+    import_variation_points = True if import_variation_points == "true" else False
+    print(import_variation_points)
+    test(local=False, import_variation_points=import_variation_points)
+    return html_text_response("OK")

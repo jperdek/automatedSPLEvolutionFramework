@@ -37,7 +37,7 @@ class DataRepresentationsClient:
     @staticmethod
     def get_and_save_screenshot(evolved_spl_index_path: str, resulting_spl_project_path: str,
                                 logger: Optional[logging.Logger] = None) -> Optional[str]:
-        service_url = DataRepresentationsClient.get_server_path() + "/api/screenshoter/screenshoter?url=file://" + evolved_spl_index_path
+        service_url = DataRepresentationsClient.get_server_path() + "/api/screenshoter/screenshoter?url=file:///" + evolved_spl_index_path
         response = requests.get(service_url)
 
         screenshot_path = None
@@ -96,11 +96,12 @@ class DataRepresentationsClient:
             code_path: str, screenshot_path: str, vector_path: str, json_graph_path: str,
             variation_point_data_location: str, previous_product_line_id: str,
             logger: Optional[logging.Logger] = None) -> None:
-        service_url = DataRepresentationsClient.get_server_path() + "/api/knowledge_base/register_new_evolution_iteration"
-        request_data = {"evolution_id": evolution_id, "evolution_iteration": evolution_iteration, "code_path": "file://" + code_path, "screenshot_path": "file://" + screenshot_path,
-                        "vector_path": "file://" + vector_path, "json_graph_path": "file://" + json_graph_path,
-                        "evolved_script_path": "file://" + evolved_script_path,
-                        "variation_point_data_location": "file://" + variation_point_data_location,
+        service_url = DataRepresentationsClient.get_server_path() + "/api/knowledgeBase/registerNewEvolutionIteration"
+        request_data = {"evolution_id": evolution_id, "evolution_iteration": evolution_iteration,
+                        "code_path": "file:///" + code_path, "screenshot_path": "file:///" + screenshot_path,
+                        "vector_path": "file:///" + vector_path, "json_graph_path": "file:///" + json_graph_path,
+                        "evolved_script_path": "file:///" + evolved_script_path,
+                        "variation_point_data_location": "file:///" + variation_point_data_location,
                         "evolved_product_line_id": evolved_product_line_id,
                         "previous_product_line_id": previous_product_line_id}
         headers = {"Content-Type": "text/plain"}

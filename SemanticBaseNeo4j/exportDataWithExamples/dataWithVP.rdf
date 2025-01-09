@@ -1,5 +1,219 @@
-@prefix faspls: <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .
-@prefix ns0: <https://jakubperdek-26e24f.gitlab.io/> .
+@prefix faspls: 
+<https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .
+@prefix ns0: 
+    <https://jakubperdek-26e24f.gitlab.io/> .
+
+ns0:prod_line_e398ac19 a ns0:fully-automated-spls-schema.ttlProductLine;
+  ns0:fully-automated-spls-schema.ttlcodeRepr ns0:code_a270b8b1;
+  ns0:fully-automated-spls-schema.ttlevolSerie "1";
+  ns0:fully-automated-spls-schema.ttlgraphRepr ns0:graph_375802fa;
+  ns0:fully-automated-spls-schema.ttlhasVP ns0:var_point_e3b0c442, ns0:var_point_aefdc9ba,
+    ns0:var_point_58098c0c, ns0:var_point_97c6f135, ns0:var_point_50c8a6ee, ns0:var_point_add41c28,
+    ns0:var_point_d8fd0444, ns0:var_point_d18fbb70, ns0:var_point_392f7855, ns0:var_point_5778c58b,
+    ns0:var_point_1f4a25b0, ns0:var_point_efa63047, ns0:var_point_8f357275, ns0:var_point_c773a417,
+    ns0:var_point_fe42c623, ns0:var_point_19c5d47f, ns0:var_point_d17c1b6d, ns0:var_point_69a1c0f5,
+    ns0:var_point_5e9729d8, ns0:var_point_06ee5729, ns0:var_point_7426bb68, ns0:var_point_3f992d66,
+    ns0:var_point_b4b5767f, ns0:var_point_c3a3707b, ns0:var_point_fd79cfa3, ns0:var_point_2cd423a2,
+    ns0:var_point_a97db878, ns0:var_point_eb605e1b, ns0:var_point_624558dc, ns0:var_point_e5c2b541,
+    ns0:var_point_3af4314c, ns0:var_point_6fe6acd3, ns0:var_point_ba6fbf42, ns0:var_point_ec9187b8,
+    ns0:var_point_ee1a40f0, ns0:var_point_1294e02f, ns0:var_point_da37a2d8, ns0:var_point_750d96f4,
+    ns0:var_point_ad05c774, ns0:var_point_cc480ad3, ns0:var_point_9556e672, ns0:var_point_658f4573,
+    ns0:var_point_846d3b1d, ns0:var_point_60b6d156, ns0:var_point_027844a0, ns0:var_point_35de4577,
+    ns0:var_point_27a3eb72, ns0:var_point_e2f6fd31, ns0:var_point_bed16eda, ns0:var_point_b287aa87,
+    ns0:var_point_ed739155, ns0:var_point_caaa63cf, ns0:var_point_f57add50, ns0:var_point_5022f44c,
+    ns0:var_point_7c12f6c8, ns0:var_point_3178c2f7, ns0:var_point_f047d6f9, ns0:var_point_e2e9c5ed,
+    ns0:var_point_9292e9c8, ns0:var_point_48c7d908;
+  ns0:fully-automated-spls-schema.ttlderivedFrom ns0:product_e21dece9, ns0:product_704e5746;
+  ns0:fully-automated-spls-schema.ttlnextEvolved ns0:prod_line_9bcb333a, ns0:prod_line_e398ac19;
+  ns0:fully-automated-spls-schema.ttlevolvedIn ns0:evol_7236df63;
+  ns0:fully-automated-spls-schema.ttlrasterRepr ns0:raster_640dce16;
+  ns0:fully-automated-spls-schema.ttlvectorRepr ns0:svg_27d2104e .
+
+ns0:code_a270b8b1 a ns0:fully-automated-spls-schema.ttlCode;
+  ns0:fully-automated-spls-schema.ttllocation "/code" .
+
+ns0:graph_375802fa a ns0:fully-automated-spls-schema.ttlInstanceGraph;
+  ns0:fully-automated-spls-schema.ttllocation "/graph" .
+
+ns0:var_point_e3b0c442 a ns0:fully-automated-spls-schema.ttlPositiveVP;
+  ns0:fully-automated-spls-schema.ttlisClassRelated "False";
+  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False";
+  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "" .
+
+ns0:prod_line_4268ead1 a ns0:fully-automated-spls-schema.ttlProductLine;
+  ns0:fully-automated-spls-schema.ttlhasVP ns0:var_point_e3b0c442, ns0:var_point_aefdc9ba,
+    ns0:var_point_58098c0c, ns0:var_point_97c6f135, ns0:var_point_50c8a6ee, ns0:var_point_add41c28,
+    ns0:var_point_d8fd0444, ns0:var_point_d18fbb70, ns0:var_point_392f7855, ns0:var_point_5778c58b,
+    ns0:var_point_1f4a25b0, ns0:var_point_efa63047, ns0:var_point_8f357275, ns0:var_point_c773a417,
+    ns0:var_point_fe42c623, ns0:var_point_19c5d47f, ns0:var_point_d17c1b6d, ns0:var_point_69a1c0f5,
+    ns0:var_point_5e9729d8, ns0:var_point_06ee5729, ns0:var_point_7426bb68, ns0:var_point_3f992d66,
+    ns0:var_point_b4b5767f, ns0:var_point_c3a3707b, ns0:var_point_fd79cfa3, ns0:var_point_2cd423a2,
+    ns0:var_point_a97db878, ns0:var_point_eb605e1b, ns0:var_point_624558dc, ns0:var_point_e5c2b541,
+    ns0:var_point_3af4314c, ns0:var_point_6fe6acd3, ns0:var_point_ba6fbf42, ns0:var_point_ec9187b8,
+    ns0:var_point_ee1a40f0, ns0:var_point_1294e02f, ns0:var_point_da37a2d8, ns0:var_point_750d96f4,
+    ns0:var_point_ad05c774, ns0:var_point_cc480ad3, ns0:var_point_9556e672, ns0:var_point_658f4573,
+    ns0:var_point_846d3b1d, ns0:var_point_60b6d156, ns0:var_point_027844a0, ns0:var_point_35de4577,
+    ns0:var_point_27a3eb72, ns0:var_point_e2f6fd31, ns0:var_point_bed16eda, ns0:var_point_b287aa87,
+    ns0:var_point_ed739155, ns0:var_point_caaa63cf, ns0:var_point_f57add50, ns0:var_point_5022f44c,
+    ns0:var_point_7c12f6c8, ns0:var_point_3178c2f7, ns0:var_point_f047d6f9, ns0:var_point_e2e9c5ed,
+    ns0:var_point_9292e9c8, ns0:var_point_48c7d908;
+  ns0:fully-automated-spls-schema.ttlevolSerie "3";
+  ns0:fully-automated-spls-schema.ttlgraphRepr ns0:graph_8eccfdcc;
+  ns0:fully-automated-spls-schema.ttlevolvedIn ns0:evol_7236df63;
+  ns0:fully-automated-spls-schema.ttlrasterRepr ns0:raster_8a8bea81;
+  ns0:fully-automated-spls-schema.ttlvectorRepr ns0:svg_deb6d549;
+  ns0:fully-automated-spls-schema.ttlcodeRepr ns0:code_aae51e64 .
+
+ns0:prod_line_9bcb333a a ns0:fully-automated-spls-schema.ttlProductLine;
+  ns0:fully-automated-spls-schema.ttlhasVP ns0:var_point_e3b0c442, ns0:var_point_aefdc9ba,
+    ns0:var_point_58098c0c, ns0:var_point_97c6f135, ns0:var_point_50c8a6ee, ns0:var_point_add41c28,
+    ns0:var_point_d8fd0444, ns0:var_point_d18fbb70, ns0:var_point_392f7855, ns0:var_point_5778c58b,
+    ns0:var_point_1f4a25b0, ns0:var_point_efa63047, ns0:var_point_8f357275, ns0:var_point_c773a417,
+    ns0:var_point_fe42c623, ns0:var_point_19c5d47f, ns0:var_point_d17c1b6d, ns0:var_point_69a1c0f5,
+    ns0:var_point_5e9729d8, ns0:var_point_06ee5729, ns0:var_point_7426bb68, ns0:var_point_3f992d66,
+    ns0:var_point_b4b5767f, ns0:var_point_c3a3707b, ns0:var_point_fd79cfa3, ns0:var_point_2cd423a2,
+    ns0:var_point_a97db878, ns0:var_point_eb605e1b, ns0:var_point_624558dc, ns0:var_point_e5c2b541,
+    ns0:var_point_3af4314c, ns0:var_point_6fe6acd3, ns0:var_point_ba6fbf42, ns0:var_point_ec9187b8,
+    ns0:var_point_ee1a40f0, ns0:var_point_1294e02f, ns0:var_point_da37a2d8, ns0:var_point_750d96f4,
+    ns0:var_point_ad05c774, ns0:var_point_cc480ad3, ns0:var_point_9556e672, ns0:var_point_658f4573,
+    ns0:var_point_846d3b1d, ns0:var_point_60b6d156, ns0:var_point_027844a0, ns0:var_point_35de4577,
+    ns0:var_point_27a3eb72, ns0:var_point_e2f6fd31, ns0:var_point_bed16eda, ns0:var_point_b287aa87,
+    ns0:var_point_ed739155, ns0:var_point_caaa63cf, ns0:var_point_f57add50, ns0:var_point_5022f44c,
+    ns0:var_point_7c12f6c8, ns0:var_point_3178c2f7, ns0:var_point_f047d6f9, ns0:var_point_e2e9c5ed,
+    ns0:var_point_9292e9c8, ns0:var_point_48c7d908;
+  ns0:fully-automated-spls-schema.ttlevolSerie "2";
+  ns0:fully-automated-spls-schema.ttlgraphRepr ns0:graph_dec45760;
+  ns0:fully-automated-spls-schema.ttlevolvedIn ns0:evol_7236df63;
+  ns0:fully-automated-spls-schema.ttlrasterRepr ns0:raster_d3f49dfa;
+  ns0:fully-automated-spls-schema.ttlvectorRepr ns0:svg_dbdfc7e6;
+  ns0:fully-automated-spls-schema.ttlcodeRepr ns0:code_469c0745;
+  ns0:fully-automated-spls-schema.ttlnextEvolved ns0:prod_line_4268ead1, ns0:prod_line_bebef058 .
+
+ns0:var_point_aefdc9ba a ns0:fully-automated-spls-schema.ttlPositiveVP;
+  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False";
+  ns0:fully-automated-spls-schema.ttlisClassRelated "False";
+  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "[F|drawCirclePrevCoords]";
+  ns0:fully-automated-spls-schema.ttlcanCall "drawCirclePrevCoords([%[context: CanvasRenderingContext2D]%], [%[radius: number]%])" .
+
+ns0:var_point_58098c0c a ns0:fully-automated-spls-schema.ttlPositiveVP;
+  ns0:fully-automated-spls-schema.ttlisClassRelated "False";
+  ns0:fully-automated-spls-schema.ttlcanCall "drawCirclePrevCoords([%[context: CanvasRenderingContext2D]%], [%[radius: number]%])";
+  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "";
+  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False" .
+
+ns0:var_point_97c6f135 a ns0:fully-automated-spls-schema.ttlPositiveVP;
+  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "[F|propagateCoordinatesThreePositions]";
+  ns0:fully-automated-spls-schema.ttlcanCall "propagateCoordinatesThreePositions([%[context: CanvasRenderingContext2D]%])";
+  ns0:fully-automated-spls-schema.ttlisClassRelated "False";
+  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False" .
+
+ns0:var_point_50c8a6ee a ns0:fully-automated-spls-schema.ttlPositiveVP;
+  ns0:fully-automated-spls-schema.ttlcanCall "propagateCoordinatesThreePositions([%[context: CanvasRenderingContext2D]%])";
+  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False";
+  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "";
+  ns0:fully-automated-spls-schema.ttlisClassRelated "False" .
+
+ns0:var_point_add41c28 a ns0:fully-automated-spls-schema.ttlPositiveVP;
+  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "[F|saveState]";
+  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False";
+  ns0:fully-automated-spls-schema.ttlcanCall "saveState([%[context: CanvasRenderingContext2D]%], [%[unused: number]%])";
+  ns0:fully-automated-spls-schema.ttlisClassRelated "False" .
+
+ns0:var_point_d8fd0444 a ns0:fully-automated-spls-schema.ttlPositiveVP;
+  ns0:fully-automated-spls-schema.ttlcanCall "saveState([%[context: CanvasRenderingContext2D]%], [%[unused: number]%])";
+  ns0:fully-automated-spls-schema.ttlisClassRelated "False";
+  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "";
+  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False" .
+
+ns0:var_point_d18fbb70 a ns0:fully-automated-spls-schema.ttlPositiveVP;
+  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "[F|loadState]";
+  ns0:fully-automated-spls-schema.ttlcanCall "loadState([%[context: CanvasRenderingContext2D]%], [%[unused: number]%])";
+  ns0:fully-automated-spls-schema.ttlisClassRelated "False";
+  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False" .
+
+ns0:var_point_392f7855 a ns0:fully-automated-spls-schema.ttlPositiveVP;
+  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False";
+  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "";
+  ns0:fully-automated-spls-schema.ttlcanCall "loadState([%[context: CanvasRenderingContext2D]%], [%[unused: number]%])";
+  ns0:fully-automated-spls-schema.ttlisClassRelated "False" .
+
+ns0:var_point_5778c58b a ns0:fully-automated-spls-schema.ttlPositiveVP;
+  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False";
+  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "[F|propagateCoordinatesSixPositions]";
+  ns0:fully-automated-spls-schema.ttlcanCall "propagateCoordinatesSixPositions([%[context: CanvasRenderingContext2D]%])";
+  ns0:fully-automated-spls-schema.ttlisClassRelated "False" .
+
+ns0:var_point_1f4a25b0 a ns0:fully-automated-spls-schema.ttlPositiveVP;
+  ns0:fully-automated-spls-schema.ttlcanCall "propagateCoordinatesSixPositions([%[context: CanvasRenderingContext2D]%])";
+  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False";
+  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "";
+  ns0:fully-automated-spls-schema.ttlisClassRelated "False" .
+
+ns0:var_point_efa63047 a ns0:fully-automated-spls-schema.ttlPositiveVP;
+  ns0:fully-automated-spls-schema.ttlisClassRelated "False";
+  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False";
+  ns0:fully-automated-spls-schema.ttlcanCall "drawCover2([%[context: CanvasRenderingContext2D]%], [%[radius: number]%])";
+  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "[F|drawCover2]" .
+
+ns0:var_point_8f357275 a ns0:fully-automated-spls-schema.ttlPositiveVP;
+  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "";
+  ns0:fully-automated-spls-schema.ttlisClassRelated "False";
+  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False";
+  ns0:fully-automated-spls-schema.ttlcanCall "drawCover2([%[context: CanvasRenderingContext2D]%], [%[radius: number]%])" .
+
+ns0:var_point_c773a417 a ns0:fully-automated-spls-schema.ttlPositiveVP;
+  ns0:fully-automated-spls-schema.ttlcanCall "drawCover7([%[context: CanvasRenderingContext2D]%])";
+  ns0:fully-automated-spls-schema.ttlisClassRelated "False";
+  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False";
+  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "[F|drawCover7]" .
+
+ns0:var_point_fe42c623 a ns0:fully-automated-spls-schema.ttlPositiveVP;
+  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False";
+  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "";
+  ns0:fully-automated-spls-schema.ttlcanCall "drawCover7([%[context: CanvasRenderingContext2D]%])";
+  ns0:fully-automated-spls-schema.ttlisClassRelated "False" .
+
+ns0:var_point_19c5d47f a ns0:fully-automated-spls-schema.ttlPositiveVP;
+  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False";
+  ns0:fully-automated-spls-schema.ttlisClassRelated "False";
+  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "[F|drawCover5]";
+  ns0:fully-automated-spls-schema.ttlcanCall "drawCover5([%[context: CanvasRenderingContext2D]%])" .
+
+ns0:var_point_d17c1b6d a ns0:fully-automated-spls-schema.ttlPositiveVP;
+  ns0:fully-automated-spls-schema.ttlcanCall "drawCover5([%[context: CanvasRenderingContext2D]%])";
+  ns0:fully-automated-spls-schema.ttlisClassRelated "False";
+  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False";
+  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "" .
+
+ns0:var_point_69a1c0f5 a ns0:fully-automated-spls-schema.ttlPositiveVP;
+  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "[F|drawCover3]";
+  ns0:fully-automated-spls-schema.ttlcanCall "drawCover3([%[context: CanvasRenderingContext2D]%], [%[x4: number]%], [%[y4: number]%])";
+  ns0:fully-automated-spls-schema.ttlisClassRelated "False";
+  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False" .
+
+ns0:var_point_5e9729d8 a ns0:fully-automated-spls-schema.ttlPositiveVP;
+  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False";
+  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "";
+  ns0:fully-automated-spls-schema.ttlisClassRelated "False";
+  ns0:fully-automated-spls-schema.ttlcanCall "drawCover3([%[context: CanvasRenderingContext2D]%], [%[x4: number]%], [%[y4: number]%])" .
+
+ns0:var_point_06ee5729 a ns0:fully-automated-spls-schema.ttlPositiveVP;
+  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "[F|drawRectFromPrev]";
+  ns0:fully-automated-spls-schema.ttlisClassRelated "False";
+  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False";
+  ns0:fully-automated-spls-schema.ttlcanCall "drawRectFromPrev([%[context: CanvasRenderingContext2D]%])" .
+
+ns0:var_point_7426bb68 a ns0:fully-automated-spls-schema.ttlPositiveVP;
+  ns0:fully-automated-spls-schema.ttlisClassRelated "False";
+  ns0:fully-automated-spls-schema.ttlcanCall "drawRectFromPrev([%[context: CanvasRenderingContext2D]%])";
+  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False";
+  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "" .
+
+ns0:var_point_3f992d66 a ns0:fully-automated-spls-schema.ttlPositiveVP;
+  ns0:fully-automated-spls-schema.ttlisClassRelated "True";
+  ns0:fully-automated-spls-schema.ttlcanCall "new Circle()";
+  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False";
+  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "[C|Circle]" .
 
 ns0:var_point_b4b5767f a ns0:fully-automated-spls-schema.ttlPositiveVP;
   ns0:fully-automated-spls-schema.ttlcanCall "new Circle()";
@@ -227,217 +441,84 @@ ns0:var_point_48c7d908 a ns0:fully-automated-spls-schema.ttlPositiveVP;
   ns0:fully-automated-spls-schema.ttlisInsideRecursion "False";
   ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "" .
 
-ns0:graph_d42aca45 a ns0:fully-automated-spls-schema.ttlInstanceGraph;
-  ns0:fully-automated-spls-schema.ttllocation "/graph_product" .
+ns0:product_e21dece9 a ns0:fully-automated-spls-schema.ttlProduct;
+  ns0:fully-automated-spls-schema.ttlvectorRepr ns0:svg_bb020ba7;
+  ns0:fully-automated-spls-schema.ttlrasterRepr ns0:raster_1a0f1f19;
+  ns0:fully-automated-spls-schema.ttlcodeRepr ns0:code_9d897876;
+  ns0:fully-automated-spls-schema.ttlgraphRepr ns0:graph_8f2de1d3 .
 
-ns0:product_ca47c556 a ns0:fully-automated-spls-schema.ttlProduct .
-
-ns0:code_5f289538 a ns0:fully-automated-spls-schema.ttlCode;
-  ns0:fully-automated-spls-schema.ttllocation "/code_product" .
-
-ns0:raster_ddb391e2 a ns0:fully-automated-spls-schema.ttlScreenshot;
-  ns0:fully-automated-spls-schema.ttllocation "/raster_product" .
-
-ns0:svg_78b05f2d a ns0:fully-automated-spls-schema.ttlSVG;
+ns0:svg_bb020ba7 a ns0:fully-automated-spls-schema.ttlSVG;
   ns0:fully-automated-spls-schema.ttllocation "/vector_product" .
 
-ns0:graph_94e9c264 a ns0:fully-automated-spls-schema.ttlInstanceGraph;
-  ns0:fully-automated-spls-schema.ttllocation "/graph_product2" .
+ns0:raster_1a0f1f19 a ns0:fully-automated-spls-schema.ttlScreenshot;
+  ns0:fully-automated-spls-schema.ttllocation "/raster_product" .
 
-ns0:product_c650371d a ns0:fully-automated-spls-schema.ttlProduct .
+ns0:code_9d897876 a ns0:fully-automated-spls-schema.ttlCode;
+  ns0:fully-automated-spls-schema.ttllocation "/code_product" .
 
-ns0:code_e36c724b a ns0:fully-automated-spls-schema.ttlCode;
-  ns0:fully-automated-spls-schema.ttllocation "/code_product2" .
+ns0:graph_8f2de1d3 a ns0:fully-automated-spls-schema.ttlInstanceGraph;
+  ns0:fully-automated-spls-schema.ttllocation "/graph_product" .
 
-ns0:raster_cd5e375f a ns0:fully-automated-spls-schema.ttlScreenshot;
+ns0:product_704e5746 a ns0:fully-automated-spls-schema.ttlProduct;
+  ns0:fully-automated-spls-schema.ttlrasterRepr ns0:raster_d8efb9ff;
+  ns0:fully-automated-spls-schema.ttlgraphRepr ns0:graph_f5e4c5b3;
+  ns0:fully-automated-spls-schema.ttlvectorRepr ns0:svg_e30f77d7;
+  ns0:fully-automated-spls-schema.ttlcodeRepr ns0:code_7609bada .
+
+ns0:raster_d8efb9ff a ns0:fully-automated-spls-schema.ttlScreenshot;
   ns0:fully-automated-spls-schema.ttllocation "/raster_product2" .
 
-ns0:svg_e1b58042 a ns0:fully-automated-spls-schema.ttlSVG;
+ns0:graph_f5e4c5b3 a ns0:fully-automated-spls-schema.ttlInstanceGraph;
+  ns0:fully-automated-spls-schema.ttllocation "/graph_product2" .
+
+ns0:svg_e30f77d7 a ns0:fully-automated-spls-schema.ttlSVG;
   ns0:fully-automated-spls-schema.ttllocation "/vector_product2" .
 
-ns0:graph_2cc0dc61 a ns0:fully-automated-spls-schema.ttlInstanceGraph;
+ns0:code_7609bada a ns0:fully-automated-spls-schema.ttlCode;
+  ns0:fully-automated-spls-schema.ttllocation "/code_product2" .
+
+ns0:graph_dec45760 a ns0:fully-automated-spls-schema.ttlInstanceGraph;
   ns0:fully-automated-spls-schema.ttllocation "/graph2" .
 
-ns0:raster_5c55ace6 a ns0:fully-automated-spls-schema.ttlScreenshot;
+ns0:evol_7236df63 a ns0:fully-automated-spls-schema.ttlEvolution;
+  ns0:fully-automated-spls-schema.ttlconfAssoc "/evolved_configuration";
+  ns0:fully-automated-spls-schema.ttlnextEvol ns0:evol_f2a0689a;
+  ns0:fully-automated-spls-schema.ttlevolving ns0:evol_script_cb229ccb;
+  ns0:fully-automated-spls-schema.ttlstartFromSPL ns0:prod_line_e398ac19 .
+
+ns0:raster_d3f49dfa a ns0:fully-automated-spls-schema.ttlScreenshot;
   ns0:fully-automated-spls-schema.ttllocation "/raster2" .
 
-ns0:code_3751fc3f a ns0:fully-automated-spls-schema.ttlCode;
-  ns0:fully-automated-spls-schema.ttllocation "/code2" .
-
-ns0:svg_ce487357 a ns0:fully-automated-spls-schema.ttlSVG;
+ns0:svg_dbdfc7e6 a ns0:fully-automated-spls-schema.ttlSVG;
   ns0:fully-automated-spls-schema.ttllocation "/vector2" .
 
-ns0:prod_line_e96e1740 a ns0:fully-automated-spls-schema.ttlProductLine;
-  ns0:fully-automated-spls-schema.ttlevolSerie "2" .
+ns0:code_469c0745 a ns0:fully-automated-spls-schema.ttlCode;
+  ns0:fully-automated-spls-schema.ttllocation "/code2" .
 
-ns0:svg_5ce0a682 a ns0:fully-automated-spls-schema.ttlSVG;
-  ns0:fully-automated-spls-schema.ttllocation "/vector3" .
+ns0:prod_line_bebef058 a ns0:fully-automated-spls-schema.ttlProductLine .
 
-ns0:code_2c242383 a ns0:fully-automated-spls-schema.ttlCode;
-  ns0:fully-automated-spls-schema.ttllocation "/code3" .
-
-ns0:raster_67a7ff9f a ns0:fully-automated-spls-schema.ttlScreenshot;
-  ns0:fully-automated-spls-schema.ttllocation "/raster3" .
-
-ns0:graph_53974e22 a ns0:fully-automated-spls-schema.ttlInstanceGraph;
+ns0:graph_8eccfdcc a ns0:fully-automated-spls-schema.ttlInstanceGraph;
   ns0:fully-automated-spls-schema.ttllocation "/graph3" .
 
-ns0:prod_line_6e3269ef a ns0:fully-automated-spls-schema.ttlProductLine;
-  ns0:fully-automated-spls-schema.ttlevolSerie "3" .
+ns0:raster_8a8bea81 a ns0:fully-automated-spls-schema.ttlScreenshot;
+  ns0:fully-automated-spls-schema.ttllocation "/raster3" .
 
-ns0:evol_ffe2d999 a ns0:fully-automated-spls-schema.ttlEvolution;
-  ns0:fully-automated-spls-schema.ttlconfAssoc "/evolved_configuration" .
+ns0:svg_deb6d549 a ns0:fully-automated-spls-schema.ttlSVG;
+  ns0:fully-automated-spls-schema.ttllocation "/vector3" .
 
-ns0:prod_line_7921a6b6 a ns0:fully-automated-spls-schema.ttlProductLine .
+ns0:code_aae51e64 a ns0:fully-automated-spls-schema.ttlCode;
+  ns0:fully-automated-spls-schema.ttllocation "/code3" .
 
-ns0:prod_line_c8d2038f a ns0:fully-automated-spls-schema.ttlProductLine;
-  ns0:fully-automated-spls-schema.ttlevolSerie "1" .
+ns0:evol_f2a0689a a ns0:fully-automated-spls-schema.ttlEvolution;
+  ns0:fully-automated-spls-schema.ttlconfAssoc "/evolved_configuration";
+  ns0:fully-automated-spls-schema.ttlstartFromSPL ns0:prod_line_bebef058;
+  ns0:fully-automated-spls-schema.ttlevolving ns0:evol_script_cb229ccb .
 
-ns0:evol_script_6242f0a6 a ns0:fully-automated-spls-schema.ttlEvolvedScript;
+ns0:evol_script_cb229ccb a ns0:fully-automated-spls-schema.ttlEvolvedScript;
   ns0:fully-automated-spls-schema.ttllocation "/evolved_script" .
 
-ns0:evol_54c918ca a ns0:fully-automated-spls-schema.ttlEvolution;
-  ns0:fully-automated-spls-schema.ttlconfAssoc "/evolved_configuration" .
-
-ns0:graph_4fe8b8fa a ns0:fully-automated-spls-schema.ttlInstanceGraph;
-  ns0:fully-automated-spls-schema.ttllocation "/graph" .
-
-ns0:svg_2d469dc2 a ns0:fully-automated-spls-schema.ttlSVG;
-  ns0:fully-automated-spls-schema.ttllocation "/vector" .
-
-ns0:code_66a389ae a ns0:fully-automated-spls-schema.ttlCode;
-  ns0:fully-automated-spls-schema.ttllocation "/code" .
-
-ns0:raster_654592cb a ns0:fully-automated-spls-schema.ttlScreenshot;
+ns0:raster_640dce16 a ns0:fully-automated-spls-schema.ttlScreenshot;
   ns0:fully-automated-spls-schema.ttllocation "/raster" .
 
-ns0:var_point_e3b0c442 a ns0:fully-automated-spls-schema.ttlPositiveVP;
-  ns0:fully-automated-spls-schema.ttlisClassRelated "False";
-  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False";
-  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "" .
-
-ns0:var_point_aefdc9ba a ns0:fully-automated-spls-schema.ttlPositiveVP;
-  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False";
-  ns0:fully-automated-spls-schema.ttlisClassRelated "False";
-  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "[F|drawCirclePrevCoords]";
-  ns0:fully-automated-spls-schema.ttlcanCall "drawCirclePrevCoords([%[context: CanvasRenderingContext2D]%], [%[radius: number]%])" .
-
-ns0:var_point_58098c0c a ns0:fully-automated-spls-schema.ttlPositiveVP;
-  ns0:fully-automated-spls-schema.ttlisClassRelated "False";
-  ns0:fully-automated-spls-schema.ttlcanCall "drawCirclePrevCoords([%[context: CanvasRenderingContext2D]%], [%[radius: number]%])";
-  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "";
-  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False" .
-
-ns0:var_point_97c6f135 a ns0:fully-automated-spls-schema.ttlPositiveVP;
-  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "[F|propagateCoordinatesThreePositions]";
-  ns0:fully-automated-spls-schema.ttlcanCall "propagateCoordinatesThreePositions([%[context: CanvasRenderingContext2D]%])";
-  ns0:fully-automated-spls-schema.ttlisClassRelated "False";
-  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False" .
-
-ns0:var_point_50c8a6ee a ns0:fully-automated-spls-schema.ttlPositiveVP;
-  ns0:fully-automated-spls-schema.ttlcanCall "propagateCoordinatesThreePositions([%[context: CanvasRenderingContext2D]%])";
-  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False";
-  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "";
-  ns0:fully-automated-spls-schema.ttlisClassRelated "False" .
-
-ns0:var_point_add41c28 a ns0:fully-automated-spls-schema.ttlPositiveVP;
-  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "[F|saveState]";
-  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False";
-  ns0:fully-automated-spls-schema.ttlcanCall "saveState([%[context: CanvasRenderingContext2D]%], [%[unused: number]%])";
-  ns0:fully-automated-spls-schema.ttlisClassRelated "False" .
-
-ns0:var_point_d8fd0444 a ns0:fully-automated-spls-schema.ttlPositiveVP;
-  ns0:fully-automated-spls-schema.ttlcanCall "saveState([%[context: CanvasRenderingContext2D]%], [%[unused: number]%])";
-  ns0:fully-automated-spls-schema.ttlisClassRelated "False";
-  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "";
-  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False" .
-
-ns0:var_point_d18fbb70 a ns0:fully-automated-spls-schema.ttlPositiveVP;
-  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "[F|loadState]";
-  ns0:fully-automated-spls-schema.ttlcanCall "loadState([%[context: CanvasRenderingContext2D]%], [%[unused: number]%])";
-  ns0:fully-automated-spls-schema.ttlisClassRelated "False";
-  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False" .
-
-ns0:var_point_392f7855 a ns0:fully-automated-spls-schema.ttlPositiveVP;
-  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False";
-  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "";
-  ns0:fully-automated-spls-schema.ttlcanCall "loadState([%[context: CanvasRenderingContext2D]%], [%[unused: number]%])";
-  ns0:fully-automated-spls-schema.ttlisClassRelated "False" .
-
-ns0:var_point_5778c58b a ns0:fully-automated-spls-schema.ttlPositiveVP;
-  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False";
-  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "[F|propagateCoordinatesSixPositions]";
-  ns0:fully-automated-spls-schema.ttlcanCall "propagateCoordinatesSixPositions([%[context: CanvasRenderingContext2D]%])";
-  ns0:fully-automated-spls-schema.ttlisClassRelated "False" .
-
-ns0:var_point_1f4a25b0 a ns0:fully-automated-spls-schema.ttlPositiveVP;
-  ns0:fully-automated-spls-schema.ttlcanCall "propagateCoordinatesSixPositions([%[context: CanvasRenderingContext2D]%])";
-  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False";
-  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "";
-  ns0:fully-automated-spls-schema.ttlisClassRelated "False" .
-
-ns0:var_point_efa63047 a ns0:fully-automated-spls-schema.ttlPositiveVP;
-  ns0:fully-automated-spls-schema.ttlisClassRelated "False";
-  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False";
-  ns0:fully-automated-spls-schema.ttlcanCall "drawCover2([%[context: CanvasRenderingContext2D]%], [%[radius: number]%])";
-  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "[F|drawCover2]" .
-
-ns0:var_point_8f357275 a ns0:fully-automated-spls-schema.ttlPositiveVP;
-  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "";
-  ns0:fully-automated-spls-schema.ttlisClassRelated "False";
-  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False";
-  ns0:fully-automated-spls-schema.ttlcanCall "drawCover2([%[context: CanvasRenderingContext2D]%], [%[radius: number]%])" .
-
-ns0:var_point_c773a417 a ns0:fully-automated-spls-schema.ttlPositiveVP;
-  ns0:fully-automated-spls-schema.ttlcanCall "drawCover7([%[context: CanvasRenderingContext2D]%])";
-  ns0:fully-automated-spls-schema.ttlisClassRelated "False";
-  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False";
-  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "[F|drawCover7]" .
-
-ns0:var_point_fe42c623 a ns0:fully-automated-spls-schema.ttlPositiveVP;
-  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False";
-  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "";
-  ns0:fully-automated-spls-schema.ttlcanCall "drawCover7([%[context: CanvasRenderingContext2D]%])";
-  ns0:fully-automated-spls-schema.ttlisClassRelated "False" .
-
-ns0:var_point_19c5d47f a ns0:fully-automated-spls-schema.ttlPositiveVP;
-  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False";
-  ns0:fully-automated-spls-schema.ttlisClassRelated "False";
-  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "[F|drawCover5]";
-  ns0:fully-automated-spls-schema.ttlcanCall "drawCover5([%[context: CanvasRenderingContext2D]%])" .
-
-ns0:var_point_d17c1b6d a ns0:fully-automated-spls-schema.ttlPositiveVP;
-  ns0:fully-automated-spls-schema.ttlcanCall "drawCover5([%[context: CanvasRenderingContext2D]%])";
-  ns0:fully-automated-spls-schema.ttlisClassRelated "False";
-  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False";
-  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "" .
-
-ns0:var_point_69a1c0f5 a ns0:fully-automated-spls-schema.ttlPositiveVP;
-  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "[F|drawCover3]";
-  ns0:fully-automated-spls-schema.ttlcanCall "drawCover3([%[context: CanvasRenderingContext2D]%], [%[x4: number]%], [%[y4: number]%])";
-  ns0:fully-automated-spls-schema.ttlisClassRelated "False";
-  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False" .
-
-ns0:var_point_5e9729d8 a ns0:fully-automated-spls-schema.ttlPositiveVP;
-  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False";
-  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "";
-  ns0:fully-automated-spls-schema.ttlisClassRelated "False";
-  ns0:fully-automated-spls-schema.ttlcanCall "drawCover3([%[context: CanvasRenderingContext2D]%], [%[x4: number]%], [%[y4: number]%])" .
-
-ns0:var_point_06ee5729 a ns0:fully-automated-spls-schema.ttlPositiveVP;
-  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "[F|drawRectFromPrev]";
-  ns0:fully-automated-spls-schema.ttlisClassRelated "False";
-  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False";
-  ns0:fully-automated-spls-schema.ttlcanCall "drawRectFromPrev([%[context: CanvasRenderingContext2D]%])" .
-
-ns0:var_point_7426bb68 a ns0:fully-automated-spls-schema.ttlPositiveVP;
-  ns0:fully-automated-spls-schema.ttlisClassRelated "False";
-  ns0:fully-automated-spls-schema.ttlcanCall "drawRectFromPrev([%[context: CanvasRenderingContext2D]%])";
-  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False";
-  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "" .
-
-ns0:var_point_3f992d66 a ns0:fully-automated-spls-schema.ttlPositiveVP;
-  ns0:fully-automated-spls-schema.ttlisClassRelated "True";
-  ns0:fully-automated-spls-schema.ttlcanCall "new Circle()";
-  ns0:fully-automated-spls-schema.ttlisInsideRecursion "False";
-  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier "[C|Circle]" .
+ns0:svg_27d2104e a ns0:fully-automated-spls-schema.ttlSVG;
+  ns0:fully-automated-spls-schema.ttllocation "/vector" .

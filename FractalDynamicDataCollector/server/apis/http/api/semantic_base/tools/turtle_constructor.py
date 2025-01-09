@@ -3,6 +3,7 @@ import json
 import uuid
 from typing import Optional, Dict
 
+import requests
 from semantic_base.knowledge_graph.graph_knowledge_base_api import GraphKnowledgeBaseAPI
 from semantic_base.tools.triple_call_neosemantics_factory import TripleCallNeosemanticsFactory
 
@@ -238,8 +239,12 @@ class TurtleTriplesConstructor:
             base_header: str = "@base <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .") -> str:
         prepared_ttl = ""
         if variation_point_data_location:
-            with open(variation_point_data_location, "r", encoding="utf-8") as file:
-                variation_points_configuration = json.loads(file.read())
+            if "http" in variation_point_data_location:
+                variation_points_configuration = json.loads(requests.get(variation_point_data_location).content)
+            else:
+                with open(variation_point_data_location.replace("file:///", ""), "r", encoding="utf-8") as file:
+                    variation_points_configuration = json.loads(file.read())
+            if variation_points_configuration:
                 for variation_point_configuration in variation_points_configuration:
                     prepared_ttl += TurtleTriplesConstructor.__prepare_variation_point_in_ttl(
                         variation_point_configuration, evolved_product_line_id,

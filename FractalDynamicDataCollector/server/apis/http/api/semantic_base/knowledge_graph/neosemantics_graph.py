@@ -1,3 +1,4 @@
+import os
 import uuid
 from typing import Optional
 
@@ -69,10 +70,15 @@ class NeosemanticsKnowledgeGraphApi:
         graph_knowledge_api.process_data_transaction_using_commands(knowledge_ttl_call)
 
 
-if __name__ == "__main__":
-    import_variation_points = True
-    # variation_point_data_location = None  # without VP
-    variation_point_data_location = "./variationPointDataSample.json" #
+def get_server_path() -> str:
+    return "http://" + os.getenv("DATA_COLLECTOR_ADDRESS", "localhost") + ":" + os.getenv("DATA_COLLECTOR_PORT", "5000")
+
+
+def test(local: bool, import_variation_points: bool = False) -> None:
+    variation_point_data_location = "./variationPointDataSample.json" if local \
+        else get_server_path() + "/variationPointDataSample.json"
+    variation_point_data_location = None if not import_variation_points else variation_point_data_location
+    immediately_save_ttls = True
 
     graph_knowl_api = FullyAutomatedProductLinesKnowledgeManager()
     neosemantics_knowledge_graph_api = NeosemanticsKnowledgeGraphApi()
@@ -93,7 +99,7 @@ if __name__ == "__main__":
     neosemantics_knowledge_graph_api.register_new_evolution_iteration(
         graph_knowl_api, evolution_id, evolved_product_line_id, iteration, code_location, graph_location,
         raster_location, vector_location, variation_point_data_location, evolved_script_id,
-        evolved_script_path, evolved_product_line_id, import_variation_points)
+        evolved_script_path, evolved_product_line_id, immediately_save_ttls)
 
     code_product_loc, graph_product_loc = "/code_product", "/graph_product"
     raster_product_loc, vector_product_loc = "/raster_product", "/vector_product"
@@ -108,13 +114,13 @@ if __name__ == "__main__":
         raster_product_loc2, vector_product_loc2)
 
     evolved_product_line_id2 = "prod_line_" + uuid.uuid4().hex[:8]
-    variation_point_data_location2 = variation_point_data_location # None
+    variation_point_data_location2 = variation_point_data_location  # None
     iteration2 = "2"
     code_location2, graph_location2, raster_location2, vector_location2 = "/code2", "/graph2", "/raster2", "/vector2"
     neosemantics_knowledge_graph_api.register_new_evolution_iteration(
         graph_knowl_api, evolution_id, evolved_product_line_id2, iteration2, code_location2, graph_location2,
         raster_location2, vector_location2, variation_point_data_location2, evolved_script_id,
-        evolved_script_path, evolved_product_line_id, import_variation_points)
+        evolved_script_path, evolved_product_line_id, immediately_save_ttls)
 
     evolved_product_line_id3 = "prod_line_" + uuid.uuid4().hex[:8]
     variation_point_data_location3 = variation_point_data_location  # None
@@ -123,7 +129,7 @@ if __name__ == "__main__":
     neosemantics_knowledge_graph_api.register_new_evolution_iteration(
         graph_knowl_api, evolution_id, evolved_product_line_id3, iteration3, code_location3, graph_location3,
         raster_location3, vector_location3, variation_point_data_location3, evolved_script_id,
-        evolved_script_path, evolved_product_line_id2, import_variation_points)
+        evolved_script_path, evolved_product_line_id2, immediately_save_ttls)
 
     new_evolution_id = "evol_" + uuid.uuid4().hex[:8]
     new_evolved_product_line_id = "prod_line_" + uuid.uuid4().hex[:8]
@@ -134,3 +140,7 @@ if __name__ == "__main__":
 
     # network.create_db_for_network()
     graph_knowl_api.close()
+
+
+if __name__ == "__main__":
+    test(local=True, import_variation_points=False)

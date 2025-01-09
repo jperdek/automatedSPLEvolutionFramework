@@ -1,0 +1,381 @@
+{
+	"info": {
+		"_postman_id": "38d623cb-89be-44af-97ba-b49eeb752657",
+		"name": "semanticsGraphAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "9000628"
+	},
+	"item": [
+		{
+			"name": "get ttl data",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic bmVvNGo6ZmVhdHVyZQ==",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \"cypher\" : \"MATCH p = (n)-[a]-(b) RETURN p LIMIT 10000\" , \"format\": \"Turtle\" }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:7475/rdf/evolutionKnowledgeBase/cypher",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7475",
+					"path": [
+						"rdf",
+						"evolutionKnowledgeBase",
+						"cypher"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "New Request",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic bmVvNGo6ZmVhdHVyZQ==",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"cypher\" : \"MATCH (n) RETURN n LIMIT 10000\" , \"format\": \"Turtle\" }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:7475/rdf/evolutionKnowledgeBase/cypher",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "7475",
+							"path": [
+								"rdf",
+								"evolutionKnowledgeBase",
+								"cypher"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "xml",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Tue, 07 Jan 2025 00:39:32 GMT"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/rdf+xml"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "@prefix faspls: \n<https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .\r\n@prefix ns0: \n    <https://jakubperdek-26e24f.gitlab.io/> .\r\n\r\nns0:var_point_b4b5767f a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new Circle()\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\" .\r\n\r\nns0:var_point_c3a3707b a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"True\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new Line()\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|Line]\" .\r\n\r\nns0:var_point_fd79cfa3 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new Line()\" .\r\n\r\nns0:var_point_2cd423a2 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[F|drawLine]\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"drawLine([%[context: CanvasRenderingContext2D]%], [%[x1: number]%], [%[y1: number]%], [%[x2: number]%], [%[y2: number]%], [%[thickness: number]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\" .\r\n\r\nns0:var_point_a97db878 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"drawLine([%[context: CanvasRenderingContext2D]%], [%[x1: number]%], [%[y1: number]%], [%[x2: number]%], [%[y2: number]%], [%[thickness: number]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\" .\r\n\r\nns0:var_point_eb605e1b a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"drawCircle([%[context: CanvasRenderingContext2D]%], [%[cordX: number]%], [%[cordY: number]%], [%[radius: number]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[F|drawCircle]\" .\r\n\r\nns0:var_point_624558dc a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"drawCircle([%[context: CanvasRenderingContext2D]%], [%[cordX: number]%], [%[cordY: number]%], [%[radius: number]%])\" .\r\n\r\nns0:var_point_e5c2b541 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new Vector()\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"True\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|Vector]\" .\r\n\r\nns0:var_point_3af4314c a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new Vector()\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\" .\r\n\r\nns0:var_point_6fe6acd3 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[F|degreeToRadians]\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"degreeToRadians([%[angle: number]%])\" .\r\n\r\nns0:var_point_ba6fbf42 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"degreeToRadians([%[angle: number]%])\" .\r\n\r\nns0:var_point_ec9187b8 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new FiveSideMapInfo()\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSideMapInfo]\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"True\" .\r\n\r\nns0:var_point_ee1a40f0 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlcanCall \".createRule([%[dimension: number]%])\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSideMapInfo][F|createRule]\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\" .\r\n\r\nns0:var_point_1294e02f a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new FiveSideMapInfo()\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSideMapInfo]\" .\r\n\r\nns0:var_point_da37a2d8 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new FiveSideMapInfo()\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSideMapInfo][F|setFinalSideLength]\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\" .\r\n\r\nns0:var_point_750d96f4 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new FiveSideMapInfo()\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSideMapInfo][F|findCenterPoint]\" .\r\n\r\nns0:var_point_ad05c774 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new FiveSideMapInfo()\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\" .\r\n\r\nns0:var_point_cc480ad3 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|Point]\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new Point()\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"True\" .\r\n\r\nns0:var_point_9556e672 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new Point()\" .\r\n\r\nns0:var_point_658f4573 a ns0:fully-automated-spls-schema.ttlNegativeVP;\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"True\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSide]\" .\r\n\r\nns0:var_point_846d3b1d a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSide]\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new FiveSide()\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"True\" .\r\n\r\nns0:var_point_60b6d156 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new FiveSide()\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSide]\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\" .\r\n\r\nns0:var_point_027844a0 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new FiveSide()\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSide][F|getNewPoint]\" .\r\n\r\nns0:var_point_35de4577 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new FiveSide()\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSide][F|countMiddleAreaHeight]\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\" .\r\n\r\nns0:var_point_27a3eb72 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSide][F|countMiddleSpace]\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new FiveSide()\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\" .\r\n\r\nns0:var_point_e2f6fd31 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSide][F|countSmallerSideLength]\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new FiveSide()\" .\r\n\r\nns0:var_point_bed16eda a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new FiveSide()\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSide][F|getPointOnLine]\" .\r\n\r\nns0:var_point_b287aa87 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSide][F|countDistance]\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new FiveSide()\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\" .\r\n\r\nns0:var_point_ed739155 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSide][F|getMiddlePoint]\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new FiveSide()\" .\r\n\r\nns0:var_point_caaa63cf a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new FiveSide()\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\" .\r\n\r\nns0:var_point_f57add50 a ns0:fully-automated-spls-schema.ttlNegativeVP;\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSideFractal]\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"True\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\" .\r\n\r\nns0:var_point_5022f44c a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSideFractal]\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"True\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \".drawFiveStar([%[conttext: CanvasRenderingContext2D]%], [%[radius: number]%], [%[iterations: number]%], [%[thickness: number]%])\" .\r\n\r\nns0:var_point_7c12f6c8 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSideFractal][F|getFiveSideShapes]\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \".getFiveSideShapes([%[iteration: number]%], [%[sideLength: number]%], [%[x1: number]%], [%[y1: number]%], [%[x2: number]%], [%[y2: number]%], [%[x3: number]%], [%[y3: number]%], [%[x4: number]%], [%[y4: number]%], [%[x5: number]%], [%[y5: number]%], [%[fiveSide: FiveSide]%], [%[context: CanvasRenderingContext2D]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"True\" .\r\n\r\nns0:var_point_3178c2f7 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \".drawShapeAndStoreVertices([%[context: CanvasRenderingContext2D]%], [%[fiveSideMapInfo: FiveSideMapInfo]%], [%[ruleString: string]%], [%[angleForPoint: number]%], [%[sideLength: number]%], [%[radius: number]%], [%[fiveSide: FiveSide]%])\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSideFractal][F|drawShapeAndStoreVertices]\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\" .\r\n\r\nns0:var_point_f047d6f9 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSideFractal][F|drawFiveStar]\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \".drawFiveStar([%[conttext: CanvasRenderingContext2D]%], [%[radius: number]%], [%[iterations: number]%], [%[thickness: number]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\" .\r\n\r\nns0:var_point_e2e9c5ed a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \".drawFiveStar([%[conttext: CanvasRenderingContext2D]%], [%[radius: number]%], [%[iterations: number]%], [%[thickness: number]%])\" .\r\n\r\nns0:var_point_9292e9c8 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[F|drawAnkletModMain]\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"drawAnkletModMain([%[conttextMain: CanvasRenderingContext2D]%], [%[radius: number]%], [%[iterations: number]%], [%[thickness: number]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\" .\r\n\r\nns0:var_point_48c7d908 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"drawAnkletModMain([%[conttextMain: CanvasRenderingContext2D]%], [%[radius: number]%], [%[iterations: number]%], [%[thickness: number]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\" .\r\n\r\nns0:graph_d42aca45 a ns0:fully-automated-spls-schema.ttlInstanceGraph;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/graph_product\" .\r\n\r\nns0:product_ca47c556 a ns0:fully-automated-spls-schema.ttlProduct .\r\n\r\nns0:code_5f289538 a ns0:fully-automated-spls-schema.ttlCode;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/code_product\" .\r\n\r\nns0:raster_ddb391e2 a ns0:fully-automated-spls-schema.ttlScreenshot;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/raster_product\" .\r\n\r\nns0:svg_78b05f2d a ns0:fully-automated-spls-schema.ttlSVG;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/vector_product\" .\r\n\r\nns0:graph_94e9c264 a ns0:fully-automated-spls-schema.ttlInstanceGraph;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/graph_product2\" .\r\n\r\nns0:product_c650371d a ns0:fully-automated-spls-schema.ttlProduct .\r\n\r\nns0:code_e36c724b a ns0:fully-automated-spls-schema.ttlCode;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/code_product2\" .\r\n\r\nns0:raster_cd5e375f a ns0:fully-automated-spls-schema.ttlScreenshot;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/raster_product2\" .\r\n\r\nns0:svg_e1b58042 a ns0:fully-automated-spls-schema.ttlSVG;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/vector_product2\" .\r\n\r\nns0:graph_2cc0dc61 a ns0:fully-automated-spls-schema.ttlInstanceGraph;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/graph2\" .\r\n\r\nns0:raster_5c55ace6 a ns0:fully-automated-spls-schema.ttlScreenshot;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/raster2\" .\r\n\r\nns0:code_3751fc3f a ns0:fully-automated-spls-schema.ttlCode;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/code2\" .\r\n\r\nns0:svg_ce487357 a ns0:fully-automated-spls-schema.ttlSVG;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/vector2\" .\r\n\r\nns0:prod_line_e96e1740 a ns0:fully-automated-spls-schema.ttlProductLine;\r\n  ns0:fully-automated-spls-schema.ttlevolSerie \"2\" .\r\n\r\nns0:svg_5ce0a682 a ns0:fully-automated-spls-schema.ttlSVG;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/vector3\" .\r\n\r\nns0:code_2c242383 a ns0:fully-automated-spls-schema.ttlCode;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/code3\" .\r\n\r\nns0:raster_67a7ff9f a ns0:fully-automated-spls-schema.ttlScreenshot;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/raster3\" .\r\n\r\nns0:graph_53974e22 a ns0:fully-automated-spls-schema.ttlInstanceGraph;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/graph3\" .\r\n\r\nns0:prod_line_6e3269ef a ns0:fully-automated-spls-schema.ttlProductLine;\r\n  ns0:fully-automated-spls-schema.ttlevolSerie \"3\" .\r\n\r\nns0:evol_ffe2d999 a ns0:fully-automated-spls-schema.ttlEvolution;\r\n  ns0:fully-automated-spls-schema.ttlconfAssoc \"/evolved_configuration\" .\r\n\r\nns0:prod_line_7921a6b6 a ns0:fully-automated-spls-schema.ttlProductLine .\r\n\r\nns0:prod_line_c8d2038f a ns0:fully-automated-spls-schema.ttlProductLine;\r\n  ns0:fully-automated-spls-schema.ttlevolSerie \"1\" .\r\n\r\nns0:evol_script_6242f0a6 a ns0:fully-automated-spls-schema.ttlEvolvedScript;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/evolved_script\" .\r\n\r\nns0:evol_54c918ca a ns0:fully-automated-spls-schema.ttlEvolution;\r\n  ns0:fully-automated-spls-schema.ttlconfAssoc \"/evolved_configuration\" .\r\n\r\nns0:graph_4fe8b8fa a ns0:fully-automated-spls-schema.ttlInstanceGraph;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/graph\" .\r\n\r\nns0:svg_2d469dc2 a ns0:fully-automated-spls-schema.ttlSVG;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/vector\" .\r\n\r\nns0:code_66a389ae a ns0:fully-automated-spls-schema.ttlCode;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/code\" .\r\n\r\nns0:raster_654592cb a ns0:fully-automated-spls-schema.ttlScreenshot;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/raster\" .\r\n\r\nns0:var_point_e3b0c442 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\" .\r\n\r\nns0:var_point_aefdc9ba a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[F|drawCirclePrevCoords]\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"drawCirclePrevCoords([%[context: CanvasRenderingContext2D]%], [%[radius: number]%])\" .\r\n\r\nns0:var_point_58098c0c a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"drawCirclePrevCoords([%[context: CanvasRenderingContext2D]%], [%[radius: number]%])\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\" .\r\n\r\nns0:var_point_97c6f135 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[F|propagateCoordinatesThreePositions]\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"propagateCoordinatesThreePositions([%[context: CanvasRenderingContext2D]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\" .\r\n\r\nns0:var_point_50c8a6ee a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"propagateCoordinatesThreePositions([%[context: CanvasRenderingContext2D]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\" .\r\n\r\nns0:var_point_add41c28 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[F|saveState]\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"saveState([%[context: CanvasRenderingContext2D]%], [%[unused: number]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\" .\r\n\r\nns0:var_point_d8fd0444 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"saveState([%[context: CanvasRenderingContext2D]%], [%[unused: number]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\" .\r\n\r\nns0:var_point_d18fbb70 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[F|loadState]\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"loadState([%[context: CanvasRenderingContext2D]%], [%[unused: number]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\" .\r\n\r\nns0:var_point_392f7855 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"loadState([%[context: CanvasRenderingContext2D]%], [%[unused: number]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\" .\r\n\r\nns0:var_point_5778c58b a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[F|propagateCoordinatesSixPositions]\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"propagateCoordinatesSixPositions([%[context: CanvasRenderingContext2D]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\" .\r\n\r\nns0:var_point_1f4a25b0 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"propagateCoordinatesSixPositions([%[context: CanvasRenderingContext2D]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\" .\r\n\r\nns0:var_point_efa63047 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"drawCover2([%[context: CanvasRenderingContext2D]%], [%[radius: number]%])\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[F|drawCover2]\" .\r\n\r\nns0:var_point_8f357275 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"drawCover2([%[context: CanvasRenderingContext2D]%], [%[radius: number]%])\" .\r\n\r\nns0:var_point_c773a417 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"drawCover7([%[context: CanvasRenderingContext2D]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[F|drawCover7]\" .\r\n\r\nns0:var_point_fe42c623 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"drawCover7([%[context: CanvasRenderingContext2D]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\" .\r\n\r\nns0:var_point_19c5d47f a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[F|drawCover5]\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"drawCover5([%[context: CanvasRenderingContext2D]%])\" .\r\n\r\nns0:var_point_d17c1b6d a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"drawCover5([%[context: CanvasRenderingContext2D]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\" .\r\n\r\nns0:var_point_69a1c0f5 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[F|drawCover3]\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"drawCover3([%[context: CanvasRenderingContext2D]%], [%[x4: number]%], [%[y4: number]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\" .\r\n\r\nns0:var_point_5e9729d8 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"drawCover3([%[context: CanvasRenderingContext2D]%], [%[x4: number]%], [%[y4: number]%])\" .\r\n\r\nns0:var_point_06ee5729 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[F|drawRectFromPrev]\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"drawRectFromPrev([%[context: CanvasRenderingContext2D]%])\" .\r\n\r\nns0:var_point_7426bb68 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"drawRectFromPrev([%[context: CanvasRenderingContext2D]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\" .\r\n\r\nns0:var_point_3f992d66 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"True\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new Circle()\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|Circle]\" ."
+				}
+			]
+		},
+		{
+			"name": "Register new evolution 1",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"evolution_id\": \"evol_1\",\r\n    \"initial_product_line_id\": \"prod_line_initial\",\r\n    \"evolved_script_path\": \"file:///path/to/evolved/script2.py\",\r\n    \"evolution_configuration_path\": null,\r\n    \"previous_evolution_id\": null,\r\n    \"previous_product_line_id\": null\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/knowledge-base/registerNewEvolution",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"knowledge-base",
+						"registerNewEvolution"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register new evolution 2",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"evolution_id\": \"evol_AAA1\",\r\n    \"initial_product_line_id\": \"prod_line_1\",\r\n    \"evolved_script_path\": \"file:///path/to/evolved/script.py\",\r\n    \"evolution_configuration_path\": null,\r\n    \"previous_evolution_id\": \"evol_1\",\r\n    \"previous_product_line_id\": null\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/knowledge-base/registerNewEvolution",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"knowledge-base",
+						"registerNewEvolution"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register new evolution iteration 1",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"evolution_id\": \"evol_AAA1\",\r\n    \"evolved_product_line_id\": \"prod_line_1\",\r\n    \"evolution_iteration\": \"1\",\r\n    \"code_path\": \"file:///path/to/code\",\r\n    \"screenshot_path\": \"file:///path/to/raster\",\r\n    \"vector_path\": \"file:///path/to/vector\",\r\n    \"json_graph_path\": \"file:///path/to/graph\",\r\n    \"evolved_script_path\": \"file:///path/to/evolved/script.py\",\r\n    \"variation_point_data_location\": \"file:///E:/aspects/automatedSPLEvolutionFramework/EvolutionSPLFramework/evolutionDirectory/evolNum1/conccustom/appcustomevolNum1_1_e103f174935c9aacustomevolNum1customevolNum1_VariationPointData.json\",\r\n    \"previous_product_line_id\": null\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/knowledge-base/registerNewEvolutionIteration",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"knowledge-base",
+						"registerNewEvolutionIteration"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register new evolution iteration 1 Copy",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"evolution_id\": \"evol_AAA1\",\r\n    \"evolved_product_line_id\": \"prod_line_2\",\r\n    \"evolution_iteration\": \"2\",\r\n    \"code_path\": \"file:///path/to/code2\",\r\n    \"screenshot_path\": \"file:///path/to/raster2\",\r\n    \"vector_path\": \"file:///path/to/vector2\",\r\n    \"json_graph_path\": \"file:///path/to/graph2\",\r\n    \"evolved_script_path\": \"file:///path/to/evolved/script.py\",\r\n    \"variation_point_data_location\": \"file:///E:/aspects/automatedSPLEvolutionFramework/EvolutionSPLFramework/evolutionDirectory/evolNum1/conccustom/appcustomevolNum1_1_e103f174935c9aacustomevolNum1customevolNum1_VariationPointData.json\",\r\n    \"previous_product_line_id\": null\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/knowledge-base/registerNewEvolutionIteration",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"knowledge-base",
+						"registerNewEvolutionIteration"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Init",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/knowledge-base/init",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"knowledge-base",
+						"init"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Insert default knowledge and make graph",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/knowledge-base/test?importVariationPoints=true",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"knowledge-base",
+						"test"
+					],
+					"query": [
+						{
+							"key": "importVariationPoints",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Insert default knowledge and make graph Copy",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/knowledge-base/test?importVariationPoints=true",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"knowledge-base",
+						"test"
+					],
+					"query": [
+						{
+							"key": "importVariationPoints",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Clear",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/knowledge-base/clear",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"knowledge-base",
+						"clear"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Insert triples Exported",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "@prefix faspls: \r\n<https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .\r\n@prefix ns0: \r\n    <https://jakubperdek-26e24f.gitlab.io/> .\r\n\r\nns0:prod_line_e398ac19 a ns0:fully-automated-spls-schema.ttlProductLine;\r\n  ns0:fully-automated-spls-schema.ttlcodeRepr ns0:code_a270b8b1;\r\n  ns0:fully-automated-spls-schema.ttlevolSerie \"1\";\r\n  ns0:fully-automated-spls-schema.ttlgraphRepr ns0:graph_375802fa;\r\n  ns0:fully-automated-spls-schema.ttlhasVP ns0:var_point_e3b0c442, ns0:var_point_aefdc9ba,\r\n    ns0:var_point_58098c0c, ns0:var_point_97c6f135, ns0:var_point_50c8a6ee, ns0:var_point_add41c28,\r\n    ns0:var_point_d8fd0444, ns0:var_point_d18fbb70, ns0:var_point_392f7855, ns0:var_point_5778c58b,\r\n    ns0:var_point_1f4a25b0, ns0:var_point_efa63047, ns0:var_point_8f357275, ns0:var_point_c773a417,\r\n    ns0:var_point_fe42c623, ns0:var_point_19c5d47f, ns0:var_point_d17c1b6d, ns0:var_point_69a1c0f5,\r\n    ns0:var_point_5e9729d8, ns0:var_point_06ee5729, ns0:var_point_7426bb68, ns0:var_point_3f992d66,\r\n    ns0:var_point_b4b5767f, ns0:var_point_c3a3707b, ns0:var_point_fd79cfa3, ns0:var_point_2cd423a2,\r\n    ns0:var_point_a97db878, ns0:var_point_eb605e1b, ns0:var_point_624558dc, ns0:var_point_e5c2b541,\r\n    ns0:var_point_3af4314c, ns0:var_point_6fe6acd3, ns0:var_point_ba6fbf42, ns0:var_point_ec9187b8,\r\n    ns0:var_point_ee1a40f0, ns0:var_point_1294e02f, ns0:var_point_da37a2d8, ns0:var_point_750d96f4,\r\n    ns0:var_point_ad05c774, ns0:var_point_cc480ad3, ns0:var_point_9556e672, ns0:var_point_658f4573,\r\n    ns0:var_point_846d3b1d, ns0:var_point_60b6d156, ns0:var_point_027844a0, ns0:var_point_35de4577,\r\n    ns0:var_point_27a3eb72, ns0:var_point_e2f6fd31, ns0:var_point_bed16eda, ns0:var_point_b287aa87,\r\n    ns0:var_point_ed739155, ns0:var_point_caaa63cf, ns0:var_point_f57add50, ns0:var_point_5022f44c,\r\n    ns0:var_point_7c12f6c8, ns0:var_point_3178c2f7, ns0:var_point_f047d6f9, ns0:var_point_e2e9c5ed,\r\n    ns0:var_point_9292e9c8, ns0:var_point_48c7d908;\r\n  ns0:fully-automated-spls-schema.ttlderivedFrom ns0:product_e21dece9, ns0:product_704e5746;\r\n  ns0:fully-automated-spls-schema.ttlnextEvolved ns0:prod_line_9bcb333a, ns0:prod_line_e398ac19;\r\n  ns0:fully-automated-spls-schema.ttlevolvedIn ns0:evol_7236df63;\r\n  ns0:fully-automated-spls-schema.ttlrasterRepr ns0:raster_640dce16;\r\n  ns0:fully-automated-spls-schema.ttlvectorRepr ns0:svg_27d2104e .\r\n\r\nns0:code_a270b8b1 a ns0:fully-automated-spls-schema.ttlCode;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/code\" .\r\n\r\nns0:graph_375802fa a ns0:fully-automated-spls-schema.ttlInstanceGraph;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/graph\" .\r\n\r\nns0:var_point_e3b0c442 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\" .\r\n\r\nns0:prod_line_4268ead1 a ns0:fully-automated-spls-schema.ttlProductLine;\r\n  ns0:fully-automated-spls-schema.ttlhasVP ns0:var_point_e3b0c442, ns0:var_point_aefdc9ba,\r\n    ns0:var_point_58098c0c, ns0:var_point_97c6f135, ns0:var_point_50c8a6ee, ns0:var_point_add41c28,\r\n    ns0:var_point_d8fd0444, ns0:var_point_d18fbb70, ns0:var_point_392f7855, ns0:var_point_5778c58b,\r\n    ns0:var_point_1f4a25b0, ns0:var_point_efa63047, ns0:var_point_8f357275, ns0:var_point_c773a417,\r\n    ns0:var_point_fe42c623, ns0:var_point_19c5d47f, ns0:var_point_d17c1b6d, ns0:var_point_69a1c0f5,\r\n    ns0:var_point_5e9729d8, ns0:var_point_06ee5729, ns0:var_point_7426bb68, ns0:var_point_3f992d66,\r\n    ns0:var_point_b4b5767f, ns0:var_point_c3a3707b, ns0:var_point_fd79cfa3, ns0:var_point_2cd423a2,\r\n    ns0:var_point_a97db878, ns0:var_point_eb605e1b, ns0:var_point_624558dc, ns0:var_point_e5c2b541,\r\n    ns0:var_point_3af4314c, ns0:var_point_6fe6acd3, ns0:var_point_ba6fbf42, ns0:var_point_ec9187b8,\r\n    ns0:var_point_ee1a40f0, ns0:var_point_1294e02f, ns0:var_point_da37a2d8, ns0:var_point_750d96f4,\r\n    ns0:var_point_ad05c774, ns0:var_point_cc480ad3, ns0:var_point_9556e672, ns0:var_point_658f4573,\r\n    ns0:var_point_846d3b1d, ns0:var_point_60b6d156, ns0:var_point_027844a0, ns0:var_point_35de4577,\r\n    ns0:var_point_27a3eb72, ns0:var_point_e2f6fd31, ns0:var_point_bed16eda, ns0:var_point_b287aa87,\r\n    ns0:var_point_ed739155, ns0:var_point_caaa63cf, ns0:var_point_f57add50, ns0:var_point_5022f44c,\r\n    ns0:var_point_7c12f6c8, ns0:var_point_3178c2f7, ns0:var_point_f047d6f9, ns0:var_point_e2e9c5ed,\r\n    ns0:var_point_9292e9c8, ns0:var_point_48c7d908;\r\n  ns0:fully-automated-spls-schema.ttlevolSerie \"3\";\r\n  ns0:fully-automated-spls-schema.ttlgraphRepr ns0:graph_8eccfdcc;\r\n  ns0:fully-automated-spls-schema.ttlevolvedIn ns0:evol_7236df63;\r\n  ns0:fully-automated-spls-schema.ttlrasterRepr ns0:raster_8a8bea81;\r\n  ns0:fully-automated-spls-schema.ttlvectorRepr ns0:svg_deb6d549;\r\n  ns0:fully-automated-spls-schema.ttlcodeRepr ns0:code_aae51e64 .\r\n\r\nns0:prod_line_9bcb333a a ns0:fully-automated-spls-schema.ttlProductLine;\r\n  ns0:fully-automated-spls-schema.ttlhasVP ns0:var_point_e3b0c442, ns0:var_point_aefdc9ba,\r\n    ns0:var_point_58098c0c, ns0:var_point_97c6f135, ns0:var_point_50c8a6ee, ns0:var_point_add41c28,\r\n    ns0:var_point_d8fd0444, ns0:var_point_d18fbb70, ns0:var_point_392f7855, ns0:var_point_5778c58b,\r\n    ns0:var_point_1f4a25b0, ns0:var_point_efa63047, ns0:var_point_8f357275, ns0:var_point_c773a417,\r\n    ns0:var_point_fe42c623, ns0:var_point_19c5d47f, ns0:var_point_d17c1b6d, ns0:var_point_69a1c0f5,\r\n    ns0:var_point_5e9729d8, ns0:var_point_06ee5729, ns0:var_point_7426bb68, ns0:var_point_3f992d66,\r\n    ns0:var_point_b4b5767f, ns0:var_point_c3a3707b, ns0:var_point_fd79cfa3, ns0:var_point_2cd423a2,\r\n    ns0:var_point_a97db878, ns0:var_point_eb605e1b, ns0:var_point_624558dc, ns0:var_point_e5c2b541,\r\n    ns0:var_point_3af4314c, ns0:var_point_6fe6acd3, ns0:var_point_ba6fbf42, ns0:var_point_ec9187b8,\r\n    ns0:var_point_ee1a40f0, ns0:var_point_1294e02f, ns0:var_point_da37a2d8, ns0:var_point_750d96f4,\r\n    ns0:var_point_ad05c774, ns0:var_point_cc480ad3, ns0:var_point_9556e672, ns0:var_point_658f4573,\r\n    ns0:var_point_846d3b1d, ns0:var_point_60b6d156, ns0:var_point_027844a0, ns0:var_point_35de4577,\r\n    ns0:var_point_27a3eb72, ns0:var_point_e2f6fd31, ns0:var_point_bed16eda, ns0:var_point_b287aa87,\r\n    ns0:var_point_ed739155, ns0:var_point_caaa63cf, ns0:var_point_f57add50, ns0:var_point_5022f44c,\r\n    ns0:var_point_7c12f6c8, ns0:var_point_3178c2f7, ns0:var_point_f047d6f9, ns0:var_point_e2e9c5ed,\r\n    ns0:var_point_9292e9c8, ns0:var_point_48c7d908;\r\n  ns0:fully-automated-spls-schema.ttlevolSerie \"2\";\r\n  ns0:fully-automated-spls-schema.ttlgraphRepr ns0:graph_dec45760;\r\n  ns0:fully-automated-spls-schema.ttlevolvedIn ns0:evol_7236df63;\r\n  ns0:fully-automated-spls-schema.ttlrasterRepr ns0:raster_d3f49dfa;\r\n  ns0:fully-automated-spls-schema.ttlvectorRepr ns0:svg_dbdfc7e6;\r\n  ns0:fully-automated-spls-schema.ttlcodeRepr ns0:code_469c0745;\r\n  ns0:fully-automated-spls-schema.ttlnextEvolved ns0:prod_line_4268ead1, ns0:prod_line_bebef058 .\r\n\r\nns0:var_point_aefdc9ba a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[F|drawCirclePrevCoords]\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"drawCirclePrevCoords([%[context: CanvasRenderingContext2D]%], [%[radius: number]%])\" .\r\n\r\nns0:var_point_58098c0c a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"drawCirclePrevCoords([%[context: CanvasRenderingContext2D]%], [%[radius: number]%])\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\" .\r\n\r\nns0:var_point_97c6f135 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[F|propagateCoordinatesThreePositions]\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"propagateCoordinatesThreePositions([%[context: CanvasRenderingContext2D]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\" .\r\n\r\nns0:var_point_50c8a6ee a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"propagateCoordinatesThreePositions([%[context: CanvasRenderingContext2D]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\" .\r\n\r\nns0:var_point_add41c28 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[F|saveState]\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"saveState([%[context: CanvasRenderingContext2D]%], [%[unused: number]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\" .\r\n\r\nns0:var_point_d8fd0444 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"saveState([%[context: CanvasRenderingContext2D]%], [%[unused: number]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\" .\r\n\r\nns0:var_point_d18fbb70 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[F|loadState]\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"loadState([%[context: CanvasRenderingContext2D]%], [%[unused: number]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\" .\r\n\r\nns0:var_point_392f7855 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"loadState([%[context: CanvasRenderingContext2D]%], [%[unused: number]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\" .\r\n\r\nns0:var_point_5778c58b a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[F|propagateCoordinatesSixPositions]\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"propagateCoordinatesSixPositions([%[context: CanvasRenderingContext2D]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\" .\r\n\r\nns0:var_point_1f4a25b0 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"propagateCoordinatesSixPositions([%[context: CanvasRenderingContext2D]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\" .\r\n\r\nns0:var_point_efa63047 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"drawCover2([%[context: CanvasRenderingContext2D]%], [%[radius: number]%])\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[F|drawCover2]\" .\r\n\r\nns0:var_point_8f357275 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"drawCover2([%[context: CanvasRenderingContext2D]%], [%[radius: number]%])\" .\r\n\r\nns0:var_point_c773a417 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"drawCover7([%[context: CanvasRenderingContext2D]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[F|drawCover7]\" .\r\n\r\nns0:var_point_fe42c623 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"drawCover7([%[context: CanvasRenderingContext2D]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\" .\r\n\r\nns0:var_point_19c5d47f a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[F|drawCover5]\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"drawCover5([%[context: CanvasRenderingContext2D]%])\" .\r\n\r\nns0:var_point_d17c1b6d a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"drawCover5([%[context: CanvasRenderingContext2D]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\" .\r\n\r\nns0:var_point_69a1c0f5 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[F|drawCover3]\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"drawCover3([%[context: CanvasRenderingContext2D]%], [%[x4: number]%], [%[y4: number]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\" .\r\n\r\nns0:var_point_5e9729d8 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"drawCover3([%[context: CanvasRenderingContext2D]%], [%[x4: number]%], [%[y4: number]%])\" .\r\n\r\nns0:var_point_06ee5729 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[F|drawRectFromPrev]\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"drawRectFromPrev([%[context: CanvasRenderingContext2D]%])\" .\r\n\r\nns0:var_point_7426bb68 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"drawRectFromPrev([%[context: CanvasRenderingContext2D]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\" .\r\n\r\nns0:var_point_3f992d66 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"True\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new Circle()\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|Circle]\" .\r\n\r\nns0:var_point_b4b5767f a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new Circle()\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\" .\r\n\r\nns0:var_point_c3a3707b a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"True\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new Line()\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|Line]\" .\r\n\r\nns0:var_point_fd79cfa3 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new Line()\" .\r\n\r\nns0:var_point_2cd423a2 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[F|drawLine]\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"drawLine([%[context: CanvasRenderingContext2D]%], [%[x1: number]%], [%[y1: number]%], [%[x2: number]%], [%[y2: number]%], [%[thickness: number]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\" .\r\n\r\nns0:var_point_a97db878 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"drawLine([%[context: CanvasRenderingContext2D]%], [%[x1: number]%], [%[y1: number]%], [%[x2: number]%], [%[y2: number]%], [%[thickness: number]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\" .\r\n\r\nns0:var_point_eb605e1b a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"drawCircle([%[context: CanvasRenderingContext2D]%], [%[cordX: number]%], [%[cordY: number]%], [%[radius: number]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[F|drawCircle]\" .\r\n\r\nns0:var_point_624558dc a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"drawCircle([%[context: CanvasRenderingContext2D]%], [%[cordX: number]%], [%[cordY: number]%], [%[radius: number]%])\" .\r\n\r\nns0:var_point_e5c2b541 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new Vector()\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"True\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|Vector]\" .\r\n\r\nns0:var_point_3af4314c a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new Vector()\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\" .\r\n\r\nns0:var_point_6fe6acd3 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[F|degreeToRadians]\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"degreeToRadians([%[angle: number]%])\" .\r\n\r\nns0:var_point_ba6fbf42 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"degreeToRadians([%[angle: number]%])\" .\r\n\r\nns0:var_point_ec9187b8 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new FiveSideMapInfo()\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSideMapInfo]\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"True\" .\r\n\r\nns0:var_point_ee1a40f0 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlcanCall \".createRule([%[dimension: number]%])\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSideMapInfo][F|createRule]\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\" .\r\n\r\nns0:var_point_1294e02f a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new FiveSideMapInfo()\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSideMapInfo]\" .\r\n\r\nns0:var_point_da37a2d8 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new FiveSideMapInfo()\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSideMapInfo][F|setFinalSideLength]\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\" .\r\n\r\nns0:var_point_750d96f4 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new FiveSideMapInfo()\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSideMapInfo][F|findCenterPoint]\" .\r\n\r\nns0:var_point_ad05c774 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new FiveSideMapInfo()\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\" .\r\n\r\nns0:var_point_cc480ad3 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|Point]\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new Point()\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"True\" .\r\n\r\nns0:var_point_9556e672 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new Point()\" .\r\n\r\nns0:var_point_658f4573 a ns0:fully-automated-spls-schema.ttlNegativeVP;\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"True\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSide]\" .\r\n\r\nns0:var_point_846d3b1d a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSide]\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new FiveSide()\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"True\" .\r\n\r\nns0:var_point_60b6d156 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new FiveSide()\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSide]\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\" .\r\n\r\nns0:var_point_027844a0 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new FiveSide()\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSide][F|getNewPoint]\" .\r\n\r\nns0:var_point_35de4577 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new FiveSide()\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSide][F|countMiddleAreaHeight]\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\" .\r\n\r\nns0:var_point_27a3eb72 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSide][F|countMiddleSpace]\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new FiveSide()\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\" .\r\n\r\nns0:var_point_e2f6fd31 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSide][F|countSmallerSideLength]\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new FiveSide()\" .\r\n\r\nns0:var_point_bed16eda a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new FiveSide()\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSide][F|getPointOnLine]\" .\r\n\r\nns0:var_point_b287aa87 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSide][F|countDistance]\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new FiveSide()\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\" .\r\n\r\nns0:var_point_ed739155 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSide][F|getMiddlePoint]\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new FiveSide()\" .\r\n\r\nns0:var_point_caaa63cf a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"new FiveSide()\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\" .\r\n\r\nns0:var_point_f57add50 a ns0:fully-automated-spls-schema.ttlNegativeVP;\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSideFractal]\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"True\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\" .\r\n\r\nns0:var_point_5022f44c a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSideFractal]\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"True\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \".drawFiveStar([%[conttext: CanvasRenderingContext2D]%], [%[radius: number]%], [%[iterations: number]%], [%[thickness: number]%])\" .\r\n\r\nns0:var_point_7c12f6c8 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSideFractal][F|getFiveSideShapes]\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \".getFiveSideShapes([%[iteration: number]%], [%[sideLength: number]%], [%[x1: number]%], [%[y1: number]%], [%[x2: number]%], [%[y2: number]%], [%[x3: number]%], [%[y3: number]%], [%[x4: number]%], [%[y4: number]%], [%[x5: number]%], [%[y5: number]%], [%[fiveSide: FiveSide]%], [%[context: CanvasRenderingContext2D]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"True\" .\r\n\r\nns0:var_point_3178c2f7 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \".drawShapeAndStoreVertices([%[context: CanvasRenderingContext2D]%], [%[fiveSideMapInfo: FiveSideMapInfo]%], [%[ruleString: string]%], [%[angleForPoint: number]%], [%[sideLength: number]%], [%[radius: number]%], [%[fiveSide: FiveSide]%])\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSideFractal][F|drawShapeAndStoreVertices]\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\" .\r\n\r\nns0:var_point_f047d6f9 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[C|FiveSideFractal][F|drawFiveStar]\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \".drawFiveStar([%[conttext: CanvasRenderingContext2D]%], [%[radius: number]%], [%[iterations: number]%], [%[thickness: number]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\" .\r\n\r\nns0:var_point_e2e9c5ed a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \".drawFiveStar([%[conttext: CanvasRenderingContext2D]%], [%[radius: number]%], [%[iterations: number]%], [%[thickness: number]%])\" .\r\n\r\nns0:var_point_9292e9c8 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"[F|drawAnkletModMain]\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"drawAnkletModMain([%[conttextMain: CanvasRenderingContext2D]%], [%[radius: number]%], [%[iterations: number]%], [%[thickness: number]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\" .\r\n\r\nns0:var_point_48c7d908 a ns0:fully-automated-spls-schema.ttlPositiveVP;\r\n  ns0:fully-automated-spls-schema.ttlcanCall \"drawAnkletModMain([%[conttextMain: CanvasRenderingContext2D]%], [%[radius: number]%], [%[iterations: number]%], [%[thickness: number]%])\";\r\n  ns0:fully-automated-spls-schema.ttlisClassRelated \"False\";\r\n  ns0:fully-automated-spls-schema.ttlisInsideRecursion \"False\";\r\n  ns0:fully-automated-spls-schema.ttlhierarchicIdentifier \"\" .\r\n\r\nns0:product_e21dece9 a ns0:fully-automated-spls-schema.ttlProduct;\r\n  ns0:fully-automated-spls-schema.ttlvectorRepr ns0:svg_bb020ba7;\r\n  ns0:fully-automated-spls-schema.ttlrasterRepr ns0:raster_1a0f1f19;\r\n  ns0:fully-automated-spls-schema.ttlcodeRepr ns0:code_9d897876;\r\n  ns0:fully-automated-spls-schema.ttlgraphRepr ns0:graph_8f2de1d3 .\r\n\r\nns0:svg_bb020ba7 a ns0:fully-automated-spls-schema.ttlSVG;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/vector_product\" .\r\n\r\nns0:raster_1a0f1f19 a ns0:fully-automated-spls-schema.ttlScreenshot;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/raster_product\" .\r\n\r\nns0:code_9d897876 a ns0:fully-automated-spls-schema.ttlCode;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/code_product\" .\r\n\r\nns0:graph_8f2de1d3 a ns0:fully-automated-spls-schema.ttlInstanceGraph;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/graph_product\" .\r\n\r\nns0:product_704e5746 a ns0:fully-automated-spls-schema.ttlProduct;\r\n  ns0:fully-automated-spls-schema.ttlrasterRepr ns0:raster_d8efb9ff;\r\n  ns0:fully-automated-spls-schema.ttlgraphRepr ns0:graph_f5e4c5b3;\r\n  ns0:fully-automated-spls-schema.ttlvectorRepr ns0:svg_e30f77d7;\r\n  ns0:fully-automated-spls-schema.ttlcodeRepr ns0:code_7609bada .\r\n\r\nns0:raster_d8efb9ff a ns0:fully-automated-spls-schema.ttlScreenshot;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/raster_product2\" .\r\n\r\nns0:graph_f5e4c5b3 a ns0:fully-automated-spls-schema.ttlInstanceGraph;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/graph_product2\" .\r\n\r\nns0:svg_e30f77d7 a ns0:fully-automated-spls-schema.ttlSVG;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/vector_product2\" .\r\n\r\nns0:code_7609bada a ns0:fully-automated-spls-schema.ttlCode;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/code_product2\" .\r\n\r\nns0:graph_dec45760 a ns0:fully-automated-spls-schema.ttlInstanceGraph;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/graph2\" .\r\n\r\nns0:evol_7236df63 a ns0:fully-automated-spls-schema.ttlEvolution;\r\n  ns0:fully-automated-spls-schema.ttlconfAssoc \"/evolved_configuration\";\r\n  ns0:fully-automated-spls-schema.ttlnextEvol ns0:evol_f2a0689a;\r\n  ns0:fully-automated-spls-schema.ttlevolving ns0:evol_script_cb229ccb;\r\n  ns0:fully-automated-spls-schema.ttlstartFromSPL ns0:prod_line_e398ac19 .\r\n\r\nns0:raster_d3f49dfa a ns0:fully-automated-spls-schema.ttlScreenshot;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/raster2\" .\r\n\r\nns0:svg_dbdfc7e6 a ns0:fully-automated-spls-schema.ttlSVG;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/vector2\" .\r\n\r\nns0:code_469c0745 a ns0:fully-automated-spls-schema.ttlCode;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/code2\" .\r\n\r\nns0:prod_line_bebef058 a ns0:fully-automated-spls-schema.ttlProductLine .\r\n\r\nns0:graph_8eccfdcc a ns0:fully-automated-spls-schema.ttlInstanceGraph;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/graph3\" .\r\n\r\nns0:raster_8a8bea81 a ns0:fully-automated-spls-schema.ttlScreenshot;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/raster3\" .\r\n\r\nns0:svg_deb6d549 a ns0:fully-automated-spls-schema.ttlSVG;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/vector3\" .\r\n\r\nns0:code_aae51e64 a ns0:fully-automated-spls-schema.ttlCode;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/code3\" .\r\n\r\nns0:evol_f2a0689a a ns0:fully-automated-spls-schema.ttlEvolution;\r\n  ns0:fully-automated-spls-schema.ttlconfAssoc \"/evolved_configuration\";\r\n  ns0:fully-automated-spls-schema.ttlstartFromSPL ns0:prod_line_bebef058;\r\n  ns0:fully-automated-spls-schema.ttlevolving ns0:evol_script_cb229ccb .\r\n\r\nns0:evol_script_cb229ccb a ns0:fully-automated-spls-schema.ttlEvolvedScript;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/evolved_script\" .\r\n\r\nns0:raster_640dce16 a ns0:fully-automated-spls-schema.ttlScreenshot;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/raster\" .\r\n\r\nns0:svg_27d2104e a ns0:fully-automated-spls-schema.ttlSVG;\r\n  ns0:fully-automated-spls-schema.ttllocation \"/vector\" .",
+					"options": {
+						"raw": {
+							"language": "text"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/knowledge-base/addTriples",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"knowledge-base",
+						"addTriples"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Insert triples Sample",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "@prefix faspls: <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .\r\n@prefix ns0: <https://jakubperdek-26e24f.gitlab.io/> .\r\n\r\n<evol_id_1> a faspls:Evolution .\r\n<evol_spl_id_1> a faspls:ProductLine .\r\n<evol_id_1> faspls:startFromSPL <evol_spl_id_1> .\r\n",
+					"options": {
+						"raw": {
+							"language": "text"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/knowledge-base/addTriples",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"knowledge-base",
+						"addTriples"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

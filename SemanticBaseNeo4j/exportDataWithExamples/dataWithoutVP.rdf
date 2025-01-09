@@ -1,86 +1,119 @@
-@prefix faspls: <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .
-@prefix ns0: <https://jakubperdek-26e24f.gitlab.io/> .
+@prefix faspls: 
+<https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .
+@prefix ns0: 
+    <https://jakubperdek-26e24f.gitlab.io/> .
 
-ns0:evol_fb73b98c a ns0:fully-automated-spls-schema.ttlEvolution;
-  ns0:fully-automated-spls-schema.ttlconfAssoc "/evolved_configuration" .
+ns0:evol_347e158a a ns0:fully-automated-spls-schema.ttlEvolution;
+  ns0:fully-automated-spls-schema.ttlconfAssoc "/evolved_configuration";
+  ns0:fully-automated-spls-schema.ttlnextEvol ns0:evol_f627c40d;
+  ns0:fully-automated-spls-schema.ttlstartFromSPL ns0:prod_line_22f04603;
+  ns0:fully-automated-spls-schema.ttlevolving ns0:evol_script_e654ee68 .
 
-ns0:evol_script_68abd011 a ns0:fully-automated-spls-schema.ttlEvolvedScript;
+ns0:evol_f627c40d a ns0:fully-automated-spls-schema.ttlEvolution;
+  ns0:fully-automated-spls-schema.ttlconfAssoc "/evolved_configuration";
+  ns0:fully-automated-spls-schema.ttlstartFromSPL ns0:prod_line_63f44a95;
+  ns0:fully-automated-spls-schema.ttlevolving ns0:evol_script_e654ee68 .
+
+ns0:prod_line_63f44a95 a ns0:fully-automated-spls-schema.ttlProductLine .
+
+ns0:evol_script_e654ee68 a ns0:fully-automated-spls-schema.ttlEvolvedScript;
   ns0:fully-automated-spls-schema.ttllocation "/evolved_script" .
 
-ns0:prod_line_f1031c3f a ns0:fully-automated-spls-schema.ttlProductLine;
-  ns0:fully-automated-spls-schema.ttlevolSerie "1" .
+ns0:prod_line_21c146f3 a ns0:fully-automated-spls-schema.ttlProductLine;
+  ns0:fully-automated-spls-schema.ttlevolSerie "2";
+  ns0:fully-automated-spls-schema.ttlnextEvolved ns0:prod_line_63f44a95, ns0:prod_line_02e5e677;
+  ns0:fully-automated-spls-schema.ttlevolvedIn ns0:evol_347e158a;
+  ns0:fully-automated-spls-schema.ttlcodeRepr ns0:code_91d5380a;
+  ns0:fully-automated-spls-schema.ttlvectorRepr ns0:svg_f9250c8e;
+  ns0:fully-automated-spls-schema.ttlrasterRepr ns0:raster_858aa6db;
+  ns0:fully-automated-spls-schema.ttlgraphRepr ns0:graph_6dc06357 .
 
-ns0:svg_dd40675a a ns0:fully-automated-spls-schema.ttlSVG;
-  ns0:fully-automated-spls-schema.ttllocation "/vector" .
+ns0:prod_line_02e5e677 a ns0:fully-automated-spls-schema.ttlProductLine;
+  ns0:fully-automated-spls-schema.ttlevolvedIn ns0:evol_347e158a;
+  ns0:fully-automated-spls-schema.ttlevolSerie "3";
+  ns0:fully-automated-spls-schema.ttlcodeRepr ns0:code_da985807;
+  ns0:fully-automated-spls-schema.ttlrasterRepr ns0:raster_e2c63e0d;
+  ns0:fully-automated-spls-schema.ttlgraphRepr ns0:graph_901466c1;
+  ns0:fully-automated-spls-schema.ttlvectorRepr ns0:svg_8b0aacfe .
 
-ns0:code_16bab4ec a ns0:fully-automated-spls-schema.ttlCode;
-  ns0:fully-automated-spls-schema.ttllocation "/code" .
+ns0:prod_line_22f04603 a ns0:fully-automated-spls-schema.ttlProductLine;
+  ns0:fully-automated-spls-schema.ttlevolSerie "1";
+  ns0:fully-automated-spls-schema.ttlevolvedIn ns0:evol_347e158a;
+  ns0:fully-automated-spls-schema.ttlnextEvolved ns0:prod_line_21c146f3, ns0:prod_line_22f04603;
+  ns0:fully-automated-spls-schema.ttlderivedFrom ns0:product_268ecf7e, ns0:product_414ff4a4;
+  ns0:fully-automated-spls-schema.ttlgraphRepr ns0:graph_f5c6dc89;
+  ns0:fully-automated-spls-schema.ttlvectorRepr ns0:svg_46494a02;
+  ns0:fully-automated-spls-schema.ttlcodeRepr ns0:code_9c9badd5;
+  ns0:fully-automated-spls-schema.ttlrasterRepr ns0:raster_92b20cc4 .
 
-ns0:raster_fc202c41 a ns0:fully-automated-spls-schema.ttlScreenshot;
-  ns0:fully-automated-spls-schema.ttllocation "/raster" .
+ns0:product_268ecf7e a ns0:fully-automated-spls-schema.ttlProduct;
+  ns0:fully-automated-spls-schema.ttlrasterRepr ns0:raster_4b835f71;
+  ns0:fully-automated-spls-schema.ttlvectorRepr ns0:svg_a8a05f92;
+  ns0:fully-automated-spls-schema.ttlgraphRepr ns0:graph_348c7d8d;
+  ns0:fully-automated-spls-schema.ttlcodeRepr ns0:code_451f7d5d .
 
-ns0:graph_f61b310c a ns0:fully-automated-spls-schema.ttlInstanceGraph;
+ns0:product_414ff4a4 a ns0:fully-automated-spls-schema.ttlProduct;
+  ns0:fully-automated-spls-schema.ttlvectorRepr ns0:svg_3ffd612f;
+  ns0:fully-automated-spls-schema.ttlrasterRepr ns0:raster_c1b7cdfe;
+  ns0:fully-automated-spls-schema.ttlgraphRepr ns0:graph_733e3261;
+  ns0:fully-automated-spls-schema.ttlcodeRepr ns0:code_51b44a03 .
+
+ns0:graph_f5c6dc89 a ns0:fully-automated-spls-schema.ttlInstanceGraph;
   ns0:fully-automated-spls-schema.ttllocation "/graph" .
 
-ns0:code_bf92f68a a ns0:fully-automated-spls-schema.ttlCode;
-  ns0:fully-automated-spls-schema.ttllocation "/code_product" .
+ns0:svg_46494a02 a ns0:fully-automated-spls-schema.ttlSVG;
+  ns0:fully-automated-spls-schema.ttllocation "/vector" .
 
-ns0:product_9ad6a08f a ns0:fully-automated-spls-schema.ttlProduct .
+ns0:code_9c9badd5 a ns0:fully-automated-spls-schema.ttlCode;
+  ns0:fully-automated-spls-schema.ttllocation "/code" .
 
-ns0:graph_f12716e8 a ns0:fully-automated-spls-schema.ttlInstanceGraph;
-  ns0:fully-automated-spls-schema.ttllocation "/graph_product" .
+ns0:raster_92b20cc4 a ns0:fully-automated-spls-schema.ttlScreenshot;
+  ns0:fully-automated-spls-schema.ttllocation "/raster" .
 
-ns0:raster_c04c47c4 a ns0:fully-automated-spls-schema.ttlScreenshot;
-  ns0:fully-automated-spls-schema.ttllocation "/raster_product" .
-
-ns0:svg_7e9ce70e a ns0:fully-automated-spls-schema.ttlSVG;
+ns0:svg_3ffd612f a ns0:fully-automated-spls-schema.ttlSVG;
   ns0:fully-automated-spls-schema.ttllocation "/vector_product" .
 
-ns0:graph_737767da a ns0:fully-automated-spls-schema.ttlInstanceGraph;
-  ns0:fully-automated-spls-schema.ttllocation "/graph_product2" .
+ns0:raster_c1b7cdfe a ns0:fully-automated-spls-schema.ttlScreenshot;
+  ns0:fully-automated-spls-schema.ttllocation "/raster_product" .
 
-ns0:product_80d4518d a ns0:fully-automated-spls-schema.ttlProduct .
+ns0:graph_733e3261 a ns0:fully-automated-spls-schema.ttlInstanceGraph;
+  ns0:fully-automated-spls-schema.ttllocation "/graph_product" .
 
-ns0:code_bbcf2658 a ns0:fully-automated-spls-schema.ttlCode;
-  ns0:fully-automated-spls-schema.ttllocation "/code_product2" .
+ns0:code_51b44a03 a ns0:fully-automated-spls-schema.ttlCode;
+  ns0:fully-automated-spls-schema.ttllocation "/code_product" .
 
-ns0:svg_5c3ce3d7 a ns0:fully-automated-spls-schema.ttlSVG;
-  ns0:fully-automated-spls-schema.ttllocation "/vector_product2" .
-
-ns0:raster_b24196b3 a ns0:fully-automated-spls-schema.ttlScreenshot;
+ns0:raster_4b835f71 a ns0:fully-automated-spls-schema.ttlScreenshot;
   ns0:fully-automated-spls-schema.ttllocation "/raster_product2" .
 
-ns0:code_91ffa31d a ns0:fully-automated-spls-schema.ttlCode;
+ns0:svg_a8a05f92 a ns0:fully-automated-spls-schema.ttlSVG;
+  ns0:fully-automated-spls-schema.ttllocation "/vector_product2" .
+
+ns0:graph_348c7d8d a ns0:fully-automated-spls-schema.ttlInstanceGraph;
+  ns0:fully-automated-spls-schema.ttllocation "/graph_product2" .
+
+ns0:code_451f7d5d a ns0:fully-automated-spls-schema.ttlCode;
+  ns0:fully-automated-spls-schema.ttllocation "/code_product2" .
+
+ns0:code_91d5380a a ns0:fully-automated-spls-schema.ttlCode;
   ns0:fully-automated-spls-schema.ttllocation "/code2" .
 
-ns0:raster_33ce8a7b a ns0:fully-automated-spls-schema.ttlScreenshot;
-  ns0:fully-automated-spls-schema.ttllocation "/raster2" .
-
-ns0:prod_line_32af7db3 a ns0:fully-automated-spls-schema.ttlProductLine;
-  ns0:fully-automated-spls-schema.ttlevolSerie "2" .
-
-ns0:graph_ce5b3d1c a ns0:fully-automated-spls-schema.ttlInstanceGraph;
-  ns0:fully-automated-spls-schema.ttllocation "/graph2" .
-
-ns0:svg_1d573d7f a ns0:fully-automated-spls-schema.ttlSVG;
+ns0:svg_f9250c8e a ns0:fully-automated-spls-schema.ttlSVG;
   ns0:fully-automated-spls-schema.ttllocation "/vector2" .
 
-ns0:svg_320acf04 a ns0:fully-automated-spls-schema.ttlSVG;
-  ns0:fully-automated-spls-schema.ttllocation "/vector3" .
+ns0:raster_858aa6db a ns0:fully-automated-spls-schema.ttlScreenshot;
+  ns0:fully-automated-spls-schema.ttllocation "/raster2" .
 
-ns0:raster_d3cff568 a ns0:fully-automated-spls-schema.ttlScreenshot;
-  ns0:fully-automated-spls-schema.ttllocation "/raster3" .
+ns0:graph_6dc06357 a ns0:fully-automated-spls-schema.ttlInstanceGraph;
+  ns0:fully-automated-spls-schema.ttllocation "/graph2" .
 
-ns0:prod_line_fa07253a a ns0:fully-automated-spls-schema.ttlProductLine;
-  ns0:fully-automated-spls-schema.ttlevolSerie "3" .
-
-ns0:code_080162c5 a ns0:fully-automated-spls-schema.ttlCode;
+ns0:code_da985807 a ns0:fully-automated-spls-schema.ttlCode;
   ns0:fully-automated-spls-schema.ttllocation "/code3" .
 
-ns0:graph_90c6af89 a ns0:fully-automated-spls-schema.ttlInstanceGraph;
+ns0:raster_e2c63e0d a ns0:fully-automated-spls-schema.ttlScreenshot;
+  ns0:fully-automated-spls-schema.ttllocation "/raster3" .
+
+ns0:graph_901466c1 a ns0:fully-automated-spls-schema.ttlInstanceGraph;
   ns0:fully-automated-spls-schema.ttllocation "/graph3" .
 
-ns0:prod_line_f41cd081 a ns0:fully-automated-spls-schema.ttlProductLine .
-
-ns0:evol_f6fe7ce7 a ns0:fully-automated-spls-schema.ttlEvolution;
-  ns0:fully-automated-spls-schema.ttlconfAssoc "/evolved_configuration" .
+ns0:svg_8b0aacfe a ns0:fully-automated-spls-schema.ttlSVG;
+  ns0:fully-automated-spls-schema.ttllocation "/vector3" .
