@@ -69,6 +69,7 @@ services:
             PROCESSING_QUEUE_VHOST: rabbitmq
             MQ_CONSUMER_USER_NAME: ${CONSUMER_USER_NAME:-consumerUser}
             MQ_CONSUMER_USER_PASSWORD: ${CONSUMER_USER_PASSWORD:-consumerUser}
+            BUILD_DEFAULT_KNOWLEDGE_BASE: ${BUILD_DEFAULT_KNOWLEDGE_BASE:-true}
             OUTPUT_DEBUG_FILES: ${OUTPUT_DEBUG_FILES:-false}
             OUTPIT_FILES_AS_ANNOTATED_AST_AND_CODE: ${OUTPIT_FILES_AS_ANNOTATED_AST_AND_CODE:-false}
             SHOW_SELECTED_SYNTESIZED_CODE_CONSTRUCTS: ${SHOW_SELECTED_SYNTESIZED_CODE_CONSTRUCTS:-false}
@@ -142,6 +143,7 @@ services:
             QUEUE_EVOLVED_SPL: ${QUEUE_EVOLVED_SPL:-EVOLVED_SPL}
             DATA_COLLECTOR_ADDRESS: host.docker.internal
             PURGE_QUEUE_ON_START: false
+            BUILD_DEFAULT_KNOWLEDGE_BASE: ${BUILD_DEFAULT_KNOWLEDGE_BASE:-true}
         depends_on:
             - volumeCopyInit
             - splsToProcessMessageQueue

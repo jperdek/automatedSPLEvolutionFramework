@@ -39,4 +39,9 @@ public interface SharedConfiguration {
 	 * Prefering to serve files using temporary directory specified in PATH_TO_TEMP_DIRECTORY (true) instead of files served by server public directory (false)
 	 */
 	public static final boolean USE_TMP_LOCATION_INSTEAD_OF_SERVER = true;
+	
+	/**
+	 * Ensures creation of default knowledge about performed evolutions, their iterations, and evolved software product lines along with optionally derived products
+	 */
+	public static final boolean BUILD_DEFAULT_KNOWLEDGE_BASE = (boolean) System.getenv().getOrDefault("BUILD_DEFAULT_KNOWLEDGE_BASE", "true").contains("true");
 }

@@ -131,12 +131,13 @@ class DataRepresentationsClient:
             evolved_spl_path + "/index.html", destination_spl_project_path, logger)
         json_graph_path = DataRepresentationsClient.get_and_save_graph_data(
             evolved_spl_path + "/index.html", destination_spl_project_path, logger)
-        DataRepresentationsClient.save_knowledge_after_iteration(
-            evolution_id=evolution_id, evolution_iteration=evolution_iteration,
-            evolved_product_line_id=evolved_product_line_id, evolved_script_path=evolved_script_path,
-            code_path=code_path, vector_path=vector_path, screenshot_path=screenshot_path,
-            json_graph_path=json_graph_path, variation_point_data_location=variation_point_data_location,
-            previous_product_line_id=previous_product_line_id, logger=logger)
+        if os.getenv("BUILD_DEFAULT_KNOWLEDGE_BASE", False):
+            DataRepresentationsClient.save_knowledge_after_iteration(
+                evolution_id=evolution_id, evolution_iteration=evolution_iteration,
+                evolved_product_line_id=evolved_product_line_id, evolved_script_path=evolved_script_path,
+                code_path=code_path, vector_path=vector_path, screenshot_path=screenshot_path,
+                json_graph_path=json_graph_path, variation_point_data_location=variation_point_data_location,
+                previous_product_line_id=previous_product_line_id, logger=logger)
         return destination_spl_project_path
 
     @staticmethod

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeoutException;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -333,7 +334,8 @@ public class EvolutionConfiguration {
 	 */
 	public String extractSourceSoftwareProductLineIdFromUrl(String urlWithSourceSoftwareProductLineId) {
 		if (urlWithSourceSoftwareProductLineId.indexOf(EvolutionConfiguration.EVOLVED_SPL_ID_WRAPPER) > 0) {
-			return urlWithSourceSoftwareProductLineId.split(EvolutionConfiguration.EVOLVED_SPL_ID_WRAPPER)[1];
+			System.out.println(urlWithSourceSoftwareProductLineId);
+			return urlWithSourceSoftwareProductLineId.split(Pattern.quote(EvolutionConfiguration.EVOLVED_SPL_ID_WRAPPER))[1];
 		}
 		return null;
 	}
