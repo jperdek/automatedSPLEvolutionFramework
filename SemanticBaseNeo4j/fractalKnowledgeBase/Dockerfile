@@ -10,8 +10,8 @@ ENV NEO4J_AUTH=neo4j/featureNeo4
 #ENV NEO4J_PLUGINS='["apoc", "n10s"]'
 #COPY --from=build-stage /data/databases /data/databases
 #COPY --from=build-stage /data/transactions /data/transactions
-#COPY ./plugins /plugins
-#COPY ./plugins /var/lib/neo4j/plugins
+COPY ./plugins /plugins
+COPY ./plugins /var/lib/neo4j/plugins
 #COPY ./labs /labs
 COPY ./conf /conf 
 #COPY ./conf/neo4j.conf /conf/neo4j.conf

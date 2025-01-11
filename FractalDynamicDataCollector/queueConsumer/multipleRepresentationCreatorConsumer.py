@@ -17,20 +17,20 @@ processed_spls = {}
 def callback_func(channel, method, properties, body):
     try:
         task_configuration = json.loads(body)
-        project_id = task_configuration["projectId"]
+        project_id = str(task_configuration["projectId"])
         logger.debug(
             ">------| Processing data creation request after SPL: "
             + project_id
             + " has been evolved."
         )
         evolved_spl_path = task_configuration["targetPath"]
-        evolution_iteration = task_configuration["evolutionIteration"]
-        if evolved_spl_path not in processed_spls.keys():
+        evolution_iteration = str(task_configuration["evolutionIteration"])
+        if evolved_spl_path and evolved_spl_path not in processed_spls.keys():
             processed_spls[evolved_spl_path] = evolved_spl_path
-            evolution_id = task_configuration["evolutionId"]
-            evolved_script_path = task_configuration["evolvedScriptPath"]
+            evolution_id = str(task_configuration["evolutionId"])
+            evolved_script_path = str(task_configuration["evolvedScriptPath"])
             evolved_product_line_id = project_id
-            previous_product_line_id = task_configuration["previousProductLineId"]
+            previous_product_line_id = str(task_configuration["previousProductLineId"])
             variation_points_data_location = task_configuration[
                 "variationPointsDataLocation"
             ]
@@ -48,7 +48,7 @@ def callback_func(channel, method, properties, body):
             )
             logger.debug(
                 ">------| Finished all processing tasks. Final location: "
-                + destination_spl_path
+                + str(destination_spl_path)
             )
         else:
             logger.debug("SPL has been already processed. Skipping...")

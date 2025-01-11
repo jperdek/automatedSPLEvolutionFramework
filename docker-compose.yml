@@ -24,8 +24,6 @@ services:
             KNOWLEDGE_BASE_USERNAME: ${KNOWLEDGE_BASE_USERNAME:-neo4j}
             KNOWLEDGE_BASE_PASSWORD: ${KNOWLEDGE_BASE_PASSWORD:-featureNeo4j}
         depends_on:
-            fullyAutomatedEvolutionFramework:
-                condition: service_started
             volumeCopyInit:
                 condition: service_completed_successfully
         networks:
@@ -35,7 +33,7 @@ services:
             interval: 10s
             timeout: 20s
             retries: 5
-            start_interval: 30s
+            start_interval: 15s
     volumeCopyInit:
         build:
             dockerfile: Dockerfile
@@ -106,6 +104,8 @@ services:
             volumeCopyInit:
                 condition: service_completed_successfully
             fractalKnowledgeBase:
+                condition: service_healthy
+            dynamicDataCollectorService:
                 condition: service_healthy
     astConverterAndComplexityAnalysisAPI:
         image: jperdek/ast-converter-and-complexity-analysis-api2

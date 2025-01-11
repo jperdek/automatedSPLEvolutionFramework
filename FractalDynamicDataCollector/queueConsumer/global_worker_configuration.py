@@ -76,7 +76,7 @@ class DataRepresentationsClient:
             if logger:
                 logger.debug(
                     "Error :-> Saving raster screenshot :-> Request: "
-                    + service_url
+                    + str(service_url)
                     + " failed with status code: "
                     + str(response.status_code)
                 )
@@ -142,7 +142,11 @@ class DataRepresentationsClient:
 
     @staticmethod
     def __clean_url(url: str) -> str:
-        return url.replace("'", "")
+        if url:
+            if "file:///" not in str(url):
+                return "file:///" + str(url).replace("'", "")
+            return str(url).replace("'", "")
+        return ""
 
     @staticmethod
     def save_knowledge_after_iteration(
@@ -158,20 +162,12 @@ class DataRepresentationsClient:
         previous_product_line_id: str,
         logger: Optional[logging.Logger] = None,
     ) -> None:
-        code_path = DataRepresentationsClient.__clean_url("file:///" + code_path)
-        vector_path = DataRepresentationsClient.__clean_url("file:///" + vector_path)
-        screenshot_path = DataRepresentationsClient.__clean_url(
-            "file:///" + screenshot_path
-        )
-        json_graph_path = DataRepresentationsClient.__clean_url(
-            "file:///" + json_graph_path
-        )
-        evolved_script_path = DataRepresentationsClient.__clean_url(
-            "file:///" + evolved_script_path
-        )
-        variation_point_data_location = DataRepresentationsClient.__clean_url(
-            "file:///" + variation_point_data_location
-        )
+        code_path = DataRepresentationsClient.__clean_url(code_path)
+        vector_path = DataRepresentationsClient.__clean_url(vector_path)
+        screenshot_path = DataRepresentationsClient.__clean_url(screenshot_path)
+        json_graph_path = DataRepresentationsClient.__clean_url(json_graph_path)
+        evolved_script_path = DataRepresentationsClient.__clean_url(evolved_script_path)
+        variation_point_data_location = DataRepresentationsClient.__clean_url(variation_point_data_location)
         service_url = (
             DataRepresentationsClient.get_server_path()
             + "/api/knowledge-base/registerNewEvolutionIteration"
