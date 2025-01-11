@@ -4,7 +4,7 @@ services:
             context: ./FractalDynamicDataCollector
             dockerfile: DockerfileDeployNginx
         command: python /srv/flask_app/apis/http/api/endpoints.py
-        image: jperdek/dynamic-data-collector
+        image: jperdek/dynamic-data-collector2
         ports:
             - "127.0.0.1:5000:5000"
         container_name: dynamicDataCollector
@@ -24,16 +24,24 @@ services:
             KNOWLEDGE_BASE_USERNAME: ${KNOWLEDGE_BASE_USERNAME:-neo4j}
             KNOWLEDGE_BASE_PASSWORD: ${KNOWLEDGE_BASE_PASSWORD:-featureNeo4j}
         depends_on:
-            - fullyAutomatedEvolutionFramework
-            - volumeCopyInit
+            fullyAutomatedEvolutionFramework:
+                condition: service_started
+            volumeCopyInit:
+                condition: service_completed_successfully
         networks:
             - buildernet
+        healthcheck:
+            test: "wget --no-verbose --tries=1 http://localhost:5000 || exit 1"
+            interval: 10s
+            timeout: 20s
+            retries: 5
+            start_interval: 30s
     volumeCopyInit:
         build:
             dockerfile: Dockerfile
         command: cp -R /localFiles/splsToMerge /localFiles/resources  ${PROJECT_PATH:-/EvolutionSPLFramework}
         env_file: .env
-        image: jperdek/volume-copy-init
+        image: jperdek/volume-copy-init2
         environment:
             PROJECT_PATH: ${PROJECT_PATH:-/EvolutionSPLFramework}
             PATH_TO_EVOLUTION_DIRECTORY: ${PATH_TO_EVOLUTION_DIRECTORY:-/evolution}
@@ -45,7 +53,7 @@ services:
         build:
             context: ./EvolutionSPLFramework
             dockerfile: Dockerfile
-        image: jperdek/fully-automated-evolution
+        image: jperdek/fully-automated-evolution2
         ports:
             - "127.0.0.1:5002:5002"
         container_name: fully-automated-evolution
@@ -91,11 +99,16 @@ services:
         networks:
             - buildernet
         depends_on:
-            - splsToProcessMessageQueue
-            - astConverterAndComplexityAnalysisAPI
-            - volumeCopyInit
+            splsToProcessMessageQueue:
+                condition: service_started
+            astConverterAndComplexityAnalysisAPI:
+                condition: service_healthy
+            volumeCopyInit:
+                condition: service_completed_successfully
+            fractalKnowledgeBase:
+                condition: service_healthy
     astConverterAndComplexityAnalysisAPI:
-        image: jperdek/ast-converter-and-complexity-analysis-api
+        image: jperdek/ast-converter-and-complexity-analysis-api2
         build:
             context: ./ConverterAndComplexityAnalyzerAPI
             dockerfile: Dockerfile
@@ -108,6 +121,12 @@ services:
         volumes:
             - tmp-volume:/temp
         restart: on-failure
+        healthcheck:
+            test: "wget --no-verbose --tries=1 http://localhost:5001 || exit 1"
+            interval: 5s
+            timeout: 15s
+            retries: 5
+            start_interval: 3s
         environment:
             PATH_TO_TEMP_DIRECTORY: ${PATH_TO_TEMP_DIRECTORY:-/temp}
     fractalKnowledgeBase: 
@@ -125,17 +144,18 @@ services:
         environment:
             NEO4J_AUTH: ${KNOWLEDGE_BASE_USERNAME:-neo4j}/${KNOWLEDGE_BASE_PASSWORD:-featureNeo4j}
             NEO4J_dbms_logs_debug_level: ${KNOWLEDGE_BASE_LOG_LEVEL:-DEBUG}
-            NEO4J_PLUGINS: '["apoc", "n10s"]'
+#            NEO4J_PLUGINS: '["apoc", "n10s"]' # installed in docker compose
         healthcheck:
-            test: [ "CMD", "nc", "-z", "localhost", "7475" ]
+            test: "wget --no-verbose --tries=1 http://localhost:7475 || exit 1"
             interval: 5s
             timeout: 15s
             retries: 5
+            start_interval: 60s
     splCreationConsumer: 
         build:
             context: ./FractalDynamicDataCollector/queueConsumer
             dockerfile: Dockerfile
-        image: jperdek/spl-creation-consumer
+        image: jperdek/spl-creation-consumer2
         volumes:
             - dataset-products-volume:/dataset
             - source-volume:/EvolutionSPLFramework
@@ -151,18 +171,21 @@ services:
             RABBIT_MQ_HOST: splsToProcessMessageQueue
             RABBIT_MQ_HEARTBEAT: "0"
             QUEUE_EVOLVED_SPL: ${QUEUE_EVOLVED_SPL:-EVOLVED_SPL}
-            DATA_COLLECTOR_ADDRESS: host.docker.internal
+            KNOWLEDGE_EXTRACTOR_SERVER_ADDRESS: host.docker.internal
             PURGE_QUEUE_ON_START: false
             BUILD_DEFAULT_KNOWLEDGE_BASE: ${BUILD_DEFAULT_KNOWLEDGE_BASE:-true}
         depends_on:
-            - volumeCopyInit
-            - splsToProcessMessageQueue
-            - dynamicDataCollectorService
+            volumeCopyInit:
+                condition: service_completed_successfully
+            splsToProcessMessageQueue:
+                condition: service_healthy
+            dynamicDataCollectorService:
+                condition: service_healthy
         restart: on-failure
         networks:
             - buildernet
     splsToProcessMessageQueue:
-        image: jperdek/spl-to-process-message-queue
+        image: jperdek/spl-to-process-message-queue2
         build:
             context: ./rabbitMQ
             dockerfile: Dockerfile
@@ -187,10 +210,11 @@ services:
         networks:
             - buildernet
         healthcheck:
-            test: [ "CMD", "nc", "-z", "localhost", "5672" ]
-            interval: 5s
-            timeout: 15s
+            test: "wget --no-verbose --tries=1 http://localhost:15672 || exit 1"
+            interval: 10s
+            timeout: 20s
             retries: 5
+            start_interval: 60s
 volumes:
     source-volume:
     evolution-volume:

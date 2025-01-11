@@ -235,4 +235,11 @@ router.get("/cleanLargeFiles", function (request, response) {
 });
 
 
+
+router.get("/", function (request, response) {
+	response.set("Content-Type", "text/plain");
+	response.send({"response": "Done!"});
+	response.status(200);
+});
+
 module.exports = router;

@@ -13,7 +13,10 @@ COPY ./init.sh /rabbitMQ/init.sh
 RUN chmod +x /rabbitMQ/init.sh
 WORKDIR /rabbitMQ
 EXPOSE 15672
+EXPOSE 5672
 
 
+RUN apt-get update
+RUN apt-get install -y wget
 # Define default command
 CMD ["sh", "/rabbitMQ/init.sh"]

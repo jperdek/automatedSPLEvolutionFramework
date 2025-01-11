@@ -2,6 +2,8 @@ FROM python:3.11-slim
 COPY ./server /python-flask
 WORKDIR /python-flask
 
+RUN apt-get -y update
+RUN apt-get -y install wget
 RUN apt-get -y install libvips-dev 
 
 RUN apt-get -y install libatk1.0-0 && apt-get -y install libatk-bridge2.0-0 && apt-get -y install libdrm2 \

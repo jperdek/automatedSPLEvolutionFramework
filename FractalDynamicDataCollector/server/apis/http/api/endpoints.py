@@ -27,6 +27,11 @@ app.register_blueprint(svg_creator_api, url_prefix="/api/svg_creator")
 app.register_blueprint(default_knowledge_graph_api, url_prefix="/api/knowledge-base")
 
 
+@app.route("/", methods=["GET"])
+def check_if_service_is_up():
+    return "OK", 200, {"content-type": "text/html"}
+
+
 with app.app_context():
     print("Preparing for requests execution...")
     # g.fully_automated_product_lines_knowledge_manager = FullyAutomatedProductLinesKnowledgeManager()

@@ -7,6 +7,7 @@ RUN --mount=target=/dumps,type=bind,source=dumps neo4j-admin load --from=/dumps/
 
 FROM neo4j:5.25.1 AS final-image
 ENV NEO4J_AUTH=neo4j/featureNeo4
+RUN apk add --no-cache wget
 COPY --from=build-stage /data/databases /data/databases
 COPY --from=build-stage /data/transactions /data/transactions
 COPY ./plugins /plugins

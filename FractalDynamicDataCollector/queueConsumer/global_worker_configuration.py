@@ -1,3 +1,4 @@
+import json
 import os
 import shutil
 from typing import Optional
@@ -141,7 +142,7 @@ class DataRepresentationsClient:
 
     @staticmethod
     def __clean_url(url: str) -> str:
-        return url.replace("////", "///")
+        return url.replace("'", "")
 
     @staticmethod
     def save_knowledge_after_iteration(
@@ -173,7 +174,7 @@ class DataRepresentationsClient:
         )
         service_url = (
             DataRepresentationsClient.get_server_path()
-            + "/api/knowledgeBase/registerNewEvolutionIteration"
+            + "/api/knowledge-base/registerNewEvolutionIteration"
         )
         request_data = {
             "evolution_id": evolution_id,
@@ -188,7 +189,7 @@ class DataRepresentationsClient:
             "previous_product_line_id": previous_product_line_id,
         }
         headers = {"Content-Type": "text/plain"}
-        response = requests.post(service_url, data=request_data, headers=headers)
+        response = requests.post(service_url, data=json.dumps(request_data), headers=headers)
 
         if response.status_code == 200:
             pass
@@ -198,7 +199,7 @@ class DataRepresentationsClient:
                     "Error :-> Incorporating software product line knowledge :-> Request: "
                     + service_url
                     + " failed with status code: "
-                    + str(response.status_code)
+                    + str(response.status_code) + " " + str(response.content)
                 )
 
     @staticmethod

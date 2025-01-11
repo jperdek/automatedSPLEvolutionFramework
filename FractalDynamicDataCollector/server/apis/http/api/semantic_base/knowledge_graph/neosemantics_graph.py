@@ -136,21 +136,21 @@ class NeosemanticsKnowledgeGraphApi:
         )
         graph_knowledge_api.process_data_transaction_using_commands(knowledge_ttl_call)
 
-
-def get_server_path() -> str:
-    return (
-        "http://"
-        + os.getenv("DATA_COLLECTOR_ADDRESS", "localhost")
-        + ":"
-        + os.getenv("DATA_COLLECTOR_PORT", "5000")
-    )
+    @staticmethod
+    def get_server_path() -> str:
+        return (
+            "http://"
+            + os.getenv("KNOWLEDGE_EXTRACTOR_SERVER_ADDRESS", "localhost")
+            + ":"
+            + os.getenv("KNOWLEDGE_EXTRACTOR_SERVER_PORT", "5000")
+        )
 
 
 def test(local: bool, import_variation_points: bool = False) -> None:
     variation_point_data_location = (
         "./variationPointDataSample.json"
         if local
-        else get_server_path() + "/variationPointDataSample.json"
+        else NeosemanticsKnowledgeGraphApi.get_server_path() + "/variationPointDataSample.json"
     )
     variation_point_data_location = (
         None if not import_variation_points else variation_point_data_location

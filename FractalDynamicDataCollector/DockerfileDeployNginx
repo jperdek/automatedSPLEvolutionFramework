@@ -3,6 +3,8 @@ FROM python:3.11-slim
 COPY ./server /srv/flask_app
 WORKDIR /srv/flask_app
 
+RUN apt-get -y update
+RUN apt-get -y install wget
 RUN apt-get clean \
     && apt-get -y update
 

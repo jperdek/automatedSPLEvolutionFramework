@@ -9,12 +9,12 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import codeConstructsEvaluation.MethodComplexityRecord;
 import codeConstructsEvaluation.transformation.PostRequester;
 import evolutionSimulation.productAssetsInitialization.SharedConfiguration;
 
 
 /**
+ * Manages information related to the sofware product line evolution and propagates it towards knowledge creation
  * 
  * 
  * @author Jakub Perdek
@@ -22,12 +22,35 @@ import evolutionSimulation.productAssetsInitialization.SharedConfiguration;
  */
 public class DefaultKnowledgeBaseCreation {
 
+	/**
+	 * The location of exposed API to manage knowledge from the evolution
+	 */
 	private static final String DEFAULT_KNOWLEDGE_BASE_SERVER = "http://" + System.getenv().getOrDefault("DOCKER_HOST", "localhost")+ ":" + 
 			System.getenv().getOrDefault("KNOWLEDGE_EXTRACTOR_SERVER_PORT", "5000") + "/api/knowledge-base";
+
+	/**
+	 * URI to service responsible for initialization of knowledge base
+	 */
 	private static final String INIT_DEFAULT_KNOWLEDGE_BASE = DefaultKnowledgeBaseCreation.DEFAULT_KNOWLEDGE_BASE_SERVER + "/init";
+	
+	/**
+	 * URI to service responsible for cleaning inserted triples (data/knowledge) into database
+	 */
 	private static final String CLEAR_DEFAULT_KNOWLEDGE_BASE = DefaultKnowledgeBaseCreation.DEFAULT_KNOWLEDGE_BASE_SERVER + "/clear";
+	
+	/**
+	 * URI to service responsible for creation of default knowledge associated with derivation of new product
+	 */
 	private static final String REGISTER_NEW_PRODUCT = DefaultKnowledgeBaseCreation.DEFAULT_KNOWLEDGE_BASE_SERVER + "/registerNewProduct";
+	
+	/**
+	 * URI to service responsible for creation of default knowledge associated with launched new evolution
+	 */
 	private static final String REGISTER_NEW_EVOLUTION = DefaultKnowledgeBaseCreation.DEFAULT_KNOWLEDGE_BASE_SERVER + "/registerNewEvolution";
+	
+	/**
+	 * URI to service responsible for insertion of triples
+	 */
 	private static final String INSERT_TRIPLES = DefaultKnowledgeBaseCreation.DEFAULT_KNOWLEDGE_BASE_SERVER + "/addTriples";
 	
 	/**
