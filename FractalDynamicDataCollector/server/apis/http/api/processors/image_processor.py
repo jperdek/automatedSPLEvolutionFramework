@@ -8,7 +8,9 @@ from io import BytesIO
 
 # for Windows only
 if hasattr(sys, "getwindowsversion"):
-    os.environ["PATH"] += r";" + os.getcwd().split("\\server")[0] + "\\vips-dev-8.12\\bin"
+    os.environ["PATH"] += (
+        r";" + os.getcwd().split("\\server")[0] + "\\vips-dev-8.12\\bin"
+    )
 import pyvips
 
 
@@ -30,9 +32,9 @@ class ImageProcessor:
 
     @staticmethod
     def automatically_trim_and_get_image(
-            image_content: bytes,
-            added_borders: int = 15,
-            color_to_trip=None,
+        image_content: bytes,
+        added_borders: int = 15,
+        color_to_trip=None,
     ) -> bytes:
         if color_to_trip is None:
             color_to_trip = [51, 51, 51]
@@ -133,7 +135,9 @@ class ImageProcessor:
 
     @staticmethod
     def increase_image_size(
-        image_file: BytesIO, max_size: (int, int), color: Optional[Tuple[int, int, int]] = None
+        image_file: BytesIO,
+        max_size: (int, int),
+        color: Optional[Tuple[int, int, int]] = None,
     ) -> Image:
         if color is None:
             color = (51, 51, 51)

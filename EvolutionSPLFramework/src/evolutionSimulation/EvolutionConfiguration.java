@@ -300,7 +300,7 @@ public class EvolutionConfiguration {
 	/**
 	 * Wrapper - behind and after - each evolved software product line identifier
 	 */
-	private static final String EVOLVED_SPL_ID_WRAPPER = "-+-";
+	private static final String EVOLVED_SPL_ID_WRAPPER = "-_-";
 	
 	/**
 	 * Returns the relative configuration path to template HTML file
@@ -334,8 +334,8 @@ public class EvolutionConfiguration {
 	 */
 	public String extractSourceSoftwareProductLineIdFromUrl(String urlWithSourceSoftwareProductLineId) {
 		if (urlWithSourceSoftwareProductLineId.indexOf(EvolutionConfiguration.EVOLVED_SPL_ID_WRAPPER) > 0) {
-			System.out.println(urlWithSourceSoftwareProductLineId);
-			return urlWithSourceSoftwareProductLineId.split(Pattern.quote(EvolutionConfiguration.EVOLVED_SPL_ID_WRAPPER))[1];
+			String [] softwareProductLineIdsList = urlWithSourceSoftwareProductLineId.split(Pattern.quote(EvolutionConfiguration.EVOLVED_SPL_ID_WRAPPER)); 
+			return softwareProductLineIdsList[softwareProductLineIdsList.length - 2];
 		}
 		return null;
 	}

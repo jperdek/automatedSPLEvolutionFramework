@@ -7,13 +7,19 @@ from server.apis.http.api.graphSimulation.graphMerger.merge_configuration import
     ImageSettings,
     StrategyOnIntersection,
 )
-from server.apis.http.api.graphSimulation.graphMerger.related_data_manager import RelatedDataManager
+from server.apis.http.api.graphSimulation.graphMerger.related_data_manager import (
+    RelatedDataManager,
+)
 
 if hasattr(sys, "getwindowsversion"):
     os.environ["PATH"] += r";" + os.getcwd() + "\\..\\..\\vips-dev-8.12\\bin"
 
-from server.apis.http.api.graphSimulation.graphExtractor.geometry_data_to_image import GeometryDataToImage
-from server.apis.http.api.graphSimulation.graphExtractor.graph_scheme import FractalGraphScheme
+from server.apis.http.api.graphSimulation.graphExtractor.geometry_data_to_image import (
+    GeometryDataToImage,
+)
+from server.apis.http.api.graphSimulation.graphExtractor.graph_scheme import (
+    FractalGraphScheme,
+)
 from server.apis.http.api.graphSimulation.graphMerger.node_verifier import NodeVerifier
 from merge_aggregations import MergeAggregations
 from server.apis.http.api.processors.analyzer import DynamicFractalAnalyzer

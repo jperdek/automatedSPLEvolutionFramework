@@ -1,4 +1,6 @@
-from server.apis.http.api.graphSimulation.graphExtractor.geometry_data_to_image import GeometryDataToImage
+from server.apis.http.api.graphSimulation.graphExtractor.geometry_data_to_image import (
+    GeometryDataToImage,
+)
 from typing import Optional
 import json
 

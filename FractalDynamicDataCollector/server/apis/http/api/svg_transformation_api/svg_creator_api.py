@@ -18,10 +18,17 @@ def create_svg_and_extract_it_from_browser():
     time_to_wait = int(request.args.get("time_to_wait", 10))
     generated_svg_id = request.args.get("generated_svg_id", "svgId")
     draw_line_in_op = request.args.get("draw_line_in_op", "drawLine")
-    replacement_function = request.args.get("replacement_function", "function(context, x1, y1, x2, y2, thickness)")
+    replacement_function = request.args.get(
+        "replacement_function", "function(context, x1, y1, x2, y2, thickness)"
+    )
 
     if not web_page_location:
         return "No product/fractal url provided.", 500, {"content-type": "text/plain"}
-    resulting_svg = SVGTransform.transform_into_svg(web_page_location, generated_svg_id, draw_line_in_op,
-                           replacement_function, time_to_wait)
+    resulting_svg = SVGTransform.transform_into_svg(
+        web_page_location,
+        generated_svg_id,
+        draw_line_in_op,
+        replacement_function,
+        time_to_wait,
+    )
     return html_text_response(resulting_svg)

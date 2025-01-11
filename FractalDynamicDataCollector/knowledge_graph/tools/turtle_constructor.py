@@ -3,15 +3,22 @@ import json
 import uuid
 from typing import Optional, Dict
 
-from server.apis.http.api.semantic_base.knowledge_graph.graph_knowledge_base_api import GraphKnowledgeBaseAPI
-from server.apis.http.api.semantic_base.tools.triple_call_neosemantics_factory import TripleCallNeosemanticsFactory
+from server.apis.http.api.semantic_base.knowledge_graph.graph_knowledge_base_api import (
+    GraphKnowledgeBaseAPI,
+)
+from server.apis.http.api.semantic_base.tools.triple_call_neosemantics_factory import (
+    TripleCallNeosemanticsFactory,
+)
 
 
 class TurtleTriplesConstructor:
-
     @staticmethod
-    def get_default_headers_in_ttl(base_header: str = "@base <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .") -> str:
-        return base_header + """
+    def get_default_headers_in_ttl(
+        base_header: str = "@base <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .",
+    ) -> str:
+        return (
+            base_header
+            + """
             @prefix faspls: <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .
             @prefix dbp: <http://dbpedia.org/ontology/> .
             @prefix owl: <http://www.w3.org/2002/07/owl#> .
@@ -21,27 +28,40 @@ class TurtleTriplesConstructor:
             @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
     
         """
+        )
 
     @staticmethod
-    def get_rdfs_headers_in_ttl(base_header: str = "@base <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .") -> str:
-        return base_header + """
+    def get_rdfs_headers_in_ttl(
+        base_header: str = "@base <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .",
+    ) -> str:
+        return (
+            base_header
+            + """
             @prefix faspls: <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .
             @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
             @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
         
         """
+        )
 
     @staticmethod
-    def prepare_ttl_to_import_with_headers(base_header: str = "@base <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .") -> str:
-        prepared_ttl = TurtleTriplesConstructor.get_rdfs_headers_in_ttl(base_header=base_header)
+    def prepare_ttl_to_import_with_headers(
+        base_header: str = "@base <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .",
+    ) -> str:
+        prepared_ttl = TurtleTriplesConstructor.get_rdfs_headers_in_ttl(
+            base_header=base_header
+        )
 
         return prepared_ttl
 
     @staticmethod
     def prepare_ttl_of_new_product_line_to_exiting_evolution(
-            evolution_id: str, product_line_id: str, evolved_script_id: Optional[str],
-            evolved_script_path: Optional[str],
-            previous_product_line_id: Optional[str]) -> str:
+        evolution_id: str,
+        product_line_id: str,
+        evolved_script_id: Optional[str],
+        evolved_script_path: Optional[str],
+        previous_product_line_id: Optional[str],
+    ) -> str:
         prepared_ttl = f"""
             <{product_line_id}> a faspls:ProductLine .
         """
@@ -63,16 +83,28 @@ class TurtleTriplesConstructor:
 
     @staticmethod
     def prepare_ttl_of_core_product_line_evolution(
-            evolution_id: str, initial_product_line_id: str, evolved_script_id: str,
-            evolved_script_path: Optional[str], evolution_configuration_path: Optional[str],
-            previous_evolution_id: Optional[str] = None, previous_product_line_id: Optional[str] = None,
-            base_header: str = "@base <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .") -> str:
-        prepared_ttl = TurtleTriplesConstructor.get_rdfs_headers_in_ttl(base_header=base_header)
+        evolution_id: str,
+        initial_product_line_id: str,
+        evolved_script_id: str,
+        evolved_script_path: Optional[str],
+        evolution_configuration_path: Optional[str],
+        previous_evolution_id: Optional[str] = None,
+        previous_product_line_id: Optional[str] = None,
+        base_header: str = "@base <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .",
+    ) -> str:
+        prepared_ttl = TurtleTriplesConstructor.get_rdfs_headers_in_ttl(
+            base_header=base_header
+        )
         prepared_ttl += f"""
             <{evolution_id}> a faspls:Evolution .
         """
         prepared_ttl += TurtleTriplesConstructor.prepare_ttl_of_new_product_line_to_exiting_evolution(
-            evolution_id, initial_product_line_id, evolved_script_id, evolved_script_path, previous_product_line_id)
+            evolution_id,
+            initial_product_line_id,
+            evolved_script_id,
+            evolved_script_path,
+            previous_product_line_id,
+        )
         if previous_evolution_id:
             prepared_ttl += f"""
                 <{previous_evolution_id}> faspls:nextEvol <{evolution_id}> .
@@ -88,73 +120,140 @@ class TurtleTriplesConstructor:
 
     @staticmethod
     def prepare_ttl_of_derived_product(
-            evolved_product_line_id: str, code_location: Optional[str] = None, graph_location: Optional[str] = None,
-            raster_location: Optional[str] = None, vector_location: Optional[str] = None,
-            base_header: str = "@base <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .") -> str:
-        prepared_ttl = TurtleTriplesConstructor.get_rdfs_headers_in_ttl(base_header=base_header)
+        evolved_product_line_id: str,
+        code_location: Optional[str] = None,
+        graph_location: Optional[str] = None,
+        raster_location: Optional[str] = None,
+        vector_location: Optional[str] = None,
+        base_header: str = "@base <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .",
+    ) -> str:
+        prepared_ttl = TurtleTriplesConstructor.get_rdfs_headers_in_ttl(
+            base_header=base_header
+        )
         new_product_id = "product_" + uuid.uuid4().hex[:8]
         prepared_ttl += f"""
             <{new_product_id}> a faspls:Product .
             
             <{evolved_product_line_id}> faspls:derivedFrom <{new_product_id}> .
         """
-        prepared_ttl += TurtleTriplesConstructor.__prepare_code_ttl(new_product_id, code_location)
-        prepared_ttl += TurtleTriplesConstructor.__prepare_raster_ttl(new_product_id, raster_location)
-        prepared_ttl += TurtleTriplesConstructor.__prepare_vector_ttl(new_product_id, vector_location)
-        prepared_ttl += TurtleTriplesConstructor.__prepare_graph_ttl(new_product_id, graph_location)
+        prepared_ttl += TurtleTriplesConstructor.__prepare_code_ttl(
+            new_product_id, code_location
+        )
+        prepared_ttl += TurtleTriplesConstructor.__prepare_raster_ttl(
+            new_product_id, raster_location
+        )
+        prepared_ttl += TurtleTriplesConstructor.__prepare_vector_ttl(
+            new_product_id, vector_location
+        )
+        prepared_ttl += TurtleTriplesConstructor.__prepare_graph_ttl(
+            new_product_id, graph_location
+        )
         return prepared_ttl
 
     @staticmethod
     def prepare_ttl_of_diverse_representations(
-            evolution_id: str, evolved_product_line_id: str, evolution_iteration: str,
-            code_location: Optional[str] = None, graph_location: Optional[str] = None,
-            raster_location: Optional[str] = None, vector_location: Optional[str] = None,
-            variation_point_data_location: Optional[str] = None, evolved_script_id: Optional[str] = None,
-            evolved_script_path: Optional[str] = None, previous_product_line_id: Optional[str] = None,
-            immediately_save_ttls: bool = False, graph_knowledge_api: Optional[GraphKnowledgeBaseAPI] = None,
-            base_header: str = "@base <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .") -> str:
-        prepared_ttl = TurtleTriplesConstructor.get_rdfs_headers_in_ttl(base_header=base_header)
+        evolution_id: str,
+        evolved_product_line_id: str,
+        evolution_iteration: str,
+        code_location: Optional[str] = None,
+        graph_location: Optional[str] = None,
+        raster_location: Optional[str] = None,
+        vector_location: Optional[str] = None,
+        variation_point_data_location: Optional[str] = None,
+        evolved_script_id: Optional[str] = None,
+        evolved_script_path: Optional[str] = None,
+        previous_product_line_id: Optional[str] = None,
+        immediately_save_ttls: bool = False,
+        graph_knowledge_api: Optional[GraphKnowledgeBaseAPI] = None,
+        base_header: str = "@base <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .",
+    ) -> str:
+        prepared_ttl = TurtleTriplesConstructor.get_rdfs_headers_in_ttl(
+            base_header=base_header
+        )
         prepared_ttl += TurtleTriplesConstructor.prepare_ttl_of_new_product_line_to_exiting_evolution(
-            evolution_id, evolved_product_line_id, evolved_script_id,
-            evolved_script_path, previous_product_line_id)
+            evolution_id,
+            evolved_product_line_id,
+            evolved_script_id,
+            evolved_script_path,
+            previous_product_line_id,
+        )
         prepared_ttl += f"""
             <{evolved_product_line_id}> faspls:evolvedIn <{evolution_id}> .
             <{evolved_product_line_id}> faspls:evolSerie "{evolution_iteration}" .
         """
-        prepared_ttl += TurtleTriplesConstructor.__prepare_code_ttl(evolved_product_line_id, code_location)
-        prepared_ttl += TurtleTriplesConstructor.__prepare_raster_ttl(evolved_product_line_id, raster_location)
-        prepared_ttl += TurtleTriplesConstructor.__prepare_vector_ttl(evolved_product_line_id, vector_location)
-        prepared_ttl += TurtleTriplesConstructor.__prepare_graph_ttl(evolved_product_line_id, graph_location)
+        prepared_ttl += TurtleTriplesConstructor.__prepare_code_ttl(
+            evolved_product_line_id, code_location
+        )
+        prepared_ttl += TurtleTriplesConstructor.__prepare_raster_ttl(
+            evolved_product_line_id, raster_location
+        )
+        prepared_ttl += TurtleTriplesConstructor.__prepare_vector_ttl(
+            evolved_product_line_id, vector_location
+        )
+        prepared_ttl += TurtleTriplesConstructor.__prepare_graph_ttl(
+            evolved_product_line_id, graph_location
+        )
 
         # overwrites or lefts untouched - only = operator is used
-        prepared_ttl = TurtleTriplesConstructor.__check_and_optionally_save_prepared_ttl(
-            prepared_ttl, immediately_save_ttls, graph_knowledge_api, base_header)
+        prepared_ttl = (
+            TurtleTriplesConstructor.__check_and_optionally_save_prepared_ttl(
+                prepared_ttl, immediately_save_ttls, graph_knowledge_api, base_header
+            )
+        )
         prepared_ttl += TurtleTriplesConstructor.__prepare_variation_points_ttl(
-            evolved_product_line_id, variation_point_data_location, immediately_save_ttls,
-            graph_knowledge_api, base_header)
+            evolved_product_line_id,
+            variation_point_data_location,
+            immediately_save_ttls,
+            graph_knowledge_api,
+            base_header,
+        )
         return prepared_ttl
 
     @staticmethod
     def normalize_configuration_expression(configuration_expression: str) -> str:
-        return configuration_expression.replace("\"", "").replace("'", "").replace(
-            ":", "-").replace("{", "I_").replace("}", "_I").replace(" ", "")
+        return (
+            configuration_expression.replace('"', "")
+            .replace("'", "")
+            .replace(":", "-")
+            .replace("{", "I_")
+            .replace("}", "_I")
+            .replace(" ", "")
+        )
 
     @staticmethod
     def __prepare_vp_annotation_with_expression_in_ttl(
-            variation_point_configuration: Dict, unique_variation_point_id: str,
-            immediately_save_ttls: bool = False, graph_knowledge_api: Optional[GraphKnowledgeBaseAPI] = None,
-            base_header: str = "@base <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .") -> str:
+        variation_point_configuration: Dict,
+        unique_variation_point_id: str,
+        immediately_save_ttls: bool = False,
+        graph_knowledge_api: Optional[GraphKnowledgeBaseAPI] = None,
+        base_header: str = "@base <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .",
+    ) -> str:
         prepared_ttl = ""
-        for variability_annot_config in variation_point_configuration.get("variabilitySelections", []):
+        for variability_annot_config in variation_point_configuration.get(
+            "variabilitySelections", []
+        ):
             variability_annotation_id = "var_annot_" + uuid.uuid4().hex[:8]
-            is_user_annotation = variability_annot_config.get("isNegativeVariabilityUserAnnotation", True)
+            is_user_annotation = variability_annot_config.get(
+                "isNegativeVariabilityUserAnnotation", True
+            )
             guarded_entity_name = variability_annot_config.get("name", "Undefined")
-            fully_annot_name = variability_annot_config.get("fullName", guarded_entity_name)
-            is_illegal_decorator = variability_annot_config.get("isMarkedAsIllegal", False)
-            configuration_expression_str = variability_annot_config.get("configurationExpressionStr", "{}")
-            configuration_expression_id = TurtleTriplesConstructor.normalize_configuration_expression(
-                configuration_expression_str)
-            annotated_entity_type = variability_annot_config.get("annotationVPType", "Unknown")
+            fully_annot_name = variability_annot_config.get(
+                "fullName", guarded_entity_name
+            )
+            is_illegal_decorator = variability_annot_config.get(
+                "isMarkedAsIllegal", False
+            )
+            configuration_expression_str = variability_annot_config.get(
+                "configurationExpressionStr", "{}"
+            )
+            configuration_expression_id = (
+                TurtleTriplesConstructor.normalize_configuration_expression(
+                    configuration_expression_str
+                )
+            )
+            annotated_entity_type = variability_annot_config.get(
+                "annotationVPType", "Unknown"
+            )
             prepared_ttl += f"""
                 <{unique_variation_point_id}> faspls:hasVariabilityAnnotation <{variability_annotation_id}> .
                 <{variability_annotation_id}> faspls:isUserAnnotation "{is_user_annotation}" .
@@ -169,44 +268,70 @@ class TurtleTriplesConstructor:
             """
             configuration_expression = json.loads(configuration_expression_str)
             prepared_ttl += TurtleTriplesConstructor.__process_configuration_expression(
-                configuration_expression, configuration_expression_id)
+                configuration_expression, configuration_expression_id
+            )
             # overwrites or lefts untouched - only = operator is used
-            prepared_ttl = TurtleTriplesConstructor.__check_and_optionally_save_prepared_ttl(
-                prepared_ttl, immediately_save_ttls, graph_knowledge_api, base_header)
+            prepared_ttl = (
+                TurtleTriplesConstructor.__check_and_optionally_save_prepared_ttl(
+                    prepared_ttl,
+                    immediately_save_ttls,
+                    graph_knowledge_api,
+                    base_header,
+                )
+            )
         return prepared_ttl
 
     @staticmethod
     def __check_and_optionally_save_prepared_ttl(
-            prepared_ttl: str, immediately_save_ttls: bool = False,
-            graph_knowledge_api: Optional[GraphKnowledgeBaseAPI] = None,
-            base_header: str = "@base <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .") -> str:
+        prepared_ttl: str,
+        immediately_save_ttls: bool = False,
+        graph_knowledge_api: Optional[GraphKnowledgeBaseAPI] = None,
+        base_header: str = "@base <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .",
+    ) -> str:
         if immediately_save_ttls and graph_knowledge_api:
             headers_ttl = TurtleTriplesConstructor.get_rdfs_headers_in_ttl(base_header)
             if headers_ttl not in prepared_ttl:
                 prepared_ttl = headers_ttl + prepared_ttl
-            command_to_store_ttls = TripleCallNeosemanticsFactory.import_from_text(prepared_ttl, "Turtle")
-            graph_knowledge_api.process_data_transaction_using_commands(command_to_store_ttls)
+            command_to_store_ttls = TripleCallNeosemanticsFactory.import_from_text(
+                prepared_ttl, "Turtle"
+            )
+            graph_knowledge_api.process_data_transaction_using_commands(
+                command_to_store_ttls
+            )
             return ""
         return prepared_ttl
 
     @staticmethod
     def __prepare_variation_point_in_ttl(
-            variation_point_configuration: Dict, evolved_product_line_id: str,
-            immediately_save_ttls: bool = False, graph_knowledge_api: Optional[GraphKnowledgeBaseAPI] = None,
-            base_header: str = "@base <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .") -> str:
-        unique_variation_point_id_str = variation_point_configuration["hierarchicIdentifier"]
+        variation_point_configuration: Dict,
+        evolved_product_line_id: str,
+        immediately_save_ttls: bool = False,
+        graph_knowledge_api: Optional[GraphKnowledgeBaseAPI] = None,
+        base_header: str = "@base <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .",
+    ) -> str:
+        unique_variation_point_id_str = variation_point_configuration[
+            "hierarchicIdentifier"
+        ]
         if variation_point_configuration.get("newVariationPoint"):
-            for callable_object in variation_point_configuration.get("allAvailableCalls", []):
+            for callable_object in variation_point_configuration.get(
+                "allAvailableCalls", []
+            ):
                 unique_variation_point_id_str += callable_object
             variation_point_type = "faspls:PositiveVP"
         else:
-            unique_variation_point_id_str += variation_point_configuration.get("affectedCode", "")
+            unique_variation_point_id_str += variation_point_configuration.get(
+                "affectedCode", ""
+            )
             variation_point_type = "faspls:NegativeVP"
         hash_object = hashlib.sha256(unique_variation_point_id_str.encode("utf-8"))
         unique_variation_point_id = "var_point_" + hash_object.hexdigest()[:8]
         is_class_related = variation_point_configuration.get("classRelated", False)
-        hierarchic_identifier = variation_point_configuration.get("hierarchicIdentifier", ".")
-        is_inside_recursion = variation_point_configuration.get("isInsideRecursion", False)
+        hierarchic_identifier = variation_point_configuration.get(
+            "hierarchicIdentifier", "."
+        )
+        is_inside_recursion = variation_point_configuration.get(
+            "isInsideRecursion", False
+        )
         prepared_ttl = f"""
             <{unique_variation_point_id}> a {variation_point_type} .
             
@@ -216,43 +341,73 @@ class TurtleTriplesConstructor:
             <{unique_variation_point_id}> faspls:hierarchicIdentifier "{hierarchic_identifier}" .
         """
         if variation_point_configuration.get("newVariationPoint"):
-            for callable_object in variation_point_configuration.get("allAvailableCalls", []):
+            for callable_object in variation_point_configuration.get(
+                "allAvailableCalls", []
+            ):
                 prepared_ttl += f"""
                    <{unique_variation_point_id}> faspls:canCall "{callable_object}" . 
                 """
             # overwrites or lefts untouched - only = operator is used
-            prepared_ttl = TurtleTriplesConstructor.__check_and_optionally_save_prepared_ttl(
-                prepared_ttl, immediately_save_ttls, graph_knowledge_api, base_header)
+            prepared_ttl = (
+                TurtleTriplesConstructor.__check_and_optionally_save_prepared_ttl(
+                    prepared_ttl,
+                    immediately_save_ttls,
+                    graph_knowledge_api,
+                    base_header,
+                )
+            )
         else:
             # overwrites or lefts untouched - only = operator is used
-            prepared_ttl = TurtleTriplesConstructor.__check_and_optionally_save_prepared_ttl(
-                prepared_ttl, immediately_save_ttls, graph_knowledge_api, base_header)
-            prepared_ttl += TurtleTriplesConstructor.__prepare_vp_annotation_with_expression_in_ttl(
-                variation_point_configuration, unique_variation_point_id)
+            prepared_ttl = (
+                TurtleTriplesConstructor.__check_and_optionally_save_prepared_ttl(
+                    prepared_ttl,
+                    immediately_save_ttls,
+                    graph_knowledge_api,
+                    base_header,
+                )
+            )
+            prepared_ttl += (
+                TurtleTriplesConstructor.__prepare_vp_annotation_with_expression_in_ttl(
+                    variation_point_configuration, unique_variation_point_id
+                )
+            )
         return prepared_ttl
 
     @staticmethod
     def __prepare_variation_points_ttl(
-            evolved_product_line_id: str, variation_point_data_location: Optional[str],
-            immediately_save_ttls: bool = False, graph_knowledge_api: Optional[GraphKnowledgeBaseAPI] = None,
-            base_header: str = "@base <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .") -> str:
+        evolved_product_line_id: str,
+        variation_point_data_location: Optional[str],
+        immediately_save_ttls: bool = False,
+        graph_knowledge_api: Optional[GraphKnowledgeBaseAPI] = None,
+        base_header: str = "@base <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .",
+    ) -> str:
         prepared_ttl = ""
         if variation_point_data_location:
             with open(variation_point_data_location, "r", encoding="utf-8") as file:
                 variation_points_configuration = json.loads(file.read())
                 for variation_point_configuration in variation_points_configuration:
-                    prepared_ttl += TurtleTriplesConstructor.__prepare_variation_point_in_ttl(
-                        variation_point_configuration, evolved_product_line_id,
-                        immediately_save_ttls, graph_knowledge_api, base_header)
+                    prepared_ttl += (
+                        TurtleTriplesConstructor.__prepare_variation_point_in_ttl(
+                            variation_point_configuration,
+                            evolved_product_line_id,
+                            immediately_save_ttls,
+                            graph_knowledge_api,
+                            base_header,
+                        )
+                    )
         return prepared_ttl
 
     @staticmethod
     def __process_configuration_expression(
-            configuration_expression: Dict, parent_configuration_expression_id: str) -> str:
+        configuration_expression: Dict, parent_configuration_expression_id: str
+    ) -> str:
         prepared_ttl = ""
         for name, configuration_json in configuration_expression.items():
-            prepared_ttl += TurtleTriplesConstructor.__process_configuration_expression_rec(
-                name, configuration_json, parent_configuration_expression_id)
+            prepared_ttl += (
+                TurtleTriplesConstructor.__process_configuration_expression_rec(
+                    name, configuration_json, parent_configuration_expression_id
+                )
+            )
         return prepared_ttl
 
     @staticmethod
@@ -262,12 +417,18 @@ class TurtleTriplesConstructor:
         return False
 
     @staticmethod
-    def __process_configuration_expression_rec(object_type: str, configuration_expression: Dict,
-                                               parent_configuration_expression_id: str) -> str:
+    def __process_configuration_expression_rec(
+        object_type: str,
+        configuration_expression: Dict,
+        parent_configuration_expression_id: str,
+    ) -> str:
         prepared_ttl = ""
         if isinstance(configuration_expression, Dict):
-            configuration_expression_id = TurtleTriplesConstructor.normalize_configuration_expression(
-                json.dumps(configuration_expression))
+            configuration_expression_id = (
+                TurtleTriplesConstructor.normalize_configuration_expression(
+                    json.dumps(configuration_expression)
+                )
+            )
             prepared_ttl = f"""
                 <{configuration_expression_id}> a faspls:JSONExpression .
                 <{configuration_expression_id}> faspls:hasValue "{json.dumps(configuration_expression)}" .
@@ -281,8 +442,11 @@ class TurtleTriplesConstructor:
                     <{configuration_expression_id}> faspls:hasValue "{object_type}" .
                 """
             for name, configuration_json in configuration_expression.items():
-                prepared_ttl += TurtleTriplesConstructor.__process_configuration_expression_rec(
-                    name, configuration_json, configuration_expression_id)
+                prepared_ttl += (
+                    TurtleTriplesConstructor.__process_configuration_expression_rec(
+                        name, configuration_json, configuration_expression_id
+                    )
+                )
         elif TurtleTriplesConstructor.__is_operator(object_type):
             prepared_ttl += f"""
                 <{parent_configuration_expression_id}> faspls:belongsToFeature "{object_type}" .

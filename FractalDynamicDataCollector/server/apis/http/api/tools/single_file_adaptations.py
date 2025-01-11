@@ -8,7 +8,7 @@ from screenshoting.screenshooter import PlaywrightScreenshooter
 
 
 def json_response(payload: Dict, status: int = 200) -> Tuple[str, int, Dict]:
-    return json.dumps(payload), status, {"content-type": "application/json" }
+    return json.dumps(payload), status, {"content-type": "application/json"}
 
 
 def text_response(payload: str, status: int = 200) -> Tuple[str, int, Dict]:
@@ -63,7 +63,8 @@ def prepare_mhtml_from_single_file():
     page.goto(path_or_url, wait_until="networkidle")
     with open("r", "single-file.txt", encoding="utf-8") as file:
         page.evaluate(file.read())
-    content = page.evaluate("""(async () => {
+    content = page.evaluate(
+        """(async () => {
         const { content, title, filename } = await singlefile.getPageData({
             removeImports: false,
             removeScripts: false,
@@ -73,7 +74,8 @@ def prepare_mhtml_from_single_file():
         console.log(content);
         const url = "data:application/x-mimearchive;base64," + btoa(content);
         return content
-    })();""")
+    })();"""
+    )
     time.sleep(time_to_wait)
     try:
         screenshooter.close()

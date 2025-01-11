@@ -100,7 +100,9 @@ class DynamicFractalAnalyzer:
         fractal_content = self.__remove_context_content(fractal_content)
         branch_data_script = (
             fractal_content
-            + "; function getData() { return JSON.stringify(" + self.graph_object_name + "); } getData();"
+            + "; function getData() { return JSON.stringify("
+            + self.graph_object_name
+            + "); } getData();"
         )
         return self.__get_branches(branch_data_script)
 
@@ -134,26 +136,62 @@ class DynamicFractalAnalyzer:
         self.load_fractal_output_only("../../../../../example/1/js/platnoJS.js")
 
     @staticmethod
-    def get_graph(depth: int, max_depth: int, processed_object: Dict, page: any, extension_array_string: str = "",
-                  extension_key: str = "pointsTo", into_array: bool = True) -> None:
-        for object_key in page.evaluate("() => Object.keys(initialGraphRoot" + extension_array_string + ")"):
+    def get_graph(
+        depth: int,
+        max_depth: int,
+        processed_object: Dict,
+        page: any,
+        extension_array_string: str = "",
+        extension_key: str = "pointsTo",
+        into_array: bool = True,
+    ) -> None:
+        for object_key in page.evaluate(
+            "() => Object.keys(initialGraphRoot" + extension_array_string + ")"
+        ):
             if object_key == extension_key and depth + 1 < max_depth:
                 processed_object[extension_key] = [] if into_array else {}
-                array_length_script = "() => initialGraphRoot" + extension_array_string + "['" + object_key + "'].length"
+                array_length_script = (
+                    "() => initialGraphRoot"
+                    + extension_array_string
+                    + "['"
+                    + object_key
+                    + "'].length"
+                )
                 array_length = page.evaluate(array_length_script)
                 for index in range(array_length):
-                    extension_array_string_deeper = extension_array_string + "['" + extension_key + "'][" + str(
-                        index) + "]"
-                    managed_object = {} if into_array else processed_object[extension_key]
+                    extension_array_string_deeper = (
+                        extension_array_string
+                        + "['"
+                        + extension_key
+                        + "']["
+                        + str(index)
+                        + "]"
+                    )
+                    managed_object = (
+                        {} if into_array else processed_object[extension_key]
+                    )
                     if into_array:
                         processed_object[extension_key].append(managed_object)
                     try:
-                        DynamicFractalAnalyzer.get_graph(depth + 1, max_depth, managed_object, page,
-                                  extension_array_string_deeper, extension_key, into_array)
+                        DynamicFractalAnalyzer.get_graph(
+                            depth + 1,
+                            max_depth,
+                            managed_object,
+                            page,
+                            extension_array_string_deeper,
+                            extension_key,
+                            into_array,
+                        )
                     except Exception as e:
                         print(e)
             else:
-                script_to_get_value = "() => JSON.stringify(initialGraphRoot" + extension_array_string + "['" + object_key + "'])"
+                script_to_get_value = (
+                    "() => JSON.stringify(initialGraphRoot"
+                    + extension_array_string
+                    + "['"
+                    + object_key
+                    + "'])"
+                )
                 processed_object[object_key] = page.evaluate(script_to_get_value)
 
 

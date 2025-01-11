@@ -13,7 +13,6 @@ class SVGImplementation:
 
 
 class SVGTransform:
-
     @staticmethod
     def __get_svg_creation_script() -> str:
         return """
@@ -86,16 +85,24 @@ class SVGTransform:
 
     # only x1, y1, x2, y2 and thickness are propagated to original svg!!!
     @staticmethod
-    def __get_svg_transformation_script(generated_svg_id: str = "svgId", draw_line_in_op: str = "drawLine",
-                                        replacement_function: str = "function(context, x1, y1, x2, y2, thickness)") -> str:
-        return """
-            var svgCreator = new SvgCreator(\"""" + generated_svg_id + """\", 10000, 10000, 25, "linkId");
+    def __get_svg_transformation_script(
+        generated_svg_id: str = "svgId",
+        draw_line_in_op: str = "drawLine",
+        replacement_function: str = "function(context, x1, y1, x2, y2, thickness)",
+    ) -> str:
+        return (
+            """
+            var svgCreator = new SvgCreator(\""""
+            + generated_svg_id
+            + """\", 10000, 10000, 25, "linkId");
             svgCreator.minX = 10000000;
             svgCreator.maxX = -1;
             svgCreator.minY = 10000000;
             svgCreator.maxY = -1;
             
-            var createLineContext = """ + replacement_function + """ {
+            var createLineContext = """
+            + replacement_function
+            + """ {
                 if (x1 < svgCreator.minX) { svgCreator.minX = x1; }
                 if (x1 > svgCreator.maxX) { svgCreator.maxX = x1; }
                 if (y1 < svgCreator.minY) { svgCreator.minY = y1; }
@@ -107,40 +114,68 @@ class SVGTransform:
                 svgCreator.createLine(x1, y1, x2, y2, thickness, null, null);
             }
             
-            """ + draw_line_in_op + """ = createLineContext;
+            """
+            + draw_line_in_op
+            + """ = createLineContext;
         """
+        )
 
     @staticmethod
     def __get_finalizing_svg_script(generated_svg_id: str = "svgId") -> str:
-        return """
-            var svgElFractal = document.getElementById(\"""" + generated_svg_id + """\");
+        return (
+            """
+            var svgElFractal = document.getElementById(\""""
+            + generated_svg_id
+            + """\");
             svgElFractal.setAttribute("width", String(svgCreator.maxX));
             svgElFractal.setAttribute("height", String(svgCreator.maxY));
         """
+        )
 
     @staticmethod
-    def transform_into_svg(web_page_location: str, generated_svg_id: str, draw_line_in_op: str,
-                           replacement_function: str, time_to_wait: int = 10, implementation_type: SVGImplementation = SVGImplementation.TRANSPILE_TS) -> str:
+    def transform_into_svg(
+        web_page_location: str,
+        generated_svg_id: str,
+        draw_line_in_op: str,
+        replacement_function: str,
+        time_to_wait: int = 10,
+        implementation_type: SVGImplementation = SVGImplementation.TRANSPILE_TS,
+    ) -> str:
         screenshooter = PlaywrightScreenshooter("chromium")
         page = screenshooter.new_page()
         if "http" not in web_page_location:
-            with open(web_page_location.replace("file://", ""), "r", encoding="utf-8") as file:
+            with open(
+                web_page_location.replace("file://", ""), "r", encoding="utf-8"
+            ) as file:
                 html_to_parse = file.read()
         else:
             html_to_parse = requests.get(web_page_location).content
         page_soup = BeautifulSoup(html_to_parse, "lxml")
 
         script_code1 = SVGTransform.__get_svg_creation_script()
-        script_code2 = SVGTransform.__get_svg_transformation_script(generated_svg_id, draw_line_in_op, replacement_function)
+        script_code2 = SVGTransform.__get_svg_transformation_script(
+            generated_svg_id, draw_line_in_op, replacement_function
+        )
         if implementation_type == SVGImplementation.TRANSPILE_TS:
             for script in page_soup.select("script"):
                 script_text = regexp.sub(r"//[^\n]+", "", script.text, regexp.MULTILINE)
-                if regexp.search(r"((var|let|const)\s+canvas\s*=)", script_text, regexp.MULTILINE):
-
-                    to_split = regexp.search(r"((?:var|let|const)\s+canvas\s*=[^;]+;)", script_text, regexp.MULTILINE).group(1)
+                if regexp.search(
+                    r"((var|let|const)\s+canvas\s*=)", script_text, regexp.MULTILINE
+                ):
+                    to_split = regexp.search(
+                        r"((?:var|let|const)\s+canvas\s*=[^;]+;)",
+                        script_text,
+                        regexp.MULTILINE,
+                    ).group(1)
                     parts = script_text.split(to_split)
 
-                    script.string = parts[0] + script_code1 + script_code2 + to_split + to_split.join(parts[1:])
+                    script.string = (
+                        parts[0]
+                        + script_code1
+                        + script_code2
+                        + to_split
+                        + to_split.join(parts[1:])
+                    )
                     break
         else:
             page_body = page_soup.select_one("body")
@@ -151,15 +186,23 @@ class SVGTransform:
             new_script2.string = script_code2
             page_body.append(new_script)
             page_body.append(new_script2)
-        file_name = web_page_location[web_page_location.rfind("/") + 1:]
-        new_file_name = web_page_location.replace(file_name, "") + "__COPY__" + file_name
+        file_name = web_page_location[web_page_location.rfind("/") + 1 :]
+        new_file_name = (
+            web_page_location.replace(file_name, "") + "__COPY__" + file_name
+        )
         with open(new_file_name.replace("file://", ""), "w", encoding="utf-8") as file:
             file.write(str(page_soup))
-        page.goto("file://" + new_file_name.replace("file://", ""), wait_until="networkidle")
-        file_to_rem = pathlib.Path(new_file_name.replace("file://", "").replace("file:", ""))
+        page.goto(
+            "file://" + new_file_name.replace("file://", ""), wait_until="networkidle"
+        )
+        file_to_rem = pathlib.Path(
+            new_file_name.replace("file://", "").replace("file:", "")
+        )
         file_to_rem.unlink()
         time.sleep(time_to_wait)
 
         page.evaluate(SVGTransform.__get_finalizing_svg_script(generated_svg_id))
-        svg_element = page.locator("#" + generated_svg_id).evaluate("el => el.outerHTML")
+        svg_element = page.locator("#" + generated_svg_id).evaluate(
+            "el => el.outerHTML"
+        )
         return svg_element

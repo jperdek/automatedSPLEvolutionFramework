@@ -18,7 +18,11 @@ def callback_func(channel, method, properties, body):
     try:
         task_configuration = json.loads(body)
         project_id = task_configuration["projectId"]
-        logger.debug(">------| Processing data creation request after SPL: " + project_id + " has been evolved.")
+        logger.debug(
+            ">------| Processing data creation request after SPL: "
+            + project_id
+            + " has been evolved."
+        )
         evolved_spl_path = task_configuration["targetPath"]
         evolution_iteration = task_configuration["evolutionIteration"]
         if evolved_spl_path not in processed_spls.keys():
@@ -27,12 +31,25 @@ def callback_func(channel, method, properties, body):
             evolved_script_path = task_configuration["evolvedScriptPath"]
             evolved_product_line_id = project_id
             previous_product_line_id = task_configuration["previousProductLineId"]
-            variation_points_data_location = task_configuration["variationPointsDataLocation"]
+            variation_points_data_location = task_configuration[
+                "variationPointsDataLocation"
+            ]
 
             destination_spl_path = DataRepresentationsClient.create_all_representations(
-                evolution_id, evolution_iteration, evolved_product_line_id, evolved_script_path, evolved_spl_path,
-                project_id, variation_points_data_location, previous_product_line_id, logger)
-            logger.debug(">------| Finished all processing tasks. Final location: " + destination_spl_path)
+                evolution_id,
+                evolution_iteration,
+                evolved_product_line_id,
+                evolved_script_path,
+                evolved_spl_path,
+                project_id,
+                variation_points_data_location,
+                previous_product_line_id,
+                logger,
+            )
+            logger.debug(
+                ">------| Finished all processing tasks. Final location: "
+                + destination_spl_path
+            )
         else:
             logger.debug("SPL has been already processed. Skipping...")
         if channel.is_open:
@@ -46,11 +63,21 @@ def callback_func(channel, method, properties, body):
 
 
 if __name__ == "__main__":
-    credentials = pika.PlainCredentials(username=os.getenv("CONSUMER_USER_NAME", "guest"),
-                                        password=os.getenv("CONSUMER_USER_PASSWORD", "guest"))
-    connection_url = "amqp://" + os.getenv("CONSUMER_USER_NAME", "guest") + ":" + os.getenv(
-        "CONSUMER_USER_PASSWORD", "guest") + "@" + os.getenv(
-        "RABBIT_MQ_HOST", "localhost") + ":" + "5672/rabbitmq?heartbeat=" + str(os.getenv("RABBIT_MQ_HEARTBEAT", 0))
+    credentials = pika.PlainCredentials(
+        username=os.getenv("CONSUMER_USER_NAME", "guest"),
+        password=os.getenv("CONSUMER_USER_PASSWORD", "guest"),
+    )
+    connection_url = (
+        "amqp://"
+        + os.getenv("CONSUMER_USER_NAME", "guest")
+        + ":"
+        + os.getenv("CONSUMER_USER_PASSWORD", "guest")
+        + "@"
+        + os.getenv("RABBIT_MQ_HOST", "localhost")
+        + ":"
+        + "5672/rabbitmq?heartbeat="
+        + str(os.getenv("RABBIT_MQ_HEARTBEAT", 0))
+    )
     logger.debug("Connection url: " + connection_url)
     connection_params = pika.URLParameters(connection_url)
 
@@ -59,7 +86,9 @@ if __name__ == "__main__":
     channel = connection.channel()
     queue_name = os.getenv("QUEUE_EVOLVED_SPL", "EVOLVED_SPL")
     result = channel.queue_declare(queue=queue_name)
-    channel.queue_bind(result.method.queue, exchange=queue_name, routing_key="*.*.*.*.*")
+    channel.queue_bind(
+        result.method.queue, exchange=queue_name, routing_key="*.*.*.*.*"
+    )
 
     if os.getenv("PURGE_QUEUE_ON_START", False):
         logger.debug("Purging queue: " + queue_name)

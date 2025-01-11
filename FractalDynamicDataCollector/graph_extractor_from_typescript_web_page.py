@@ -1,7 +1,11 @@
 import json
 
-from server.apis.http.api.graphSimulation.graphExtractor.process_graphs import GraphProcessor
-from server.apis.http.api.graphSimulation.graphMerger.merge_configuration import ImageSettings
+from server.apis.http.api.graphSimulation.graphExtractor.process_graphs import (
+    GraphProcessor,
+)
+from server.apis.http.api.graphSimulation.graphMerger.merge_configuration import (
+    ImageSettings,
+)
 from server.apis.http.api.screenshoting.screenshooter import PlaywrightScreenshooter
 from server.apis.http.api.processors.analyzer import DynamicFractalAnalyzer
 from typing import Dict, Optional

@@ -7,10 +7,12 @@ from graphSimulation.graphExtractor.process_graphs import GraphProcessor
 
 
 def json_response(payload: Dict, status: int = 200) -> Tuple[str, int, Dict]:
-    return json.dumps(payload), status, {"content-type": "application/json" }
+    return json.dumps(payload), status, {"content-type": "application/json"}
 
 
-nodes_and_connectors_api = Blueprint("nodes_and_connectors_api", __name__, template_folder="templates")
+nodes_and_connectors_api = Blueprint(
+    "nodes_and_connectors_api", __name__, template_folder="templates"
+)
 
 
 @nodes_and_connectors_api.route("/process_into_nodes_connectors", methods=["POST"])

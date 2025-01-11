@@ -27,7 +27,9 @@ def take_screenshot_from_mhtml():
     image_content = screenshooter.take_screenshoot_according_locator(
         focus_element_selector=focus_element_selector, timeout=browser_timeout
     )
-    resulting_image = ImageProcessor.automatically_trim_and_get_image(image_content, added_borders=image_borders)
+    resulting_image = ImageProcessor.automatically_trim_and_get_image(
+        image_content, added_borders=image_borders
+    )
     try:
         screenshooter.close()
     except:
@@ -50,7 +52,9 @@ def take_screenshot_from_page():
     image_content = screenshooter.take_screenshoot_according_locator(
         focus_element_selector=focus_element_selector, timeout=browser_timeout
     )
-    resulting_image = ImageProcessor.automatically_trim_and_get_image(image_content, added_borders=image_borders)
+    resulting_image = ImageProcessor.automatically_trim_and_get_image(
+        image_content, added_borders=image_borders
+    )
     try:
         screenshooter.close()
     except:

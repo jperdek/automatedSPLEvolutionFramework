@@ -347,15 +347,14 @@ class GraphProcessor:
 
     @staticmethod
     def process_graph_to_ram(
-            graph_root: Dict,
-            graph_schema: Optional[Dict] = None,
-            connector_list_name: str = "pointsTo",
-            connector_type_name: str = "fname",
-            drawing: bool = True,
-            image_settings: Optional[ImageSettings] = None,
-            skip_nodes_used_to_draw_image: bool = True,
+        graph_root: Dict,
+        graph_schema: Optional[Dict] = None,
+        connector_list_name: str = "pointsTo",
+        connector_type_name: str = "fname",
+        drawing: bool = True,
+        image_settings: Optional[ImageSettings] = None,
+        skip_nodes_used_to_draw_image: bool = True,
     ) -> Dict:
-
         (
             connections,
             result_nodes,
@@ -376,7 +375,13 @@ class GraphProcessor:
                     for result_nodes_instance_key in result_nodes_instance.keys():
                         if result_nodes_instance_key not in result_nodes_keys:
                             result_nodes_keys.append(result_nodes_instance_key)
-            resulting_csvs[node_type_name] = {"data": result_nodes_type, "field_names": result_nodes_keys}
+            resulting_csvs[node_type_name] = {
+                "data": result_nodes_type,
+                "field_names": result_nodes_keys,
+            }
         if len(connections) > 0:
-            resulting_csvs["connectors"] = {"data": connections, "field_names": list(connections[0].keys())}
+            resulting_csvs["connectors"] = {
+                "data": connections,
+                "field_names": list(connections[0].keys()),
+            }
         return resulting_csvs

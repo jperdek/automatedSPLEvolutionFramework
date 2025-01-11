@@ -12,7 +12,7 @@ class DatasetVariabilityPointDataExtractor:
         dataset_directory_path: str,
         final_location_path: str = "./generated_dataset_vp_data",
         browser_timeout=30000,
-        graph_object_name: str = "initialGraphRoot"
+        graph_object_name: str = "initialGraphRoot",
     ) -> None:
         absolute_dataset_path = os.path.abspath(dataset_directory_path)
         absolute_final_path = os.path.abspath(final_location_path)

@@ -1,7 +1,11 @@
 from typing import Optional, Dict
 
-from server.apis.http.api.graphSimulation.graphExtractor.graph_scheme import FractalGraphScheme
-from server.apis.http.api.graphSimulation.graphExtractor.process_graphs import GraphProcessor
+from server.apis.http.api.graphSimulation.graphExtractor.graph_scheme import (
+    FractalGraphScheme,
+)
+from server.apis.http.api.graphSimulation.graphExtractor.process_graphs import (
+    GraphProcessor,
+)
 from server.apis.http.api.processors.analyzer import DynamicFractalAnalyzer
 import json
 import os
@@ -37,9 +41,7 @@ class DatasetVariabilityPointGraphDataExtractor:
             script_path = os.path.join(project_path, "js/platnoJS.js")
             graph_root = json.loads(
                 self.dynamic_fractal_analyzer.load_data_from_fractal(
-                    script_path,
-                    variable_with_graph,
-                    is_wrapped=is_wrapped
+                    script_path, variable_with_graph, is_wrapped=is_wrapped
                 )
             )
             absolute_derivation_path = os.path.join(

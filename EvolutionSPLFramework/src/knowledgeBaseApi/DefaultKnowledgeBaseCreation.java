@@ -1,7 +1,10 @@
 package knowledgeBaseApi;
 
+import static org.junit.jupiter.api.DynamicTest.stream;
+
 import java.io.IOException;
 
+import org.apache.http.NoHttpResponseException;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +22,8 @@ import evolutionSimulation.productAssetsInitialization.SharedConfiguration;
  */
 public class DefaultKnowledgeBaseCreation {
 
-	private static final String DEFAULT_KNOWLEDGE_BASE_SERVER = "http://localhost:5000/api/knowledge-base";
+	private static final String DEFAULT_KNOWLEDGE_BASE_SERVER = "http://" + System.getenv().getOrDefault("DOCKER_HOST", "localhost")+ ":" + 
+			System.getenv().getOrDefault("KNOWLEDGE_EXTRACTOR_SERVER_PORT", "5000") + "/api/knowledge-base";
 	private static final String INIT_DEFAULT_KNOWLEDGE_BASE = DefaultKnowledgeBaseCreation.DEFAULT_KNOWLEDGE_BASE_SERVER + "/init";
 	private static final String CLEAR_DEFAULT_KNOWLEDGE_BASE = DefaultKnowledgeBaseCreation.DEFAULT_KNOWLEDGE_BASE_SERVER + "/clear";
 	private static final String REGISTER_NEW_PRODUCT = DefaultKnowledgeBaseCreation.DEFAULT_KNOWLEDGE_BASE_SERVER + "/registerNewProduct";
@@ -38,11 +42,22 @@ public class DefaultKnowledgeBaseCreation {
 				logger.info("Initializing default knowledge base.");
 				String response = PostRequester.doGetRequest(DefaultKnowledgeBaseCreation.INIT_DEFAULT_KNOWLEDGE_BASE);
 				logger.info("Initialized with response: " + response);
+			} catch (NoHttpResponseException e) {
+				logger.error("Knowledge base is probably down.", e);
+				if (!e.toString().contains("The graph is non-empty.") && System.getenv().getOrDefault("SHOUD_TERMINATE_IF_KNOWLEDGE_BASE_IS_NOT_INITIALIZED", "false").equals("true")) {
+					System.exit(5);
+				}
 			} catch (IOException e) {
 				logger.error("Failed to initialize default knowledge base.", e);
+				if (!e.toString().contains("The graph is non-empty.") && System.getenv().getOrDefault("SHOUD_TERMINATE_IF_KNOWLEDGE_BASE_IS_NOT_INITIALIZED", "false").equals("true")) {
+					System.exit(5);
+				}
 			} catch (InterruptedException e) {
 				logger.error("Failed to initialize default knowledge base.", e);
-			}
+				if (!e.toString().contains("The graph is non-empty.") && System.getenv().getOrDefault("SHOUD_TERMINATE_IF_KNOWLEDGE_BASE_IS_NOT_INITIALIZED", "false").equals("true")) {
+					System.exit(5);
+				}
+			} 
 		}
 	}
 	

@@ -15,7 +15,7 @@ class SchemaConverter:
         if value_type == "string":
             if value is None or not value:
                 value = ""
-            return str(value).replace("\"", "").replace("'", "")
+            return str(value).replace('"', "").replace("'", "")
         elif value_type == "int":
             if value is None or not value:
                 value = 0
@@ -173,9 +173,7 @@ class GraphConnector:
                     object_schema, new_schema_directory, object_name
                 )
             else:
-                object_schema = self.__construct_non_problematic_schema(
-                    object_schema
-                )
+                object_schema = self.__construct_non_problematic_schema(object_schema)
             neo4j_parameters = self.__convert_schema_dict_to_neo_parameters(
                 object_schema
             )
@@ -192,7 +190,9 @@ class GraphConnector:
                     new_object_record_schema,
                 )
 
-    def __insert_base_connection(self, session: Session, node_id_from: str, node_id_to: str) -> None:
+    def __insert_base_connection(
+        self, session: Session, node_id_from: str, node_id_to: str
+    ) -> None:
         session.run(
             "MATCH (a {id: "
             + node_id_from
@@ -204,7 +204,11 @@ class GraphConnector:
     def insert_connections_from_ram(self, connections: List[Dict]) -> None:
         with self.driver.session() as session:
             for connection_record in connections:
-                self.__insert_base_connection(session, str(connection_record["from"]), str(connection_record["to"]))
+                self.__insert_base_connection(
+                    session,
+                    str(connection_record["from"]),
+                    str(connection_record["to"]),
+                )
 
     def insert_connections(
         self, path_to_connections_csv: str, delimiter: str = "$"
@@ -213,7 +217,11 @@ class GraphConnector:
             with open(path_to_connections_csv, "r", encoding="utf-8") as file:
                 connections = csv.DictReader(file, delimiter=delimiter)
                 for connection_record in connections:
-                    self.__insert_base_connection(session, str(connection_record["from"]), str(connection_record["to"]))
+                    self.__insert_base_connection(
+                        session,
+                        str(connection_record["from"]),
+                        str(connection_record["to"]),
+                    )
 
     def close(self) -> None:
         # Don't forget to close the driver connection when you are finished with it
@@ -225,7 +233,7 @@ class GraphConnector:
         connections_file_name: str,
         new_schema_directory: str = "../../new_schemas",
         used_schemas: Optional[Dict] = None,
-        connections_only: bool = False
+        connections_only: bool = False,
     ) -> None:
         if used_schemas is None:
             used_schemas = dict()
@@ -238,9 +246,15 @@ class GraphConnector:
             )
             if not os.path.isdir(path_to_graph_file) and entity_name.endswith(".csv"):
                 print("Processing entity: " + entity_name)
-                if connections_file_name not in path_to_graph_file and not connections_only:
+                if (
+                    connections_file_name not in path_to_graph_file
+                    and not connections_only
+                ):
                     object_type = (
-                        entity_name.replace(".csv", "").title().replace(" ", "").replace("\"", "")
+                        entity_name.replace(".csv", "")
+                        .title()
+                        .replace(" ", "")
+                        .replace('"', "")
                     )
                     used_schema = used_schemas.get(entity_name, {})
                     if not used_schema:
@@ -265,7 +279,7 @@ class GraphConnector:
         new_schema_directory: str = "../../new_schemas",
         used_schemas: Optional[Dict] = None,
         connections_only: bool = False,
-        connections_file_name: str = "connectors"
+        connections_file_name: str = "connectors",
     ) -> None:
         if used_schemas is None:
             used_schemas = dict()
@@ -274,10 +288,19 @@ class GraphConnector:
         for table_name, table_data in processed_tables_as_graph.items():
             print("Processing entity: " + table_name)
             if connections_file_name not in table_name and not connections_only:
-                object_type = table_name.replace(".csv", "").title().replace(" ", "").replace("\\", "").replace("\"", "").replace("'", "")
+                object_type = (
+                    table_name.replace(".csv", "")
+                    .title()
+                    .replace(" ", "")
+                    .replace("\\", "")
+                    .replace('"', "")
+                    .replace("'", "")
+                )
 
                 used_schema = used_schemas.get(table_name, {})
-                used_schemas[table_name] = used_schema if not used_schema else used_schemas[table_name]
+                used_schemas[table_name] = (
+                    used_schema if not used_schema else used_schemas[table_name]
+                )
                 self.insert_objects_from_ram(
                     table_data["data"],
                     object_schema=used_schema,
@@ -300,13 +323,16 @@ class GraphConnector:
         user: str,
         password: str,
         new_schema_directory: str = "../../new_schemas",
-        connections_only: bool = False
+        connections_only: bool = False,
     ) -> None:
         connection = GraphConnector(url, user, password)
         if not connections_only:
             connection.clear_database()
         connection.insert_graph_without_scheme(
-            project_directory_path, connections_file_name, new_schema_directory, connections_only=connections_only
+            project_directory_path,
+            connections_file_name,
+            new_schema_directory,
+            connections_only=connections_only,
         )
         connection.close()
 
@@ -319,7 +345,7 @@ class GraphConnector:
         connections_file_name: str = "connections.csv",
         new_schema_directory: Optional[str] = "../../new_schemas",
         clear_database: bool = True,
-        connections_only: bool = False
+        connections_only: bool = False,
     ) -> None:
         connection = GraphConnector(url, user, password)
         if clear_database:
@@ -338,7 +364,7 @@ class GraphConnector:
                 connections_file_name,
                 new_schema_directory=new_schema_directory,
                 used_schemas=used_schemas,
-                connections_only=connections_only
+                connections_only=connections_only,
             )
         connection.close()
 
@@ -366,14 +392,23 @@ class GraphFromFamilyInserter:
         connection.close()
 
     @staticmethod
-    def insert_small_graph_from_ram(url: str, user: str, password: str, graph_data_in_docs: Dict,
-                                    clear_database: bool = False, connections_only: bool = False,
-                                    new_schema_directory: Optional[str] = None) -> None:
+    def insert_small_graph_from_ram(
+        url: str,
+        user: str,
+        password: str,
+        graph_data_in_docs: Dict,
+        clear_database: bool = False,
+        connections_only: bool = False,
+        new_schema_directory: Optional[str] = None,
+    ) -> None:
         connection = GraphConnector(url, user, password)
         if not clear_database:
             connection.clear_database()
-        connection.insert_graph_without_scheme_from_ram(graph_data_in_docs, connections_only=connections_only,
-                                                        new_schema_directory=new_schema_directory)
+        connection.insert_graph_without_scheme_from_ram(
+            graph_data_in_docs,
+            connections_only=connections_only,
+            new_schema_directory=new_schema_directory,
+        )
         connection.close()
 
     @staticmethod
@@ -413,5 +448,5 @@ if __name__ == "__main__":
         connections_file_name="connections.csv",
         new_schema_directory="../../new_schemas",
         clear_database=True,
-        connections_only=False
+        connections_only=False,
     )

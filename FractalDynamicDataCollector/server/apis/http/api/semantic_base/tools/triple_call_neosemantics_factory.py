@@ -1,10 +1,9 @@
-
 class TripleCallNeosemanticsFactory:
-
     @staticmethod
     def define_prefix_pointing_to_namespace(
-            prefix_name: str,
-            namespace: str = "https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl") -> str:
+        prefix_name: str,
+        namespace: str = "https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl",
+    ) -> str:
         return f"""
             CALL n10s.nsprefixes.add("{prefix_name}", "{namespace}");
         """

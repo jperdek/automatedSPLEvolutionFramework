@@ -1,20 +1,21 @@
 import sys
-from flask import Flask, g
+from flask import Flask
 import flask_cors
 
 from screenshot_api.take_screenshot_api import screenshot_api
 from semantic_base.default_knowledge_graph_api import default_knowledge_graph_api
-from semantic_base.knowledge_graph.init_database_drivers import \
-    FullyAutomatedProductLinesKnowledgeManager
 from tools.single_file_adaptations import singlefile_api as tools_api
 from graph_api.extract_graph_api import graph_extractor_api
 from graph_api.nodes_and_connectors_api import nodes_and_connectors_api
 from graph_database_api.graph_database_entry import graph_database_entry_api
 from svg_transformation_api.svg_creator_api import svg_creator_api
 
-app = Flask(__name__, static_url_path="",
-            static_folder="web/static",
-            template_folder="web/templates")
+app = Flask(
+    __name__,
+    static_url_path="",
+    static_folder="web/static",
+    template_folder="web/templates",
+)
 
 flask_cors.CORS(app)
 app.register_blueprint(screenshot_api, url_prefix="/api/screenshoter")
@@ -28,7 +29,7 @@ app.register_blueprint(default_knowledge_graph_api, url_prefix="/api/knowledge-b
 
 with app.app_context():
     print("Preparing for requests execution...")
-    g.fully_automated_product_lines_knowledge_manager = FullyAutomatedProductLinesKnowledgeManager()
+    # g.fully_automated_product_lines_knowledge_manager = FullyAutomatedProductLinesKnowledgeManager()
     print("Preparation completed successfully!")
 
 
