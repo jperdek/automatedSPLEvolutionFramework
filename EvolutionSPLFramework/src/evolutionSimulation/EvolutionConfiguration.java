@@ -683,6 +683,9 @@ public class EvolutionConfiguration {
 	 * @param sourceSoftwareProductLineId - id of source software product lines from which other product lines are evolved in particular evolution iteration
 	 */
 	public void setIdOfCurrentSourceSoftwareProductLineForEvolution(String sourceSoftwareProductLineId) {
+		if (this.sourceSoftwareProductLineId == null) { 
+			this.sourceSoftwareProductLineId = "prod_line_init" + UUID.randomUUID().toString().substring(0, 8);
+		}
 		this.previousSourceSoftwareProductLineId = new String(this.sourceSoftwareProductLineId);
 		this.sourceSoftwareProductLineId = "prod_line_" + sourceSoftwareProductLineId;
 	}
