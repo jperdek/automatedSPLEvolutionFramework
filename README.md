@@ -387,7 +387,7 @@ Open http://localhost:7475/browser/ (even using Docker Compose) and as default c
 
 
 
-# CONTAINERIZATION USING DOCKER COMPOSE  
+# EXTRACTING ARTEFACTS FROM DOCKER COMPOSE ORCHESTRATION    
 
 Run solution using Docker Compose according to steps specified above.  
 In Docker Desktop you can view services as follows. 
