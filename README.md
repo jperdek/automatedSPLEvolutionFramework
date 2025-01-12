@@ -387,10 +387,10 @@ Open http://localhost:7475/browser/ (even using Docker Compose) and as default c
 
 
 
-# EXTRACTING ARTEFACTS FROM DOCKER COMPOSE ORCHESTRATION    
+# EXTRACTING ARTIFACTS FROM DOCKER COMPOSE ORCHESTRATION      
 
 Run solution using Docker Compose according to steps specified above.  
-In Docker Desktop you can view services as follows. 
+In Docker Desktop you can view services as follows.  
 
 1) Click on containers to view launched docker compose process:  
 
