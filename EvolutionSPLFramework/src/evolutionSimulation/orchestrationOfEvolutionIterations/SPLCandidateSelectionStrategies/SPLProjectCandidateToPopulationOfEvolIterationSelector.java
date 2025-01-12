@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import evolutionSimulation.EvolutionConfiguration;
+import evolutionSimulation.orchestrationOfEvolutionIterations.NoCandidateException;
 import evolutionSimulation.orchestrationOfEvolutionIterations.SPLCandidateLoadingMechanism;
 import evolutionSimulation.orchestrationOfEvolutionIterations.SPLCandidateSelectionStrategies.imageContentQualityAssignment.VariationPointsDataAggregations;
 
@@ -88,20 +89,23 @@ public class SPLProjectCandidateToPopulationOfEvolIterationSelector {
 	 * the settings in configuration which are located in directory of the previously used sub-evolution iteration
 	 * 
 	 * @throws IOException
+	 * @throws NoCandidateException - thrown if no candidate has been evolved in previous evolution iteration
 	 */
 	public List<String> getPathsToEachSPLProjectCandidateFromPopulation(int numberOfNextEvolutionCandidates, 
 			String previousEvolutionDirectory, SPLNextEvolutionIterationCandidateSelectionStrategy
-			evolIterationCandidateSelectionStrategy, EvolutionConfiguration evolutionConfiguration) throws IOException {
+			evolIterationCandidateSelectionStrategy, EvolutionConfiguration evolutionConfiguration) throws IOException, NoCandidateException {
 		
 		mechanismForSPLCandidateLoading.loadAndParseSPLCandidates(previousEvolutionDirectory, variationPointsDataAggregations, evolutionConfiguration);
-		List<String> listOfCandidateSPLFileNamesFromEachPopulationMember = this.mechanismForSPLCandidateLoading.getListOfCandidateSPLFileNamesFromEachPopulationMember();
+		List<String> listOfCandidateSPLFileNamesFromEachPopulationMember = 
+				this.mechanismForSPLCandidateLoading.getListOfCandidateSPLFileNamesFromEachPopulationMember();
 		List<String> selectedCandidates = 
 				evolIterationCandidateSelectionStrategy.selectNextEvolutionIterationCandidates(numberOfNextEvolutionCandidates,
 						previousEvolutionDirectory, listOfCandidateSPLFileNamesFromEachPopulationMember, 
 						variationPointsDataAggregations);
 
+		logger.info("Selected candidate software product lines:");
 		for (int i=0; i<selectedCandidates.size(); i++) {
-			logger.debug("Chosen path to candidate: " + mechanismForSPLCandidateLoading.getCandidatePath(selectedCandidates.get(i)));
+			logger.info("Chosen path to candidate: " + mechanismForSPLCandidateLoading.getCandidatePath(selectedCandidates.get(i)));
 			selectedCandidates.set(i, mechanismForSPLCandidateLoading.getCandidatePath(selectedCandidates.get(i)));
 		}
 		return selectedCandidates;

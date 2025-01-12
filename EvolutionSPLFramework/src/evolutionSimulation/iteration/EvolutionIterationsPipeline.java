@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import codeContext.processors.NotFoundVariableDeclaration;
 import dividedAstExport.InvalidSystemVariationPointMarkerException;
 import evolutionSimulation.EvolutionConfiguration;
+import evolutionSimulation.orchestrationOfEvolutionIterations.NoCandidateException;
 import evolutionSimulation.orchestrationOfEvolutionIterations.SPLCandidateSelectionStrategies.SPLNextEvolutionIterationCandidateSelectionStrategy;
 import evolutionSimulation.orchestrationOfEvolutionIterations.SPLCandidateSelectionStrategies.SPLProjectCandidateToPopulationOfEvolIterationSelector;
 import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.ExportAssetPlanner;
@@ -113,6 +114,7 @@ public class EvolutionIterationsPipeline {
 	 * @throws AlreadyMappedVariationPointContentsInjection
 	 * @throws AssetMisuse 
 	 * @throws AlreadyChosenVariationPointForInjectionException 
+	 * @throws NoCandidateException - thrown if no candidate has been evolved in previous evolution iteration
 	 */
 	public void runEvolutionPipeline(EvolutionConfiguration evolutionConfiguration, 
 			ExportAssetPlanner exportAssetPlanner) throws NotFoundVariableDeclaration, 
@@ -120,7 +122,7 @@ public class EvolutionIterationsPipeline {
 				DuplicatedAnnotation, DuplicateCandidateIdentifier, AlreadyProvidedArgumentInConfigurationExpressionPlace, 
 				MethodToEvaluateComplexityNotFoundException, DuplicatedContextIdentifier, UnmappedContextException,
 				DifferentlyAggregatedLocation, VariationPointPlaceInArrayNotFound, UnknownResourceToProcessException, 
-				AlreadyMappedVariationPointContentsInjection, AssetMisuse, AlreadyChosenVariationPointForInjectionException {
+				AlreadyMappedVariationPointContentsInjection, AssetMisuse, AlreadyChosenVariationPointForInjectionException, NoCandidateException {
 		Iterator<EvolutionIteration> evolutionIterationIterator = this.sequenceOfEvolutionIterations.iterator();
 		String pathToEvolvedSPLProjectsDirectory = evolutionConfiguration.getPathToEvolvedSPLProjectDirectory();
 		
@@ -145,7 +147,7 @@ public class EvolutionIterationsPipeline {
 			
 			evolutionIteration = evolutionIterationIterator.next();
 			customizedEvolutionConfiguration = evolutionIteration.getAssociatedEvolutionConfiguration();
-	
+		
 			if (customizedEvolutionConfiguration == null) { customizedEvolutionConfiguration = evolutionConfiguration; }
 			if (DebugInformation.PROCESS_STEP_INFORMATION) { logger.info("Performing evolution iteration number: " + customizedEvolutionConfiguration.getIteration()); }
 			
@@ -173,18 +175,22 @@ public class EvolutionIterationsPipeline {
 				inputPaths = candidateForPopulationSelector.getPathsToEachSPLProjectCandidateFromPopulation(
 						numberEvolvedCandidatesFromLastIteration, 
 						pathToEvolvedSPLProjectsDirectory, strategySPLNextEvolutionIterationCandidateSelection, evolutionConfiguration);
+				
 				logger.info("EVOLUTION ITERATION: " + customizedEvolutionConfiguration.getIteration() + " Input Paths number: " + inputPaths.size());
 				for (String inputPath: inputPaths) {
 					pathToScriptInputFilePath = inputPath + evolutionConfiguration.getCurrentEvolvedScriptRelativePath();
 					logger.info("Input Path: " + inputPath);
 					logger.info("Evolved Path: " + pathToScriptInputFilePath);
 					
-					if (pathToScriptInputFilePath.contains("_XXX__VariationPointData.json")) { continue; }
+					if (pathToScriptInputFilePath.contains("_XXX__VariationPointData.json")) { 
+						logger.warn("Ommited selected candidate because its VariationPointData only: " + pathToScriptInputFilePath);
+						continue; 
+					}
 					if (DebugInformation.PROCESS_STEP_INFORMATION) { customizedEvolutionConfiguration.printCurrentConfiguration(); }
 					
 					evolutionIteration.runEvolutioIteration(pathToScriptInputFilePath, 
 							customizedEvolutionConfiguration, evolutionCoreSettings, exportAssetPlanner);
-					//ADAPTATIONS ARE MISSING!!!!
+					
 					//evolutionCoreSettings = evolutionIteration.getAssociatedEvolutionCoreSettings();
 					pathForNextIteration = pathToScriptInputFilePath.substring(pathToScriptInputFilePath.lastIndexOf("/") + 1);
 					pathForNextIteration = pathForNextIteration.substring(pathForNextIteration.lastIndexOf("/") + 1);
@@ -204,5 +210,6 @@ public class EvolutionIterationsPipeline {
 			evolutionConfiguration.setPathToEvolvedSPLProjectDirectoryFromLatestEvolution(customizedEvolutionConfiguration, pathForNextIteration);
 			customizedEvolutionConfiguration = evolutionConfiguration;
 		}
+		logger.info("Terminating SPL (inner-)evolution...");
 	}
 }

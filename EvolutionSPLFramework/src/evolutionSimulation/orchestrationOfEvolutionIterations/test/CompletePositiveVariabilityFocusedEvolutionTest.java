@@ -11,6 +11,7 @@ import evolutionSimulation.iteration.AlreadyMappedVariationPointContentsInjectio
 import evolutionSimulation.iteration.EvolutionIteration;
 import evolutionSimulation.iteration.EvolutionIterationsPipeline;
 import evolutionSimulation.iteration.FractalIterationInitializationCodeFragments;
+import evolutionSimulation.orchestrationOfEvolutionIterations.NoCandidateException;
 import evolutionSimulation.orchestrationOfEvolutionIterations.SPLCandidateSelectionStrategies.RandomCandidateSelection;
 import evolutionSimulation.orchestrationOfEvolutionIterations.SPLCandidateSelectionStrategies.SPLNextEvolutionIterationCandidateSelectionStrategy;
 import evolutionSimulation.orchestrationOfEvolutionIterations.assetsInIterationsManagment.AssetPlannerBaseStrategy;
@@ -95,14 +96,15 @@ public class CompletePositiveVariabilityFocusedEvolutionTest {
 	 * @throws AlreadyMappedVariationPointContentsInjection
 	 * @throws AssetMisuse 
 	 * @throws AlreadyChosenVariationPointForInjectionException 
-	 * @throws TimeoutException 
+	 * @throws TimeoutException
+	 * @throws NoCandidateException - thrown if no candidate has been evolved in previous evolution iteration
 	 */
 	public static void main(String args[]) throws NotFoundVariableDeclaration, IOException, InterruptedException,
 		InvalidSystemVariationPointMarkerException, DifferentAnnotationTypesOnTheSameVariationPoint,
 		DuplicatedAnnotation, DuplicateCandidateIdentifier, AlreadyProvidedArgumentInConfigurationExpressionPlace,
 		MethodToEvaluateComplexityNotFoundException, DuplicatedContextIdentifier, UnmappedContextException,
 		DifferentlyAggregatedLocation, VariationPointPlaceInArrayNotFound, UnknownResourceToProcessException, 
-		AlreadyMappedVariationPointContentsInjection, AssetMisuse, AlreadyChosenVariationPointForInjectionException, TimeoutException {
+		AlreadyMappedVariationPointContentsInjection, AssetMisuse, AlreadyChosenVariationPointForInjectionException, TimeoutException, NoCandidateException {
 		
 			CompletePositiveVariabilityFocusedEvolutionTest completeIyterativeDevelopment = new  CompletePositiveVariabilityFocusedEvolutionTest();
 			EvolutionConfiguration evolutionConfiguration = completeIyterativeDevelopment.prepareInitialConfiguration();

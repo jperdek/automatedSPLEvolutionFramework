@@ -60,10 +60,10 @@ public class EvolvedSPLPublisher extends RabbitMQAdapter {
 			messageContent.put("evolvedSplPath", evolutionConfiguration.getOutputFilePath(projectId)); //.getOutputFilePathToDirectoryUsedInCurrentEvolution()
 			
 			messageContent.put("variationPointsDataLocation", variationPointsDataLocation);
-			messageContent.put("previousProductLineId", evolutionConfiguration.getOutputFilePath(projectId));
+			messageContent.put("previousProductLineId", previousProductLineId);
 			
 			messageContent.put("evolutionIteration", String.valueOf(iterationNumber));
-			messageContent.put("projectId", projectId);
+			messageContent.put("projectId", evolutionConfiguration.extractSourceSoftwareProductLineIdFromUrl(projectId));
 			messageContent.put("targetPath", targetDestinationPath);
 			
 			try {

@@ -335,6 +335,11 @@ public class EvolutionConfiguration {
 	public String extractSourceSoftwareProductLineIdFromUrl(String urlWithSourceSoftwareProductLineId) {
 		if (urlWithSourceSoftwareProductLineId.indexOf(EvolutionConfiguration.EVOLVED_SPL_ID_WRAPPER) > 0) {
 			String [] softwareProductLineIdsList = urlWithSourceSoftwareProductLineId.split(Pattern.quote(EvolutionConfiguration.EVOLVED_SPL_ID_WRAPPER)); 
+			logger.debug("<-------------------------------------------------Part: ");
+			for (String record: softwareProductLineIdsList) {
+				logger.debug("--------------------------------Part: " + record);
+			}
+			logger.debug("<-------------------------------------------------Part: ");
 			return softwareProductLineIdsList[softwareProductLineIdsList.length - 2];
 		}
 		return null;
@@ -644,8 +649,7 @@ public class EvolutionConfiguration {
 	 * @param globalEvolutionConfiguration - evolution configuration from previous iterations 
 	 */
 	public void setPathToEvolvedSPLProjectDirectoryFromLatestEvolution(EvolutionConfiguration globalEvolutionConfiguration, String pathForNextIteration) {
-		logger.info("--> SETTING PATHS TO NEXT EVOLUTION");
-		logger.debug("Concern name: " + this.concernName);
+		logger.info("Setting paths for the next evolution. Evolving concern: " + this.concernName);
 		if (this.concernName != null) {
 			this.concernName = globalEvolutionConfiguration.getConcernName();
 		}
@@ -663,6 +667,7 @@ public class EvolutionConfiguration {
 					globalEvolutionConfiguration.getOutputFilePathToDirectoryUsedInCurrentEvolution();
 			logger.debug("Already set input file path: " + this.inputFilePath);
 		}
+		logger.info("............finished");
 	}
 	
 	/**
@@ -678,7 +683,7 @@ public class EvolutionConfiguration {
 	 * @param sourceSoftwareProductLineId - id of source software product lines from which other product lines are evolved in particular evolution iteration
 	 */
 	public void setIdOfCurrentSourceSoftwareProductLineForEvolution(String sourceSoftwareProductLineId) {
-		this.previousSourceSoftwareProductLineId = this.sourceSoftwareProductLineId;
+		this.previousSourceSoftwareProductLineId = new String(this.sourceSoftwareProductLineId);
 		this.sourceSoftwareProductLineId = "prod_line_" + sourceSoftwareProductLineId;
 	}
 	

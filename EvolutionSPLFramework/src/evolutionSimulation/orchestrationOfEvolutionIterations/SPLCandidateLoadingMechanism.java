@@ -73,9 +73,10 @@ public class SPLCandidateLoadingMechanism {
 	 * @param previousEvolutionDirectoryPath - the path with SPLs from the previous evolution process
 	 * @param variationPointsDataAggregations - the aggregations of variation point data
 	 * @throws IOException
+	 * @throws NoCandidateException - thrown if no candidate has been evolved in previous evolution iteration
 	 */
 	public void loadAndParseSPLCandidates(String previousEvolutionDirectoryPath,
-			VariationPointsDataAggregations variationPointsDataAggregations, EvolutionConfiguration evolutionConfiguration) throws IOException {
+			VariationPointsDataAggregations variationPointsDataAggregations, EvolutionConfiguration evolutionConfiguration) throws IOException, NoCandidateException {
 		 logger.debug("PROCESSING NEXT EVOLUTION CANDIDATES...");
 		 logger.debug("Loading candidates for new evolution iteration from directory: " + previousEvolutionDirectoryPath);
 		 File dir = new File(previousEvolutionDirectoryPath);
@@ -85,6 +86,7 @@ public class SPLCandidateLoadingMechanism {
 		 String newFilePathTovariationPointsData;
 		 String childName, grandChildName;
 		 String affectedProjectPath;
+
 		 int projectCounter = 0;
 		 boolean containsVersions = false;
 		 if (directoryListing != null) {
@@ -110,6 +112,7 @@ public class SPLCandidateLoadingMechanism {
 		    				// MOVING ALL WHOLE PROJECTS INTO FLATTENED FORM
 		    				if (!affectedProjectPath.equals("")) {
 		    					projectCounter = projectCounter + 1;
+		    					
 		    					newFilePathTovariationPointsData = dir.getAbsolutePath() + "/" + childName + "_XXX_" + projectCounter + "_XXX_" + SPLEvolutionCore.VARIATION_POINTS_DATA_NAME_ID_ENDING;
 			    				Files.move(grandchildFile.toPath(), Path.of(newFilePathTovariationPointsData), StandardCopyOption.REPLACE_EXISTING);
 			    				
@@ -118,7 +121,8 @@ public class SPLCandidateLoadingMechanism {
 		    					String targetDestinationPath = vpDataAbsolutePath + "_XXX_" + projectCounter;
 		    					String projectId = childName;
 		    					String previousSplId = evolutionConfiguration.getPreviousIdOfCurrentSourceSoftwareProductLineForEvolution();
-		    					EvolvedSPLPublisher.publishMessageAboutEvolvedSPL(evolutionConfiguration, projectId, targetDestinationPath, newFilePathTovariationPointsData, previousSplId, true);
+		    					EvolvedSPLPublisher.publishMessageAboutEvolvedSPL(evolutionConfiguration, projectId, targetDestinationPath, 
+		    							newFilePathTovariationPointsData, previousSplId, true);
 		    				} else {
 		    					logger.debug("Cannot move data. Variation point data are missing... Removing data.");
 		    					Files.delete(grandchildFile.toPath());
@@ -153,7 +157,8 @@ public class SPLCandidateLoadingMechanism {
 				    	if (childFile.listFiles().length == 0) { Files.delete(childFile.toPath()); }
 		    		}
 		    	}
-		    } 
+		    }
+		    dir = new File(previousEvolutionDirectoryPath);
 		    directoryListing = dir.listFiles();
 	    	for (File childFile: directoryListing) {
 		    	vpDataAbsolutePath = childFile.getAbsolutePath();
@@ -162,7 +167,7 @@ public class SPLCandidateLoadingMechanism {
 		    	}
 		    }
 		 } else {
-			 throw new IOException("The previous evolution path does not lead to directory!");
+			 throw new NoCandidateException("The previous evolution path does not lead to directory! Probably no software product line has been evolved in previous iteration.");
 		 }
 	}
 	
@@ -185,7 +190,7 @@ public class SPLCandidateLoadingMechanism {
 		JSONArray variationPointsData;
 
 		vpDataAbsolutePath = vpDataAbsolutePath.replace("\\", "/");
-		logger.debug("Processing the candidate file: " + vpDataAbsolutePath);
+		logger.info("Processing the candidate file: " + vpDataAbsolutePath);
     	
     	// for each variation point data file that ends SPLEvolutionCore.VARIATION_POINTS_DATA_NAME_ID_ENDING loads new project
     	if (!childFile.isDirectory() && vpDataAbsolutePath.contains(SPLEvolutionCore.VARIATION_POINTS_DATA_NAME_ID_ENDING)) {
@@ -204,10 +209,10 @@ public class SPLCandidateLoadingMechanism {
 		    	
 		    	logger.debug("Path version length: " + pathAndVersion.length);
 		    	logger.debug("IN: " + vpDataAbsolutePath2 + " for comparison is used: " + vpDataAbsolutePath2ToCompare);
-		    	if (!vpDataAbsolutePath.equals(vpDataAbsolutePath2ToCompare) && vpDataAbsolutePath.contains(vpDataAbsolutePath2ToCompare)) {
+		    	if (vpDataAbsolutePath.contains(vpDataAbsolutePath2ToCompare)) {
 		    		insertedPath = vpDataAbsolutePath2;
-		    		logger.debug("INSERTED PATH: " + insertedPath.replace("//", "/"));
-		    		this.vpDataFileNameToProjectPath.put(fileName, insertedPath.replace("//", "/"));
+		    		logger.info("Setting candidate SPL: " + fileName.split("_XXX_")[0] + " : " + insertedPath.replace("//", "/"));
+		    		this.vpDataFileNameToProjectPath.put(fileName.split("_XXX_")[0], insertedPath.replace("//", "/"));
 		    		break;
     	  		}
     	  	}
