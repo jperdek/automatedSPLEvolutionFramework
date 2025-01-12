@@ -325,7 +325,7 @@ The possible subjects, objects, and predicates of our default ontology are prese
 ![Schema of Our Fully Automated Software Product Lines Ontology](https://github.com/jperdek/automatedSPLEvolutionFramework/blob/master/documentation/knowledgeBaseRelationsSchema.png)
 
 
-## NEOSEMANTICS REPRESENTATION IN NEO4J GRAPH DATABASE
+## NEOSEMANTICS REPRESENTATION IN NEO4J GRAPH DATABASE  
 
 The process of inserting entities is performed in batches, as shown in the following Figure, where each step is one batch:  
 
@@ -343,34 +343,67 @@ The first iteration and mapping of the respective created artifacts are shown in
 
 where displayed entities look like the following where particular colors represent the semantics of a specific entity:     
 
-a) Code representation  
+### a) Code representation  
 
 ![Code representation in Neo4j](https://github.com/jperdek/automatedSPLEvolutionFramework/blob/master/documentation/semanticData/codeRepr.png)
 
-b) Raster representation - screenshot   
+### b) Raster representation - screenshot   
 
 ![Raster representation in Neo4j](https://github.com/jperdek/automatedSPLEvolutionFramework/blob/master/documentation/semanticData/screenshotRepr.png)
 
-c) Vector representation  
+### c) Vector representation  
 
 ![Code representation in Neo4j](https://github.com/jperdek/automatedSPLEvolutionFramework/blob/master/documentation/semanticData/svgRepr.png)
 
-d) Graph representation  
+### d) Graph representation  
 
 ![Graph representation in Neo4j](https://github.com/jperdek/automatedSPLEvolutionFramework/blob/master/documentation/semanticData/graphRepr.png)
 
-e) Positive variation point   
+### e) Positive variation point   
 
 ![Positive variation point](https://github.com/jperdek/automatedSPLEvolutionFramework/blob/master/documentation/semanticData/positiveVPRepr.png)
 
-f) Negative variation point   
+### f) Negative variation point   
 
 ![Negative variation point](https://github.com/jperdek/automatedSPLEvolutionFramework/blob/master/documentation/semanticData/negativeVPRepr.png)
 
 
 
+# MICROSERVICE ARCHITECTURE - SERVICES  
+
+
+## MESSAGE QUEUE - SCALLING SOLUTION HORIZONTALY  
+
+Message queue can be configured in MQ Admin available at http://localhost:15672/:   
+
+![MQ Admin](https://github.com/jperdek/automatedSPLEvolutionFramework/blob/master/documentation/rabbitMQLogin.png)
+
+
+##  NEO4J DATABASE / KNOWLEDGE BASE - LOG IN  
+
+Open http://localhost:7475/browser/ (even using Docker Compose) and as default credentials are used following:  
+
+![Default credentials](https://github.com/jperdek/automatedSPLEvolutionFramework/blob/master/documentation/knowledgeBaseNeo4jConnect.png)
 
 
 
+# CONTAINERIZATION USING DOCKER COMPOSE  
 
+Run solution using Docker Compose according to steps specified above.  
+In Docker Desktop you can view services as follows. 
 
+1) Click on containers to view launched docker compose process:  
+
+![Docker compose services](https://github.com/jperdek/automatedSPLEvolutionFramework/blob/master/documentation/dockerDesktopIntegration.png)
+
+2) Click on one of available services (such as dynamicDataCollector):  
+
+![Docker compose services](https://github.com/jperdek/automatedSPLEvolutionFramework/blob/master/documentation/services.png)
+
+3) View shared volumes with artifacts along with source and evolved data:  
+
+![Shared volumes with artifacts along with source and evolved data](https://github.com/jperdek/automatedSPLEvolutionFramework/blob/master/documentation/sharedVolumes.png)  
+
+4) Click on them and download them:  
+
+![Downloading data from volumes](https://github.com/jperdek/automatedSPLEvolutionFramework/blob/master/documentation/evolvedFractalsDownload.png)
