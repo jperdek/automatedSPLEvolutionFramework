@@ -368,10 +368,91 @@ where displayed entities look like the following where particular colors represe
 ![Negative variation point](https://github.com/jperdek/automatedSPLEvolutionFramework/blob/master/documentation/semanticData/negativeVPRepr.png)
 
 
+## API  
 
+### Initialization of knowledge base using neosemnatics in graph database  
+
+GET /api/knowledge-base/init HTTP/1.1  
+Host: localhost:5000  
+
+
+### Clearing of knowledge base  
+
+GET /api/knowledge-base/clear HTTP/1.1  
+Host: localhost:5000  
+
+
+### Inserting knowledge associated with initialization of new software product line evolution     
+
+POST /api/knowledge-base/registerNewEvolution HTTP/1.1  
+Host: localhost:5000  
+Content-Type: application/json  
+
+{  
+    "evolution_id": "evol_1",  
+    "initial_product_line_id": "prod_line_initial",  
+    "evolved_script_path": "file:///path/to/evolved/script2.py",  
+    "evolution_configuration_path": null,  
+    "previous_evolution_id": null,  
+    "previous_product_line_id": null  
+}  
+
+
+### Inserting knowledge after performed iteration of software product line evolution  
+
+POST /api/knowledge-base/registerNewEvolutionIteration HTTP/1.1  
+Host: localhost:5000  
+Content-Type: application/json  
+
+{  
+    "evolution_id": "evol_AAA1",  
+    "evolved_product_line_id": "prod_line_1",  
+    "evolution_iteration": "1",  
+    "code_path": "file:///path/to/code",  
+    "screenshot_path": "file:///path/to/raster",  
+    "vector_path": "file:///path/to/vector",  
+    "json_graph_path": "file:///path/to/graph",  
+    "evolved_script_path": "file:///path/to/evolved/script.py",  
+    "variation_point_data_location": "file:///E:/aspects/automatedSPLEvolutionFramework/EvolutionSPLFramework/evolutionDirectory/evolNum1/conccustom/appcustomevolNum1_1_e103f174935c9aacustomevolNum1customevolNum1_VariationPointData.json",  
+    "previous_product_line_id": null  
+}  
+
+
+### Insertion of test data
+
+GET /api/knowledge-base/test?importVariationPoints=false HTTP/1.1  
+Host: localhost:5000  
+  
+  
+### EXPORTING AND IMPORTING TRIPLES TO KNOWLEDGE BASE  
+  
+### EXPORTING DATA FROM SEMANTIC BASE - API
+  
+POST /rdf/evolutionKnowledgeBase/cypher HTTP/1.1  
+Host: localhost:7475  
+Authorization: Basic bmVvNGo6ZmVhdHVyZU5lbzRq  
+Content-Type: application/json  
+
+{ "cypher" : "MATCH p = (n)-[a]-(b) RETURN p LIMIT 10000" , "format": "Turtle" }  
+  
+  
+### IMPORTING DATA TO SEMANTIC BASE - API  
+
+POST /api/knowledge-base/addTriples HTTP/1.1  
+Host: localhost:5000  
+Content-Type: text/plain  
+
+@prefix faspls: <https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl> .  
+@prefix ns0: <https://jakubperdek-26e24f.gitlab.io/> .  
+
+<evol_id_1> a faspls:Evolution .  
+<evol_spl_id_1> a faspls:ProductLine .  
+<evol_id_1> faspls:startFromSPL <evol_spl_id_1> .  
+  
+  
 # MICROSERVICE ARCHITECTURE - SERVICES  
-
-
+  
+  
 ## MESSAGE QUEUE - SCALLING SOLUTION HORIZONTALY  
 
 Message queue can be configured in MQ Admin available at http://localhost:15672/:   
