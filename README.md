@@ -312,3 +312,65 @@ Getting stored image in Base64 for particular graph node from dataset:
 
 Converting selected image in Base64 for particular graph node using [Base64 image converter](https://codebeautify.org/base64-to-image-converter):  
  ![Taking screenshots](https://github.com/jperdek/automatedSPLEvolutionFramework/blob/master/misc/screenshots/convertingBase64HashToImage.png)    
+
+
+
+# INTEGRATING DEFAULT KNOWLEDGE INTO KNOWLEDGE BASE  
+
+All representations are integrated under the knowledge base under our default ontology for our Minimalistic and Automated Software Product Lines. Its schema is available at [fully-automated-spls-schema.ttl](https://jakubperdek-26e24f.gitlab.io/fully-automated-spls-schema.ttl). We designed it using classes, subclasses, and properties from [rdf](http://www.w3.org/2000/01/rdf-schema#). The knowledge base is created, managed, and visualized directly inside the Neo4j graph database.  
+
+
+The possible subjects, objects, and predicates of our default ontology are presented in the following Figure:  
+
+![Schema of Our Fully Automated Software Product Lines Ontology](https://github.com/jperdek/automatedSPLEvolutionFramework/blob/master/documentation/knowledgeBaseRelationsSchema.png)
+
+
+## NEOSEMANTICS REPRESENTATION IN NEO4J GRAPH DATABASE
+
+The process of inserting entities is performed in batches, as shown in the following Figure, where each step is one batch:  
+
+![Some updates during evolution](https://github.com/jperdek/automatedSPLEvolutionFramework/blob/master/documentation/evolutionKnowledgeOneSplInEachIteration.png)
+
+
+Namespace with semantics support is initialized as:  
+
+![Namespace for Fully Automated Software Product Lines](https://github.com/jperdek/automatedSPLEvolutionFramework/blob/master/documentation/semanticData/nodeProperties.png)
+
+
+The first iteration and mapping of the respective created artifacts are shown in the following Figure:    
+
+![First iteration and mapping of respective created artifacts](https://github.com/jperdek/automatedSPLEvolutionFramework/blob/master/documentation/firstEvolvedSPLKnowledgeGraph.png)
+
+where displayed entities look like the following where particular colors represent the semantics of a specific entity:     
+
+a) Code representation  
+
+![Code representation in Neo4j](https://github.com/jperdek/automatedSPLEvolutionFramework/blob/master/documentation/semanticData/codeRepr.png)
+
+b) Raster representation - screenshot   
+
+![Raster representation in Neo4j](https://github.com/jperdek/automatedSPLEvolutionFramework/blob/master/documentation/semanticData/screenshotRepr.png)
+
+c) Vector representation  
+
+![Code representation in Neo4j](https://github.com/jperdek/automatedSPLEvolutionFramework/blob/master/documentation/semanticData/svgRepr.png)
+
+d) Graph representation  
+
+![Graph representation in Neo4j](https://github.com/jperdek/automatedSPLEvolutionFramework/blob/master/documentation/semanticData/graphRepr.png)
+
+e) Positive variation point   
+
+![Positive variation point](https://github.com/jperdek/automatedSPLEvolutionFramework/blob/master/documentation/semanticData/positiveVPRepr.png)
+
+f) Negative variation point   
+
+![Negative variation point](https://github.com/jperdek/automatedSPLEvolutionFramework/blob/master/documentation/semanticData/negativeVPRepr.png)
+
+
+
+
+
+
+
+
