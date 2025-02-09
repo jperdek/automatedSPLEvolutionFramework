@@ -16,7 +16,7 @@ if you use this work, please cite it as:
 
   or
 
-  J. Perdek and V. Vranić, "Fully Automated Software Product Line Evolution with Diverse Artifacts," in IEEE Access, doi: 10.1109/ACCESS.2025.3539868
+  J. Perdek and V. Vranić, "Fully Automated Software Product Line Evolution with Diverse Artifacts," in IEEE Access, doi: [10.1109/ACCESS.2025.3539868](https://ieeexplore.ieee.org/document/10877839/)
   
 
 ## CAPABILITIES 
