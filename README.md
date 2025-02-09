@@ -1,6 +1,24 @@
 # Automated SPL Evolution Framework  
 Automated SPL evolution framework - evolving variability on code level: Application on fractals  
 
+if you use this work, please cite it as: 
+
+@ARTICLE{10877839,
+  author={Perdek, Jakub and Vranić, Valentino},
+  journal={IEEE Access}, 
+  title={Fully Automated Software Product Line Evolution with Diverse Artifacts}, 
+  year={2025},
+  volume={},
+  number={},
+  pages={1-1},
+  keywords={Software product lines;Codes;Software;Fractals;Annotations;Quality assurance;Automation;Testing;Source coding;Software algorithms;aspect-oriented;configuration expressions;knowledge-driven;software product line evolution;variability modeling},
+  doi={10.1109/ACCESS.2025.3539868}}
+
+  or
+
+  J. Perdek and V. Vranić, "Fully Automated Software Product Line Evolution with Diverse Artifacts," in IEEE Access, doi: 10.1109/ACCESS.2025.3539868
+  
+
 ## CAPABILITIES 
    - to focus and select a suitable variation point for a particular evolution activity  
    - choose from existing variation points beneficially and wisely (negative variability)  
